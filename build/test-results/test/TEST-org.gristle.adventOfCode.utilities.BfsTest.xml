@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.gristle.adventOfCode.utilities.BfsTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-08-06T19:20:22" hostname="GLORIOUSALLRED" time="0.185">
+  <properties/>
+  <testcase name="doesntBreakAocs$Play2022()" classname="org.gristle.adventOfCode.utilities.BfsTest" time="0.185"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,73 @@
+package org.gristle.adventOfCode.utilities
+
+import kotlin.math.abs
+
+fun intsToPositiveSortedPair(a: Int, b: Int) =
+    (abs(a) to abs(b)).run {
+        if (first < second) this else second to first
+    }
+
+fun longsToPositiveSortedPair(a: Long, b: Long) =
+    (abs(a) to abs(b)).run {
+        if (first < second) this else second to first
+    }
+
+fun gcd(unsortedInts: List<Int>): Int {
+    require(unsortedInts.size >= 2) { "There must be at least two numbers" }
+    return gcd(unsortedInts[0], unsortedInts[1], *unsortedInts.drop(2).toIntArray())
+}
+
+fun gcd(a: Int, b: Int, vararg n: Int): Int {
+    val numbers: List<Int> = ArrayList<Int>(n.size + 2).apply {
+        add(abs(a))
+        add(abs(b))
+        addAll(n.map { abs(it) })
+    }
+    require(numbers.any { it != 0 }) { "At least one number must not be zero" }
+
+    tailrec fun gcd(a: Int, b: Int): Int = if (a == 0) b else gcd((b % a), a)
+
+    return numbers.reduce { acc, i ->
+        val (smaller, larger) = intsToPositiveSortedPair(acc, i)
+        val nextAcc = gcd(smaller, larger)
+        if (nextAcc == 1) return nextAcc
+        nextAcc
+    }
+}
+
+fun gcd(a: Long, b: Long, vararg n: Long): Long {
+    val numbers: List<Long> = ArrayList<Long>(n.size + 2).apply {
+        add(abs(a))
+        add(abs(b))
+        addAll(n.map { abs(it) })
+    }
+    require(numbers.any { it != 0L }) { "At least one number must not be zero" }
+
+    tailrec fun gcd(a: Long, b: Long): Long = if (a == 0L) b else gcd((b % a), a)
+
+    return numbers.reduce { acc, i ->
+        val (smaller, larger) = longsToPositiveSortedPair(acc, i)
+        val nextAcc = gcd(smaller, larger)
+        if (nextAcc == 1L) return nextAcc
+        nextAcc
+    }
+}
+
+fun lcm(a: Long, b: Long, vararg n: Long): Long {
+    val numbers: List<Long> = ArrayList<Long>(n.size + 2).apply {
+        add(abs(a))
+        add(abs(b))
+        addAll(n.map { abs(it) })
+    }
+    require(numbers.any { it != 0L }) { "At least one number must not be zero" }
+
+    fun lcm(a: Long, b: Long): Long = abs(a * b) / gcd(a, b)
+
+    return numbers.reduce { acc, i -> lcm(acc, i)
+    }
+}
+
+fun lcm(longs: List<Long>): Long {
+    require(longs.size >= 2) { "There must be at least two numbers" }
+    return lcm(longs[0], longs[1], *longs.drop(2).toLongArray())
+}

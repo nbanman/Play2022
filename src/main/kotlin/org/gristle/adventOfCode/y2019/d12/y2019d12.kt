@@ -1,0 +1,99 @@
+package org.gristle.adventOfCode.y2019.d12
+
+import org.gristle.adventOfCode.utilities.*
+
+object Y2019D12 {
+    private val input = readRawInput("y2019/d12")
+
+    data class Moon1912(val pos: MCoord, val vel: MCoord = MCoord(0, 0, 0)) {
+        val potentialEnergy = pos.manhattanDistance(MCoord(0,0,0))
+        val kineticEnergy = vel.manhattanDistance(MCoord(0,0,0))
+        val totalEnergy = potentialEnergy * kineticEnergy
+
+        override fun toString(): String {
+            return "Moon(pos=$pos, vel=$vel, totalEnergy=$totalEnergy)"
+        }
+    }
+    private val pattern = """<x=(-?\d+), y=(-?\d+), z=(-?\d+)>""".toRegex()
+
+    val moons = input
+        .groupValues(pattern) { it.toInt() }
+        .map { Moon1912(Xyz(it[0], it[1], it[2])) }
+
+    fun applyForce(a: Int, b: Int) = (a - b).let { if (it < 0) 1 else if (it > 0) -1 else 0 }
+    
+    fun part1(): Int {
+        // Part 1
+        val steps = 1000
+        return (1..steps).fold(moons) { acc, step ->
+            val newMoons = acc.map { moon ->
+                val newVel = (acc - moon).fold(MCoord(0,0,0)) { acc, other ->
+                    val velDelta = MCoord(
+                        applyForce(moon.pos[0], other.pos[0]),
+                        applyForce(moon.pos[1], other.pos[1]),
+                        applyForce(moon.pos[2], other.pos[2])
+                    )
+                    acc + velDelta 
+                }
+                Moon1912(moon.pos + moon.vel + newVel, moon.vel + newVel)
+            }
+            newMoons
+        }.let { moons ->
+            moons.sumOf { it.totalEnergy } 
+        }
+    }
+
+    fun part2(): Long {
+        // Part 2
+        val xMap = mutableMapOf<String, Boolean>()
+        val yMap = mutableMapOf<String, Boolean>()
+        val zMap = mutableMapOf<String, Boolean>()
+        tailrec fun periodOf(id: String, positions: List<Pair<Int, Int>>, register: MutableMap<String, Boolean>, counter: Int = 0): Int {
+            return if (register[id] != null) {
+                counter - 1
+            } else {
+                register[id] = true
+                val newPositions = positions.map { moon ->
+                    val newVel = (positions - moon).fold(0) { acc, other ->
+                        val velDelta = applyForce(moon.first, other.first)
+                        acc + velDelta
+                    }
+                    moon.first + moon.second + newVel to moon.second + newVel
+                }
+                periodOf(
+                    "${newPositions[0].first}/${newPositions[0].second}:${newPositions[1].first}/${newPositions[1].second}:${newPositions[2].first}/${newPositions[2].second}",
+                    newPositions,
+                    register,
+                    counter + 1
+                )
+            }
+        }
+
+        val periods = listOf(
+            periodOf(
+                "${moons[0].pos[0]}/${moons[0].vel[0]}:${moons[1].pos[0]}/${moons[1].vel[0]}:${moons[2].pos[0]}/${moons[2].vel[0]}:${moons[3].pos[0]}/${moons[3].vel[0]}",
+                moons.map { it.pos[0] to it.vel[0] },
+                xMap
+            ),
+            periodOf(
+                "${moons[0].pos[1]}/${moons[0].vel[1]}:${moons[1].pos[1]}/${moons[1].vel[1]}:${moons[2].pos[1]}/${moons[2].vel[1]}:${moons[3].pos[1]}/${moons[3].vel[1]}",
+                moons.map { it.pos[1] to it.vel[1] },
+                yMap
+            ),
+            periodOf(
+                "${moons[0].pos[2]}/${moons[0].vel[2]}:${moons[1].pos[2]}/${moons[1].vel[2]}:${moons[2].pos[2]}/${moons[2].vel[2]}:${moons[3].pos[2]}/${moons[3].vel[2]}",
+                moons.map { it.pos[2] to it.vel[2] },
+                zMap
+            )
+        ).map { it.toLong() }
+
+        return lcm(periods)
+    }
+}
+
+fun main() {
+    var time = System.nanoTime()
+    println("Part 1: ${Y2019D12.part1()} (${elapsedTime(time)}ms)") // 10028
+    time = System.nanoTime()
+    println("Part 2: ${Y2019D12.part2()} (${elapsedTime(time)}ms)") // 314610635824376 
+}
