@@ -45,9 +45,10 @@ object Y2021D24 {
                 }
             }
             pairedSteps // Return the result
-        }.sortedBy { it.push.order } // Sort by the order of the "push" steps so that z is increased properly
+        }.apply { sortBy { it.push.order } } // Sort by the order of the "push" steps so that z is increased properly
+            as List<PairedSteps>
 
-    fun solve(forMin: Boolean): String {
+    fun solve(findIntersection: (pushMax: Int, popMax: Int) -> Int): String {
         var z = 0L
 
         // The steps are paired and are run in the order that the "push" steps occur. This presents a problem
@@ -73,11 +74,7 @@ object Y2021D24 {
              * then subtract by 8. The subtraction effectively makes it a comparison between the pushMin and the
              * popMin. The maximum between these two represents the smallest number that works for both.
              */
-            val intersection = if (forMin) {
-                max(pushMax, popMax) - 8
-            } else {
-                min(pushMax, popMax)
-            }
+            val intersection = findIntersection(pushMax, popMax)
 
             // Finds the digit corresponding to the intersection z value for both push and pop places. 
             modelNumber[step.push.order] = 9 - (pushMax - intersection)
@@ -90,12 +87,13 @@ object Y2021D24 {
             z = increaseZ + modelNumber[step.push.order]
             lastIncrease = step.push.order
         }
-        
+
         return modelNumber.joinToString("")
     }
-    fun part1() = solve(false)
 
-    fun part2() = solve(true)
+    fun part1() = solve { pushMax, popMax -> min(pushMax, popMax) }
+
+    fun part2() = solve { pushMax, popMax -> max(pushMax, popMax) - 8 }
 }
 
 fun main() {
