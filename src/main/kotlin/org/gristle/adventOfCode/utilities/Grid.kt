@@ -219,7 +219,7 @@ class ArrayGrid<E> private constructor(
     override fun flipY() = rotate(false) { (it / width) * width + (width - 1) - it % width }
 
     // From MutableGrid
-    fun Boolean.changeHeight(): Boolean { 
+    private fun Boolean.changeHeight(): Boolean {
         if (this) height = size / width
         return this
     }
@@ -242,40 +242,42 @@ class ArrayGrid<E> private constructor(
 
     // Bulk Modification Operations
     /**
-     * Adds all of the elements of the specified collection to the end of this list.
+     * Adds all the elements of the specified collection to the end of this list.
      *
      * The elements are appended in the order they appear in the [elementsImpl] collection.
      *
      * @return `true` if the list was changed as the result of the operation.
      */
-    override fun addAll(elementsToAdd: Collection<E>): Boolean {
+    override fun addAll(elements: Collection<E>): Boolean {
         return elementsImpl
-            .addAll(elementsToAdd)
+            .addAll(elements)
             .changeHeight()
     }
 
     /**
-     * Inserts all of the elements of the specified collection [elementsImpl] into this list at the specified [index].
+     * Inserts all the elements of the specified collection [elementsImpl] into this list at the specified [index].
      *
      * @return `true` if the list was changed as the result of the operation.
      */
-    override fun addAll(index: Int, elementsToAdd: Collection<E>): Boolean {
+    override fun addAll(index: Int, elements: Collection<E>): Boolean {
         return elementsImpl
-            .addAll(index, elementsToAdd)
+            .addAll(index, elements)
             .changeHeight()
     }
 
-    override fun removeAll(elementsToAdd: Collection<E>): Boolean {
+    override fun removeAll(elements: Collection<E>): Boolean {
         return elementsImpl
-            .addAll(elementsToAdd)
+            .addAll(elements)
             .changeHeight()
     }
-    override fun retainAll(elementsToAdd: Collection<E>): Boolean {
+
+    override fun retainAll(elements: Collection<E>): Boolean {
         return elementsImpl
-            .retainAll(elementsToAdd)
+            .retainAll(elements.toSet())
             .changeHeight()
     }
-    override fun clear(): Unit {
+
+    override fun clear() {
         elementsImpl.clear()
         true.changeHeight()
     }
@@ -283,7 +285,7 @@ class ArrayGrid<E> private constructor(
     /**
      * Inserts an element into the list at the specified [index].
      */
-    override fun add(index: Int, element: E): Unit {
+    override fun add(index: Int, element: E) {
         elementsImpl.add(index, element)
         height = size / width
     }
@@ -384,16 +386,44 @@ inline fun <E, R> Grid<E>.mapToGrid(transform: (E) -> R): Grid<R> {
     return map { transform(it) }.toGrid(width)
 }
 
+inline fun <R> String.mapToGrid(transform: (Char) -> R): Grid<R> {
+    val width = indexOf('\n')
+    return replace("\n", "")
+        .map { transform(it) }
+        .toGrid(width)
+}
+
 inline fun <E, R> Grid<E>.mapToGridIndexed(transform: (index: Int, E) -> R): Grid<R> {
     return mapIndexed { index, e -> transform(index, e) }.toGrid(width)
+}
+
+inline fun <R> String.mapToGridIndexed(transform: (index: Int, Char) -> R): Grid<R> {
+    val width = indexOf('\n')
+    return replace("\n", "")
+        .mapIndexed { index, c -> transform(index, c) }
+        .toGrid(width)
 }
 
 inline fun <E, R> Grid<E>.mapToMutableGrid(transform: (E) -> R): MutableGrid<R> {
     return map { transform(it) }.toMutableGrid(width)
 }
 
+inline fun <R> String.mapToMutableGrid(transform: (Char) -> R): Grid<R> {
+    val width = indexOf('\n')
+    return replace("\n", "")
+        .map { transform(it) }
+        .toMutableGrid(width)
+}
+
 inline fun <E, R> Grid<E>.mapToMutableGridIndexed(transform: (index: Int, E) -> R): MutableGrid<R> {
     return mapIndexed { index, e -> transform(index, e) }.toMutableGrid(width)
+}
+
+inline fun <R> String.mapToMutableGridIndexed(transform: (index: Int, Char) -> R): Grid<R> {
+    val width = indexOf('\n')
+    return replace("\n", "")
+        .mapIndexed { index, c -> transform(index, c) }
+        .toMutableGrid(width)
 }
 
 fun Grid<Boolean>.representation() = representation { if (it) '#' else '.' }
