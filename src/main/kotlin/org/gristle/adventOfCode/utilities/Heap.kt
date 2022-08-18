@@ -1,9 +1,11 @@
 package org.gristle.adventOfCode.utilities
 
-import java.util.Comparator
-
 private class KeyHolder<K: Comparable<K>, E>(val key: K, val element: E)
 
+/**
+ * A non-indexed heap. When the comparing values are non-mutable, use the superior java.util.PriorityQueue.
+ * This version ensures that the heap does not fall apart if the underlying comparing values change.
+ */
 class Heap<K: Comparable<K>, E> private constructor(
     initialElements: Iterable<Pair<K, E>>,
     private val compare: (K, K) -> Boolean
@@ -18,6 +20,7 @@ class Heap<K: Comparable<K>, E> private constructor(
         fun <K: Comparable<K>, E> minHeap(elements: Iterable<Pair<K, E>> = emptyList()) = Heap<K, E>(elements) { a, b ->
             a < b
         }
+
         fun <K: Comparable<K>, E> maxHeap(elements: Iterable<Pair<K, E>> = emptyList()) = Heap<K, E>(elements) { a, b ->
             a > b
         }
@@ -98,6 +101,12 @@ class Heap<K: Comparable<K>, E> private constructor(
     }
 }
 
+/**
+ * An indexed heap that supports updating the value of specific elements at the expense of significant
+ * decrease in performance and memory for maintaining the index. When the value only goes down, consider
+ * using a standard PriorityQueue with redundant elements, using the pollUntil() extension function to skip
+ * already visited elements.
+ */
 class IndexedHeap<E> private constructor(
     initialElements: Iterable<E>,
     private val compare: (E, E) -> Boolean
@@ -113,18 +122,23 @@ class IndexedHeap<E> private constructor(
         fun <E: Comparable<E>> minHeap(elements: Iterable<E> = emptyList()) = IndexedHeap<E>(elements) { a, b ->
             a < b
         }
+
         fun <E: Comparable<E>> maxHeap(elements: Iterable<E> = emptyList()) = IndexedHeap<E>(elements) { a, b ->
             a > b
         }
+
         fun <E> minHeap(elements: Iterable<E>, comparator: Comparator<E>) = IndexedHeap<E>(elements) { a, b ->
             comparator.compare(a, b) < 0
         }
+
         fun <E> maxHeap(elements: Iterable<E>, comparator: Comparator<E>) = IndexedHeap<E>(elements) { a, b ->
             comparator.compare(a, b) > 0
         }
+
         fun <E> minHeap(comparator: Comparator<E>) = IndexedHeap<E>(emptyList()) { a, b ->
             comparator.compare(a, b) < 0
         }
+
         fun <E> maxHeap(comparator: Comparator<E>) = IndexedHeap<E>(emptyList()) { a, b ->
             comparator.compare(a, b) > 0
         }
@@ -211,15 +225,6 @@ class IndexedHeap<E> private constructor(
     fun isEmpty(): Boolean = elements.isEmpty()
 
     fun isNotEmpty(): Boolean = elements.isNotEmpty()
-
-    tailrec fun pollUntil(predicate: (E) -> Boolean): E? {
-        val poll = poll()
-        return when {
-            poll == null -> poll
-            predicate(poll) -> poll
-            else -> pollUntil(predicate)
-        }
-    }
 
     fun dumpToList(): List<E> {
         val returnList = mutableListOf<E>()
