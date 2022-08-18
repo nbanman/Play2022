@@ -4,7 +4,7 @@ import kotlin.math.abs
 
 data class Hexagon(val q: Int = 0, val r: Int = 0): Comparable<Hexagon> {
     companion object {
-        val origin = Hexagon(0, 0)
+        val ORIGIN = Hexagon(0, 0)
     }
 
     val s = -q - r
@@ -27,7 +27,7 @@ data class Hexagon(val q: Int = 0, val r: Int = 0): Comparable<Hexagon> {
         return Hexagon(q - h.q, r - h.r)
     }
 
-    fun distance(h: Hexagon = origin): Int {
+    fun distance(h: Hexagon = ORIGIN): Int {
         val vec = cubeSubtract(h)
         return maxOf(abs(vec.q), abs(vec.r), abs(vec.s))
     }
