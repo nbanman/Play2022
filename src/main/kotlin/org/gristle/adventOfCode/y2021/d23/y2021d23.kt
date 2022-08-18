@@ -12,7 +12,9 @@ object Y2021D23 {
         B(10.0),
         C(100.0),
         D(1000.0),
-        E(0.0) { override fun toString() = "_" }
+        E(0.0) {
+            override fun toString() = "_"
+        }
     }
 
     fun <T> List<T>.swapElementAt(index: Int, newElement: T?): List<T> =
@@ -41,7 +43,6 @@ object Y2021D23 {
         override fun toString(): String {
             return "$id: $spots"
         }
-
     }
 
     data class State(
@@ -124,7 +125,6 @@ object Y2021D23 {
                     steps = if (hallSpot == 5) steps + 1 else steps + 2
                 }
             }
-
             return edges
         }
 
@@ -194,7 +194,6 @@ object Y2021D23 {
         override fun toString(): String {
             return "H: $hallway $roomA $roomB $roomC $roomD"
         }
-
     }
 
     private fun totalEnergy(state: State): Long {
