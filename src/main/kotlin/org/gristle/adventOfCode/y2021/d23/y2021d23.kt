@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2021.d23
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2021D23 {
     private val data = readRawInput("y2021/d23")
@@ -40,7 +42,6 @@ object Y2021D23 {
             return "$id: $spots"
         }
 
-
     }
 
     data class State(
@@ -56,7 +57,7 @@ object Y2021D23 {
                 State(hallway, roomList[0], roomList[1], roomList[2], roomList[3])
         }
 
-        val roomList = listOf(roomA, roomB, roomC, roomD)
+        private val roomList = listOf(roomA, roomB, roomC, roomD)
 
         val isEnd = hallway.all { it == S.E } && roomList.all { it.isFinished }
 
@@ -127,10 +128,10 @@ object Y2021D23 {
             return edges
         }
 
-        fun edgeFromRoomToHall(hallSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
+        private fun edgeFromRoomToHall(hallSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
             val newAmphipod = room.topAmphipod
             val newHallway = hallway.swapElementAt(hallSpot, newAmphipod)
-            val newLog = "${newAmphipod} from Room ${room.id} to Hall $hallSpot"
+            val newLog = "$newAmphipod from Room ${room.id} to Hall $hallSpot"
             val newState = when (room.id) {
                 S.A -> copy(hallway = newHallway, roomA = room.removeAmphipod(), log = newLog)
                 S.B -> copy(hallway = newHallway, roomB = room.removeAmphipod(), log = newLog)
@@ -142,7 +143,7 @@ object Y2021D23 {
             return Graph.Edge(newState, weight)
         }
 
-        fun edgeFromHallToRoom(hallSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
+        private fun edgeFromHallToRoom(hallSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
             val newHallway = hallway.swapElementAt(hallSpot, S.E)
             val newLog = "${room.id} from Hall $hallSpot to Room ${room.id}"
             val newState = when (room.id) {
@@ -156,7 +157,7 @@ object Y2021D23 {
             return Graph.Edge(newState, weight)
         }
 
-        fun edgeFromRoomToRoom(roomSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
+        private fun edgeFromRoomToRoom(roomSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
             val other = roomList[roomSpot]
             val newLog = "${other.topAmphipod} from Room ${other.id} to Room ${room.id}"
             val newState = when (room.id) {
