@@ -1,13 +1,15 @@
 package org.gristle.adventOfCode.y2021.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readStrippedInput
+import org.gristle.adventOfCode.utilities.toGrid
 
 object Y2021D4 {
     private val input = readStrippedInput("y2021/d4")
 
     data class BingoCard(val grid: Grid<Int>) {
-        val winConditions = (grid.rows() +
-                grid.columns())
+        private val winConditions = (grid.rows() + grid.columns())
             .map { it.toSet() }
         fun bingo(calledCards: Set<Int>): Int {
             val winner = winConditions.find { it.intersect(calledCards) == it }
@@ -21,13 +23,14 @@ object Y2021D4 {
 
     val data = input.split("\n\n")
 
-    val drawPile = data[0].split(',').mapNotNull { it.toIntOrNull() }
+    private val drawPile = data[0].split(',').mapNotNull { it.toIntOrNull() }
 
-    val bingoCards = data
+    private val bingoCards = data
         .drop(1)
-        .map { cardString -> cardString
-            .split(' ', '\n')
-            .mapNotNull { it.toIntOrNull() }
+        .map { cardString ->
+            cardString
+                .split(' ', '\n')
+                .mapNotNull { it.toIntOrNull() }
         }.map { BingoCard(it.toGrid(5)) }
 
     fun part1(): Int {
