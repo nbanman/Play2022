@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2021.d16
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.print
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2021D16 {
     private val input = readRawInput("y2021/d16")
@@ -11,7 +13,7 @@ object Y2021D16 {
 
         abstract fun value(): Long
 
-        class Literal(version: Int, typeId: Int, val literalValue: Long) : Packet(version, typeId) {
+        class Literal(version: Int, typeId: Int, private val literalValue: Long) : Packet(version, typeId) {
 
             override fun versionSum() = version
 
@@ -22,7 +24,7 @@ object Y2021D16 {
             }
         }
 
-        class Operator(version: Int, typeId: Int, val subPackets: List<Packet>) : Packet(version, typeId) {
+        class Operator(version: Int, typeId: Int, private val subPackets: List<Packet>) : Packet(version, typeId) {
 
             override fun value(): Long = when (typeId) {
                 0 -> subPackets.sumOf { it.value() }
@@ -35,7 +37,7 @@ object Y2021D16 {
                 else -> 0L
             }
 
-            override fun versionSum() = version + subPackets.sumBy { it.versionSum() }
+            override fun versionSum() = version + subPackets.sumOf { it.versionSum() }
 
             override fun toString(): String {
                 return "Literal(version=$version, typeId=$typeId, value=${value()}, subPackets=$subPackets)"
@@ -43,10 +45,6 @@ object Y2021D16 {
         }
 
         companion object {
-
-            fun Boolean.print(s: String) {
-                if (this) println(s)
-            }
 
             fun parse(bp: BitProvider, verbose: Boolean = false): Packet {
                 verbose.print("Making new packet... BitProvider: ${bp.size}")
@@ -72,14 +70,14 @@ object Y2021D16 {
                         verbose.print("Creating subBitProvider of size ${subBp.size}")
                         mutableListOf<Packet>().apply {
                             while (subBp.isNotEmpty()) {
-                                verbose.print("Creating subpacket with subBitProvider size ${subBp.size}")
+                                verbose.print("Creating sub-packet with subBitProvider size ${subBp.size}")
                                 add(parse(subBp, verbose))
                             }
                         }
                     }
                     else -> {
-                        List<Packet>(length) { i ->
-                            verbose.print("Creating subpacket ${i + 1} of $length with bp size ${bp.size}")
+                        List(length) { i ->
+                            verbose.print("Creating sub-packet ${i + 1} of $length with bp size ${bp.size}")
                             parse(bp, verbose)
                         }
                     }
@@ -106,10 +104,6 @@ object Y2021D16 {
             return binary.substring(parser, parser + n).also { parser += n }
         }
 
-        fun peek(n: Int): String {
-            return binary.substring(parser, parser + n)
-        }
-
         fun getBitInt(n: Int): Int {
             require(parser + n <= binary.length && n < 32)
             return binary
@@ -119,7 +113,7 @@ object Y2021D16 {
         }
 
         companion object {
-            private val conversion = mapOf<Char, String>(
+            private val conversion = mapOf(
                 '0' to "0000",
                 '1' to "0001",
                 '2' to "0010",
@@ -145,9 +139,9 @@ object Y2021D16 {
         }
     }
 
-    val bp = BitProvider.fromHex(input)
+    private val bp = BitProvider.fromHex(input)
 
-    val packet = Packet.parse(bp, false)
+    private val packet = Packet.parse(bp, false)
 
     fun part1() = packet.versionSum()
 

@@ -1,11 +1,18 @@
 package org.gristle.adventOfCode.utilities
 
-import java.util.PriorityQueue
+import java.util.*
 
 /**
  * Returns elapsed time in ms.
  */
 fun elapsedTime(m: Long) = (System.nanoTime() - m) / 1_000_000
+
+/**
+ * Prints to console if the Boolean is true. Used for quick and dirty debugging.
+ */
+fun Boolean.print(s: String) {
+    if (this) println(s)
+}
 
 /**
  * Returns the actual Int digit (not the ASCII code) of the numeric Char; -1 if not numeric.
