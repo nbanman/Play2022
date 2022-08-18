@@ -1,12 +1,13 @@
 package org.gristle.adventOfCode.y2015.d8
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2015D8 {
     private val lines = readInput("y2015/d8")
 
     private fun String.charsInMemory(): Int {
-        return drop(1).dropLast(1).replace("""\\\\|\\\"|\\x[0-9a-f]{2}""".toRegex(), "X").length
+        return drop(1).dropLast(1).replace("""\\\\|\\"|\\x[\da-f]{2}""".toRegex(), "X").length
     }
 
     private fun String.encodedLength() = length + 2 + count { it in """\"""" }
