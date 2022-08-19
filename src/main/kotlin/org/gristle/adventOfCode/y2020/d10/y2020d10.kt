@@ -1,20 +1,21 @@
 package org.gristle.adventOfCode.y2020.d10
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2020D10 {
     private val input = readInput("y2020/d10")
-
     private val adapters = input.map { it.toInt() }.sorted()
     private val allDevices = listOf(0) + adapters + (adapters.last() + 3)
-    private val distances = allDevices.drop(1).foldIndexed(Triple(0,0,0)) { index, acc, i ->
+
+    fun part1() = allDevices.drop(1).foldIndexed(Triple(0, 0, 0)) { index, acc, i ->
         when {
             i - allDevices[index] == 3 -> Triple(acc.first, acc.second, acc.third + 1)
             i - allDevices[index] == 1 -> Triple(acc.first + 1, acc.second, acc.third)
             else -> Triple(acc.first, acc.second + 1, acc.third)
         }
-    }
-    fun part1() = distances.let { it.first * it.third }
+    }.let { it.first * it.third }
+
     fun part2(): Long {
         return allDevices
             .drop(1) // start from second device (first adapter)
