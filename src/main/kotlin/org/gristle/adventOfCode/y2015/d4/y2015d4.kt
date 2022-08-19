@@ -1,9 +1,11 @@
 package org.gristle.adventOfCode.y2015.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.md5
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D4 {
-    private const val input = "ckczppom"
+    private val input = readRawInput("y2015/d4")
 
     fun part1() = generateSequence(1) { it + 1 }.first { (input + it).md5().take(5) == "00000" }
 
