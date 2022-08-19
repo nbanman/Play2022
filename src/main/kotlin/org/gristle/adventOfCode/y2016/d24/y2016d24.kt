@@ -36,25 +36,27 @@ object Y2016D24 {
     // Naive edge map providing distance from any given number to all the other numbers. Naive in the sense that
     // the Dijkstra algo does not use it directly because we need to generate the edges on the fly in order to 
     // track the numbers already visited.
-    private val edges = numbers.associate { (location, number) ->
+    private val edgeMap = numbers.associate { (location, number) ->
+        // Obtain list of all distances from the number to every other number in the map
         val distances = Graph
             .bfs(location, defaultEdges = getBfsNeighbors)
             .filter { layout[it.id].isDigit() }
+        // Create map associating the number to a list of Edges with the other number and the distance.
         number to distances.drop(1).map { Graph.Edge(layout[it.id], it.weight) }
     }
 
     // "State" tracks where the search is currently at and what numbers have been visited.
     data class State(val location: Char, val numbersVisited: Set<Char>)
 
-    // Both parts start at '0'
+    // Both parts have the same start: at '0', thus having already visited '0'
     private val start = State('0', setOf('0'))
 
-    // Function to plug into Dijkstra that takes the edges from the edges map and massages them to include all
+    // Function to plug into Dijkstra that takes the edges from the edgemap and massages them to include all
     // the State data.
     private val getEdges = { state: State ->
-        edges[state.location]
+        edgeMap[state.location]
             ?.map { Graph.Edge(State(it.vertexId, state.numbersVisited + it.vertexId), it.weight) }
-            ?: throw IllegalStateException("State location reached that is not in the edges map.")
+            ?: throw IllegalStateException("Dijkstra search reached location that is not in the edgemap.")
     }
 
     fun part1(): Int {
