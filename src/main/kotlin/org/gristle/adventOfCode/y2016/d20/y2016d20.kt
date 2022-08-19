@@ -1,12 +1,14 @@
 package org.gristle.adventOfCode.y2016.d20
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 // Not refactored; ugly but fast
 object Y2016D20 {
     private val input = readRawInput("y2016/d20")
 
-    data class LRange constructor(val start: Long, val end: Long)
+    data class LRange(val start: Long, val end: Long)
 
     val p1 = input
         .groupValues("""(\d+)-(\d+)""")
