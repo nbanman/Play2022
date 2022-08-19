@@ -405,44 +405,16 @@ inline fun <E, R> Grid<E>.mapToGrid(transform: (E) -> R): Grid<R> {
     return map { transform(it) }.toGrid(width)
 }
 
-inline fun <R> String.mapToGrid(transform: (Char) -> R): Grid<R> {
-    val width = indexOf('\n')
-    return replace("\n", "")
-        .map { transform(it) }
-        .toGrid(width)
-}
-
 inline fun <E, R> Grid<E>.mapToGridIndexed(transform: (index: Int, E) -> R): Grid<R> {
     return mapIndexed { index, e -> transform(index, e) }.toGrid(width)
-}
-
-inline fun <R> String.mapToGridIndexed(transform: (index: Int, Char) -> R): Grid<R> {
-    val width = indexOf('\n')
-    return replace("\n", "")
-        .mapIndexed { index, c -> transform(index, c) }
-        .toGrid(width)
 }
 
 inline fun <E, R> Grid<E>.mapToMutableGrid(transform: (E) -> R): MutableGrid<R> {
     return map { transform(it) }.toMutableGrid(width)
 }
 
-inline fun <R> String.mapToMutableGrid(transform: (Char) -> R): Grid<R> {
-    val width = indexOf('\n')
-    return replace("\n", "")
-        .map { transform(it) }
-        .toMutableGrid(width)
-}
-
 inline fun <E, R> Grid<E>.mapToMutableGridIndexed(transform: (index: Int, E) -> R): MutableGrid<R> {
     return mapIndexed { index, e -> transform(index, e) }.toMutableGrid(width)
-}
-
-inline fun <R> String.mapToMutableGridIndexed(transform: (index: Int, Char) -> R): Grid<R> {
-    val width = indexOf('\n')
-    return replace("\n", "")
-        .mapIndexed { index, c -> transform(index, c) }
-        .toMutableGrid(width)
 }
 
 fun Grid<Boolean>.representation() = representation { if (it) '#' else '.' }

@@ -13,7 +13,7 @@ object Y2021D20 {
     private val input = readStrippedInput("y2021/d20")
     private val inputSplit = input.split("\n\n")
     private val algorithm = inputSplit[0].map { it == '#' }
-    private val image = inputSplit[1].mapToGrid { it == '#' }
+    private val image = inputSplit[1].toGrid { it == '#' }
 
     // Pairs up the two IntRanges for a quick-and-dirty 3x3 matrix.
     private operator fun IntRange.times(other: IntRange) =
