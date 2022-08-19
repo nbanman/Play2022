@@ -73,6 +73,7 @@ class ArrayGrid<E> private constructor(
         require(height * width == size)
     }
 
+
     override fun validCoord(coord: Coord) = coord.x in 0 until width && coord.y in 0 until height
 
     override fun representation(display: (E) -> Char): String {
@@ -299,6 +300,24 @@ class ArrayGrid<E> private constructor(
         return elementsImpl
             .removeAt(index)
             .apply { height = size / width }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ArrayGrid<*>
+
+        if (elementsImpl != other.elementsImpl) return false
+        if (width != other.width) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = elementsImpl.hashCode()
+        result = 31 * result + width
+        return result
     }
 }
 
