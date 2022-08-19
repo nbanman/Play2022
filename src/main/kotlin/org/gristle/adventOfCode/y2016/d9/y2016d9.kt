@@ -8,19 +8,6 @@ object Y2016D9 {
 
     data class Marker(val length: Int, val times: Int, val range: IntRange)
 
-    private fun p2Decompress(s: String): Long {
-        var stream = s
-        var count = 0L
-        while (stream.isNotEmpty()) {
-            val nextMarker = nextMarker(stream) ?: return count + stream.length
-            count += nextMarker.range.first
-            val subStream = stream.substring(nextMarker.range.last + 1, nextMarker.range.last + 1 + nextMarker.length)
-            count += nextMarker.times * p2Decompress(subStream)
-            stream = stream.drop(nextMarker.range.last + subStream.length + 1) // add + 1?
-        }
-        return count
-    }
-
     private fun nextMarker(stream: String): Marker? {
         return """\((\d+)x(\d+)\)"""
             .toRegex()
@@ -61,6 +48,19 @@ object Y2016D9 {
         }
         sb.append(input.drop(markers.last().range.last + markers.last().length + 1))
         return sb.toString().length
+    }
+
+    private fun p2Decompress(s: String): Long {
+        var stream = s
+        var count = 0L
+        while (stream.isNotEmpty()) {
+            val nextMarker = nextMarker(stream) ?: return count + stream.length
+            count += nextMarker.range.first
+            val subStream = stream.substring(nextMarker.range.last + 1, nextMarker.range.last + 1 + nextMarker.length)
+            count += nextMarker.times * p2Decompress(subStream)
+            stream = stream.drop(nextMarker.range.last + subStream.length + 1) // add + 1?
+        }
+        return count
     }
 
     fun part1() = p1Decompress()
