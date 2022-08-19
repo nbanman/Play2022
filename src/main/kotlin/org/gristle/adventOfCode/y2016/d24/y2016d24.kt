@@ -43,7 +43,7 @@ object Y2016D24 {
         number to distances.drop(1).map { Graph.Edge(layout[it.id], it.weight) }
     }
 
-    // State tracks where the search is currently at and what numbers have been visited.
+    // "State" tracks where the search is currently at and what numbers have been visited.
     data class State(val location: Char, val numbersVisited: Set<Char>)
 
     // Both parts start at '0'
@@ -54,7 +54,7 @@ object Y2016D24 {
     private val getEdges = { state: State ->
         edges[state.location]
             ?.map { Graph.Edge(State(it.vertexId, state.numbersVisited + it.vertexId), it.weight) }
-            ?: emptyList()
+            ?: throw IllegalStateException("State location reached that is not in the edges map.")
     }
 
     fun part1(): Int {
