@@ -6,7 +6,7 @@ import org.gristle.adventOfCode.utilities.readInput
 object Y2015D17 {
     private val input = readInput("y2015/d17")
 
-    private fun getCombos(containers: List<Int>, storage: Int): List<List<Int>> {
+    private fun getCombos(): List<List<Int>> {
         tailrec fun gC(remaining: List<Int>, combos: List<List<Int>>): List<List<Int>> {
             return if (remaining.isNotEmpty()) {
                 val latest = remaining.first()
@@ -31,7 +31,7 @@ object Y2015D17 {
         .map { it.toInt() }
         .sortedDescending()
     private const val storage = 150
-    private val combos = getCombos(containers, storage)
+    private val combos = getCombos()
     private val minimumContainers = combos.minByOrNull { it.size }!!.size
 
     fun part1() = combos.size
