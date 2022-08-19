@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.y2016.d24.Y2016D24
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class BfsTest {
+class DfsTest {
     @Test
     internal fun doesntBreakAocs() {
         assertEquals(470, Y2016D24.part1())
