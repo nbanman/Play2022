@@ -1,12 +1,14 @@
 package org.gristle.adventOfCode.y2017.d8
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.max
 
 object Y2017D8 {
     private val input = readRawInput("y2017/d8")
 
-    val pattern = """([a-z]+) (inc|dec) (-?\d+) if ([a-z]+) (<=|<|==|!=|>|>=) (-?\d+)"""
+    private val pattern = """([a-z]+) (inc|dec) (-?\d+) if ([a-z]+) (<=|<|==|!=|>|>=) (-?\d+)""".toRegex()
 
     data class Instruction(
         val operand: String,
@@ -50,7 +52,7 @@ object Y2017D8 {
     }}
 
 fun main() {
-    var time = System.nanoTime()
+    val time = System.nanoTime()
     val (p1, p2) = Y2017D8.solve()
     println("Part 1: $p1\nPart 2: $p2 (${elapsedTime(time)}ms)") // 6343, 7184
 }

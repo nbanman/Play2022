@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2019.d18
 
 import org.gristle.adventOfCode.utilities.*
-import java.util.*
 
 // Refactored: much slower but much cleaner code. Not as fast because the previous version relied on 
 // a custom Dijkstra algorithm that had a more effective cache to eliminate possible paths.
@@ -25,14 +24,14 @@ object Y2019D18 {
             }
         }
 
-        fun replaceEdge(index: Int, edge: Edge) {
+        private fun replaceEdge(index: Int, edge: Edge) {
             val edgeIndex = edges.indexOfFirst { it.node.locator == index }
             val oldWeight = edges[edgeIndex].weight
             val newEdge = Edge(edge.node, edge.weight + oldWeight)
             edges[edgeIndex] = newEdge
         }
 
-        fun deleteEdge(index: Int) {
+        private fun deleteEdge(index: Int) {
             val edgeIndex = edges.indexOfFirst { it.node.locator == index }
             edges.removeAt(edgeIndex)
         }
@@ -40,13 +39,13 @@ object Y2019D18 {
         fun safeDelete(): Boolean {
             if (safeToDelete) return true
             if (grid[locator] == '.') {
-                return when {
-                    edges.size == 1 -> {
+                return when (edges.size) {
+                    1 -> {
                         edges[0].node.deleteEdge(locator)
                         safeToDelete = true
                         true
                     }
-                    edges.size == 2 -> {
+                    2 -> {
                         edges[0].node.replaceEdge(locator, edges[1])
                         edges[1].node.replaceEdge(locator, edges[0])
                         safeToDelete = true
@@ -70,7 +69,7 @@ object Y2019D18 {
     data class State(val location: List<Char>, val keys: Set<Char>)
 
     private fun getNodes(grid: Grid<Char>): List<Node> {
-        val unprunedNodes = grid.mapIndexed { index, c -> Node(index, grid) }
+        val unprunedNodes = List(grid.size) { index -> Node(index, grid) }
         with(unprunedNodes) {
             forEach { it.getEdges(this) }
             forEach { it.safeDelete() }
@@ -95,7 +94,7 @@ object Y2019D18 {
         // two edges along the way to points of interest.
         val nodes = getNodes(tunnels)
         // Create a map of edges with this shrunken graph.
-        val edges = buildMap<String, List<Graph.Edge<String>>> {
+        @Suppress("RemoveExplicitTypeArguments") val edges = buildMap<String, List<Graph.Edge<String>>> {
             nodes.forEach { node ->
                 put(
                     tunnels.id(node.locator),
@@ -146,7 +145,7 @@ object Y2019D18 {
         val quadrants = tunnels.toMutableGrid().apply {
             val originalStart = indexOf('@')
             val wallIndices = getNeighborIndices(originalStart)
-            val newStartIndices = getNeighborIndices(originalStart, true) - wallIndices
+            val newStartIndices = getNeighborIndices(originalStart, true) - wallIndices.toSet()
             this[originalStart] = '#'
             wallIndices.forEach { this[it] = '#' }
             newStartIndices.forEachIndexed { index, i -> this[i] = robots[index] }

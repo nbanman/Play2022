@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2018.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.transpose
 
 object Y2018D4 {
     private val input = readRawInput("y2018/d4")
@@ -20,7 +23,7 @@ object Y2018D4 {
                 .compare(this, other)
     }
 
-    private val pattern = """\[1518-(\d\d)-(\d\d) (\d\d):(\d\d)\] (?:Guard )?(#\d+|falls asleep|wakes up)""".toRegex()
+    private val pattern = """\[1518-(\d\d)-(\d\d) (\d\d):(\d\d)] (?:Guard )?(#\d+|falls asleep|wakes up)""".toRegex()
 
     private val logs = input
         .groupValues(pattern)
@@ -29,15 +32,15 @@ object Y2018D4 {
             LogEntry(ints[0], ints[1], ints[2], ints[3], gv.last())
         }.sorted()
 
-    fun MutableList<Boolean>.sleep(minute: Int) {
+    private fun MutableList<Boolean>.sleep(minute: Int) {
         for (i in minute..lastIndex) this[i] = true
     }
 
-    fun MutableList<Boolean>.wake(minute: Int) {
+    private fun MutableList<Boolean>.wake(minute: Int) {
         for (i in minute..lastIndex) this[i] = false
     }
 
-    val guards = mutableMapOf<String, MutableList<MutableList<Boolean>>>().apply {
+    private val guards = mutableMapOf<String, MutableList<MutableList<Boolean>>>().apply {
         var minutes = MutableList(60) { false }
         logs.forEach { log ->
             when (log.event) {
@@ -54,7 +57,7 @@ object Y2018D4 {
 
     fun part1(): Int {
         val sleepiest = guards.entries
-            .maxByOrNull { guard -> guard.value.sumBy { day -> day.count { it } } }!!
+            .maxByOrNull { guard -> guard.value.sumOf { day -> day.count { it } } }!!
         val guardId = sleepiest.key.drop(1).toInt()
         val sleepiestTimes = sleepiest
             .value

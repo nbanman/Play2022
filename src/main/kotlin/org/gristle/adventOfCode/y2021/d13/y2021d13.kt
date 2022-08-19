@@ -42,14 +42,14 @@ object Y2021D13 {
         .groupValues("""(\d+),(\d+)""") { it.toInt() }
         .map { Coord(it[0], it[1]) }
 
-    val folds = input
+    private val folds = input
         .groupValues("""fold along ([xy])=(\d+)""")
         .map { Fold(it[0][0], it[1].toInt()) }
 
     private val paperWidth = dots.maxOf { it.x } + 1
     private val paperHeight = dots.maxOf { it.y } + 1
 
-    val paper = List<Boolean>(paperWidth * paperHeight) { false }
+    private val paper = List(paperWidth * paperHeight) { false }
         .toMutableGrid(paperWidth)
         .apply {
             dots.forEach { dot -> this[dot] = true }

@@ -1,11 +1,13 @@
 package org.gristle.adventOfCode.y2016.d11
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2016D11 {
     private val input = readRawInput("y2016/d11")
 
-    private val pattern = """(\w+)(?: |-compatible )(generator|microchip)"""
+    private val pattern = """(\w+)(?: |-compatible )(generator|microchip)""".toRegex()
 
     /*
     * The state, showing what's on each floor and where the elevator is.
@@ -18,7 +20,7 @@ object Y2016D11 {
         // Gives "hash" of the state, which is just numbers corresponding to the elevator position + number of items
         // on each floor. Since items are interchangeable and all microchips must be matched where there are
         // generators, all similarly hashed states are functionally identical.
-        fun toHash() = "$elevator${ floors.map { it.toHash() }.joinToString("") }"
+        fun toHash() = "$elevator${floors.joinToString("") { it.toHash() }}"
 
         // Generates the list of possible floor states after a valid move.
         fun validStates(): List<FloorState> {
@@ -30,7 +32,7 @@ object Y2016D11 {
             // Gets all potential loads the elevator can carry by getting combinations of all the items on the floor
             // then checking to see if the remaining items on the floor cause any chips to fry.
             val potentialLoads = getPotentialMoves(floors[elevator])
-                .filter { Floor(floors[elevator].items - it.items).isValid() } // check for frying
+                .filter { Floor(floors[elevator].items - it.items.toSet()).isValid() } // check for frying
 
             // Nested loop that tries all valid loads on all potential floors. If the floor with the new load is valid,
             // add it to the list of potential states.
@@ -39,9 +41,9 @@ object Y2016D11 {
                     // This generates the floor layout of the state by taking the original state, then making
                     // modifications to the floor that the load is being moved to as well as the floor that the load
                     // is taken from.
-                    val newFloors = floors.mapIndexed() { index, floor ->
-                        when (index){
-                            elevator -> Floor(floors[index].items - pm.items) // remove items from floor
+                    val newFloors = floors.mapIndexed { index, floor ->
+                        when (index) {
+                            elevator -> Floor(floors[index].items - pm.items.toSet()) // remove items from floor
                             pfn -> Floor(floors[index].items + pm.items) // add items to floor
                             else -> floor // keep floor unchanged
                         }
@@ -57,7 +59,7 @@ object Y2016D11 {
 
         // Gets combinations of potential items to move, with at least one item and at most two items.
         fun getPotentialMoves(floor: Floor): List<Floor> {
-            return floor.items.foldIndexed(listOf<Floor>()) { index, acc, radioItem ->
+            return floor.items.foldIndexed(listOf()) { index, acc, radioItem ->
                 acc + Floor(listOf(radioItem)) + floor.items.drop(index + 1).map { Floor(listOf(radioItem, it)) }
             }
         }
@@ -70,12 +72,12 @@ object Y2016D11 {
     private data class Floor(val items: List<RadioItem>) {
         val microchips = items.filter { it.type == ItemType.MICROCHIP }.map { it.name }
         val generators = items.filter { it.type == ItemType.GENERATOR }.map { it.name }
-        fun isValid() = microchips.isEmpty() || generators.isEmpty() || ( generators.containsAll(microchips) )
-        fun toHash() = "${ microchips.size }${ generators.size }"
+        fun isValid() = microchips.isEmpty() || generators.isEmpty() || (generators.containsAll(microchips))
+        fun toHash() = "${microchips.size}${generators.size}"
     }
 
-    // Runs a regex and creates the inital floor state from it. Each line in the input is a 'floor.' Each
-    private fun parseFloors(input: String, part2: Boolean): FloorState {
+    // Runs a regex and creates the initial floor state from it. Each line in the input is a 'floor.' Each
+    private fun parseFloors(part2: Boolean): FloorState {
         val floors = input
             .split('\n')
             .mapIndexed { index, line ->
@@ -101,7 +103,7 @@ object Y2016D11 {
     * Solver
     */
     private fun solveFloors(s: FloorState): Int {
-        val stateHashes = mutableListOf<String>(s.toHash())
+        val stateHashes = mutableListOf(s.toHash())
 
         /*
         * Recursive breadth-first search through all possible states, pruning invalid states and states that are
@@ -136,9 +138,9 @@ object Y2016D11 {
         return solve(listOf(s))
     }
 
-    fun part1() = solveFloors(parseFloors(input, false))
+    fun part1() = solveFloors(parseFloors(false))
 
-    fun part2() = solveFloors(parseFloors(input, true))
+    fun part2() = solveFloors(parseFloors(true))
 }
 
 fun main() {

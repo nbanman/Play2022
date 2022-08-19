@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2016.d10
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2016D10 {
     // Old, really bad code! Many, many sins, but not worth refactoring.
@@ -40,13 +42,14 @@ object Y2016D10 {
 
     private val respTrack = listOf(61, 17)
 
-    private val botDirections = """bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output) (\d+)"""
+    private val botDirections = """bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output) (\d+)""".toRegex()
 
-    private val chipAssignments = """value (\d+) goes to bot (\d+)"""
+    private val chipAssignments = """value (\d+) goes to bot (\d+)""".toRegex()
 
     val output = mutableListOf<Output>()
+
     // make bots
-    val bots = input
+    private val bots = input
         .groupValues(botDirections)
         .map {
             Bot(
@@ -56,13 +59,14 @@ object Y2016D10 {
             )
         }
 
-    val assignments = input
-        .groupValues(chipAssignments)
-        .forEach { gv ->
-            val bot = bots.find { it.name == gv[1].toInt() }!!
-            bot.take(gv[0].toInt(), bots, respTrack, output)
-        }
-
+    init {
+        input
+            .groupValues(chipAssignments)
+            .forEach { gv ->
+                val bot = bots.find { it.name == gv[1].toInt() }!!
+                bot.take(gv[0].toInt(), bots, respTrack, output)
+            }
+    }
 
     fun part1() = responsibleBot?.name
 

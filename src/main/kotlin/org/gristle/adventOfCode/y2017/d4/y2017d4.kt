@@ -1,11 +1,12 @@
 package org.gristle.adventOfCode.y2017.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2017D4 {
     private val input = readInput("y2017/d4")
 
-    val passphrases = input.map { it.split(' ') }
+    private val passphrases = input.map { it.split(' ') }
 
     fun part1() = passphrases.count { it.size == it.distinct().size }
 

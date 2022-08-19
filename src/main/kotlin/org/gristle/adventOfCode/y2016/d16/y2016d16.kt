@@ -1,11 +1,12 @@
 package org.gristle.adventOfCode.y2016.d16
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 // Not refactored, but not terrible!
 
 object Y2016D16 {
-    private val input = "10001110011110000"
+    private val input = readRawInput("y2016/d16")
 
     private tailrec fun checkSum(a: String): String {
         val sum = a

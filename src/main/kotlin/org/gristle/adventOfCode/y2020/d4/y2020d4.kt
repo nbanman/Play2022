@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2020.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2020D4 {
     private val input = readRawInput("y2020/d4")
@@ -44,7 +46,7 @@ object Y2020D4 {
         }
 
         class Hcl(private val info: String) : PassportField() {
-            override fun isValid() = """#[a-f0-9]{6}""".toRegex().matches(info)
+            override fun isValid() = """#[a-f\d]{6}""".toRegex().matches(info)
         }
 
         class Ecl(private val info: String) : PassportField() {

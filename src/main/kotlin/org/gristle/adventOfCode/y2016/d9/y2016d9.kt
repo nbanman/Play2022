@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2016.d9
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2016D9 {
     private val input = readRawInput("y2016/d9")
@@ -29,11 +30,11 @@ object Y2016D9 {
             }
     }
 
-    private fun p1Decompress(stream: String): Int {
+    private fun p1Decompress(): Int {
 
         val potentialMarkers = """\((\d+)x(\d+)\)"""
             .toRegex()
-            .findAll(stream)
+            .findAll(input)
             .toList()
             .map { Marker(it.groupValues[1].toInt(), it.groupValues[2].toInt(), it.range) }
 
@@ -47,22 +48,22 @@ object Y2016D9 {
             }
         }
 
-        if (markers.isEmpty()) return stream.length
+        if (markers.isEmpty()) return input.length
 
         var parser = 0
         val sb = StringBuilder()
 
         for (marker in markers) {
-            sb.append(stream.substring(parser, marker.range.first))
-            val repeatrange = stream.substring(marker.range.last + 1, marker.range.last + 1 + marker.length)
+            sb.append(input.substring(parser, marker.range.first))
+            val repeatrange = input.substring(marker.range.last + 1, marker.range.last + 1 + marker.length)
             sb.append(repeatrange.repeat(marker.times))
             parser = marker.range.last + 1 + marker.length
         }
-        sb.append(stream.drop(markers.last().range.last + markers.last().length + 1))
+        sb.append(input.drop(markers.last().range.last + markers.last().length + 1))
         return sb.toString().length
     }
 
-    fun part1() = p1Decompress(input)
+    fun part1() = p1Decompress()
 
     fun part2() = p2Decompress(input)
 }

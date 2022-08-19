@@ -1,11 +1,14 @@
 package org.gristle.adventOfCode.y2015.d13
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.getPermutations
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D13 {
     data class Arrangement(val name: String, val neighbor: String, val happinessUnits: Int)
 
-    private val input = readRawInput("y2015/d13", )
+    private val input = readRawInput("y2015/d13")
 
     private const val pattern = """(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+)."""
 
@@ -16,7 +19,7 @@ object Y2015D13 {
             Arrangement(gv[0], gv[3], happinessUnits)
         })
 
-    val people = rules.map { it.name }.distinct()
+    private val people = rules.map { it.name }.distinct()
 
     fun solve(folx: List<String>): Int {
         val permutations = folx

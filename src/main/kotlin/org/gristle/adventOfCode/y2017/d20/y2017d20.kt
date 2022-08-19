@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2017.d20
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
 // not refactored
@@ -39,8 +41,9 @@ object Y2017D20 {
     }
 
     private val pattern = """p=<(-?\d+),(-?\d+),(-?\d+)>, v=<(-?\d+),(-?\d+),(-?\d+)>, a=<(-?\d+),(-?\d+),(-?\d+)>"""
+        .toRegex()
 
-    val particles = input
+    private val particles = input
         .groupValues(pattern)
         .mapIndexed { index, gv ->
             Particle(

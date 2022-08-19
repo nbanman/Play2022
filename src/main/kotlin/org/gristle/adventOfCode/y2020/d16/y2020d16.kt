@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2020.d16
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.transpose
 
 object Y2020D16 {
     private val input = readRawInput("y2020/d16")
@@ -9,7 +12,7 @@ object Y2020D16 {
         fun validFor(values: Iterable<Int>) = values.all { it in lowRange || it in hiRange }
     }
 
-    val rules = input
+    private val rules = input
         .groupValues("""([a-z]+(?: [a-z]+)?): (\d+)-(\d+) or (\d+)-(\d+)""")
         .map { gv ->
             val lowRange = gv[1].toInt()..gv[2].toInt()
@@ -17,7 +20,7 @@ object Y2020D16 {
             Rule(gv[0], lowRange, hiRange)
         }
 
-    val tickets = Regex("""\d+(?:,\d+)+""")
+    private val tickets = Regex("""\d+(?:,\d+)+""")
         .findAll(input)
         .toList()
         .map { result -> result.value.split(',').map { it.toInt() } }

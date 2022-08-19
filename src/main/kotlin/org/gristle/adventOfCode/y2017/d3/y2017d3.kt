@@ -1,13 +1,16 @@
 package org.gristle.adventOfCode.y2017.d3
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
 object Y2017D3 {
-    private val input = 325489
+    private val input = readRawInput("y2017/d3")
 
     data class Turtle(var dir: Nsew = Nsew.NORTH, var pos: Coord = Coord.ORIGIN, var vel: Int)
 
@@ -27,7 +30,7 @@ object Y2017D3 {
             if (t.dir == Nsew.EAST || t.dir == Nsew.WEST) t.vel++
             for (i in 1..t.vel) {
                 t.pos = t.pos.move(t.dir)
-                val squareVal = t.pos.getNeighbors(true).sumBy { space[it] ?: 0 }
+                val squareVal = t.pos.getNeighbors(true).sumOf { space[it] ?: 0 }
                 if (squareVal > input.toInt()) return squareVal
                 space[t.pos] = squareVal
             }

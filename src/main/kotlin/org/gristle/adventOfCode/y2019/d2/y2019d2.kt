@@ -1,15 +1,16 @@
 package org.gristle.adventOfCode.y2019.d2
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
 object Y2019D2 {
     private val input = readRawInput("y2019/d2")
 
-    val output: Deque<Long> = LinkedList()
+    private val output: Deque<Long> = LinkedList()
 
-    val comp = IntCode(
+    private val comp = IntCode(
         "codey",
         input.split(',').map { it.toLong() },
         output = output

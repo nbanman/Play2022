@@ -131,14 +131,16 @@ object Y2020D20 {
 
         val hashMarks = wholeImage.count { it == '#' }
         val spacing = wholeImage.width - 18
-        val pattern = Regex("""(?=(#[#.\n]{$spacing}#[#.]{4}##[#.]{4}##[#.]{4}###[#.\n]{$spacing}#[#.]{2}#[#.]{2}#[#.]{2}#[#.]{2}#[#.]{2}#))""")
+
+        @Suppress("RegExpSimplifiable")
+        val pattern =
+            Regex("""(?=(#[#.\n]{$spacing}#[#.]{4}##[#.]{4}##[#.]{4}###[#.\n]{$spacing}#[#.]{2}#[#.]{2}#[#.]{2}#[#.]{2}#[#.]{2}#))""")
         for (i in 1..8) {
             val matches = pattern.findAll(wholeImage.representation { it }).toList().size
             if (matches > 0) return hashMarks - matches * 15
             wholeImage = wholeImage.rotate90()
             if (i == 4) wholeImage = wholeImage.flipY()
         }
-
         return -1
     }
 

@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2020.d14
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2020D14 {
     private val input = readInput("y2020/d14")
@@ -9,7 +10,7 @@ object Y2020D14 {
 
         companion object {
             fun fromString(s: String): Instruction {
-                val gv = Regex("""(mask|mem)(?:\[(\d+)])? = ([X0-9]+)""")
+                val gv = Regex("""(mask|mem)(?:\[(\d+)])? = ([X\d]+)""")
                     .find(s)!!
                     .groupValues
                 return when (gv[1]) {

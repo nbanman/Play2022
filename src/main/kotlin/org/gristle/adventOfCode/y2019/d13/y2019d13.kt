@@ -15,8 +15,8 @@ object Y2019D13 {
         val output: Deque<Long>
     ) {
         var score = 0
-        var ballPosition: Coord = Coord(0, 0)
-        var paddlePosition: Coord = Coord(0, 0)
+        private var ballPosition: Coord = Coord(0, 0)
+        private var paddlePosition: Coord = Coord(0, 0)
         fun runSimple() {
             while (input.size > 2) {
                 val coord = Coord(input.poll().toInt(), input.poll().toInt())
@@ -41,8 +41,8 @@ object Y2019D13 {
     }
 
     fun part1(): Int {
-        val inp: Deque<Long> = LinkedList<Long>()
-        val output: Deque<Long> = LinkedList<Long>()
+        val inp: Deque<Long> = LinkedList()
+        val output: Deque<Long> = LinkedList()
         val intCode = IntCode("A", initialState, 2L, null, output)
         intCode.run()
         val grid = List(50_000) { 0 }.toMutableGrid(100)
@@ -52,8 +52,8 @@ object Y2019D13 {
     }
 
     fun part2(): Int {
-        val inp: Deque<Long> = LinkedList<Long>()
-        val output: Deque<Long> = LinkedList<Long>()
+        val inp: Deque<Long> = LinkedList()
+        val output: Deque<Long> = LinkedList()
         val intCode = IntCode("B", listOf(2L) + initialState.drop(1), null, inp, output)
         val grid = List(50_000) { 0 }.toMutableGrid(100)
         val cabinet = Cabinet(grid, output, inp)

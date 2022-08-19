@@ -1,8 +1,11 @@
 package org.gristle.adventOfCode.y2018.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.md5
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toGrid
 
-// not refactored
+// not refactored, very impure
 object Y2018D18 {
     private val input = readRawInput("y2018/d18")
 
@@ -10,7 +13,7 @@ object Y2018D18 {
     
     fun part1(): Int {
         val p1Minutes = 10
-        val newCollectionArea = (1..p1Minutes).fold(collectionArea) { acc, minute ->
+        val newCollectionArea = (1..p1Minutes).fold(collectionArea) { acc, _ ->
             acc.mapIndexed { index, c ->
                 val neighbors = acc.getNeighbors(index, true)
                 when (c) {
@@ -34,7 +37,7 @@ object Y2018D18 {
         val p2Minutes = 494
         var hashes = mutableListOf<Pair<String, Int>>()
         var repeatStart = 0
-        val newCollectionArea2 = (1..p2Minutes).fold(collectionArea) { acc, minute ->
+        (1..p2Minutes).fold(collectionArea) { acc, _ ->
             val new = acc.mapIndexed { index, c ->
                 val neighbors = acc.getNeighbors(index, true)
                 when (c) {

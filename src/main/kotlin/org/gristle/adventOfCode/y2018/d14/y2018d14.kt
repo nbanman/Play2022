@@ -1,19 +1,19 @@
 package org.gristle.adventOfCode.y2018.d14
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2018D14 {
-    private val input = 793031
+    private val input = readRawInput("y2018/d14").toInt()
 
     fun solve(): Pair<String, Int> {
-        val input = 793031
         var size = 2
         val recipes = MutableList(30_000_000) { -1 }
         recipes[0] = 3
         recipes[1] = 7
         var elves = listOf(0, 1)
         while (recipes.subList(maxOf(size - 7, 0), size - 1).joinToString("").toInt() != input && size < recipes.size) {
-            val (ten, one) = elves.sumBy { recipes[it] }.let { it / 10 to it % 10 }
+            val (ten, one) = elves.sumOf { recipes[it] }.let { it / 10 to it % 10 }
             if (ten != 0) {
                 recipes[size] = ten
                 size++

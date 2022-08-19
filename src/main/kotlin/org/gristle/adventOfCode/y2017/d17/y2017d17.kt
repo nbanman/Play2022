@@ -1,14 +1,14 @@
 package org.gristle.adventOfCode.y2017.d17
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2017D17 {
-    private val input = 369
+    private val input = readRawInput("y2017/d17").toInt()
 
     fun part1(): Int {
         val buffer = mutableListOf(0)
         var currPos = 0
-        val limit = 2017
         for (n in 1..2017) {
             currPos = (currPos + input) % buffer.size + 1
             buffer.add(currPos, n)

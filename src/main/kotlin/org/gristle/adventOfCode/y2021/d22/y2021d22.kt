@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2021.d22
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2021D22 {
     private val input = readRawInput("y2021/d22")
@@ -13,7 +15,7 @@ object Y2021D22 {
 
         fun volume() = x.count().toLong() * y.count() * z.count()
 
-        fun IntRange.union(other: IntRange) =
+        private fun IntRange.union(other: IntRange) =
             if (last >= other.first && first <= other.last) {
                 kotlin.math.max(first, other.first)..kotlin.math.min(last, other.last)
             } else null
@@ -32,7 +34,7 @@ object Y2021D22 {
             }
         }
 
-        fun IntRange.disjointRanges(other: IntRange): List<IntRange> {
+        private fun IntRange.disjointRanges(other: IntRange): List<IntRange> {
             val disjoints = mutableListOf<IntRange>()
             if (other.first < first) disjoints.add(other.first until first)
             if (other.last > last) disjoints.add((last + 1)..other.last)
@@ -51,7 +53,7 @@ object Y2021D22 {
         fun inRange(range: IntRange) = ranges.all { it.first >= range.first && it.last <= range.last }
     }
 
-    val cuboids = input
+    private val cuboids = input
         .groupValues(pattern)
         .map { gv ->
             val turnOff = gv[0] == "on"
@@ -59,7 +61,7 @@ object Y2021D22 {
             Cuboid(turnOff, nv[0]..nv[1], nv[2]..nv[3], nv[4]..nv[5])
         }
 
-    fun findCubes(cuboids: List<Cuboid>): Long {
+    private fun findCubes(cuboids: List<Cuboid>): Long {
         var visited = mutableListOf<Cuboid>()
         cuboids.forEach { cuboid ->
             visited = visited.flatMap { prior -> cuboid.disjointCubes(prior) }.toMutableList()

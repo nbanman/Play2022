@@ -1,20 +1,19 @@
 package org.gristle.adventOfCode.y2015.d11
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
 
 object Y2015D11 {
     private const val input = "hxbxwxba"
 
-    fun isValid(s: String) = hasStraight(s) && noConfusion(s) && twoPairs(s)
+    private fun isValid(s: String) = hasStraight(s) && noConfusion(s) && twoPairs(s)
 
-    fun iterate(s: String): String {
+    private fun iterate(s: String): String {
         val changeIndex = s.indexOfLast { it != 'z' }
         val zs = s.lastIndex - changeIndex
-        val iter = s.substring(0, changeIndex) + (s[changeIndex] + 1) + (1..zs).fold("") { acc, _ -> acc + 'a' }
-        return iter
+        return s.substring(0, changeIndex) + (s[changeIndex] + 1) + (1..zs).fold("") { acc, _ -> acc + 'a' }
     }
 
-    fun hasStraight(s: String): Boolean {
+    private fun hasStraight(s: String): Boolean {
         return s.windowed(3).any { trip ->
             ('a'..'z').contains(trip[0])
                     && trip[1] - trip[0] == 1
@@ -22,13 +21,13 @@ object Y2015D11 {
         }
     }
 
-    fun noConfusion(s: String): Boolean {
-        return !"""i|o|l"""
+    private fun noConfusion(s: String): Boolean {
+        return !"""[iol]"""
             .toRegex()
             .containsMatchIn(s)
     }
 
-    fun twoPairs(s: String): Boolean {
+    private fun twoPairs(s: String): Boolean {
         return """([a-z])\1"""
             .toRegex()
             .findAll(s)
@@ -38,7 +37,7 @@ object Y2015D11 {
             }
     }
 
-    val nextTwo = generateSequence(iterate(input)) { iterate(it) }
+    private val nextTwo = generateSequence(iterate(input)) { iterate(it) }
         .filter { isValid(it) }
         .take(2)
         .toList()

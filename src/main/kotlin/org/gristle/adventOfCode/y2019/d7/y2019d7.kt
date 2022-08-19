@@ -1,18 +1,15 @@
 package org.gristle.adventOfCode.y2019.d7
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.getPermutations
+import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
-import org.gristle.adventOfCode.y2019.d5.Y2019D5
-import java.util.*
 
 object Y2019D7 {
     private val code = readRawInput("y2019/d7")
     val initialState = code
         .split(',')
         .map { it.toLong() }
-
-    private val input: Deque<Long> = LinkedList()
-    private val output: Deque<Long> = LinkedList()
 
     fun part1(): Long = (0L..4L).getPermutations().maxOf { combo ->
             val c1 = IntCode("A", initialState, combo[0])

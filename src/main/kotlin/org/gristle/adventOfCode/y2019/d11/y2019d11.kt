@@ -7,7 +7,7 @@ import java.util.*
 object Y2019D11 {
     private val input = readRawInput("y2019/d11")
 
-    val initialData = input.split(',').map { it.toLong() }
+    private val initialData = input.split(',').map { it.toLong() }
 
     enum class Paint { BLACK, WHITE }
 

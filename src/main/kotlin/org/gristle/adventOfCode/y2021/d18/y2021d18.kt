@@ -1,16 +1,17 @@
 package org.gristle.adventOfCode.y2021.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 import java.util.*
 import kotlin.math.ceil
 
 object Y2021D18 {
     private val input = readInput("y2021/d18")
 
-    data class Snailfish private constructor (val expression: String) {
+    data class Snailfish constructor(val expression: String) {
 
         companion object {
-            private val bracketPattern = Regex("""^\[(\d{1,2}),(\d{1,2})\]""")
+            private val bracketPattern = Regex("""^\[(\d{1,2}),(\d{1,2})]""")
             private val lastNumberPattern = Regex("""(\d+)\D*${'$'}""")
             private val nextNumberPattern = Regex("""^\D*(\d+)""")
             private val splitPattern = Regex("""\d{2,}""")
@@ -76,7 +77,7 @@ object Y2021D18 {
                 append(other.expression)
                 append(']')
             }
-            return Snailfish.from(addedExpression)
+            return from(addedExpression)
         }
 
         fun magnitude(): Long {
@@ -105,7 +106,7 @@ object Y2021D18 {
         }
     }
 
-    val snailfish = input.map { Snailfish.from(it) }
+    private val snailfish = input.map { Snailfish.from(it) }
 
     fun part1(): Long {
         val sum = snailfish.reduce { acc, snailfish -> acc + snailfish }

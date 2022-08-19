@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2021.d10
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 import java.util.*
 
 object Y2021D10 {
@@ -57,7 +58,7 @@ object Y2021D10 {
         return stack.foldRight(0L) { c, acc -> acc * 5 + c.toScore2() }
     }
 
-    fun part1() = lines.sumBy { it.parse1() }
+    fun part1() = lines.sumOf { it.parse1() }
 
     fun part2() = lines
         .mapNotNull { line -> line.parse2().let { if (it == 0L) null else it } }

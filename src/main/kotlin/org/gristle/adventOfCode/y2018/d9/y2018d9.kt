@@ -1,9 +1,15 @@
 package org.gristle.adventOfCode.y2018.d9
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2018D9 {
-    class Dll<E>(val value: E, private val leftNode: Dll<E>? = null, private val rightNode: Dll<E>? = null) {
+
+    private val input = readRawInput("y2018/d9")
+
+    private val pattern = """(\d+) players; last marble is worth (\d+) points""".toRegex()
+
+    class Dll<E>(val value: E, leftNode: Dll<E>? = null, rightNode: Dll<E>? = null) {
         var left = leftNode ?: this
         var right = rightNode ?: this
         fun addRight(other: Dll<E>): Dll<E> {
@@ -13,6 +19,7 @@ object Y2018D9 {
             right = other
             return other
         }
+
         tailrec fun goLeft(n: Int, dll: Dll<E> = this): Dll<E> {
             if (n == 0) return dll 
             return goLeft(n - 1, dll.left)
@@ -30,8 +37,9 @@ object Y2018D9 {
     data class Score(var amt: Long)
 
     fun solve(multiplier: Int = 1): Long {
-        val players = 405
-        val lastMarble = 70953L * multiplier
+        val gv = pattern.find(input)?.groupValues ?: throw IllegalArgumentException()
+        val players = gv[1].toInt()
+        val lastMarble = gv[2].toLong() * multiplier
         val scores = List(players) { Score(0) }
         var currentMarble = Dll(0)
         for (x in 1..lastMarble) {

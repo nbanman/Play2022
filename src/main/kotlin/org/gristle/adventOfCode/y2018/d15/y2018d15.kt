@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.y2018.d15
 
 import org.gristle.adventOfCode.utilities.*
@@ -6,8 +8,7 @@ import org.gristle.adventOfCode.utilities.*
  * World functions
  */
 
-fun Grid<Y2018D15.Entity>.finished() = count { it is Y2018D15.Elf }.let {
-        elfCount -> elfCount == 0 || elfCount == count { it is Y2018D15.Player }
+fun Grid<Y2018D15.Entity>.finished() = count { it is Y2018D15.Elf }.let { elfCount -> elfCount == 0 || elfCount == count { it is Y2018D15.Player }
 }
 
 fun MutableGrid<Y2018D15.Entity>.kill(deadPlayer: Y2018D15.Player) {
@@ -139,9 +140,11 @@ class Y2018D15(val input: String) {
     class Wall(override var pos: Coord) : Entity {
         override fun toString() = "Wall(pos=$pos)"
     }
+
     class OpenSpace(override var pos: Coord) : Entity {
         override fun toString() = "OpenSpace(pos=$pos)"
     }
+
     class Elf(pos: Coord, damage: Int) : Player(pos, damage), Entity {
         override fun getAdjacentTargets(world: MutableGrid<Entity>) =
             world.getNeighbors(pos).filterIsInstance<Goblin>()
@@ -150,6 +153,7 @@ class Y2018D15(val input: String) {
 
         override fun toString() = "Elf(pos=$pos, damage=$damage, health=$health)"
     }
+
     class Goblin(pos: Coord) : Player(pos, 3), Entity {
         override fun getAdjacentTargets(world: MutableGrid<Entity>) =
             world.getNeighbors(pos).filterIsInstance<Elf>()

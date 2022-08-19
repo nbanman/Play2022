@@ -1,23 +1,28 @@
 package org.gristle.adventOfCode.y2020.d7
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 
 object Y2020D7 {
     private val input = readRawInput("y2020/d7")
 
-    class HeldBag(val color: String, val amount: Int) {
+    class HeldBag(val color: String, private val amount: Int) {
         fun bagsInside(): Long {
             return amount + amount * Rule.bagMap[color]!!.heldBags.sumOf { it.bagsInside() }
         }
     }
-    class Rule(val color: String, val heldBags: List<HeldBag>) {
+
+    class Rule(private val color: String, val heldBags: List<HeldBag>) {
         companion object {
             val bagMap = mutableMapOf<String, Rule>()
         }
+
         init {
             bagMap[color] = this
         }
+
         fun contains(other: String): Boolean {
             val visited = mutableSetOf(color)
             val q: Deque<HeldBag> = LinkedList()
@@ -36,7 +41,7 @@ object Y2020D7 {
         }
     }
 
-    var rules = input
+    private var rules = input
         .groupValues("""(\w+ \w+) bags contain ([^.]+).""")
         .map { gv ->
             val heldBags = gv[1]

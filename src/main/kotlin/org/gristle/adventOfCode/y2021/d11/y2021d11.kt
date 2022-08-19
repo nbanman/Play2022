@@ -7,9 +7,9 @@ object Y2021D11 {
 
     val grid = input.toGrid().mapToGrid { Character.getNumericValue(it) }
 
-    var flashes = 0
+    private var flashes = 0
 
-    fun Grid<Int>.takeStep(): Grid<Int> {
+    private fun Grid<Int>.takeStep(): Grid<Int> {
         fun Grid<Int>.flashIndices() = mapIndexedNotNull { index, i ->
             if (i >= 10) index else null
         }

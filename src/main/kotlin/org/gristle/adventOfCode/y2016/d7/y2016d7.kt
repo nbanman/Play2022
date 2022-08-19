@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2016.d7
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2015D7 {
     private val lines = readInput("y2016/d7")
@@ -19,9 +21,9 @@ object Y2015D7 {
         }
     }
 
-    val pattern = """\[?\w+\]?""".toRegex()
+    val pattern = """\[?\w+]?""".toRegex()
 
-    val addresses = lines.map { line ->
+    private val addresses = lines.map { line ->
         val (hyper, standard) = pattern.findAll(line).map { it.value }.partition { it.firstOrNull() == '[' }
         IPv7(standard, hyper.map { it.drop(1).dropLast(1) })
     }

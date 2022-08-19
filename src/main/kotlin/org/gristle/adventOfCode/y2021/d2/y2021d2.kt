@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2021.d2
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2021D2 {
     private val input = readRawInput("y2021/d2")
@@ -39,7 +42,7 @@ object Y2021D2 {
         }
     }
 
-    val pattern = """(forward|down|up) (\d+)"""
+    val pattern = """(forward|down|up) (\d+)""".toRegex()
 
     val commands = input
         .groupValues(pattern)

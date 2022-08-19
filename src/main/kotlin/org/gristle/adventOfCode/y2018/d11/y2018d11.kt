@@ -1,23 +1,26 @@
 package org.gristle.adventOfCode.y2018.d11
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2018D11 {
-    fun powerLevel(c: Coord, serial: Int): Int {
+
+    private val input = readRawInput("y2018/d11").toInt()
+    private fun powerLevel(c: Coord): Int {
         val rackId = c.x + 10
-        return (((rackId * c.y + serial) * rackId) % 1000) / 100 - 5
+        return (((rackId * c.y + input) * rackId) % 1000) / 100 - 5
     }
 
-    data class Max1810(val c: Coord, val power: Int, val size: Int)
+    private data class Max1810(val c: Coord, val power: Int, val size: Int)
 
-    val serial = 7403
-    val grid = List(300) { y ->
+    private val grid = List(300) { y ->
         List(300) { x ->
-            powerLevel(Coord(x + 1, y + 1), serial)
+            powerLevel(Coord(x + 1, y + 1))
         }
     }
-    
-    fun contractGrid(cGrid: List<List<Int>>, grid: List<List<Int>>, size: Int): List<List<Int>> {
+
+    private fun contractGrid(cGrid: List<List<Int>>, size: Int): List<List<Int>> {
         return cGrid
             .dropLast(1)
             .mapIndexed { index, row ->
@@ -46,7 +49,6 @@ object Y2018D11 {
 
     fun part2(): Pair<Coord, Int> {
         // Part 2
-        val start = System.currentTimeMillis()
         var p2 = Max1810(Coord(0,0), 0, 0)
         var cGrid = grid
         for (size in 1..grid.size) {
@@ -59,7 +61,7 @@ object Y2018D11 {
                     x++
                 }
             }
-            cGrid = contractGrid(cGrid, grid, size + 1)
+            cGrid = contractGrid(cGrid, size + 1)
         }
         return p2.c to p2.size
     }

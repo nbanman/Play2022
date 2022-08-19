@@ -1,11 +1,13 @@
 package org.gristle.adventOfCode.y2017.d2
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.getPairs
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2017D2 {
     private val input = readInput("y2017/d2")
 
-    val spreadsheet = input.map { line -> line.split(' ', '\t').mapNotNull { it.toIntOrNull() } }
+    private val spreadsheet = input.map { line -> line.split(' ', '\t').mapNotNull { it.toIntOrNull() } }
 
     fun part1() = spreadsheet
         .sumOf { (it.maxOrNull()?.minus(it.minOrNull() ?: 0) ?: 0) }

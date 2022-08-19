@@ -1,32 +1,34 @@
 package org.gristle.adventOfCode.y2020.d24
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Hexagon
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2020D24 {
     private val input = readInput("y2020/d24")
 
     val pattern = "(nw|ne|sw|se|w|e)".toRegex()
-    val rules = input
-        .map { line -> pattern.
-        findAll(line)
-            .toList()
-            .map {
-                when (it.value) {
-                    "w" -> "n"
-                    "nw" -> "ne"
-                    "ne" -> "se"
-                    "e" -> "s"
-                    "se" -> "sw"
-                    "sw" -> "nw"
-                    else -> it.value
+    private val rules = input
+        .map { line ->
+            pattern.findAll(line)
+                .toList()
+                .map {
+                    when (it.value) {
+                        "w" -> "n"
+                        "nw" -> "ne"
+                        "ne" -> "se"
+                        "e" -> "s"
+                        "se" -> "sw"
+                        "sw" -> "nw"
+                        else -> it.value
+                    }
                 }
-            }
         }
-    val home = Hexagon()
-    val flipped = mutableMapOf<Hexagon, Boolean>()
+    private val home = Hexagon()
+    private val flipped = mutableMapOf<Hexagon, Boolean>()
         .also {
             rules.forEach { rule ->
-                var start = home
+                val start = home
                 val tile = rule.fold(start) { acc, move -> acc.hexAt(move) }
                 it[tile] = !it.computeIfAbsent(tile) { false }
             }

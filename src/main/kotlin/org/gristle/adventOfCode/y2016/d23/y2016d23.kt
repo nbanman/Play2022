@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2016.d23
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2016.d12.Assembunny
 import org.gristle.adventOfCode.y2016.d12.Registers
 import org.gristle.adventOfCode.y2016.d12.Y2016D12.runInstructions
@@ -8,13 +10,13 @@ import org.gristle.adventOfCode.y2016.d12.Y2016D12.runInstructions
 object Y2016D23 {
     private val input = readRawInput("y2016/d23")
 
-    private val pattern = """(\w+) (-?\w+)(?: (-?\w+))?"""
+    private val pattern = """(\w+) (-?\w+)(?: (-?\w+))?""".toRegex()
 
     val instructions = input
         .groupValues(pattern)
         .map { Assembunny(it[0], it[1], it[2]) }
 
-    val p1Registers = Registers().apply { updateValue("a", 7) }
+    private val p1Registers = Registers().apply { updateValue("a", 7) }
 
     fun part1() = runInstructions(instructions, p1Registers).a
 

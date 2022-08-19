@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2017.d9
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2017D9 {
     private val input = readRawInput("y2017/d9")
@@ -34,7 +35,7 @@ object Y2017D9 {
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val time = System.nanoTime()
     val (p1, p2) = Y2017D9.solve()
     println("Part 1: $p1\nPart 2: $p2 (${elapsedTime(time)}ms)") // 9251, 4322
 }

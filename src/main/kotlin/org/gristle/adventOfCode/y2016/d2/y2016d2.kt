@@ -1,14 +1,16 @@
 package org.gristle.adventOfCode.y2016.d2
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 import kotlin.math.abs
 
 object Template {
     private val codes = readInput("y2016/d2")
 
-    fun Coord.toNumpad1() = (y * 3 + x + 1).toString()
+    private fun Coord.toNumpad1() = (y * 3 + x + 1).toString()
 
-    fun Coord.toNumpad2() = when(this) {
+    private fun Coord.toNumpad2() = when (this) {
         Coord(2, 0) -> "1"
         Coord(1, 1) -> "2"
         Coord(2, 1) -> "3"

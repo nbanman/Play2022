@@ -16,9 +16,9 @@ object Y2019D15 {
         val grid: MutableGrid<Sector>,
         val initialState: List<Long>
     ) {
-        val toDroid: Deque<Long> = LinkedList<Long>()
-        val toComp: Deque<Long> = LinkedList<Long>()
-        val computer = IntCode("A", initialState, null, toComp, toDroid)
+        private val toDroid: Deque<Long> = LinkedList()
+        private val toComp: Deque<Long> = LinkedList()
+        private val computer = IntCode("A", initialState, null, toComp, toDroid)
 
         fun explore(): Pair<Int, Int> {
 
@@ -27,7 +27,7 @@ object Y2019D15 {
             var minY = 500
             var maxY = 500
 
-            var coord: Coord by Delegates.observable(Coord(500, 500)) { property, oldValue, newValue ->
+            var coord: Coord by Delegates.observable(Coord(500, 500)) { _, _, newValue ->
                 minX = min(minX, newValue.x)
                 maxX = max(maxX, newValue.x)
                 minY = min(minY, newValue.y)
@@ -63,14 +63,6 @@ object Y2019D15 {
             }
 
             var direction = Nsew.NORTH
-
-            fun turnRight() {
-                direction = direction.right()
-            }
-
-            fun turnLeft() {
-                direction = direction.left()
-            }
 
             fun scan(): List<Nsew> {
                 return Nsew.values()
@@ -135,25 +127,21 @@ object Y2019D15 {
                 move(direction)
             }
 
-            fun <E> Grid<E>.shrinkGrid(default: E): Grid<E> {
-                val firstCoord = coordIndex(indexOfFirst { it != default })
-                val lastCoord = coordIndex(dropLastWhile { it == default }.lastIndex)
-                return subGrid(firstCoord, lastCoord)
-            }
-
             var steppes = 0
             var o2Coord = Coord(500, 500)
             do {
                 proceed()
                 if (grid[coord] == Sector.O2) {
                     o2Coord = coord
-                    val hello = path.map { when(it) {
-                        1 -> "N"
-                        2 -> "S"
-                        3 -> "W"
-                        4 -> "X"
-                        else -> "E"
-                    } }.joinToString("")
+                    val hello = path.joinToString("") {
+                        when (it) {
+                            1 -> "N"
+                            2 -> "S"
+                            3 -> "W"
+                            4 -> "X"
+                            else -> "E"
+                        }
+                    }
                     var cc = 'X'
                     var count = 0
                     for (c in hello) {

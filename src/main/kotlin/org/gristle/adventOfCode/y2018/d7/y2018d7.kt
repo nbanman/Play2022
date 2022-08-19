@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2018.d7
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2018D7 {
     private val input = readRawInput("y2018/d7")
@@ -11,13 +13,13 @@ object Y2018D7 {
 
     private val steps = mutableMapOf<Char, MutableList<Char>>().apply {
         instructions.forEach { instruction ->
-            computeIfAbsent(instruction[0]) { mutableListOf<Char>() }.add(instruction[1])
+            computeIfAbsent(instruction[0]) { mutableListOf() }.add(instruction[1])
         }
     }
 
     private val reverseSteps = mutableMapOf<Char, MutableList<Char>>().apply {
         instructions.forEach { instruction ->
-            computeIfAbsent(instruction[1]) { mutableListOf<Char>() }.add(instruction[0])
+            computeIfAbsent(instruction[1]) { mutableListOf() }.add(instruction[0])
         }
     }
 
@@ -27,10 +29,10 @@ object Y2018D7 {
         val sb = StringBuilder()
         val potentials = start.toMutableList()
         while (potentials.isNotEmpty()) {
-            val c = potentials.filter { potential ->
+            val c = potentials.first { potential ->
                 val dependencies = reverseSteps[potential]
                 dependencies == null || dependencies.all { it in sb }
-            }.first()
+            }
             potentials.remove(c)
             sb.append(c)
             val children = (steps[c] ?: mutableListOf()).filter { it !in sb && it !in potentials }
@@ -53,7 +55,7 @@ object Y2018D7 {
         // Worker tracks what a worker is working on and when they'll finish. Idle workers work on '.'
         data class Worker(var workingOn: Char, var whenReady: Int)
 
-        val workerPool = List<Worker>(workers) { Worker('.', 0) }
+        val workerPool = List(workers) { Worker('.', 0) }
 
         // This sequence starts at second 0 and keeps adding one second.
         // Each second, it harvests completed letters from workers, adding them to the "done" set.
@@ -82,7 +84,7 @@ object Y2018D7 {
                 // potentials pool
                 workerPool.filter{ it.workingOn == '.' }.zip(vettedPotentials).forEach { (worker, c) ->
                     worker.workingOn = c
-                    worker.whenReady = sec + offset + c.toInt() - 64
+                    worker.whenReady = sec + offset + c.code - 64
                     potentials.remove(c)
                 }
             }.first { done.size == doneSize }

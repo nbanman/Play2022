@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2017.d24
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 private typealias Bridge = List<Y2017D24.MagComp>
 
@@ -28,8 +30,7 @@ object Y2017D24 {
             .maxWithOrNull(comparator) ?: bridge
     }
 
-    val data = input
-    val components = data
+    private val components = input
         .groupValues("""(\d+)\/(\d+)""")
         .map { MagComp(it[0].toInt(), it[1].toInt()) }
         .toList()

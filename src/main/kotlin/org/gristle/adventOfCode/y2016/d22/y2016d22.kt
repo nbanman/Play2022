@@ -1,8 +1,9 @@
 package org.gristle.adventOfCode.y2016.d22
 
-import kotlinx.collections.immutable.*
-import org.gristle.adventOfCode.utilities.*
-
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2016D22 {
     private val input = readRawInput("y2016/d22")
@@ -27,17 +28,14 @@ object Y2016D22 {
             ProblemNode(coord, it[2], it[3], coord == garbageCoord)
         }
 
-    private val nodeMap = persistentHashMapOf(*nodes.map { it.coord to it }.toTypedArray())
-
     fun part1() = nodes
         .filter { it.used != 0 }
         .sumOf { nodeA -> nodes.count { it != nodeA && it.available >= nodeA.used } }
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val time = System.nanoTime()
     println("Part 1: ${Y2016D22.part1()} (${elapsedTime(time)}ms)") // 924
-    time = System.nanoTime()
     println("Part 2: 213, done by hand, as intended by puzzle author (see https://www.reddit.com/r/adventofcode/comments/5jor9q/comment/dbhwg4l/?utm_source=share&utm_medium=web2x&context=3)") // 213
     println("(also, I gave up!)")
 }

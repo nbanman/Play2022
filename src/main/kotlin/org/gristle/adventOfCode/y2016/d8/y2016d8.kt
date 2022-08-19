@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.*
 object Y2016D8 {
     private val input = readRawInput("y2016/d8")
 
-    val pattern = """(rect|rotate (?:row|column)) (?:[xy]=)?(\d+)(?: by |x)(\d+)"""
+    val pattern = """(rect|rotate (?:row|column)) (?:[xy]=)?(\d+)(?: by |x)(\d+)""".toRegex()
 
     data class Instruction(val mode: String, val arg1: Int, val arg2: Int) {
         fun execute(screen: MutableGrid<Boolean>) {
@@ -26,13 +26,13 @@ object Y2016D8 {
 
     val instructions = input.groupValues(pattern).map { Instruction(it[0], it[1].toInt(), it[2].toInt()) }
 
-    fun lightScreen(width: Int, height: Int): Grid<Boolean> {
-        val screen = List(width * height) { false }.toMutableGrid(width)
+    private fun lightScreen(): Grid<Boolean> {
+        val screen = List(300) { false }.toMutableGrid(50)
         instructions.forEach { it.execute(screen) }
         return screen
     }
 
-    val screen = lightScreen(50, 6)
+    val screen = lightScreen()
 }
 
 fun main() {

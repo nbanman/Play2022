@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2020.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readStrippedInput
 
 object Y2020D18 {
     private val input = readStrippedInput("y2020/d18")
@@ -112,9 +113,9 @@ object Y2020D18 {
         return (ml.first() as SubExpression.Num).value
     }
 
-    fun part1() = expressions.map { it.p1Eval() }.sum()
+    fun part1() = expressions.sumOf { it.p1Eval() }
 
-    fun part2() = expressions.map { it.p2Eval() }.sum()
+    fun part2() = expressions.sumOf { it.p2Eval() }
 }
 
 fun main() {

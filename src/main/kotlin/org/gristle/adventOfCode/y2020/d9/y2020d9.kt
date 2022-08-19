@@ -1,12 +1,13 @@
 package org.gristle.adventOfCode.y2020.d9
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 import kotlin.math.max
 
 object Y2020D9 {
     private val input = readInput("y2020/d9")
 
-    val numbers = input.map { it.toLong() }
+    private val numbers = input.map { it.toLong() }
     fun part1(preamble: Int): Long {
         // Prep cache
         val cache = mutableMapOf<Long, Int>()

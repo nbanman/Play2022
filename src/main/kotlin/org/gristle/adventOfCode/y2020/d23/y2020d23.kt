@@ -1,13 +1,16 @@
 package org.gristle.adventOfCode.y2020.d23
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.IndexedLinkedList
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.shift
 
 object Y2020D23 {
     private val input = readRawInput("y2020/d23")
 
     fun IndexedLinkedList<Int>.move(moves: Int, largest: Int) {
         var current = header
-        (1..moves).forEach { i ->
+        (1..moves).forEach { _ ->
             val cut = current.cut(3)
             val cutValues = listOf(cut.value, cut.next!!.value, cut.next!!.next!!.value)
             val pastePos = let {
@@ -21,7 +24,6 @@ object Y2020D23 {
             current = current.next!!
         }
     }
-
 
     fun part1(): String {
         val moves = 100

@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2020.d13
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2020D13 {
     private val input = readInput("y2020/d13")
@@ -18,7 +19,7 @@ object Y2020D13 {
         }
     }
 
-    fun modularInverse(ni: Long, mod: Long): Long {
+    private fun modularInverse(ni: Long, mod: Long): Long {
         val reducedNi = ni % mod
         var mult = 1L
         while (true) {
@@ -27,13 +28,12 @@ object Y2020D13 {
         }
     }
 
-    fun crt(buses: List<Bus>): Bus {
+    private fun crt(buses: List<Bus>): Bus {
         val n = buses.fold(1L) { acc, bus -> acc * bus.id }
-        val bigPhase = buses
-            .map { bus ->
-                val ni = n / bus.id
-                bus.offset * ni * modularInverse(ni, bus.id)
-            }.sum()
+        val bigPhase = buses.sumOf { bus ->
+            val ni = n / bus.id
+            bus.offset * ni * modularInverse(ni, bus.id)
+        }
 
         return Bus(n, bigPhase % n)
     }

@@ -5,13 +5,13 @@ import org.gristle.adventOfCode.utilities.*
 object Y2018D17 {
     private val input = readRawInput("y2018/d17")
 
-    data class Directive(val xRange: IntRange, val yRange: IntRange)
+    private data class Directive(val xRange: IntRange, val yRange: IntRange)
 
     private fun MutableGrid<Char>.spoutSpots() = count { it == '|' }
 
     private fun MutableGrid<Char>.poolSpots() = count { it == '~' }
 
-    fun spread(cavern: MutableGrid<Char>, spot: Int) {
+    private fun spread(cavern: MutableGrid<Char>, spot: Int) {
         val coord = cavern.coordIndex(spot)
         // Go left
         var leftMost = coord.x
@@ -19,7 +19,8 @@ object Y2018D17 {
             val leftSpot = Coord(x, coord.y)
             leftMost = x
             if (cavern[Coord(leftSpot.x - 1, leftSpot.y)] !in "|."
-                || cavern[Coord(leftSpot.x, leftSpot.y + 1)] !in "#~") {
+                || cavern[Coord(leftSpot.x, leftSpot.y + 1)] !in "#~"
+            ) {
                 break
             }
         }

@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2015.d15
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.foldToList
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D15 {
     private val input = readRawInput("y2015/d15")
@@ -14,16 +17,22 @@ object Y2015D15 {
         val calories: Int
     )
 
-    const val PATTERN = """(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (\d+)"""
+    private const val PATTERN =
+        """(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (\d+)"""
 
-    val ingredients = input
+    private val ingredients = input
         .groupValues(PATTERN)
         .map { gv ->
             val ints = gv.drop(1).map { it.toInt() }
             Ingredient(gv[0], ints[0], ints[1], ints[2], ints[3], ints[4])
         }
 
-    fun meetsCalories(combo: List<Int>, ingredients: List<Ingredient>, calories: Int): Boolean {
+    private const val total = 100
+    private val ingredientNum = ingredients.size
+    private const val calories = 500
+    private val combos = getCombos()
+
+    private fun meetsCalories(combo: List<Int>): Boolean {
         var calorieCount = 0
         for (i in combo.indices) {
             calorieCount += combo[i] * ingredients[i].calories
@@ -31,11 +40,11 @@ object Y2015D15 {
         return calories == calorieCount
     }
 
-    fun comboScore(combo: List<Int>, ingredients: List<Ingredient>): Int {
-        var capacity: Int = 0
-        var durability: Int = 0
-        var flavor: Int = 0
-        var texture: Int = 0
+    private fun comboScore(combo: List<Int>): Int {
+        var capacity = 0
+        var durability = 0
+        var flavor = 0
+        var texture = 0
 
         for (i in combo.indices) {
             capacity += combo[i] * ingredients[i].capacity
@@ -51,7 +60,7 @@ object Y2015D15 {
         return capacity * durability * flavor * texture
     }
 
-    fun getCombos(ingredientNum: Int, total: Int): List<List<Int>> {
+    private fun getCombos(): List<List<Int>> {
         tailrec fun gC(combos: List<List<Int>>): List<List<Int>> {
             return if (combos.first().size < ingredientNum) {
                 val newCombos = combos.foldToList { combo ->
@@ -72,22 +81,9 @@ object Y2015D15 {
         return gC(seed)
     }
 
-    val total = 100
-    val ingredientNum = ingredients.size
-    val calories = 500
-    val combos = getCombos(ingredientNum, total)
+    fun part1() = comboScore(combos.maxByOrNull { comboScore(it) }!!)
 
-    fun part1() = comboScore(
-        combos.maxByOrNull { comboScore(it, ingredients) }!!,
-        ingredients
-    )
-
-    fun part2() = comboScore(
-        combos
-            .filter { meetsCalories(it, ingredients, calories) }
-            .maxByOrNull { comboScore(it, ingredients) }!!,
-        ingredients
-    )
+    fun part2() = comboScore(combos.filter { meetsCalories(it) }.maxByOrNull { comboScore(it) }!!)
 }
 
 fun main() {

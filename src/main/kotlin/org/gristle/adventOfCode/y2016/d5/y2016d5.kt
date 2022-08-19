@@ -1,12 +1,15 @@
 package org.gristle.adventOfCode.y2016.d5
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Md5
 import org.gristle.adventOfCode.utilities.Md5.toHex
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toDigit
 
 object Y2016D5 {
     private val input = readRawInput("y2016/d5")
 
-    val md5Sequence = generateSequence(0) { it + 1 }
+    private val md5Sequence = generateSequence(0) { it + 1 }
         .map { Md5.getDigest(input + it) }
         .filter { it[0] == 0.toByte() && it[1] == 0.toByte() }
         .map { it.toHex() }

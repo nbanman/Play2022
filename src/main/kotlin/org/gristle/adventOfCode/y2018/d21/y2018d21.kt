@@ -1,9 +1,9 @@
 package org.gristle.adventOfCode.y2018.d21
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2018.d19.Ops
-
-typealias Registers = LongArray
 
 object Y2018D21 {
     private val input  = readRawInput("y2018/d21")
@@ -21,10 +21,6 @@ object Y2018D21 {
     }
 
     fun solve(): Pair<Long, Long> {
-        val list1 = List(9) { i-> i }
-        val grid1 = list1.toGrid(3)
-        val mGrid1 = MutableList(9) { i-> i }.toMutableGrid(3)
-
         val data = input
         val p = data.takeWhile { it !in "\r\n" }.takeLast(1).toInt()
         val commands = data
@@ -66,7 +62,6 @@ object Y2018D21 {
             }
         }
     }
-
 }
 
 fun main() {

@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2017.d15
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 // Not refactored style-wise. Sped up 8x by getting rid of string conversion and doing a bitwise strip.
 object Y2017D15 {
@@ -10,21 +11,15 @@ object Y2017D15 {
     data class Generator (val seed: Long, val factor: Int, val multiples: Int = 1) {
         val div = 2147483647
         var value = seed
-        fun newValue() {
+        private fun newValue() {
             value = (value * factor) % div
         }
+
         fun next(): Long {
             do {
                 newValue()
             } while (value % multiples != 0L)
             return value and 65535L
-        }
-
-        fun nextFull(): Long {
-            do {
-                newValue()
-            } while (value % multiples != 0L)
-            return value
         }
     }
 

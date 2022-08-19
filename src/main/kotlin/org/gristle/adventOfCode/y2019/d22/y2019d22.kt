@@ -1,11 +1,13 @@
 package org.gristle.adventOfCode.y2019.d22
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2019D22 {
     private val input = readRawInput("y2019/d22")
 
-    private val pattern = """(cut|deal)[^-0-9\n]+(-?\d+)?""".toRegex()
+    private val pattern = """(cut|deal)[^-\d\n]+(-?\d+)?""".toRegex()
 
     class Deck(input: String, private val deckSize: Long, numberOfTimes: Long) {
         sealed class Technique(val n: Long) {
@@ -122,9 +124,9 @@ object Y2019D22 {
         return deck.numberInPosition(2020L)
     }
 
-    fun IntArray.shift(n: Int): IntArray {
+    private fun IntArray.shift(n: Int): IntArray {
         val nMod = n % size
-        val newIndex = if ( nMod >= 0) nMod else size + nMod
+        val newIndex = if (nMod >= 0) nMod else size + nMod
         return sliceArray(newIndex..lastIndex) + sliceArray(0 until newIndex)
     }
 }

@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2015.d21
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
 
 object Y2015D21 {
 
@@ -17,20 +18,20 @@ object Y2015D21 {
 
     data class Item(val name: String, val cost: Int, val damage: Int, val armor: Int)
 
-    private val weapons = """Dagger        8     4       0
+    private const val WEAPONS = """Dagger        8     4       0
 Shortsword   10     5       0
 Warhammer    25     6       0
 Longsword    40     7       0
 Greataxe     74     8       0"""
 
-    private val armor = """None          0     0       0
+    private const val ARMOR = """None          0     0       0
 Leather      13     0       1
 Chainmail    31     0       2
 Splintmail   53     0       3
 Bandedmail   75     0       4
 Platemail   102     0       5"""
 
-    private val rings = """None          0     0       0
+    private const val RINGS = """None          0     0       0
 Damage +1    25     1       0
 Damage +2    50     2       0
 Damage +3   100     3       0
@@ -38,14 +39,17 @@ Defense +1   20     0       1
 Defense +2   40     0       2
 Defense +3   80     0       3"""
 
-    val itemPattern = """(\w+(?: \+\d)?) +(\d+) +(\d) +(\d)"""
-    val weaponList = weapons.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
-    val armorList = armor.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
-    val ringList = rings.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
-    val boss = Boss()
+    private val itemPattern = """(\w+(?: \+\d)?) +(\d+) +(\d) +(\d)""".toRegex()
+    private val weaponList =
+        WEAPONS.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
+    private val armorList =
+        ARMOR.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
+    private val ringList =
+        RINGS.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
+    private val boss = Boss()
 
     // equip character
-    val combos = weaponList
+    private val combos = weaponList
         .fold(listOf<List<Item>>()) { acc, weapon ->
             acc + armorList.map { listOf(weapon, it) }
         }.fold(listOf<List<Item>>()) { acc, weaponArmor ->
@@ -54,7 +58,7 @@ Defense +3   80     0       3"""
             acc + ringList.map { weaponArmorRing + listOf(it) }
         }.distinct()
 
-    val combined = combos.map { combo ->
+    private val combined = combos.map { combo ->
         Item("combined", combo.sumOf { it.cost }, combo.sumOf { it.damage }, combo.sumOf { it.armor })
     }
 

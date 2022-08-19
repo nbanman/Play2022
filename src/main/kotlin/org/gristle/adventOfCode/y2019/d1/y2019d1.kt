@@ -1,18 +1,19 @@
 package org.gristle.adventOfCode.y2019.d1
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 import kotlin.math.max
 
 object Y2019D1 {
     private val input = readInput("y2019/d1")
-    val modules = input.map { it.toInt() }
+    private val modules = input.map { it.toInt() }
 
-    tailrec fun fuel(remaining: Int, total: Int = 0): Int {
+    private tailrec fun fuel(remaining: Int, total: Int = 0): Int {
         return if (remaining == 0) {
             total
         } else {
             val fuel = max(0, remaining / 3 - 2)
-            fuel(fuel,total + fuel)
+            fuel(fuel, total + fuel)
         }
     }
 

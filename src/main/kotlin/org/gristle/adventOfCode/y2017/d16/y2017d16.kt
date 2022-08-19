@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2017.d16
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 // not refactored!
 object Y2017D6 {
@@ -33,25 +35,25 @@ object Y2017D6 {
         }
     }
 
-    private fun danceParty(start: String, commands: List<Com>) =
+    private fun danceParty(start: String) =
         commands.fold(start) { acc, command ->
             command.execute(acc)
         }
 
-    private val pattern = """([psx])([a-p0-9]+)(?:/([a-p0-9]+))?""".toRegex()
+    private val pattern = """([psx])([a-p\d]+)(?:/([a-p\d]+))?""".toRegex()
     private val commands = input
         .groupValues(pattern)
         .map { Com(it[0], it[1], it[2]) }
 
     private const val start = "abcdefghijklmnop"
-    private val p1 = danceParty(start, commands)
+    private val p1 = danceParty(start)
 
     fun part1() = p1
 
     fun part2(): String {
         val register = mutableListOf(start, p1)
         while (true) {
-            val new = danceParty(register.last(), commands)
+            val new = danceParty(register.last())
             if (new in register) break else register.add(new)
         }
         return register[1_000_000_000 % register.size]

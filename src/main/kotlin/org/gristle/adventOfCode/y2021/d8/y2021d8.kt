@@ -1,12 +1,13 @@
 package org.gristle.adventOfCode.y2021.d8
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2021D8 {
     private val input = readInput("y2021/d8")
 
     data class Display(val wires: List<Set<Char>>, val display: List<Set<Char>>) {
-        val mapping = mutableMapOf<Set<Char>, Int>().apply {
+        private val mapping = mutableMapOf<Set<Char>, Int>().apply {
             val helperMap = mutableMapOf<Int, Set<Char>>()
             val wireGroups = wires.groupBy { it.size }
             wireGroups.filter { it.value.size == 1 }.forEach { entry ->
@@ -64,7 +65,7 @@ object Y2021D8 {
         val readout = translatedDisplay.joinToString("").toInt()
     }
 
-    val displays = input
+    private val displays = input
         .map { line ->
             val (wireString, displayString) = line.split(" | ")
             val wires = wireString.split(' ').map { it.toSet() }

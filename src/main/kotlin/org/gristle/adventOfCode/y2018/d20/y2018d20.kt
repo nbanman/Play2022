@@ -1,35 +1,34 @@
 package org.gristle.adventOfCode.y2018.d20
 
 import org.gristle.adventOfCode.utilities.*
-
-import java.util.ArrayDeque
+import java.util.*
 
 object Y2018D20 {
     private val data = readRawInput("y2018/d20")
 
     fun solve(): Pair<Int, Int> {
-            val myMap = makeMap(data)
-            val d = Graph.bfs(myMap.coordIndexOf('X')) { coord ->
-                myMap.getNeighborIndices(coord)
-                    .filter { myMap[it] != '#' }
-                    .map { myMap.coordIndex(it) }
-            }
+        val myMap = makeMap()
+        val d = Graph.bfs(myMap.coordIndexOf('X')) { coord ->
+            myMap.getNeighborIndices(coord)
+                .filter { myMap[it] != '#' }
+                .map { myMap.coordIndex(it) }
+        }
             val distances = MutableList<Int?>(myMap.size) { null }
             d.forEach { v ->
                 distances[myMap.indexOf(v.id)] = v.weight.toInt()
             }
 
-            val p1 = distances.maxOf { it?.div(2) ?: 0 }
+        val p1 = distances.maxOf { it?.div(2) ?: 0 }
 
-            val p2 = distances
-                .filterIndexed { index, i ->
-                    myMap[index] in "X." && i?.let { it >= 2000 } ?: false
-                }.size
+        val p2 = distances
+            .filterIndexed { index, i ->
+                myMap[index] in "X." && i?.let { it >= 2000 } ?: false
+            }.size
         return p1 to p2
     }
 
-    fun makeMap(regex: String): Grid<Char> {
-        val width = regex.length / 2 + 20
+    private fun makeMap(): Grid<Char> {
+        val width = data.length / 2 + 20
         val map = MutableList(width * width) { '^' }.toMutableGrid(width)
 
         fun move(coord: Coord, c: Char): Coord {
@@ -50,7 +49,7 @@ object Y2018D20 {
         fun decorate(coord: Coord) {
             if (map[coord] != 'X') map[coord] = '.'
             val neighbors = map.getNeighborIndices(coord, false)
-            val diagonals = map.getNeighborIndices(coord, true) - neighbors
+            val diagonals = map.getNeighborIndices(coord, true) - neighbors.toSet()
             diagonals.forEach { map[it] = '#' }
             neighbors.filter { map[it] !in "#-|.X" }.forEach { map[it] = '?' }
         }
@@ -61,8 +60,7 @@ object Y2018D20 {
             var coord = start
             map[start] = 'X'
             while (i < regex.length - 1) {
-                val c = regex[i]
-                when (c) {
+                when (val c = regex[i]) {
                     '(' -> returnCoords.add(coord)
                     '|' -> coord = returnCoords.last
                     ')' -> returnCoords.removeLast()
@@ -75,7 +73,7 @@ object Y2018D20 {
             }
         }
 
-        exploreMap(regex, Coord(width / 2, width / 2))
+        exploreMap(data, Coord(width / 2, width / 2))
 
         val topLeft = map.coordIndexOf('#')
         val bottomRight = map.lastCoordIndexOf('#')

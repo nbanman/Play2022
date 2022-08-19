@@ -1,11 +1,12 @@
 package org.gristle.adventOfCode.y2018.d8
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2018D8 {
     private val input = readRawInput("y2018/d8")
 
-    val licence = input.split(' ').map { it.toInt() }
+    private val licence = input.split(' ').map { it.toInt() }
 
     data class Node(val children: List<Node>, val metadata: List<Int>) {
         companion object {

@@ -10,12 +10,12 @@ object Y2019D17 {
     
     fun solve(): Pair<Int, Long> {
 
-        val toDroid: Deque<Long> = LinkedList<Long>()
-        val toComp: Deque<Long> = LinkedList<Long>()
+        val toDroid: Deque<Long> = LinkedList()
+        val toComp: Deque<Long> = LinkedList()
         val intCode = IntCode("A", initialState, null, toComp, toDroid)
         intCode.run()
         val width = toDroid.indexOfFirst { it == 10L }
-        val grid = toDroid.mapNotNull{ if (it != null && it != 10L) it else null }.toMutableGrid(width)
+        val grid = toDroid.mapNotNull { if (it != null && it != 10L) it else null }.toMutableGrid(width)
         val intersections = grid.mapIndexedNotNull { index, l ->
             if (l != 35L || grid.getNeighbors(index).any { it != 35L }) {
                 null
@@ -55,7 +55,7 @@ object Y2019D17 {
         val aForm = listOf('L', ',', '1', '2', ',', 'L', ',', '8', ',', 'R', ',', '1', '2', '\n')
         val bForm = listOf('L', ',', '1', '0', ',', 'L', ',', '8', ',', 'L', ',', '1', '2', ',', 'R', ',', '1', '2', '\n')
         val cForm = listOf('R', ',', '1', '2', ',', 'L', ',', '8', ',', 'L', ',', '1', '0', '\n', 'n', '\n')
-        val commands = (formSeq + aForm + bForm + cForm).map { it.toLong() }
+        val commands = (formSeq + aForm + bForm + cForm).map { it.code.toLong() }
         toComp.addAll(commands)
         val intCodeB = IntCode("B", listOf(2L) + initialState.drop(1), null, toComp, toDroid)
         toDroid.clear()

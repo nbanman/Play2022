@@ -7,7 +7,7 @@ object Y2018D10 {
 
     data class Point(val pos: Coord, val vel: Coord)
 
-    private val pattern = """position=< ?(-?\d+), +(-?\d+)\> velocity=\< ?(-?\d+), +(-?\d+)\>""".toRegex()
+    private val pattern = """position=< ?(-?\d+), +(-?\d+)> velocity=< ?(-?\d+), +(-?\d+)>""".toRegex()
 
     private val points = input
         .groupValues(pattern) { it.toInt() }
@@ -18,7 +18,7 @@ object Y2018D10 {
     fun solve() = generateSequence (points) { it.move() }
         .withIndex()
         .first { indexedPoints ->
-            val (xRange, yRange) = indexedPoints.value.map { it.pos }.minMaxRanges()
+            val (_, yRange) = indexedPoints.value.map { it.pos }.minMaxRanges()
             yRange.last - yRange.first == 9
         }
 }

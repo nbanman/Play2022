@@ -1,22 +1,25 @@
 package org.gristle.adventOfCode.y2021.d5
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2021D5 {
     private val input = readRawInput("y2021/d5")
 
-    val pattern = """(\d+),(\d+) -> (\d+),(\d+)"""
+    private val pattern = """(\d+),(\d+) -> (\d+),(\d+)""".toRegex()
 
     data class Line(val start: Coord, val end: Coord) {
         fun straightRange(includeDiagonals: Boolean = false): List<Coord> {
             return if (start.x == end.x) {
                 val (small, large) = if (start.y < end.y) start.y to end.y else end.y to start.y
-                (small..large).fold(emptyList<Coord>()) { acc, i ->
+                (small..large).fold(emptyList()) { acc, i ->
                     acc + Coord(start.x, i)
                 }
             } else if (start.y == end.y) {
                 val (small, large) = if (start.x < end.x) start.x to end.x else end.x to start.x
-                (small..large).fold(emptyList<Coord>()) { acc, i ->
+                (small..large).fold(emptyList()) { acc, i ->
                     acc + Coord(i, start.y)
                 }
             } else if (includeDiagonals) {
@@ -28,7 +31,7 @@ object Y2021D5 {
 
                 val yIncrement = if (start.y < end.y) 1 else -1
 
-                xRange.foldIndexed(emptyList<Coord>()) { index, acc, i ->
+                xRange.foldIndexed(emptyList()) { index, acc, i ->
                     acc + Coord(i, start.y + index * yIncrement)
                 }
             } else {

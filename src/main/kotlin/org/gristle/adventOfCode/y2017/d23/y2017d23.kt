@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2017.d23
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2017.d18.Y2017D18
 
 // not refactored! ugly!
@@ -13,7 +15,7 @@ object Y2017D23 {
         .groupValues(pattern)
         .map { Y2017D18.Command1718(it[0], it[1], it[2]) }
 
-    var registers = mutableMapOf<String, Long>()
+    private var registers = mutableMapOf<String, Long>()
 
     private fun valueOf(arg: String) = if (arg.last().isDigit()) {
         arg.toLong()

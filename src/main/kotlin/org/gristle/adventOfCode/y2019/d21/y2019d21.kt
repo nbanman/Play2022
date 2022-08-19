@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2019.d21
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toMutableGrid
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
@@ -9,8 +11,8 @@ object Y2019D21 {
 
     fun execute(commands: String): Long {
         val initialState = input.split(',').map { it.toLong() }
-        val toDroid: Deque<Long> = LinkedList<Long>()
-        val toComp: Deque<Long> = LinkedList<Long>()
+        val toDroid: Deque<Long> = LinkedList()
+        val toComp: Deque<Long> = LinkedList()
         val intCode = IntCode("A", initialState, null, toComp, toDroid)
         intCode.run()
         commands.split("\n").forEach {
@@ -20,12 +22,14 @@ object Y2019D21 {
         return toDroid.last()
     }
 
+
     private fun addCommand(command: String, toComp: Deque<Long>) {
-        val commands = command.map { it.toLong() }
+        val commands = command.map { it.code.toLong() }
         toComp.addAll(commands)
         toComp.add('\n'.code.toLong())
     }
 
+    @Suppress("unused")
     private fun printOutput(toDroid: Deque<Long>) {
         val width = toDroid.indexOfFirst { it == 10L }
         val grid = toDroid.mapNotNull { if (it != null && it != 10L) it else null }.toMutableGrid(width)

@@ -5,19 +5,19 @@ import org.gristle.adventOfCode.utilities.*
 object Y2018D6 {
     private val input = readInput("y2018/d6")
 
-    val offsetCoordinates = input.map { line ->
+    private val offsetCoordinates = input.map { line ->
         val (x, y) = line.split(", ").map { it.toInt() }
         Coord(x, y)
     }
 
-    val ranges = offsetCoordinates.minMaxRanges()
-    val xRange = ranges.first
-    val yRange = ranges.second
+    private val ranges = offsetCoordinates.minMaxRanges()
+    private val xRange = ranges.first
+    private val yRange = ranges.second
 
-    val offset = Coord(xRange.first, yRange.first)
-    val coordinates = offsetCoordinates.map { it - offset }
+    private val offset = Coord(xRange.first, yRange.first)
+    private val coordinates = offsetCoordinates.map { it - offset }
 
-    val space = List((xRange.last - xRange.first + 1) * (yRange.last - yRange.first + 1)) { -2 }
+    private val space = List((xRange.last - xRange.first + 1) * (yRange.last - yRange.first + 1)) { -2 }
         .toMutableGrid(xRange.last - xRange.first + 1)
 
     fun part1(): Int {

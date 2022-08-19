@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2020.d15
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2020D15 {
     private val input = readRawInput("y2020/d15")
@@ -22,7 +23,7 @@ object Y2020D15 {
         }
     }
 
-    fun lastNumberSpoken(iterations: Int): Int {
+    private fun lastNumberSpoken(iterations: Int): Int {
 
         val log = start
             .mapIndexed { index, i -> i to Spokenses(index + 1) }

@@ -11,7 +11,7 @@ object Y2018D23 {
 
     data class Nanobot(val pos: Xyz, val radius: Int) {
         fun inRangeOf(other: Nanobot) = radius >= pos.manhattanDistance(other.pos)
-        fun inRangeOf(other: Xyz) = radius >= pos.manhattanDistance(other)
+        private fun inRangeOf(other: Xyz) = radius >= pos.manhattanDistance(other)
         fun inRangeOf(cube: Cube): Boolean {
             return Xyz(
                 when {
@@ -75,7 +75,7 @@ object Y2018D23 {
 
     private val pattern = """pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)""".toRegex()
 
-    val nanobots = data
+    private val nanobots = data
         .groupValues(pattern) { it.toInt() }
         .map { Nanobot(Xyz(it[0], it[1], it[2]), it[3]) }
 
@@ -118,9 +118,4 @@ fun main() {
     println("Part 1: ${Y2018D23.part1()} (${elapsedTime(time)}ms)") // 481
     time = System.nanoTime()
     println("Part 2: ${Y2018D23.part2()} (${elapsedTime(time)}ms)") // 47141479
-    val testGrid = gridOf(2, 1, 2, 3, 4)
-    println(testGrid.representation { it.digitToChar() })
-    val tg2 = MutableGrid(4, 2) { i-> i + 1 }
-    tg2.addAll(listOf(5, 6))
-    println(tg2.representation { it.digitToChar() })
 }

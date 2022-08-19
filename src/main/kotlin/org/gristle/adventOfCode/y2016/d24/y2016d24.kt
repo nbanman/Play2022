@@ -7,9 +7,9 @@ object Y2016D24 {
     private val layout = readRawInput("y2016/d24")
         .toGrid()
 
-    val numbers = layout.withIndex().filter { it.value.isDigit() }
+    private val numbers = layout.withIndex().filter { it.value.isDigit() }
 
-    val distances = numbers
+    private val distances = numbers
         .map { (index, number) ->
             val distances = Graph.bfs(index to layout[index]) { (index, _) ->
                 layout
@@ -17,11 +17,11 @@ object Y2016D24 {
                     .filter { layout[it] != '#' }
                     .map { it to layout[it] }
             }.drop(1)
-            .filter { dest -> dest.id.second.isDigit() } // && dest.path().count { it.id.second.isDigit() } == 2 }
+                .filter { dest -> dest.id.second.isDigit() } // && dest.path().count { it.id.second.isDigit() } == 2 }
             number to distances.map { it.id.second to it.weight }
         }
 
-    val edges = buildMap {
+    private val edges = buildMap {
         distances.forEach { (from, toList) ->
             toList.forEach { (dest, weight) -> this[from to dest] = weight }
         }

@@ -1,13 +1,15 @@
 package org.gristle.adventOfCode.y2015.d9
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D9 {
     private val input = readRawInput("y2015/d9")
 
     data class Leg(val startCity: String, val endCity: String, val distance: Int)
 
-    val legs = input
+    private val legs = input
         .groupValues("""(\w+) to (\w+) = (\d+)""")
         .flatMap { gv ->
             listOf(
@@ -16,11 +18,11 @@ object Y2015D9 {
             )
         }
 
-    val cities = legs
+    private val cities = legs
         .flatMap { listOf(it.startCity, it.endCity) }
         .distinct()
 
-    fun shortestDistance(
+    private fun shortestDistance(
         legs: List<Leg>,
         remainingLegs: List<Leg>,
         remainingCities: List<String>,
@@ -46,7 +48,7 @@ object Y2015D9 {
         }
     }
 
-    fun longestDistance(
+    private fun longestDistance(
         legs: List<Leg>,
         remainingLegs: List<Leg>,
         remainingCities: List<String>,

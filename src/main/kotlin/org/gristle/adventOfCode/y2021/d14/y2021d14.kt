@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2021.d14
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readStrippedInput
 
 object Y2021D14 {
     private val input = readStrippedInput("y2021/d14")
@@ -18,7 +20,7 @@ object Y2021D14 {
 
     private val template = input.takeWhile { it != '\n' }
 
-    val rules = input
+    private val rules = input
         .groupValues("""([A-Z])([A-Z]) -> ([A-Z])""")
         .map { InsertionRule(it[0][0], it[1][0], it[2][0]) }
 

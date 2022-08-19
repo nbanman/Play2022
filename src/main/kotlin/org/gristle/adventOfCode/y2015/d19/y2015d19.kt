@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2015.d19
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D19 {
     data class Rule(val element: String, val replacement: String) {
@@ -9,27 +11,27 @@ object Y2015D19 {
 
     private val input = readRawInput("y2015/d19")
 
-    val work = input
-    val moleculePattern = """^[A-z]+${'$'}""".toRegex(RegexOption.MULTILINE)
-    val molecule = moleculePattern.find(work)!!.value
+    private val work = input
+    private val moleculePattern = """^[A-z]+${'$'}""".toRegex(RegexOption.MULTILINE)
+    private val molecule = moleculePattern.find(work)!!.value
 
-    val rulePattern = """([A-Z][a-z]?) =\> (\w+)"""
-    val rules = work
+    private val rulePattern = """([A-Z][a-z]?) => (\w+)""".toRegex()
+    private val rules = work
         .groupValues(rulePattern)
         .map { Rule(it[0], it[1]) }
         .sortedByDescending { it.size }
 
-    val ePattern = """e =\> (\w+)"""
-    val starts = work
+    private val ePattern = """e => (\w+)""".toRegex()
+    private val starts = work
         .groupValues(ePattern)
         .map { it[0] }
 
-    val elements = """[A-Z][a-z]?"""
+    private val elements = """[A-Z][a-z]?"""
         .toRegex()
         .findAll(molecule)
         .toList()
 
-    val part1Mutations = elements.flatMap { mr ->
+    private val part1Mutations = elements.flatMap { mr ->
         rules
             .filter { it.element == mr.value }
             .map { rule ->
@@ -40,7 +42,7 @@ object Y2015D19 {
     fun part1() = part1Mutations.size
 
     fun part2() = generateSequence(molecule) {
-        var next: String = ""
+        var next = ""
         for (rule in rules) {
             if (it.contains(rule.replacement)) {
                 next = it.replaceFirst(rule.replacement, rule.element)

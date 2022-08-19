@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2021.d21
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2021D21 {
     private val input = readRawInput("y2021/d21")
@@ -12,20 +13,20 @@ object Y2021D21 {
 
         fun roll(n: Int): List<Int> {
             counter += n
-            return (1..n).fold(listOf()) { acc, i ->
+            return (1..n).fold(listOf()) { acc, _ ->
                 die = if (die == 100) 1 else die + 1
                 acc + die
             }
         }
     }
 
-    class Game(val spaces: Int, val die: DeterministicDie = DeterministicDie()) {
+    class Game(private val spaces: Int, private val die: DeterministicDie = DeterministicDie()) {
 
         data class GameResult(val winner: String, val winScore: Long, val loseScore: Long, val dieRolls: Long) {
             fun solve() = loseScore * dieRolls
         }
 
-        fun Int.advance(n: Int) = (this - 1 + n) % spaces + 1
+        private fun Int.advance(n: Int) = (this - 1 + n) % spaces + 1
 
         fun play(p1Start: Int, p2Start: Int, winCondition: Long = 1000L): GameResult {
             var p1Score = 0L
@@ -54,18 +55,18 @@ object Y2021D21 {
         .toRegex(RegexOption.MULTILINE)
         .findAll(input)
         .map { it.value.toInt() }
-    
-    val p1Start = matchValues.first()
-    val p2Start = matchValues.last()
+
+    private val p1Start = matchValues.first()
+    private val p2Start = matchValues.last()
 
     fun part1(): Long {
         val game = Game(10)
         return game.play(p1Start, p2Start).solve()
     }
 
-    val rf = listOf(3 to 1, 4 to 3, 5 to 6, 6 to 7, 7 to 6, 8 to 3, 9 to 1)
+    private val rf = listOf(3 to 1, 4 to 3, 5 to 6, 6 to 7, 7 to 6, 8 to 3, 9 to 1)
 
-    fun wins(p1: Int, t1: Int, p2: Int, t2: Int): Pair<Long, Long> {
+    private fun wins(p1: Int, t1: Int, p2: Int, t2: Int): Pair<Long, Long> {
         if (t2 <= 0) return 0L to 1L
 
         var w1 = 0L

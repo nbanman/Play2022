@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2020.d19
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2020D19 {
     private val input = readRawInput("y2020/d19")
@@ -14,15 +16,17 @@ object Y2020D19 {
 
             override fun toString() = "$value: $name"
         }
-        class Seq(name: Int, val subRules: List<Int>) : Rule(name) {
+
+        class Seq(name: Int, private val subRules: List<Int>) : Rule(name) {
             override fun expand(register: Map<Int, Rule>): String {
                 return subRules.joinToString("") { register[it]!!.expand(register) }
             }
 
             override fun toString() = "Seq: $name, $subRules"
         }
+
         class Fork(name: Int, val left: List<Int>, val right: List<Int>) : Rule(name) {
-            var counter = 0
+            private var counter = 0
             override fun expand(register: Map<Int, Rule>): String {
                 if (name == 8 || name == 11) counter++
 
@@ -47,10 +51,10 @@ object Y2020D19 {
         }
     }
 
-    val rulePattern = """(\d+): (?:(\"[a-b]\")|(?:(\d+(?: \d+)*)(?: \| (\d+(?: \d+)*))?))"""
-    val messagePattern = """^[a-b]+"""
+    private val rulePattern = """(\d+): (?:("[a-b]")|(\d+(?: \d+)*)(?: \| (\d+(?: \d+)*))?)""".toRegex()
+    private val messagePattern = """^[a-b]+""".toRegex(RegexOption.MULTILINE)
 
-    val rules = input.groupValues(rulePattern).map { gv ->
+    private val rules = input.groupValues(rulePattern).map { gv ->
         val name = gv[0].toInt()
         val letter = gv[1].drop(1).dropLast(1)
         val left = if (gv[2] == "") null else gv[2].split(' ').map { it.toInt() }
@@ -64,7 +68,7 @@ object Y2020D19 {
         }
     }
 
-    val messages = Regex(messagePattern, RegexOption.MULTILINE)
+    private val messages = messagePattern
         .findAll(input)
         .toList()
         .map { it.value }

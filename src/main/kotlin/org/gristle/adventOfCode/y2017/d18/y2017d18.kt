@@ -1,13 +1,15 @@
 package org.gristle.adventOfCode.y2017.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 
 // Not refactored. Ugly but fast enough.
 object Y2017D18 {
     private val input = readRawInput("y2017/d18")
 
-    private val pattern = """([a-z]{3}) ([-a-z0-9]+)(?: ([-a-z0-9]+))?""".toRegex()
+    private val pattern = """([a-z]{3}) ([-a-z\d]+)(?: ([-a-z\d]+))?""".toRegex()
 
     data class Command1718(val name: String, val arg1: String, val arg2: String)
 
@@ -20,9 +22,9 @@ object Y2017D18 {
         var index = 0
         var deadlock = false
         var sends = 0
-        private val reg = mutableMapOf<String, Long>("p" to p)
+        private val reg = mutableMapOf("p" to p)
 
-        fun valueOf(arg: String) = if (arg.last().isDigit()) {
+        private fun valueOf(arg: String) = if (arg.last().isDigit()) {
             arg.toLong()
         } else {
             reg[arg] ?: 0
@@ -88,7 +90,6 @@ object Y2017D18 {
     fun part1(): Long {
         val registers = mutableMapOf<String, Long>()
         var frequency = 0L
-        var recover = 0L
 
         fun valueOf(arg: String) = if (arg.last().isDigit()) {
             arg.toLong()
@@ -115,8 +116,7 @@ object Y2017D18 {
                 }
                 "rcv" -> {
                     if (valueOf(command.arg1) != 0L) {
-                        recover = frequency
-                        return recover
+                        return frequency
                     }
 
                 }

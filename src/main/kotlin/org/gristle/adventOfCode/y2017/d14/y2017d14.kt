@@ -1,11 +1,13 @@
 package org.gristle.adventOfCode.y2017.d14
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toGrid
 import org.gristle.adventOfCode.y2017.d10.Y2017D10.denseHash
 import org.gristle.adventOfCode.y2017.d12.Y2017D12.allLinks
 
 object Y2017D14 {
-    private val input = "amgozmfv"
+    private val input = readRawInput("y2017/d14")
 
     private fun stringRep(input: String): String {
         val preparation = input
@@ -49,7 +51,7 @@ object Y2017D14 {
             }
         }
 
-        var linkSet = registers.keys.toMutableSet()
+        val linkSet = registers.keys.toMutableSet()
 
         return generateSequence(linkSet) { it.apply { removeAll(allLinks(registers, linkSet.first()).toSet()) } }
             .indexOfFirst { it.isEmpty() }

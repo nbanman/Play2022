@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2016.d21
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 // Not refactored, but not horrible. Maybe I'm getting better!
 object Y2016D21 {
@@ -86,20 +88,20 @@ object Y2016D21 {
         }
     }
 
-    val passcode = "abcdefgh"
-    val passcode2 = "fbgdceah"
+    private const val PASSCODE = "abcdefgh"
+    private const val PASSCODE2 = "fbgdceah"
 
-    private val pattern = """(\w+ \w+) (?:on position of letter )?(\w+)(?:.* (\w+))?"""
+    private val pattern = """(\w+ \w+) (?:on position of letter )?(\w+)(?:.* (\w+))?""".toRegex()
 
     val commands = input
         .groupValues(pattern)
         .map { Command(it[0], it[1], it[2]) }
 
-    fun part1() = commands.fold(passcode) { acc, command ->
+    fun part1() = commands.fold(PASSCODE) { acc, command ->
         command.execute(acc)
     }
 
-    fun part2() = commands.reversed().fold(passcode2) { acc, command ->
+    fun part2() = commands.reversed().fold(PASSCODE2) { acc, command ->
         command.execute(acc, reversed = true)
     }
 }

@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2017.d1
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toDigit
 
 object Y2017D1 {
     private val input = readRawInput("y2017/d1")
@@ -8,7 +10,7 @@ object Y2017D1 {
     fun part1(): Int {
         return (input.windowed(2) + listOf(input.first().toString() + input.last()))
             .filter { it[0] == it[1] }
-            .sumBy { it[0].toDigit() }
+            .sumOf { it[0].toDigit() }
     }
 
     fun part2() = input

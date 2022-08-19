@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.*
 object Y2018D3 {
     private val input = readRawInput("y2018/d3")
 
-    val pattern = """#(\d+) @ (\d+),(\d+): (\d+)x(\d+)"""
+    val pattern = """#(\d+) @ (\d+),(\d+): (\d+)x(\d+)""".toRegex()
 
     data class Claim(val id: Int, val tl: Coord, val size: Coord) {
         val br = Coord(tl.x + size.x - 1, tl.y + size.y - 1)
@@ -14,12 +14,12 @@ object Y2018D3 {
         }
     }
 
-    val claims = input
+    private val claims = input
         .groupValues(pattern) { it.toInt() }
         .map { Claim(it[0], Coord(it[1], it[2]), Coord(it[3], it[4])) }
 
-    val width = claims.maxOf { it.tl.x + it.size.x }
-    val height = claims.maxOf { it.tl.y + it.size.y }
+    private val width = claims.maxOf { it.tl.x + it.size.x }
+    private val height = claims.maxOf { it.tl.y + it.size.y }
 
     private val skein = List<MutableSet<Int>>(width * height) { mutableSetOf() }.toGrid(width)
 

@@ -18,6 +18,7 @@ object Y2019D24 {
 
     private fun Int.bugInMiddle(side: Int) = shr(side).and(1)
 
+    @Suppress("unused")
     private fun Int.print() {
         buildString {
             for (i in 0..24) {

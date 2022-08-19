@@ -1,19 +1,20 @@
 package org.gristle.adventOfCode.y2015.d25
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
-object Template {
+object Y2015D25 {
     private val input = readRawInput("y2015/d25")
 
     private val pattern = """(\d+)""".toRegex()
 
-    val matches = pattern.findAll(input)
+    private val matches = pattern.findAll(input)
 
-    val row = matches.first().value.toInt()
+    private val row = matches.first().value.toInt()
 
-    val col = matches.last().value.toInt()
+    private val col = matches.last().value.toInt()
 
-    fun getCol1(row: Int): Int {
+    private fun getCol1(): Int {
         return if (row == 1) {
             1
         } else {
@@ -21,8 +22,8 @@ object Template {
         }
     }
 
-    fun getPlace(row: Int, col: Int): Int {
-        val col1 = getCol1(row)
+    private fun getPlace(): Int {
+        val col1 = getCol1()
         val extra = if (col == 1) {
             0
         } else {
@@ -31,10 +32,10 @@ object Template {
         return col1 + extra
     }
 
-    fun part1() = (2..getPlace(row, col)).fold(20151125L) { acc, _ -> (acc * 252533) % 33554393 }
+    fun part1() = (2..getPlace()).fold(20151125L) { acc, _ -> (acc * 252533) % 33554393 }
 }
 
 fun main() {
-    var time = System.nanoTime()
-    println("Part 1: ${Template.part1()} (${elapsedTime(time)}ms)") // 8997277
+    val time = System.nanoTime()
+    println("Part 1: ${Y2015D25.part1()} (${elapsedTime(time)}ms)") // 8997277
 }

@@ -1,12 +1,13 @@
 package org.gristle.adventOfCode.y2015.d20
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.foldToList
 import kotlin.math.sqrt
 
 object Y2015D20 {
     private const val input = 33_100_000
 
-    fun primeFactors(number: Int): List<Int> {
+    private fun primeFactors(number: Int): List<Int> {
         val factors = mutableListOf<Int>()
         var n = number
 
@@ -28,8 +29,9 @@ object Y2015D20 {
         return factors
     }
 
-    tailrec fun expandFactors(primeFactors: List<Int>, factors: List<Int> = listOf(1)): List<Int> {
+    private tailrec fun expandFactors(primeFactors: List<Int>, factors: List<Int> = listOf(1)): List<Int> {
         return if (primeFactors.isNotEmpty()) {
+            @Suppress("RemoveExplicitTypeArguments")
             val latest = primeFactors
                 .dropLastWhile { it != primeFactors.first() }
                 .foldToList<Int, Int> { i ->
@@ -38,7 +40,7 @@ object Y2015D20 {
             val newFactors = factors.fold(listOf<Int>()) { acc, i ->
                 acc + listOf(i) + latest.map { it * i }
             }
-            expandFactors(primeFactors - latest, newFactors)
+            expandFactors(primeFactors - latest.toSet(), newFactors)
         } else {
             factors
         }

@@ -1,13 +1,14 @@
 package org.gristle.adventOfCode.y2016.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 // Not refactored; pretty bad!
 object Y2016D18 {
-    private val input = ".^.^..^......^^^^^...^^^...^...^....^^.^...^.^^^^....^...^^.^^^...^^^^.^^.^.^^..^.^^^..^^^^^^.^^^..^"
+    private val input = readRawInput("y2016/d18")
 
-    private fun safeTiles(row: String, numRows: Int): Int {
-        var row1 = row
+    private fun safeTiles(numRows: Int): Int {
+        var row1 = input
         var safeTiles = row1.count { it == '.' }
         for (i in 2..numRows) {
             row1 = ".$row1."
@@ -19,9 +20,9 @@ object Y2016D18 {
         return safeTiles
     }
 
-    fun part1() = safeTiles(input, 40)
+    fun part1() = safeTiles(40)
 
-    fun part2() = safeTiles(input, 400_000)
+    fun part2() = safeTiles(400_000)
 }
 
 fun main() {

@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2017.d25
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2017D25 {
     class Node1725(var isOne: Boolean = false, var left: Node1725? = null, var right: Node1725? = null) {
@@ -16,18 +18,6 @@ object Y2017D25 {
         }
         fun sumList(): Int {
             return (sumLeft() + sumRight() - value())
-        }
-
-        fun leftMost(): Node1725 {
-            return left?.leftMost() ?: this
-        }
-
-        fun listRight(): List<Node1725> {
-            return listOf(this) + if(right == null) emptyList() else right!!.listRight()
-        }
-
-        fun rightMost(): Node1725 {
-            return right?.rightMost() ?: this
         }
 
         private fun sumLeft(): Int {
@@ -49,9 +39,9 @@ object Y2017D25 {
         val oneChange: String
     )
 
-    private val stepPattern = """(\d+) steps"""
+    private val stepPattern = """(\d+) steps""".toRegex()
 
-    private val pattern = """In state ([A-F]):
+    private const val pattern = """In state ([A-F]):
   If the current value is 0:
     - Write the value (0|1).
     - Move one slot to the (left|right).

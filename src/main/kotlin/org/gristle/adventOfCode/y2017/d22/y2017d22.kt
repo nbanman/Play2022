@@ -4,7 +4,7 @@ import org.gristle.adventOfCode.utilities.*
 
 // not refactored!
 object Y2017D22 {
-    class Virus(var location: Coord, var orientation: String, val space: MutableGrid<Boolean>) {
+    class Virus(private var location: Coord, private var orientation: String, private val space: MutableGrid<Boolean>) {
         var infections = 0
         fun burst() {
             if (space[location]) {
@@ -52,13 +52,13 @@ object Y2017D22 {
         }
     }
 
-    class Virus2(var location: Coord, var orientation: String, val space: MutableGrid<NState>) {
+    class Virus2(private var location: Coord, private var orientation: String, private val space: MutableGrid<NState>) {
         var infections = 0
         fun burst() {
             val state = space[location]
             space[location] = space[location].advance()
             if (space[location] == NState.INFECTED) infections++
-            when(state) {
+            when (state) {
                 NState.CLEAN -> {
                     when (orientation) {
                         "up" -> {
@@ -159,7 +159,7 @@ object Y2017D22 {
     private val data = readRawInput("y2017/d22")
     
     fun part1(): Int {
-        val core = data.toGrid() { it == '#' }
+        val core = data.toGrid { it == '#' }
         val blank = List(500_500) { false }.toGrid(1_001)
         val coreFiller = List(((1_001 - core.width) / 2) * core.height) { false }.toGrid(((1_001 - core.width) / 2))
         val coreLines = coreFiller.addRight(core).addRight(coreFiller)

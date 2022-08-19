@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2019.d16
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
 object Y2019D16 {
@@ -12,7 +13,7 @@ object Y2019D16 {
 
         val startPattern = listOf(0, 1, 0, -1)
         return (1..PHASES).fold(nos) { acc, _ ->
-            acc.mapIndexed { index, i ->
+            List(acc.size) { index ->
                 acc.foldIndexed(0) { index2, acc2, ii ->
                     val ai = ((index2 + 1) / (index + 1)) % 4
                     acc2 + ii * startPattern[ai]

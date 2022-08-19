@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2017.d10
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.shift
 
 object Y2017D10 {
     private val input = readRawInput("y2017/d10")
@@ -26,13 +28,13 @@ object Y2017D10 {
         return denseHash
     }
 
-    fun <E> List<E>.knotHash(lengths: List<Int>, skip: Int = 0): List<E> {
+    private fun <E> List<E>.knotHash(lengths: List<Int>, skip: Int = 0): List<E> {
         return lengths.foldIndexed(this) { index, accRing, length ->
             knot(accRing, length, skip + index)
         }
     }
 
-    fun <E> knot (ring: List<E>, length: Int, skip: Int): List<E> {
+    private fun <E> knot(ring: List<E>, length: Int, skip: Int): List<E> {
         val reversePart = ring.subList(0, length).reversed()
         return (reversePart + ring.drop(reversePart.size)).shift(length + skip)
     }

@@ -1,13 +1,16 @@
 package org.gristle.adventOfCode.y2020.d17
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.MCoord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toGrid
 
 object Y2020D17 {
     private val input = readRawInput("y2020/d17")
 
-    val startGrid = input.toGrid()
+    private val startGrid = input.toGrid()
 
-    fun getCubes(dimensions: Int, steps: Int): Int {
+    private fun getCubes(dimensions: Int): Int {
         var space = mutableSetOf<MCoord>()
 
         startGrid.mapIndexedNotNull { index, c ->
@@ -32,7 +35,7 @@ object Y2020D17 {
             }
         }.toMutableList()
 
-        for (i in 1..steps) {
+        for (i in 1..6) {
             val newSpace = mutableSetOf<MCoord>()
             (0 until dimensions).forEach { dim ->
                 val bound = bounds[dim]
@@ -55,9 +58,9 @@ object Y2020D17 {
         return space.size
     }
 
-    fun part1() = getCubes(3, 6)
+    fun part1() = getCubes(3)
 
-    fun part2() = getCubes(4, 6)
+    fun part2() = getCubes(4)
 }
 
 fun main() {

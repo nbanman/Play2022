@@ -1,10 +1,13 @@
 package org.gristle.adventOfCode.y2016.d17
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.md5
+import org.gristle.adventOfCode.utilities.readRawInput
 
 // Not refactored, not terrible.
 object Y2016D17 {
-    private val input = "hhhxzeay"
+    private val input = readRawInput("y2016/d17")
 
     private val vaultRange = 0..3
     private val openRange = 'b'..'f'
@@ -39,14 +42,12 @@ object Y2016D17 {
         tailrec fun gP(locations: List<Room17>): Room17? {
             val newLocations = mutableListOf<Room17>()
             locations.forEach { newLocations.addAll(it.getNeighbors()) }
-            val solution = newLocations.find { it.coord == Coord(vaultRange.last, vaultRange.last) }
-            return if (solution != null) {
-                solution
-            } else if (newLocations.isEmpty()) {
-                null
-            } else {
-                gP(newLocations)
-            }
+            return newLocations.find { it.coord == Coord(vaultRange.last, vaultRange.last) }
+                ?: if (newLocations.isEmpty()) {
+                    null
+                } else {
+                    gP(newLocations)
+                }
         }
         return gP(locations)?.passCode?.drop(locations.first().passCode.length) ?: "Invalid"
 

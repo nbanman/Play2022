@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2015.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toGrid
 
 object Y2015D18 {
     private val input = readRawInput("y2015/d18")
@@ -24,14 +27,14 @@ object Y2015D18 {
         }.toGrid(width)
     }
 
-    private fun solve(steps: Int, cornersStuck: Boolean) = generateSequence(lights) { it.iterate(cornersStuck) }
-        .take(steps + 1)
+    private fun solve(cornersStuck: Boolean) = generateSequence(lights) { it.iterate(cornersStuck) }
+        .take(101)
         .last()
         .count { it }
 
-    fun part1() = solve(100, false)
+    fun part1() = solve(false)
 
-    fun part2() = solve(100, true)
+    fun part2() = solve(true)
 }
 
 fun main() {

@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2016.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2016D4 {
     private val input = readRawInput("y2016/d4")
@@ -20,17 +22,17 @@ object Y2016D4 {
             checkSum == mostCommon
         }
 
-        private fun Char.shift() = if (this == '-') ' ' else ((toInt() - 97 + id) % 26 + 97).toChar()
+        private fun Char.shift() = if (this == '-') ' ' else ((code - 97 + id) % 26 + 97).toChar()
 
         val name = encryptedName.map { it.shift() }.joinToString("")
     }
 
-    val rooms = input
+    private val rooms = input
         .groupValues("""([a-z-]+)-(\d+)\[([a-z]+)\]""")
         .map { Room(it[0], it[1].toInt(), it[2]) }
         .filter { it.isReal }
 
-    fun part1() = rooms.sumBy { it.id }
+    fun part1() = rooms.sumOf { it.id }
 
     fun part2() = rooms.find { it.name == "northpole object storage" }?.id?.toString() ?: "not found"
 }

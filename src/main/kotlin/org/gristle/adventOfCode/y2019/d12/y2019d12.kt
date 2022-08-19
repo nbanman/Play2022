@@ -6,8 +6,8 @@ object Y2019D12 {
     private val input = readRawInput("y2019/d12")
 
     data class Moon1912(val pos: MCoord, val vel: MCoord = MCoord(0, 0, 0)) {
-        val potentialEnergy = pos.manhattanDistance(MCoord(0,0,0))
-        val kineticEnergy = vel.manhattanDistance(MCoord(0,0,0))
+        private val potentialEnergy = pos.manhattanDistance(MCoord(0, 0, 0))
+        private val kineticEnergy = vel.manhattanDistance(MCoord(0, 0, 0))
         val totalEnergy = potentialEnergy * kineticEnergy
 
         override fun toString(): String {
@@ -16,24 +16,24 @@ object Y2019D12 {
     }
     private val pattern = """<x=(-?\d+), y=(-?\d+), z=(-?\d+)>""".toRegex()
 
-    val moons = input
+    private val moons = input
         .groupValues(pattern) { it.toInt() }
         .map { Moon1912(Xyz(it[0], it[1], it[2])) }
 
-    fun applyForce(a: Int, b: Int) = (a - b).let { if (it < 0) 1 else if (it > 0) -1 else 0 }
+    private fun applyForce(a: Int, b: Int) = (a - b).let { if (it < 0) 1 else if (it > 0) -1 else 0 }
     
     fun part1(): Int {
         // Part 1
         val steps = 1000
-        return (1..steps).fold(moons) { acc, step ->
+        return (1..steps).fold(moons) { acc, _ ->
             val newMoons = acc.map { moon ->
-                val newVel = (acc - moon).fold(MCoord(0,0,0)) { acc, other ->
+                val newVel = (acc - moon).fold(MCoord(0, 0, 0)) { acc, other ->
                     val velDelta = MCoord(
                         applyForce(moon.pos[0], other.pos[0]),
                         applyForce(moon.pos[1], other.pos[1]),
                         applyForce(moon.pos[2], other.pos[2])
                     )
-                    acc + velDelta 
+                    acc + velDelta
                 }
                 Moon1912(moon.pos + moon.vel + newVel, moon.vel + newVel)
             }

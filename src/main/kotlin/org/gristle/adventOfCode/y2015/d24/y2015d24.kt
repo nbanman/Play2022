@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2015.d24
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2015D24 {
 
@@ -8,21 +9,21 @@ object Y2015D24 {
 
     private fun List<Int>.qE() = this.fold(1L) { acc, i -> acc * i }
 
-    fun uniqueCombos(validCombos: List<List<Int>>, taken: List<List<Int>>, uniqueGroups: Int): List<Int>? {
+    private fun uniqueCombos(validCombos: List<List<Int>>, taken: List<List<Int>>, uniqueGroups: Int): List<Int>? {
         if (validCombos.isEmpty()) {
             return null
         } else {
             for (i in validCombos.indices) {
                 if (validCombos[i].intersect(taken.flatten().toSet()).isEmpty()) {
-                    if(uniqueGroups > 3) {
+                    return if (uniqueGroups > 3) {
                         val subUnique = uniqueCombos(
                             validCombos.drop(i),
                             taken + listOf(validCombos[i]),
                             uniqueGroups - 1
                         )
-                        if (subUnique == null) continue else return taken.first()
+                        if (subUnique == null) continue else taken.first()
                     } else {
-                        return taken.first()
+                        taken.first()
                     }
                 }
             }
@@ -40,7 +41,7 @@ object Y2015D24 {
         val groupWeight = weights.sum() / numberOfGroups
 
         val packages = weights.mapIndexed { i, weight ->
-            val lowEnd = groupWeight - weights.drop(i).sum() // todo check this
+            val lowEnd = groupWeight - weights.drop(i).sum()
             val highEnd = groupWeight - weight
             Package(weight, lowEnd..highEnd)
         }

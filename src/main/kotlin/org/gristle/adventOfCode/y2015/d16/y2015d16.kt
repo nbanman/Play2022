@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2015.d16
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D16 {
     private val input = readRawInput("y2015/d16")
@@ -43,17 +45,17 @@ object Y2015D16 {
     }
 
     class SueBuilder {
-        var number = -1
-        var children = -1
-        var cats = -1
-        var samoyeds = -1
-        var pomeranians = -1
-        var akitas = -1
-        var vizslas = -1
-        var goldfish = -1
-        var trees = -1
-        var cars = -1
-        var perfumes = -1
+        private var number = -1
+        private var children = -1
+        private var cats = -1
+        private var samoyeds = -1
+        private var pomeranians = -1
+        private var akitas = -1
+        private var vizslas = -1
+        private var goldfish = -1
+        private var trees = -1
+        private var cars = -1
+        private var perfumes = -1
 
         fun build() =
             Sue(number, children, cats, samoyeds, pomeranians, akitas, vizslas, goldfish, trees, cars, perfumes)
@@ -77,7 +79,7 @@ object Y2015D16 {
 
     private const val pattern = """(Sue) (\d+): (\w+): (\d+), (\w+): (\d+), (\w+): (\d+)"""
 
-    val sues = input
+    private val sues = input
         .groupValues(pattern)
         .map { gv ->
             SueBuilder()
@@ -100,7 +102,7 @@ object Y2015D16 {
             "cars: 2\n" +
             "perfumes: 1"
 
-    val criteria = tickerTape
+    private val criteria = tickerTape
         .groupValues("""(\w+): (\d+)""")
         .map { gv -> gv[0] to gv[1].toInt() }
 

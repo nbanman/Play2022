@@ -1,22 +1,24 @@
 package org.gristle.adventOfCode.y2020.d22
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readStrippedInput
 import kotlin.math.min
 
 object Y2020D22 {
     private val input = readStrippedInput("y2020/d22")
 
-    val cardNos = input
+    private val cardNos = input
         .split("\n\n")
-        .map { half -> half
-            .split('\n')
-            .mapNotNull { it.toIntOrNull() }
+        .map { half ->
+            half
+                .split('\n')
+                .mapNotNull { it.toIntOrNull() }
         }
 
     val p1 = cardNos.first()
     val p2 = cardNos.last()
 
-    fun List<Int>.score() = foldIndexed(0) { index, acc, i -> acc + (size - index) * i }
+    private fun List<Int>.score() = foldIndexed(0) { index, acc, i -> acc + (size - index) * i }
 
     fun part1(): Int {
         tailrec fun play(p1: List<Int>, p2: List<Int>): List<Int> {

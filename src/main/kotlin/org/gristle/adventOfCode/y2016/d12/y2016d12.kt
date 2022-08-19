@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2016.d12
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 data class Assembunny(val type: String, val arg1: String, val arg2: String, var toggled: Boolean = false) {
     fun tgl() {
@@ -47,7 +49,7 @@ data class Registers(var a: Int = 0, var b: Int = 0, var c: Int = 0, var d: Int 
 object Y2016D12 {
     private val input = readRawInput("y2016/d12")
 
-    private val pattern = """(\w+) (-?\w+)(?: (-?\w+))?"""
+    private val pattern = """(\w+) (-?\w+)(?: (-?\w+))?""".toRegex()
 
     fun runInstructions(
         instructions: List<Assembunny>,
@@ -55,7 +57,6 @@ object Y2016D12 {
         multiply: Boolean = false
     ): Registers {
         var i = 0
-        var clockZero = true
         while (i in instructions.indices) {
             val instruction = instructions[i]
             when (instruction.type) {
@@ -101,10 +102,7 @@ object Y2016D12 {
                     if (instruction.toggled) {
                         registers.incRegister(instruction.arg1, multiply)
                     } else {
-                        try {
-                            instructions[i + registers.valueOf(instruction.arg1)!!].tgl()
-                        } catch (e: Exception) { }
-
+                        instructions[i + registers.valueOf(instruction.arg1)!!].tgl()
                     }
                 }
                 "out" -> {
@@ -122,8 +120,8 @@ object Y2016D12 {
         .groupValues(pattern)
         .map { Assembunny(it[0], it[1], it[2]) }
 
-    val p1Registers = Registers()
-    val p2Registers = Registers().apply { updateValue("c", 1) }
+    private val p1Registers = Registers()
+    private val p2Registers = Registers().apply { updateValue("c", 1) }
 
     fun part1() = runInstructions(instructions, p1Registers).a
 

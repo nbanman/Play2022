@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2015.d12
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D12 {
     private val input = readRawInput("y2015/d12")
@@ -9,7 +10,7 @@ object Y2015D12 {
 
     private val pattern = Regex("""(-?\d+)""")
 
-    fun getBlockValue(input: String): Block {
+    private fun getBlockValue(input: String): Block {
         var numValue = 0
         var index = 0
         var isRed = false

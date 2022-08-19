@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2020.d2
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2020D2 {
     private val input = readRawInput("y2020/d2")
@@ -12,7 +14,7 @@ object Y2020D2 {
                     (if (password[range.last - 1] == letter) 1 else 0))
     }
 
-    val policies = input
+    private val policies = input
         .groupValues("""(\d+)-(\d+) ([a-z]): ([a-z]+)""")
         .map { gv ->
             val range = gv[0].toInt()..gv[1].toInt()

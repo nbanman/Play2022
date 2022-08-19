@@ -1,11 +1,13 @@
 package org.gristle.adventOfCode.y2019.d8
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toGrid
 
 object Y2019D8 {
     private val input = readRawInput("y2019/d8")
 
-    val layers = input.chunked(25 * 6) // Split the data into a list of equal sized layers
+    private val layers = input.chunked(25 * 6) // Split the data into a list of equal sized layers
     
     fun part1(): Int? {
         return layers

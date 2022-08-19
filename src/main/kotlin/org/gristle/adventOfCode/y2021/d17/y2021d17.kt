@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2021.d17
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
 object Y2021D17 {
@@ -11,7 +13,7 @@ object Y2021D17 {
             val newXV = when {
                 velocity.x > 0 -> velocity.x - 1
                 velocity.x < 0 -> velocity.x + 1
-                else -> velocity.x
+                else -> 0
             }
             return Vector(pos + velocity, Coord(newXV, velocity.y - 1))
         }
@@ -43,22 +45,22 @@ object Y2021D17 {
 
         val minY = br.y
         val maxY = (1 until abs(br.y)).sum()
-        val yRange = br.y..tl.y
-        val xRange = tl.x..br.x
-        val stallSpeed = let {
+        private val yRange = br.y..tl.y
+        private val xRange = tl.x..br.x
+        private val stallSpeed = let {
             (5..br.x).first { (1..it).sum() in xRange }
         }
 
     }
 
-    val intermediate = """(-?\d+)\.\.(-?\d+), y=(-?\d+)\.\.(-?\d+)"""
+    private val intermediate = """(-?\d+)\.\.(-?\d+), y=(-?\d+)\.\.(-?\d+)"""
         .toRegex()
         .find(input)!!
         .groupValues
         .drop(1)
         .map { it.toInt() }
 
-    val box = intermediate.let {
+    private val box = intermediate.let {
         val (x1, x2) = if (it[0] > it[1]) it[1] to it[0] else it[0] to it[1]
         val (y1, y2) = if (it[2] > it[3]) it[3] to it[2] else it[2] to it[3]
         Box(Coord(x1, y2), Coord(x2, y1))
@@ -67,7 +69,7 @@ object Y2021D17 {
     fun part1() = box.maxY
 
     fun part2(): Int {
-        val ys = (box.minY..box.maxY)
+        return (box.minY..box.maxY)
             .map { it to box.ySteps(Vector(Coord(0, 0), Coord(0, it))) }
             .filter { it.second.isNotEmpty() }
             .flatMap { pair -> pair.second.map { pair.first to it } }
@@ -75,7 +77,6 @@ object Y2021D17 {
             .flatMap { pair -> pair.second.map { Coord(pair.first, it) } }
             .distinct()
             .size
-        return ys
     }
 }
 

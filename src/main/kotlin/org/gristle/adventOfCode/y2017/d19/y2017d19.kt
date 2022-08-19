@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2017.d19
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toGrid
 
 object Y2017D19 {
     class Mouse(private val maze: Grid<Char>, private val startIndex: Int) {
@@ -19,7 +22,6 @@ object Y2017D19 {
 
             if (neighborIndices.size == 1 && index != startIndex) return newReport to steps + 1
 
-            val vector = maze.coordIndex(index)
             val newIndex = if (spot == '+') {
                 if (direction == "up" || direction == "down") {
                     if ((index - 1) in neighborIndices) index - 1 else index + 1

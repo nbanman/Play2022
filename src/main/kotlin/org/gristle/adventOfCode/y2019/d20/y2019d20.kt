@@ -40,9 +40,7 @@ object Y2019D20 {
 
         var safeToDelete = name in " #AAZZ"
 
-        var allDone = false
-
-        fun getOtherSide(nodes: Grid<N1920>): N1920 {
+        private fun getOtherSide(nodes: Grid<N1920>): N1920 {
             return if (name.length != 5) {
                 this
             } else {
@@ -76,21 +74,23 @@ object Y2019D20 {
                             grid[it] != '#' && nodes[it].name != "AA" && nodes[it].name != "ZZ"
                         }
                         .map { neighborIndex ->
-                            val neighborNode = nodes[neighborIndex]//.let { if (it.name.length == 5) it.getOtherSide(nodes) else it }
+                            val neighborNode =
+                                nodes[neighborIndex]//.let { if (it.name.length == 5) it.getOtherSide(nodes) else it }
                             E1920(neighborNode, 1)
                         }
                         .apply { edges.addAll(this) }
                 }
             }
         }
-        fun replaceEdge(index: Int, edge: E1920) {
+
+        private fun replaceEdge(index: Int, edge: E1920) {
             val edgeIndex = edges.indexOfFirst { it.node.locator == index }
             val oldWeight = edges[edgeIndex].weight
             val newEdge = E1920(edge.node, edge.weight + oldWeight)
             edges[edgeIndex] = newEdge
         }
 
-        fun deleteEdge(index: Int) {
+        private fun deleteEdge(index: Int) {
             val edgeIndex = edges.indexOfFirst { it.node.locator == index }
             edges.removeAt(edgeIndex)
             safeDelete()
@@ -98,25 +98,19 @@ object Y2019D20 {
 
         fun safeDelete(): Boolean {
             if (safeToDelete) return true
-            val returnVal = if (name == ".") {
-                when {
-                    edges.size == 1 -> {
+            if (name == ".") {
+                when (edges.size) {
+                    1 -> {
                         edges[0].node.deleteEdge(locator)
                         safeToDelete = true
-                        true
                     }
-                    edges.size == 2 -> {
+                    2 -> {
                         edges[0].node.replaceEdge(locator, edges[1])
                         edges[1].node.replaceEdge(locator, edges[0])
                         safeToDelete = true
-                        true
                     }
-                    else -> { false }
                 }
-            } else {
-                false
             }
-
             return false
         }
 
@@ -126,14 +120,14 @@ object Y2019D20 {
 
     }
 
-    val maze = input.toGrid()
-    val nodes = maze.mapIndexed { index, c -> N1920(c, index, maze) }.toGrid(maze.width).apply {
+    private val maze = input.toGrid()
+    private val nodes = maze.mapIndexed { index, c -> N1920(c, index, maze) }.toGrid(maze.width).apply {
         forEach { it.getEdges(this) }
         forEach { it.safeDelete() }
     }
-    val start = nodes.find { it.name == "start" }!!
-    val end = nodes.find { it.name == "end" }!!
-    
+    private val start = nodes.find { it.name == "start" }!!
+    private val end = nodes.find { it.name == "end" }!!
+
     fun part1(): Int {
         val p1Nodes = nodes
             .filter { !it.safeToDelete }

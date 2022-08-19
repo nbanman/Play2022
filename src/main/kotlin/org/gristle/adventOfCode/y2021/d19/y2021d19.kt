@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2021.d19
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.MCoord
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readStrippedInput
 import kotlin.math.abs
 
 object Y2021D19 {
@@ -66,15 +69,16 @@ object Y2021D19 {
         }
     }
 
-    val scanners = input
+    private val scanners = input
         .groupValues(pattern)
         .map { g ->
             val id = g[0]
             val beacons = g[1].dropLast(1)
                 .split('\n')
-                .map { line -> line
-                    .split(',')
-                    .map { it.toInt() }
+                .map { line ->
+                    line
+                        .split(',')
+                        .map { it.toInt() }
                 }.map {
                     MCoord(it)
                 }

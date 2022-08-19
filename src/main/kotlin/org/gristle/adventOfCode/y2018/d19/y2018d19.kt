@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2018.d19
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 import org.gristle.adventOfCode.y2018.d19.Y2018D19.store
 
 enum class Ops(val fn: (reg: List<Long>, p: Int, a: Int, b: Int, c: Int) -> List<Long>) {
@@ -23,22 +24,22 @@ enum class Ops(val fn: (reg: List<Long>, p: Int, a: Int, b: Int, c: Int) -> List
     
     companion object {
         fun from(s: String) = when (s) {
-            "addr" -> Ops.ADDR
-            "addi" -> Ops.ADDI
-            "mulr" -> Ops.MULR
-            "muli" -> Ops.MULI
-            "banr" -> Ops.BANR
-            "bani" -> Ops.BANI
-            "borr" -> Ops.BORR
-            "bori" -> Ops.BORI
-            "setr" -> Ops.SETR
-            "seti" -> Ops.SETI
-            "gtir" -> Ops.GTIR
-            "gtri" -> Ops.GTRI
-            "gtrr" -> Ops.GTRR
-            "eqir" -> Ops.EQIR
-            "eqri" -> Ops.EQRI
-            else -> Ops.EQRR
+            "addr" -> ADDR
+            "addi" -> ADDI
+            "mulr" -> MULR
+            "muli" -> MULI
+            "banr" -> BANR
+            "bani" -> BANI
+            "borr" -> BORR
+            "bori" -> BORI
+            "setr" -> SETR
+            "seti" -> SETI
+            "gtir" -> GTIR
+            "gtri" -> GTRI
+            "gtrr" -> GTRR
+            "eqir" -> EQIR
+            "eqri" -> EQRI
+            else -> EQRR
         }
     }
 }
@@ -79,7 +80,7 @@ object Y2018D19 {
 
     fun part2(): Int {
 //     Loop is such that R3 starts as 1, R5 goes up by 1. R2 is R3 * R5. When R2 equals 105k, R0+= R3 and R3++, R5 resets
-//     If R2 goes past 105K w/o equaling it (not divisible), then R3++ and R5 resets w/o RO going up. Thus RO adds all
+//     If R2 goes past 105K w/o equaling it (not divisible), then R3++ and R5 resets w/o RO going up. Thus, RO adds all
 //     the numbers that divide evenly into 105k.
         val targetNum = 10_551_370
         return (1..targetNum).fold(0) { acc, i ->

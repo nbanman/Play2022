@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2018.d25
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
 object Y2018D25 {
@@ -18,7 +20,7 @@ object Y2018D25 {
             .groupValues(pattern) { it.toInt() }
             .map { SpaceTime(it[0], it[1], it[2], it[3]) }
 
-        var constellations = mutableListOf<MutableList<SpaceTime>>()
+        val constellations = mutableListOf<MutableList<SpaceTime>>()
 
         for (point in points) {
             val inRange = constellations.filter { constellation -> constellation.any { it.inRange(point) } }.toMutableList()

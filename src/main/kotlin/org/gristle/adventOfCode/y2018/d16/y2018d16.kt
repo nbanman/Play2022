@@ -1,11 +1,14 @@
 package org.gristle.adventOfCode.y2018.d16
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2018D16 {
     private val input = readRawInput("y2018/d16")
 
-    private val pattern = """Before: \[(\d+), (\d+), (\d+), (\d+)\]\r\n(\d+) (\d+) (\d+) (\d+)\r\nAfter:  \[(\d+), (\d+), (\d+), (\d+)\]""".toRegex()
+    private val pattern =
+        """Before: \[(\d+), (\d+), (\d+), (\d+)]\r\n(\d+) (\d+) (\d+) (\d+)\r\nAfter: {2}\[(\d+), (\d+), (\d+), (\d+)]""".toRegex()
 
     private data class Trainer(val before: List<Int>, val after: List<Int>, val opcode: Int,
                                val a: Int, val b: Int, val c: Int) {

@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2019.d10
 
 import org.gristle.adventOfCode.utilities.*
-import java.util.PriorityQueue
 import kotlin.math.PI
 import kotlin.math.atan2
 
@@ -38,14 +37,14 @@ object Y2019D10 {
             .sortedBy { it.second.manhattanDistance(station) }
             .groupBy { it.first }
 
-        val pq = IndexedHeap.maxHeap<Pair<Double, Coord>>(Comparator {
-                o1, o2 -> (o1.first - o2.first).let { if(it < 0.0) -1 else if (it > 0.0) 1 else 0 }
-        })
+        val pq = IndexedHeap.maxHeap<Pair<Double, Coord>> { o1, o2 ->
+            (o1.first - o2.first).let { if (it < 0.0) -1 else if (it > 0.0) 1 else 0 }
+        }
         for (angle in angles.keys) {
             angles[angle]!!.forEachIndexed { index, pair -> pq.add(-10.0 * index + pair.first to pair.second) }
         }
         val p2 = pq.dumpToList()[199].let { it.second.x * 100 + it.second.y }
-        
+
         return p1.first to p2
     }
    

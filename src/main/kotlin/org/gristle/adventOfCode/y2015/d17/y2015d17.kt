@@ -1,11 +1,12 @@
 package org.gristle.adventOfCode.y2015.d17
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readInput
 
 object Y2015D17 {
     private val input = readInput("y2015/d17")
 
-    fun getCombos(containers: List<Int>, storage: Int): List<List<Int>> {
+    private fun getCombos(containers: List<Int>, storage: Int): List<List<Int>> {
         tailrec fun gC(remaining: List<Int>, combos: List<List<Int>>): List<List<Int>> {
             return if (remaining.isNotEmpty()) {
                 val latest = remaining.first()

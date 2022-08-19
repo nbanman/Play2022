@@ -1,12 +1,13 @@
 package org.gristle.adventOfCode.y2016.d19
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.log10
 import kotlin.math.pow
 
 // Not refactored; ugly but fast
 object Y2016D19 {
-    private val input = 3005290
+    private val input = readRawInput("y2016/d19").toInt()
 
     val exponent = (log10(input.toDouble()) / log10(2.0)).toInt()
 
