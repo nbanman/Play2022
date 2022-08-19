@@ -191,6 +191,48 @@ object Graph {
     }
 
     /**
+     * Finds the shortest path in a directed, unweighted graph from a starting point to all vertices traversed
+     * until all reachable vertices have been traversed or the end condition is met.
+     *
+     * @param startId (required). The id for the starting vertex.
+     *
+     * @param endCondition (optional) By default pathfinding will continue until all vertices are explored.
+     * This can be changed by specifying your own predicate for ending, such as arriving at a particular
+     * vertex.
+     *
+     * @param edges
+     * @param defaultEdges (optional) The function can either take in a map providing a list of edges for each
+     * vertex id, or a function that takes a vertex id provides a list of edges, or both. If both are provided,
+     * the function will only be used where the map entry is absent.
+     */
+    inline fun <E> dfs(
+        startId: E,
+        endCondition: (E) -> Boolean = { false },
+        edges: Map<E, List<E>> = mapOf(),
+        defaultEdges: (E) -> List<E> = { emptyList() }
+    ): List<Vertex<E>> {
+        val start = StdVertex(startId, 0.0)
+        val edgeMap = edges.toMutableMap()
+        val q = LinkedList<StdVertex<E>>()
+        q.add(start)
+        // "visited" serves double duty here. If it were just to ensure that already determined vertices were
+        // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
+        // which gets returned as part of the function return.
+        val visited = mutableMapOf<E, StdVertex<E>>()
+        while (q.isNotEmpty()) {
+            val current = q.pop() ?: break
+            if (current.id !in visited) {
+                visited[current.id] = current
+                if (endCondition(current.id)) return visited.values.toList()
+                edgeMap[current.id] ?: defaultEdges(current.id)
+                    .map { StdVertex(it, current.weight + 1.0, current) }
+                    .forEach { q.add(it) }
+            }
+        }
+        return visited.values.toList()
+    }
+
+    /**
      * Finds the shortest path in a directed, weighted graph from a starting point to all vertices traversed
      * until all reachable vertices have been traversed or the end condition is met.
      *

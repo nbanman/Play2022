@@ -1,6 +1,8 @@
 package org.gristle.adventOfCode.y2016.d13
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.elapsedTime
 
 // Refactored!
 
@@ -17,7 +19,7 @@ object Y2016D13 {
         return ones % 2 == 0
     }
 
-    private val distances = Graph.bfs(start, { it == end }) { coord ->
+    private val distances = Graph.dfs(start, { it == end }) { coord ->
         coord
             .getNeighbors()
             .filter { it.isOpen() }
@@ -30,7 +32,7 @@ object Y2016D13 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2016D13.part1()} (${elapsedTime(time)}ms)") // 92
+    println("Part 1: ${Y2016D13.part1()} (${elapsedTime(time)}ms)") // 92 (44ms)
     time = System.nanoTime()
     println("Part 2: ${Y2016D13.part2()} (${elapsedTime(time)}ms)") // 124
 }

@@ -15,7 +15,7 @@ import org.gristle.adventOfCode.utilities.toGrid
  * I had an intermediary solution that just used BFS in one stage. It was very clean, but ran almost one second
  * slower than the OG version.
  *
- * My final version calculates naive weighted edges between all numbers using BFS, then feeds that into a Dijkstra
+ * My final version calculates naive weighted edges between all numbers using DFS, then feeds that into a Dijkstra
  * search. The "location" tracks not only the current position, but all numbers visited. This is enough information
  * to provide appropriate end conditions for both parts 1 and 2.
  */
@@ -39,7 +39,7 @@ object Y2016D24 {
     private val edgeMap = numbers.associate { (location, number) ->
         // Obtain list of all distances from the number to every other number in the map
         val distances = Graph
-            .bfs(location, defaultEdges = getBfsNeighbors)
+            .dfs(location, defaultEdges = getBfsNeighbors)
             .filter { layout[it.id].isDigit() }
         // Create map associating the number to a list of Edges with the other number and the distance.
         number to distances.drop(1).map { Graph.Edge(layout[it.id], it.weight) }
