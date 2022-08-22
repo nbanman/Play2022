@@ -19,7 +19,7 @@ object Y2016D13 {
         return ones % 2 == 0
     }
 
-    private val distances = Graph.dfs(start, { it == end }) { coord ->
+    private val distances = Graph.bfs(start, { it == end }) { coord ->
         coord
             .getNeighbors()
             .filter { it.isOpen() }
