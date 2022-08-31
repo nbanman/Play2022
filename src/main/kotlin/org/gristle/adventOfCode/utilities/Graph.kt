@@ -213,12 +213,12 @@ object Graph {
     ): List<Vertex<E>> {
         val start = StdVertex(startId, 0.0)
         val edgeMap = edges.toMutableMap()
-        val q = LinkedList<StdVertex<E>>()
+        val q = LinkedList<Vertex<E>>()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
         // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
         // which gets returned as part of the function return.
-        val visited = mutableMapOf<E, StdVertex<E>>()
+        val visited = mutableMapOf<E, Vertex<E>>()
         while (q.isNotEmpty()) {
             val current = q.pop() ?: break
             if (current.id !in visited) {

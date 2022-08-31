@@ -8,7 +8,11 @@ object Y2021D15 {
     private val cavern = input.toGrid().mapToGrid { it.toDigit() }
 
     fun solve(cavern: Grid<Int>): Int {
-        val d = Graph.dijkstra(0, { it == cavern.lastIndex }) {
+        val end = cavern.lastCoordIndex()
+        val heuristic = { i: Int ->
+            cavern.coordIndex(i).manhattanDistance(end).toDouble()
+        }
+        val d = Graph.aStar(0, heuristic) {
             cavern.getNeighborIndices(it).map { neighborIndex ->
                 Graph.Edge(neighborIndex, cavern[neighborIndex].toDouble())
             }
@@ -43,7 +47,7 @@ object Y2021D15 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2021D15.part1()} (${elapsedTime(time)}ms)") // 602
+    println("Part 1: ${Y2021D15.part1()} (${elapsedTime(time)}ms)") // 602 (141ms Dij) (113 aStar)
     time = System.nanoTime()
-    println("Part 2: ${Y2021D15.part2()} (${elapsedTime(time)}ms)") // 2935
+    println("Part 2: ${Y2021D15.part2()} (${elapsedTime(time)}ms)") // 2935 (555ms Dij) (465 aStar)
 }
