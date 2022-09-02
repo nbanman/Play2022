@@ -7,9 +7,12 @@ import org.gristle.adventOfCode.utilities.readRawInput
 object Y2015D4 {
     private val input = readRawInput("y2015/d4")
 
-    fun part1() = generateSequence(1) { it + 1 }.first { (input + it).md5().take(5) == "00000" }
+    fun solve(digitLength: Int) = generateSequence(1) { it + 1 }
+        .first { i -> (input + i).md5().take(digitLength).all { it == '0' } }
 
-    fun part2() = generateSequence(1) { it + 1 }.first { (input + it).md5().take(6) == "000000" }
+    fun part1() = solve(5)
+
+    fun part2() = solve(6)
 }
 
 fun main() {
