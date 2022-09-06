@@ -40,7 +40,7 @@ object Y2021D16 {
             override fun versionSum() = version + subPackets.sumOf { it.versionSum() }
 
             override fun toString(): String {
-                return "Literal(version=$version, typeId=$typeId, value=${value()}, subPackets=$subPackets)"
+                return "Operator(version=$version, typeId=$typeId, value=${value()}, subPackets=$subPackets)"
             }
         }
 
