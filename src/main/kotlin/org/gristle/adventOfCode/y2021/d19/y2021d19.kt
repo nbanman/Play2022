@@ -12,8 +12,8 @@ object Y2021D19 {
     private val pattern = """--- scanner (\d+) ---\n((?:-?\d+,-?\d+,-?\d+\n)+)""".toRegex()
 
     fun <T> List<T>.elementPairs(): Sequence<Pair<T, T>> = sequence {
-        for(i in 0 until size-1)
-            for(j in i+1 until size)
+        for (i in 0 until size - 1)
+            for (j in i + 1 until size)
                 yield(get(i) to get(j))
     }
     
