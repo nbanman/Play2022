@@ -61,14 +61,11 @@ object Y2020D24 {
                 val blackNeighbors = hexagon.neighbors().count { flipMap[it] ?: false }
                 val isBlack = flipMap[hexagon] ?: false
                 newMap[hexagon] = if (isBlack) { // if black
-//                    println("$hexagon is black, has $blackNeighbors black neighbors, so ${ if(blackNeighbors in 1..2)"stays black" else "becomes white" }")
                     blackNeighbors in 1..2
                 } else {
-//                    println("$hexagon is white, has $blackNeighbors black neighbors, so ${ if(blackNeighbors == 2)"becomes black" else "stays white" }")
                     blackNeighbors == 2
                 }
             }
-//            println("day $day: ${flipMap.count { it.value } }")
             flipMap = newMap
         }
         return flipMap.count { it.value }
