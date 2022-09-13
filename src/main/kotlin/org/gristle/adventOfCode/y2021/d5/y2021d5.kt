@@ -45,21 +45,17 @@ object Y2021D5 {
         .groupValues(pattern) { it.toInt() }
         .map { Line(Coord(it[0], it[1]), Coord(it[2], it[3])) }
 
-    fun part1(): Int {
+    fun solve(includeDiagonals: Boolean): Int {
         val space = mutableMapOf<Coord, Int>()
-        lines.flatMap { it.straightRange() }.forEach {
+        lines.flatMap { it.straightRange(includeDiagonals) }.forEach {
             space[it] = (space[it] ?: 0) + 1
         }
         return space.count { it.value >= 2 }
     }
 
-    fun part2(): Int {
-        val space = mutableMapOf<Coord, Int>()
-        lines.flatMap { it.straightRange(true) }.forEach {
-            space[it] = (space[it] ?: 0) + 1
-        }
-        return space.count { it.value >= 2 }
-    }
+    fun part1() = solve(false)
+
+    fun part2() = solve(true)
 
 }
 
