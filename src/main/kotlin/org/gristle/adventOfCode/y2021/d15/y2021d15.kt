@@ -6,21 +6,26 @@ object Y2021D15 {
 
     private val initialCavern = readRawInput("y2021/d15").toGrid { it.toDigit() }
 
-    private fun solve(cavern: Grid<Int>): Int {
+    /**
+     * Uses A* algorithm to find the shortest path from the start (index 0) to the end (lastIndex of Grid).
+     * The locator id is the index in the Grid.
+     * The heuristic is manhattan distance from the end.
+     * The end position is implicitly determined by the heuristic function returning 0.
+     * Rather than supply a graph, the defaultEdges function supplies edges on demand.
+     */
+    private fun shortestPath(cavern: Grid<Int>): Int {
         val heuristic = { i: Int -> cavern.coordIndex(i).manhattanDistance(cavern.lastCoordIndex()).toDouble() }
-        val defaultEdges = { i: Int ->
-            cavern.getNeighborIndices(i).map { neighborIndex ->
-                Graph.Edge(neighborIndex, cavern[neighborIndex].toDouble())
-            }
-        }
-        val distances = Graph.aStar(startId = 0, heuristic = heuristic, defaultEdges = defaultEdges)
-        return distances.last().weight.toInt()
+        val defaultEdges = { i: Int -> cavern.getNeighborIndices(i).map { Graph.Edge(it, cavern[it].toDouble()) } }
+        return Graph.aStar(startId = 0, heuristic = heuristic, defaultEdges = defaultEdges)
+            .last() // aStar function provides list of all nodes in path, so it's last one we care about
+            .weight
+            .toInt()
     }
 
-    fun part1() = solve(initialCavern)
+    fun part1() = shortestPath(initialCavern)
 
     fun part2(): Int {
-
+        // Adds *n* to the existing risk, with 10 rolling back to 1.
         fun Int.addRisk(n: Int) = (this + n - 1) % 9 + 1
 
         val expandedCavern = initialCavern
@@ -35,7 +40,8 @@ object Y2021D15 {
                     .addDown(fatCavern.mapToGrid { it.addRisk(3) })
                     .addDown(fatCavern.mapToGrid { it.addRisk(4) })
             }
-        return solve(expandedCavern)
+
+        return shortestPath(expandedCavern)
     }
 }
 
