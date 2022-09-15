@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.*
 object Y2021D15 {
     private val input = readRawInput("y2021/d15")
 
-    private val cavern = input.toGrid().mapToGrid { it.toDigit() }
+    private val cavern = input.toGrid { it.toDigit() }
 
     fun solve(cavern: Grid<Int>): Int {
         val end = cavern.lastCoordIndex()
