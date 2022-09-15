@@ -4,32 +4,30 @@ import org.gristle.adventOfCode.utilities.*
 
 object Y2021D15 {
 
-    private val cavern = readRawInput("y2021/d15").toGrid { it.toDigit() }
+    private val initialCavern = readRawInput("y2021/d15").toGrid { it.toDigit() }
 
     fun solve(cavern: Grid<Int>): Int {
-        val end = cavern.lastCoordIndex()
-        val heuristic = { i: Int ->
-            cavern.coordIndex(i).manhattanDistance(end).toDouble()
-        }
-        val distances = Graph.aStar(0, heuristic) {
-            cavern.getNeighborIndices(it).map { neighborIndex ->
+        val heuristic = { i: Int -> cavern.coordIndex(i).manhattanDistance(cavern.lastCoordIndex()).toDouble() }
+        val defaultEdges = { i: Int ->
+            cavern.getNeighborIndices(i).map { neighborIndex ->
                 Graph.Edge(neighborIndex, cavern[neighborIndex].toDouble())
             }
         }
+        val distances = Graph.aStar(startId = 0, heuristic = heuristic, defaultEdges = defaultEdges)
         return distances.last().weight.toInt()
     }
 
-    fun part1() = solve(cavern)
+    fun part1() = solve(initialCavern)
 
     fun part2(): Int {
 
         fun Int.addRisk(n: Int) = (this + n - 1) % 9 + 1
 
-        val expandedCavern = cavern
-            .addRight(cavern.mapToGrid { it.addRisk(1) })
-            .addRight(cavern.mapToGrid { it.addRisk(2) })
-            .addRight(cavern.mapToGrid { it.addRisk(3) })
-            .addRight(cavern.mapToGrid { it.addRisk(4) })
+        val expandedCavern = initialCavern
+            .addRight(initialCavern.mapToGrid { it.addRisk(1) })
+            .addRight(initialCavern.mapToGrid { it.addRisk(2) })
+            .addRight(initialCavern.mapToGrid { it.addRisk(3) })
+            .addRight(initialCavern.mapToGrid { it.addRisk(4) })
             .let { fatCavern ->
                 fatCavern
                     .addDown(fatCavern.mapToGrid { it.addRisk(1) })
