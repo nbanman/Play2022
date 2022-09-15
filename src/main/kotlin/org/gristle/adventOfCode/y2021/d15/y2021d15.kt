@@ -3,9 +3,8 @@ package org.gristle.adventOfCode.y2021.d15
 import org.gristle.adventOfCode.utilities.*
 
 object Y2021D15 {
-    private val input = readRawInput("y2021/d15")
 
-    private val cavern = input.toGrid { it.toDigit() }
+    private val cavern = readRawInput("y2021/d15").toGrid { it.toDigit() }
 
     fun solve(cavern: Grid<Int>): Int {
         val end = cavern.lastCoordIndex()
@@ -40,7 +39,6 @@ object Y2021D15 {
             }
         return solve(expandedCavern)
     }
-
 }
 
 fun main() {
