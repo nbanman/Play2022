@@ -6,7 +6,7 @@ object Y2021D15 {
 
     private val initialCavern = readRawInput("y2021/d15").toGrid { it.toDigit() }
 
-    fun solve(cavern: Grid<Int>): Int {
+    private fun solve(cavern: Grid<Int>): Int {
         val heuristic = { i: Int -> cavern.coordIndex(i).manhattanDistance(cavern.lastCoordIndex()).toDouble() }
         val defaultEdges = { i: Int ->
             cavern.getNeighborIndices(i).map { neighborIndex ->
