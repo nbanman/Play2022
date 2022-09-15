@@ -12,21 +12,19 @@ object Y2021D15 {
         val heuristic = { i: Int ->
             cavern.coordIndex(i).manhattanDistance(end).toDouble()
         }
-        val d = Graph.aStar(0, heuristic) {
+        val distances = Graph.aStar(0, heuristic) {
             cavern.getNeighborIndices(it).map { neighborIndex ->
                 Graph.Edge(neighborIndex, cavern[neighborIndex].toDouble())
             }
         }
-        return d.last().weight.toInt()
+        return distances.last().weight.toInt()
     }
 
     fun part1() = solve(cavern)
 
     fun part2(): Int {
 
-        fun Int.addRisk(n: Int) = (this + n).let {
-            if (it > 9) it - 9 else it
-        }
+        fun Int.addRisk(n: Int) = (this + n - 1) % 9 + 1
 
         val expandedCavern = cavern
             .addRight(cavern.mapToGrid { it.addRisk(1) })
