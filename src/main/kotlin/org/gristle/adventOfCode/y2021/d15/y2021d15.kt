@@ -14,7 +14,7 @@ object Y2021D15 {
      * Rather than supply a graph, the defaultEdges function supplies edges on demand.
      */
     private fun shortestPath(cavern: Grid<Int>): Int {
-        val heuristic = { i: Int -> cavern.coordIndex(i).manhattanDistance(cavern.lastCoordIndex()).toDouble() }
+        val heuristic = { i: Int -> cavern.coordOf(i).manhattanDistance(cavern.lastCoord()).toDouble() }
         val defaultEdges = { i: Int -> cavern.getNeighborIndices(i).map { Graph.Edge(it, cavern[it].toDouble()) } }
         return Graph.aStar(startId = 0, heuristic = heuristic, defaultEdges = defaultEdges)
             .last() // aStar function provides list of all nodes in path, so it's last one we care about

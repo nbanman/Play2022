@@ -36,11 +36,11 @@ object Y2020D11 {
     }
 
     fun part2() = stabilize(5) { grid, i ->
-        val coord = grid.coordIndex(i)
+        val coord = grid.coordOf(i)
         grid
             .getNeighborIndices(i, true)
             .map { neighborIndex ->
-                val slope = grid.coordIndex(neighborIndex) - coord
+                val slope = grid.coordOf(neighborIndex) - coord
                 var seesOccupied = false
                 var newCoord = coord + slope
                 while (grid.validCoord(newCoord) && !seesOccupied) {

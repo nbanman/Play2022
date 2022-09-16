@@ -16,11 +16,11 @@ object Y2020D17 {
         startGrid.mapIndexedNotNull { index, c ->
             if (c == '.') null else index
         }.forEach { index ->
-            val gridCoord = startGrid.coordIndex(index)
+            val gridCoord = startGrid.coordOf(index)
             val coordinates = (0 until dimensions).map { dim ->
                 when (dim) {
                     0 -> gridCoord.x
-                    1 -> startGrid.coordIndex(index).y
+                    1 -> startGrid.coordOf(index).y
                     else -> 0
                 }
             }

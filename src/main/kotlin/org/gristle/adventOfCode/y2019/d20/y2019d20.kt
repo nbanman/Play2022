@@ -18,7 +18,7 @@ object Y2019D20 {
         } else {
             Nsew.values()
                 .mapNotNull { dir ->
-                    val coord = grid.coordIndex(locator)
+                    val coord = grid.coordOf(locator)
                     val forwardCoord = dir.forward(coord)
                     if (grid.validCoord(forwardCoord) && grid[forwardCoord] == '.') {
                         val letters = if (dir == Nsew.SOUTH || dir == Nsew.EAST) {
@@ -115,7 +115,7 @@ object Y2019D20 {
         }
 
         override fun toString(): String {
-            return "N1920(\"$name\", locator=$locator, coord=${grid.coordIndex(locator)}, edges=${edges.size}"
+            return "N1920(\"$name\", locator=$locator, coord=${grid.coordOf(locator)}, edges=${edges.size}"
         }
 
     }
@@ -148,7 +148,7 @@ object Y2019D20 {
     fun part2(): Int {
         data class DId1920(val index: Int, val name: String, val level: Int = 0) {
             override fun toString(): String {
-                return "DId1920(index=$index, coord=${nodes.coordIndex(index)}, name='$name', level=$level)"
+                return "DId1920(index=$index, coord=${nodes.coordOf(index)}, name='$name', level=$level)"
             }
         }
         val distance = Graph.dijkstra(

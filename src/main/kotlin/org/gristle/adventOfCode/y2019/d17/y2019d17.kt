@@ -20,13 +20,13 @@ object Y2019D17 {
             if (l != 35L || grid.getNeighbors(index).any { it != 35L }) {
                 null
             } else {
-                grid.coordIndex(index)
+                grid.coordOf(index)
             }
         }.map { it.x * it.y}
         val p1 = intersections.sum()
 
         // Part 2
-        var coord = grid.coordIndexOf(94L)
+        var coord = grid.coordOfElement(94L)
         var dir = Nsew.NORTH
         var counter = 0
         val path = mutableListOf<String>()

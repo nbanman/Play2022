@@ -16,7 +16,7 @@ object Y2021D13 {
                     val (larger, smaller) = if (left.size > right.size) left to right else right to left
                     val offset = larger.width - smaller.width
                     List(larger.size) { i ->
-                        val lCoord = larger.coordIndex(i)
+                        val lCoord = larger.coordOf(i)
                         val sCoord = lCoord + Coord(offset, 0)
                         larger[lCoord] or if (smaller.validCoord(sCoord)) smaller[sCoord] else false
                     }.toGrid(larger.width)
@@ -29,7 +29,7 @@ object Y2021D13 {
                     val (larger, smaller) = if (up.size > down.size) up to down else down to up
                     val offset = smaller.height - larger.height
                     List(larger.size) { i ->
-                        val lCoord = larger.coordIndex(i)
+                        val lCoord = larger.coordOf(i)
                         val sCoord = lCoord + Coord(0, offset)
                         larger[lCoord] or if (smaller.validCoord(sCoord)) smaller[sCoord] else false
                     }.toGrid(larger.width)

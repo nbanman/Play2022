@@ -23,7 +23,7 @@ object Y2018D6 {
     fun part1(): Int {
         for (index in space.indices) {
             if (space[index] >= 0) continue
-            val coord = space.coordIndex(index)
+            val coord = space.coordOf(index)
             val (closest, next) = coordinates
                 .map { it.manhattanDistance(coord) }
                 .withIndex()
@@ -47,7 +47,7 @@ object Y2018D6 {
     }
 
     fun part2() = space.withIndex().count { (index, _) ->
-        val coord = space.coordIndex(index)
+        val coord = space.coordOf(index)
         coordinates.sumOf { it.manhattanDistance(coord) } < 10_000
     }
 }

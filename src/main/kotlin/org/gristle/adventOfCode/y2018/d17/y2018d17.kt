@@ -12,7 +12,7 @@ object Y2018D17 {
     private fun MutableGrid<Char>.poolSpots() = count { it == '~' }
 
     private fun spread(cavern: MutableGrid<Char>, spot: Int) {
-        val coord = cavern.coordIndex(spot)
+        val coord = cavern.coordOf(spot)
         // Go left
         var leftMost = coord.x
         for (x in coord.x downTo 1) {

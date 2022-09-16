@@ -35,7 +35,7 @@ object Y2018D13 {
             .mapIndexedNotNull { index, c ->
                 if (c in "<^>v") {
                     Car(
-                        maze.coordIndex(index),
+                        maze.coordOf(index),
                         when (c) {
                             '^' -> Nsew.NORTH
                             'v' -> Nsew.SOUTH

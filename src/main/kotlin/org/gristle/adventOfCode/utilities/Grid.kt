@@ -13,13 +13,13 @@ interface Grid<out E> : List<E> {
     operator fun get(x: Int, y: Int): E
     operator fun get(coord: Coord): E
 
-    fun coordIndex(n: Int): Coord
+    fun coordOf(n: Int): Coord
 
-    fun coordIndexOf(e: @UnsafeVariance E): Coord
+    fun coordOfElement(e: @UnsafeVariance E): Coord
 
-    fun lastCoordIndexOf(e: @UnsafeVariance E): Coord
+    fun lastCoordOfElement(e: @UnsafeVariance E): Coord
 
-    fun lastCoordIndex(): Coord
+    fun lastCoord(): Coord
 
     fun indexOf(x: Int, y: Int): Int
 
@@ -93,13 +93,13 @@ class ArrayGrid<E> private constructor(
 
     override operator fun get(coord: Coord): E = get(coord.x, coord.y)
 
-    override fun coordIndex(n: Int): Coord = Coord(n % width, n / width)
+    override fun coordOf(n: Int): Coord = Coord(n % width, n / width)
 
-    override fun coordIndexOf(e: @UnsafeVariance E): Coord = coordIndex(indexOf(e))
+    override fun coordOfElement(e: @UnsafeVariance E): Coord = coordOf(indexOf(e))
 
-    override fun lastCoordIndexOf(e: @UnsafeVariance E): Coord = coordIndex(lastIndexOf(e))
+    override fun lastCoordOfElement(e: @UnsafeVariance E): Coord = coordOf(lastIndexOf(e))
 
-    override fun lastCoordIndex(): Coord = coordIndex(lastIndex)
+    override fun lastCoord(): Coord = coordOf(lastIndex)
 
     override fun indexOf(x: Int, y: Int): Int = y * width + x
 
@@ -140,7 +140,7 @@ class ArrayGrid<E> private constructor(
         index: Int,
         includeDiagonals: Boolean,
         wrapAround: Boolean
-    ): List<Int> = getNeighborIndices(coordIndex(index), includeDiagonals, wrapAround)
+    ): List<Int> = getNeighborIndices(coordOf(index), includeDiagonals, wrapAround)
 
     override fun getNeighborIndices(
         x: Int,
@@ -210,7 +210,7 @@ class ArrayGrid<E> private constructor(
     }
 
     override fun getNeighbors(index: Int, includeDiagonals: Boolean, wrapAround: Boolean) =
-        getNeighbors(coordIndex(index), includeDiagonals, wrapAround)
+        getNeighbors(coordOf(index), includeDiagonals, wrapAround)
 
     private fun rotate(changeShape: Boolean, transform: (Int) -> Int): Grid<E> {
         return List(size) { i->

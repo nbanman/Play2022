@@ -8,12 +8,12 @@ object Y2018D20 {
 
     fun solve(): Pair<Int, Int> {
         val myMap = makeMap()
-        val d = Graph.bfs(myMap.coordIndexOf('X')) { coord ->
+        val d = Graph.bfs(myMap.coordOfElement('X')) { coord ->
             myMap.getNeighborIndices(coord)
                 .filter { myMap[it] != '#' }
-                .map { myMap.coordIndex(it) }
+                .map { myMap.coordOf(it) }
         }
-            val distances = MutableList<Int?>(myMap.size) { null }
+        val distances = MutableList<Int?>(myMap.size) { null }
             d.forEach { v ->
                 distances[myMap.indexOf(v.id)] = v.weight.toInt()
             }
@@ -75,8 +75,8 @@ object Y2018D20 {
 
         exploreMap(data, Coord(width / 2, width / 2))
 
-        val topLeft = map.coordIndexOf('#')
-        val bottomRight = map.lastCoordIndexOf('#')
+        val topLeft = map.coordOfElement('#')
+        val bottomRight = map.lastCoordOfElement('#')
         val gridSizes = bottomRight - topLeft
 
         val returnMap = map

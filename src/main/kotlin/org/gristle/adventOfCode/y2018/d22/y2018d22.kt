@@ -106,7 +106,7 @@ object Y2018D22 {
         cavern
             .getNeighborIndices(id.pos)
             .map {
-                val pos = cavern.coordIndex(it)
+                val pos = cavern.coordOf(it)
                 val (newTool, weight) = changeGear(pos, id)
                 val weightMod = if (pos == target && newTool != Tool.TORCH) 7 else 0
                 Graph.Edge(Locator(pos, newTool), weight.toDouble() + weightMod)
