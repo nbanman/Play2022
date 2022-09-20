@@ -6,9 +6,8 @@ import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
 
 object Y2021D9 {
-    private val input = readRawInput("y2021/d9")
-
-    private val heightMap = input.toGrid { Character.getNumericValue(it) }
+    private val heightMap = readRawInput("y2021/d9")
+        .toGrid { Character.getNumericValue(it) }
 
     private val lowIndices = heightMap
         .indices
