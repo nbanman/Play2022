@@ -16,20 +16,17 @@ object Y2021D9 {
 
     fun part1() = lowIndices.sumOf { heightMap[it] + 1 }
 
-    private fun Int.basinSize(): Int {
-        val neighbors = { id: Int ->
-            heightMap
-                .getNeighborIndices(id)
-                .filter { heightMap[it] != 9 && heightMap[it] > heightMap[id] }
-        }
-        return Graph.dfs(this, defaultEdges = neighbors).size
+    private val neighbors = { id: Int ->
+        heightMap
+            .getNeighborIndices(id)
+            .filter { heightMap[it] != 9 && heightMap[it] > heightMap[id] }
     }
-    
+
     fun part2() = lowIndices
-        .map { it.basinSize() }
-        .sortedDescending()
-        .take(3)
-        .reduce { acc, i -> acc * i }
+        .map { Graph.dfs(startId = it, defaultEdges = neighbors).size } // for each low point get size of each basin
+        .sortedDescending() // sort by largest first
+        .take(3) // take top 3
+        .reduce { acc, i -> acc * i } // multiply them together
 }
 
 fun main() {
