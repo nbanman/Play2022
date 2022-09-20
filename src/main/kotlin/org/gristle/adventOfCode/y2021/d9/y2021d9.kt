@@ -11,13 +11,8 @@ object Y2021D9 {
     private val heightMap = input.toGrid { Character.getNumericValue(it) }
 
     private val lowIndices = heightMap
-        .mapIndexedNotNull { index, height ->
-            if (heightMap.getNeighbors(index).all { it > height }) {
-                index
-            } else {
-                null
-            }
-        }
+        .indices
+        .filter { index -> heightMap.getNeighbors(index).all { it > heightMap[index] } }
 
     fun part1() = lowIndices.sumOf { heightMap[it] + 1 }
 
