@@ -11,14 +11,14 @@ object Y2021D18 {
     data class Snailfish constructor(val expression: String) {
 
         companion object {
-            private val bracketPattern = Regex("""^\[(\d{1,2}),(\d{1,2})]""")
-            private val lastNumberPattern = Regex("""(\d+)\D*${'$'}""")
-            private val nextNumberPattern = Regex("""^\D*(\d+)""")
-            private val splitPattern = Regex("""\d{2,}""")
-
             fun from(expression: String): Snailfish {
 
                 fun String.validated(): String {
+
+                    val bracketPattern = Regex("""^\[(\d{1,2}),(\d{1,2})]""")
+                    val lastNumberPattern = Regex("""(\d+)\D*${'$'}""")
+                    val nextNumberPattern = Regex("""^\D*(\d+)""")
+
                     // look for explodes
                     val bracketStack = Stack<Int>()
                     for (i in indices) {
@@ -54,6 +54,7 @@ object Y2021D18 {
                         }
                     }
                     // look for splits
+                    val splitPattern = Regex("""\d{2,}""")
                     splitPattern.find(this)?.let { split ->
                         val splitInt = split.value.toInt()
                         val replacement = "[${ splitInt / 2 },${ ceil(splitInt / 2.0).toInt() }]"

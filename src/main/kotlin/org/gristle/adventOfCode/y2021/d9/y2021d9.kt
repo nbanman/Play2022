@@ -1,15 +1,14 @@
 package org.gristle.adventOfCode.y2021.d9
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toGrid
 
 object Y2021D9 {
     private val input = readRawInput("y2021/d9")
 
-    private val heightMap = input
-        .toGrid()
-        .let { charGrid ->
-            charGrid.map { Character.getNumericValue(it) }.toGrid(charGrid.width)
-        }
+    private val heightMap = input.toGrid { Character.getNumericValue(it) }
 
     private val lowIndices = heightMap
         .mapIndexedNotNull { index, height ->
@@ -21,20 +20,12 @@ object Y2021D9 {
         }
 
     private fun Int.basinSize(): Int {
-        var count = 0
-        val heap = Heap.minHeap<Int, Int>()
-        heap.add(heightMap[this], this)
-        val visited = mutableSetOf<Int>()
-        while (true) {
-            val x = heap.pollUntil { !visited.contains(it) } ?: return count
-            visited.add(x)
-            count++
-            val higherNeighbors = heightMap
-                .getNeighborIndices(x)
-                .filter { heightMap[it] != 9 && heightMap[it] > heightMap[x] }
-                .map { heightMap[it] to it }
-            heap.addAll(higherNeighbors)
-        }
+        return Graph
+            .dfs(this) { x ->
+                heightMap
+                    .getNeighborIndices(x)
+                    .filter { heightMap[it] != 9 && heightMap[it] > heightMap[x] }
+            }.size
     }
 
     fun part1() = lowIndices.sumOf { heightMap[it] + 1 }
