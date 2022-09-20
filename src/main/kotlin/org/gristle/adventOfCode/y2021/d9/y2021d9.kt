@@ -22,7 +22,7 @@ object Y2021D9 {
     }
 
     fun part2() = lowIndices
-        .map { Graph.dfs(startId = it, defaultEdges = neighbors).size } // for each low point get size of each basin
+        .map { Graph.bfs(startId = it, defaultEdges = neighbors).size } // for each low point get size of each basin
         .sortedDescending() // sort by largest first
         .take(3) // take top 3
         .reduce { acc, i -> acc * i } // multiply them together
