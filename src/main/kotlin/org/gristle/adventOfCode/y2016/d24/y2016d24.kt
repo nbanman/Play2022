@@ -27,7 +27,7 @@ object Y2016D24 {
     private val numbers = layout.withIndex().filter { it.value.isDigit() }
 
     // Function to find neighbors for the upcoming BFS function.
-    private val getBfsNeighbors = { location: Int ->
+    private val getNeighbors = { location: Int ->
         layout
             .getNeighborIndices(location)
             .filter { layout[it] != '#' }
@@ -39,7 +39,7 @@ object Y2016D24 {
     private val edgeMap = numbers.associate { (location, number) ->
         // Obtain list of all distances from the number to every other number in the map
         val distances = Graph
-            .dfs(location, defaultEdges = getBfsNeighbors)
+            .dfs(location, defaultEdges = getNeighbors)
             .filter { layout[it.id].isDigit() }
         // Create map associating the number to a list of Edges with the other number and the distance.
         number to distances.drop(1).map { Graph.Edge(layout[it.id], it.weight) }
