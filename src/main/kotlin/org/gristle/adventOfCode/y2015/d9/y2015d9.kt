@@ -28,8 +28,6 @@ object Y2015D9 {
 
     private val cities = edgeMap.keys
 
-    data class State(val location: String, val visited: Set<String>)
-
     private fun longestDistance(
         legs: List<Leg>,
         remainingLegs: List<Leg>,
@@ -56,17 +54,17 @@ object Y2015D9 {
         }
     }
 
-    private val defaultEdges = { id: State ->
-        edgeMap[id.location]
-            ?.filter { !id.visited.contains(it.vertexId) }
-            ?.map { Graph.Edge(State(it.vertexId, id.visited + it.vertexId), it.weight) }
+    private val defaultEdges = { id: List<String> ->
+        edgeMap[id.last()]
+            ?.filter { !id.contains(it.vertexId) }
+            ?.map { Graph.Edge(id + it.vertexId, it.weight) }
             ?: emptyList()
     }
 
     fun part1() = cities.minOf { city ->
         Graph.dijkstra(
-            startId = State(city, setOf(city)),
-            endCondition = { id -> id.visited == cities },
+            startId = listOf(city),
+            endCondition = { visited -> cities.size == visited.size },
             defaultEdges = defaultEdges
         ).last().weight.toInt()
     }
