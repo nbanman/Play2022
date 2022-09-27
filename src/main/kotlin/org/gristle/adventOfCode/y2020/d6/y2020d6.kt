@@ -12,7 +12,7 @@ object Y2020D6 {
     // returning the sum of those counts. The "count" function takes a String representing a group and returns
     // a Set<Char> with each Char in the Set representing a "yes" answer counted in the manner specified by the
     // problem.
-    fun solve(count: (String) -> Set<Char>) = groups
+    private inline fun solve(count: (String) -> Set<Char>) = groups
         .map(count)
         .sumOf { it.size }
 
