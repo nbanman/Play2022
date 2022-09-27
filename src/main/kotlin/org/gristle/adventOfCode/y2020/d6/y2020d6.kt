@@ -1,22 +1,26 @@
 package org.gristle.adventOfCode.y2020.d6
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readStrippedInput
 
 object Y2020D6 {
-    private val input = readStrippedInput("y2020/d6")
-
-    private val groups = input
+    // Read input and split into separate groups.
+    private val groups = readStrippedInput("y2020/d6")
         .split("\n\n")
 
-    fun part1() = groups.map { it.toSet() - '\n' }.sumOf { it.size }
+    // For each group, count the number of questions to which anyone answered "yes;" return the sum of those counts.
+    fun part1() = groups
+        .map { it.toSet() - '\n' } // converting string to set strips duplicates, then remove newline
+        .sumOf { it.size } // sum of the size of the sets
 
+    // For each group, count the number of questions to which everyone answered "yes;" return the sum of those counts
     fun part2() = groups
         .map { group ->
-            val people = group.split('\n').map { it.toSet() }
-            people.drop(1).fold(people.first()) { acc, set ->
-                acc.intersect(set)
-            }
-        }.sumOf { it.size }
+            group // deal with each group separately
+                .split('\n') // split group into separate people
+                .map { it.toSet() } // represent each person as a set of characters
+                .reduce { acc, set -> acc.intersect(set) } // represent each group as set of characters shared by each person
+        }.sumOf { it.size } // sum of the size of each count
 }
 
 fun main() {
