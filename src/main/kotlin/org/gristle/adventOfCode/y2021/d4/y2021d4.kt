@@ -11,19 +11,14 @@ object Y2021D4 {
     data class BingoCard(val grid: Grid<Int>) {
         private val winConditions = (grid.rows() + grid.columns())
             .map { it.toSet() }
-        fun bingo(calledCards: Set<Int>): Int {
-            val winner = winConditions.find { it.intersect(calledCards) == it }
-            return if (winner == null) {
-                -1
-            } else {
-                grid.sum() - calledCards.intersect(grid).sum()
-            }
-        }
+        fun bingo(calledCards: List<Int>) = winConditions.any { it.intersect(calledCards.toSet()) == it }
+        
+        fun score(calledCards: List<Int>) = grid.sum() - calledCards.intersect(grid).sum()
     }
 
     val data = input.split("\n\n")
 
-    private val drawPile = data[0].split(',').mapNotNull { it.toIntOrNull() }
+    private val drawPile = data[0].split(',').map { it.toInt() }
 
     private val bingoCards = data
         .drop(1)
@@ -32,33 +27,32 @@ object Y2021D4 {
                 .split(' ', '\n')
                 .mapNotNull { it.toIntOrNull() }
         }.map { BingoCard(it.toGrid(5)) }
-
-    fun part1(): Int {
-        val nextCard = drawPile.iterator()
-        val calledCards = mutableSetOf<Int>()
-        while (nextCard.hasNext()) {
-            val lastCard = nextCard.next()
-            calledCards.add(lastCard)
-            val winner = bingoCards.find { it.bingo(calledCards) > 0 }
-            if (winner != null) {
-                return lastCard * winner.bingo(calledCards)
-            }
+    
+    fun part1() = drawPile
+        .indices
+        .asSequence()
+        .mapNotNull { index ->
+            val calledCards = drawPile.subList(0, index + 1)
+            bingoCards
+                .find { it.bingo(calledCards) }
+                ?.let { calledCards to it }
+        }.first()
+        .let { (calledCards, bingoCard) ->
+            bingoCard.score(calledCards) * calledCards.last()
         }
-        return -1
-    }
-
+        
     fun part2(): Int {
         val nextCard = drawPile.iterator()
         val bingoSet = bingoCards.toMutableSet()
-        val calledCards = mutableSetOf<Int>()
+        val calledCards = mutableListOf<Int>()
         var latestScore = 0
         while (nextCard.hasNext()) {
             val lastCard = nextCard.next()
             calledCards.add(lastCard)
-            val winner = bingoSet.filter { it.bingo(calledCards) > 0 }
+            val winner = bingoSet.filter { it.bingo(calledCards) }
             if (winner.isNotEmpty()) {
                 bingoSet.removeAll(winner.toSet())
-                latestScore = lastCard * winner.first().bingo(calledCards)
+                latestScore = lastCard * winner.first().score(calledCards)
             }
         }
         return latestScore
