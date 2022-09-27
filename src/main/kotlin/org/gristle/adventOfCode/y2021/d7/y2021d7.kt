@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2021.d7
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
 object Y2021D7 {
@@ -26,15 +27,10 @@ object Y2021D7 {
 
         return optimalAlignmentCost(newRange, fuelCost)
     }
-
-    private val fuelCost1 = { a: Int -> a }
-    private val fuelCost2 = { a: Int -> (1..a).sum() }
-
-    fun solve(fuelCost: (Int) -> Int) = crabs.optimalAlignmentCost(crabRange, fuelCost)
     
-    fun part1() = solve(fuelCost1)
+    fun part1() = crabs.optimalAlignmentCost(crabRange) { it }
 
-    fun part2() = solve(fuelCost2)
+    fun part2() = crabs.optimalAlignmentCost(crabRange) { (1..it).sum() }
 }
 
 fun main() {
