@@ -8,19 +8,24 @@ object Y2020D6 {
     private val groups = readStrippedInput("y2020/d6")
         .split("\n\n")
 
-    // For each group, count the number of questions to which anyone answered "yes;" return the sum of those counts.
-    fun part1() = groups
-        .map { it.toSet() - '\n' } // converting string to set strips duplicates, then remove newline
-        .sumOf { it.size } // sum of the size of the sets
+    // Both parts involve looking at each group separately, counting the answers in a particular way, then 
+    // returning the sum of those counts. The "count" function takes a String representing a group and returns
+    // a Set<Char> with each Char in the Set representing a "yes" answer counted in the manner specified by the
+    // problem.
+    fun solve(count: (String) -> Set<Char>) = groups
+        .map(count)
+        .sumOf { it.size }
 
-    // For each group, count the number of questions to which everyone answered "yes;" return the sum of those counts
-    fun part2() = groups
-        .map { group ->
-            group // deal with each group separately
-                .split('\n') // split group into separate people
-                .map { it.toSet() } // represent each person as a set of characters
-                .reduce { acc, set -> acc.intersect(set) } // represent each group as set of characters shared by each person
-        }.sumOf { it.size } // sum of the size of each count
+    // For each group, count the number questions to which *anyone* answered "yes."
+    fun part1() = solve { group -> group.toSet() - '\n' }
+
+    // For each group, count the number of questions to which *everyone* answered "yes."
+    fun part2() = solve { group ->
+        group
+            .split('\n') // split group into separate people
+            .map { it.toSet() } // represent each person as a set of characters
+            .reduce { acc, set -> acc.intersect(set) } // represent each group as set of characters shared by each person
+    }
 }
 
 fun main() {
