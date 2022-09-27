@@ -17,15 +17,13 @@ object Y2020D6 {
         .sumOf { it.size }
 
     // For each group, count the number of questions to which *anyone* answered "yes."
-    fun part1() =
-        solve { group -> group.toSet() - '\n' } // Simply converting to set removes duplicates, providing p1 answer
+    fun part1() = solve { group -> group.toSet() - '\n' } // Simply converting to set removes duplicates, providing p1 answer
 
     // For each group, count the number of questions to which *everyone* answered "yes."
-    fun part2() = solve { group ->
-        group
-            .split('\n') // split group into separate people
-            .map { it.toSet() } // represent each person as a set of characters
-            .reduce { acc, set -> acc.intersect(set) } // represent each group as set of characters shared by each person
+    fun part2() = solve { group -> group
+        .split('\n') // split group into separate people
+        .map { it.toSet() } // represent each person as a set of characters
+        .reduce { acc, set -> acc.intersect(set) } // represent each group as set of characters shared by each person
     }
 }
 
