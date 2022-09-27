@@ -11,7 +11,7 @@ object Y2021D7 {
 
     private val crabRange = crabs.minOf { it }..crabs.maxOf { it }
 
-    private tailrec fun List<Int>.optimalAlignmentCost(range: IntRange, fuelCost: (Int) -> Int): Int {
+    private tailrec fun List<Int>.optimalAlignmentCost(range: IntRange = crabRange, fuelCost: (Int) -> Int): Int {
 
         fun List<Int>.alignmentCost(position: Int, fuelCost: (Int) -> Int) =
             sumOf { fuelCost(abs(it - position)) }
@@ -28,9 +28,9 @@ object Y2021D7 {
         return optimalAlignmentCost(newRange, fuelCost)
     }
     
-    fun part1() = crabs.optimalAlignmentCost(crabRange) { it }
+    fun part1() = crabs.optimalAlignmentCost { it }
 
-    fun part2() = crabs.optimalAlignmentCost(crabRange) { (1..it).sum() }
+    fun part2() = crabs.optimalAlignmentCost { (1..it).sum() }
 }
 
 fun main() {
