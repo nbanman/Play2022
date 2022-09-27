@@ -26,8 +26,8 @@ object Y2020D5 {
     fun part2() = seatIds
         .asSequence() // Convert to sequence..
         .zipWithNext() // then convert sequence to include both the previous seatId and the next seatId
-        .first { (prev, next) -> prev + 1 != next } // find the first instance where the nextSeatId is not contiguous
-        .second - 1 // return that, minus 1 (since your missing ticket should be contiguous)
+        .first { (prev, next) -> prev + 1 != next } // find the first instance where the next seatId is not contiguous
+        .second - 1 // return that, minus 1 (since your missing ticket is the contiguous seatId)
 }
 
 fun main() {
