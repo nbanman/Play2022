@@ -16,8 +16,9 @@ object Y2020D6 {
         .map(count)
         .sumOf { it.size }
 
-    // For each group, count the number questions to which *anyone* answered "yes."
-    fun part1() = solve { group -> group.toSet() - '\n' }
+    // For each group, count the number of questions to which *anyone* answered "yes."
+    fun part1() =
+        solve { group -> group.toSet() - '\n' } // Simply converting to set removes duplicates, providing p1 answer
 
     // For each group, count the number of questions to which *everyone* answered "yes."
     fun part2() = solve { group ->
