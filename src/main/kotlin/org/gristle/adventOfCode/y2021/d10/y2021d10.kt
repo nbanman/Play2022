@@ -33,7 +33,7 @@ object Y2021D10 {
     private val closures = setOf(')', ']', '}', '>')
 
     private fun String.parse1(): Int {
-        val stack = Stack<Char>()
+        val stack: Deque<Char> = ArrayDeque()
         for (index in indices) {
             val candidate = this[index]
             if (candidate !in closures) {
@@ -45,23 +45,23 @@ object Y2021D10 {
         return 0
     }
 
-    private fun String.parse2(): Long {
-        val stack = Stack<Char>()
+    private fun String.parse2(): Long? {
+        val stack: Deque<Char> = ArrayDeque()
         for (index in indices) {
             val candidate = this[index]
             if (candidate !in closures) {
                 stack.push(mapping[candidate])
             } else {
-                if (stack.isEmpty() || candidate != stack.pop()) return 0L
+                if (stack.isEmpty() || candidate != stack.pop()) return null
             }
         }
-        return stack.foldRight(0L) { c, acc -> acc * 5 + c.toScore2() }
+        return stack.fold(0L) { acc, c -> acc * 5 + c.toScore2() }
     }
 
     fun part1() = lines.sumOf { it.parse1() }
 
     fun part2() = lines
-        .mapNotNull { line -> line.parse2().let { if (it == 0L) null else it } }
+        .mapNotNull { line -> line.parse2() }
         .sorted()
         .let { it[it.size / 2] }
 
