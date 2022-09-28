@@ -7,75 +7,52 @@ object Y2021D8 {
     private val input = readInput("y2021/d8")
 
     data class Display(val wires: List<Set<Char>>, val display: List<Set<Char>>) {
-        private val mapping = buildMap<Set<Char>, Int> {  
-            val helperMap = mutableMapOf<Int, Set<Char>>()
-            val wireGroups = wires.groupBy { it.size }
-            wireGroups.filter { it.value.size == 1 }.forEach { entry ->
-                when (entry.key) {
-                    2 -> {
-                        val wireSet = entry.value.first()
-                        put(wireSet, 1)
-                        helperMap[1] = wireSet
-                    }
-                    3 -> {
-                        val wireSet = entry.value.first()
-                        put(wireSet, 7)
-                        helperMap[7] = wireSet
-                    }
-                    4 -> {
-                        val wireSet = entry.value.first()
-                        put(wireSet, 4)
-                        helperMap[4] = wireSet
-                    }
-                    7 -> {
-                        val wireSet = entry.value.first()
-                        put(wireSet, 8)
-                        helperMap[8] = wireSet
-                    }
-                }
-            }
-            wireGroups[6]?.forEach { six ->
-                when { 
-                    (six - helperMap[1]!!).size == 5 -> {
-                        put(six, 6)
-                        helperMap[6] = six
-                    }
-                    (six - helperMap[4]!!).size == 2  -> {
-                        put(six, 9)
-                        helperMap[9] = six
-                    }
-                    (six - helperMap[4]!!).size == 3  -> {
-                        put(six, 0)
-                        helperMap[0] = six
-                    }
-                }
-            }
 
-            wireGroups[5]?.forEach { five ->
-                when {
-                    (helperMap[6]!! - five).size == 1 -> put(five, 5)
-                    (five - helperMap[4]!!).size == 3 -> put(five, 2)
-                    else -> put(five, 3)
-                }
-            }
-        }
+        // digitMap uses the set of wires as a key, and the corresponding digit as the value. But building out the
+        // map involves bootstrapping, using digits that have already been matched to match other digits. It is
+        // useful to access these by digit. Therefore, the map is first built out with the digit as the key and the
+        // set of wires as the value. Once built out, the keys and values are swapped.
+        private val digitMap = buildMap {
+            val wireGroups = wires.groupBy { it.size } // separate numbers by number of wires
+            // 1, 4, 7, 8 all have unique numbers of wires
+            put(1, wireGroups.getValue(2).first()) 
+            put(4, wireGroups.getValue(4).first())
+            put(7, wireGroups.getValue(3).first())
+            put(8, wireGroups.getValue(7).first())
+            // the remaining numbers can be derived from comparisons with numbers that have already been found
+            put(6, wireGroups.getValue(6).first { it.intersect(getValue(1)).size == 1 })
+            put(9, wireGroups.getValue(6).first { it.intersect(getValue(4)).size == 4 })
+            put(5, wireGroups.getValue(5).first { it.intersect(getValue(6)).size == 5 })
+            put(2, wireGroups.getValue(5).first { it.intersect(getValue(5)).size == 3 })
+            put(3, wireGroups.getValue(5).first { it.intersect(getValue(5)).size == 4 })
+            put(0, wireGroups.getValue(6).first { it.intersect(getValue(5)).size == 4 })
+        }.entries.associate { it.value to it.key } // reverse map so that the value becomes the key and vice-versa
 
-        val translatedDisplay = display.map { mapping[it]!! }
-
-        val readout = translatedDisplay.joinToString("").toInt()
+        // Readout takes the list of wires used for the display, applies the digitMap to get their digit values,
+        // then concatenates them.
+        val outputValue = display
+            .map { digitMap.getValue(it) }
+            .joinToString("")
+            .toInt()
     }
 
-    private val displays = input
-        .map { line ->
-            val (wireString, displayString) = line.split(" | ")
-            val wires = wireString.split(' ').map { it.toSet() }
-            val display = displayString.split(' ').map { it.toSet() }
-            Display(wires, display)
-        }
+    // A list of Displays, created by parsing each line.
+    private val displays = input.map { line -> // For each line...
+        val (wires, display) = line // Make lists of all the wires and lists of all on display
+            .split(" | ") // ...by first splitting the input by the " | " symbol into two strings
+            .map { s -> // ...then turning the two strings into Sets of Char
+                s.split(' ').map { it.toSet() }
+            }
+        // Finally make a Display for each line.
+        Display(wires, display)
+    }
 
-    fun part1() = displays.flatMap { it.translatedDisplay }.count { it == 1 || it == 4 || it == 7 || it == 8 }
+    // Calculates how many times digits 1, 4, 7, or 8 appear by looking at the sets of wires in the Display
+    // and counting the sets that do not use 5 or 6 wires. All other sets will correspond to digits 1, 4, 7, or 8.
+    fun part1() = displays.flatMap { it.display }.count { it.size !in 5..6 }
 
-    fun part2() = displays.sumOf { it.readout }
+    // Sums the output values of all the displays
+    fun part2() = displays.sumOf { it.outputValue }
 }
 
 fun main() {
