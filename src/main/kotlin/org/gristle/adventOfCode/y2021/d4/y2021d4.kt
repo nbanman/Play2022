@@ -47,7 +47,7 @@ object Y2021D4 {
             .reversed()
             .asSequence()
             .mapNotNull { lastNumber ->
-                calledNumbers.remove(lastNumber)
+                calledNumbers.removeLast()
                 bingoCards
                     .find { !it.bingo(calledNumbers) }
                     ?.let { lastNumber to it }
