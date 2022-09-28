@@ -7,7 +7,7 @@ object Y2021D8 {
     private val input = readInput("y2021/d8")
 
     data class Display(val wires: List<Set<Char>>, val display: List<Set<Char>>) {
-        private val mapping = mutableMapOf<Set<Char>, Int>().apply {
+        private val mapping = buildMap<Set<Char>, Int> {  
             val helperMap = mutableMapOf<Int, Set<Char>>()
             val wireGroups = wires.groupBy { it.size }
             wireGroups.filter { it.value.size == 1 }.forEach { entry ->
@@ -34,8 +34,8 @@ object Y2021D8 {
                     }
                 }
             }
-            wireGroups[6]!!.forEach { six ->
-                when { //TODO this ordering needs testing
+            wireGroups[6]?.forEach { six ->
+                when { 
                     (six - helperMap[1]!!).size == 5 -> {
                         put(six, 6)
                         helperMap[6] = six
@@ -51,14 +51,14 @@ object Y2021D8 {
                 }
             }
 
-            wireGroups[5]!!.forEach { five ->
+            wireGroups[5]?.forEach { five ->
                 when {
                     (helperMap[6]!! - five).size == 1 -> put(five, 5)
                     (five - helperMap[4]!!).size == 3 -> put(five, 2)
                     else -> put(five, 3)
                 }
             }
-        }.toMap()
+        }
 
         val translatedDisplay = display.map { mapping[it]!! }
 
