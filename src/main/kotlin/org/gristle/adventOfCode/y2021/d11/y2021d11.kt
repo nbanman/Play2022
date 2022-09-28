@@ -7,6 +7,8 @@ object Y2021D11 {
 
     private val grid = input.toGrid().mapToGrid { Character.getNumericValue(it) }
     
+    // returns a Sequence which keeps track of mutating state of the grid through any number of turns, emitting the
+    // number of flashes that occurred each turn
     private fun Grid<Int>.stepSequence(): Sequence<Int> = sequence {
         // cave is mutable state internal to the sequence. The grid will keep updating each iteration.
         val cave = toMutableGrid()
