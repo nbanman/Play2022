@@ -13,13 +13,13 @@ object Y2021D8 {
         // useful to access these by digit. Therefore, the map is first built out with the digit as the key and the
         // set of wires as the value. Once built out, the keys and values are swapped.
         private val digitMap = buildMap {
-            val wireGroups = wires.groupBy { it.size } // separate numbers by number of wires
+            val wireGroups = wires.groupBy { it.size } // separate digits by number of wires
             // 1, 4, 7, 8 all have unique numbers of wires
             put(1, wireGroups.getValue(2).first()) 
             put(4, wireGroups.getValue(4).first())
             put(7, wireGroups.getValue(3).first())
             put(8, wireGroups.getValue(7).first())
-            // the remaining numbers can be derived from comparisons with numbers that have already been found
+            // the remaining digits can be derived from comparisons with numbers that have already been found
             put(6, wireGroups.getValue(6).first { it.intersect(getValue(1)).size == 1 })
             put(9, wireGroups.getValue(6).first { it.intersect(getValue(4)).size == 4 })
             put(5, wireGroups.getValue(5).first { it.intersect(getValue(6)).size == 5 })
