@@ -11,9 +11,9 @@ object Y2021D4 {
     data class BingoCard(val grid: Grid<Int>) {
         private val winConditions = (grid.rows() + grid.columns())
             .map { it.toSet() }
-        fun bingo(calledCards: List<Int>) = winConditions.any { it.intersect(calledCards.toSet()) == it }
+        fun bingo(calledNumbers: List<Int>) = winConditions.any { it.intersect(calledNumbers.toSet()) == it }
         
-        fun score(calledCards: List<Int>) = grid.sum() - calledCards.intersect(grid).sum()
+        fun score(calledNumbers: List<Int>) = grid.sum() - calledNumbers.intersect(grid).sum()
     }
 
     val data = input.split("\n\n")
@@ -28,34 +28,33 @@ object Y2021D4 {
                 .mapNotNull { it.toIntOrNull() }
         }.map { BingoCard(it.toGrid(5)) }
     
-    fun part1() = drawPile
-        .indices
-        .asSequence()
-        .mapNotNull { index ->
-            val calledCards = drawPile.subList(0, index + 1)
-            bingoCards
-                .find { it.bingo(calledCards) }
-                ?.let { calledCards to it }
-        }.first()
-        .let { (calledCards, bingoCard) ->
-            bingoCard.score(calledCards) * calledCards.last()
-        }
+    fun part1(): Int {
+        val calledNumbers = drawPile.take(4).toMutableList()
+        return drawPile.drop(4)
+            .asSequence()
+            .mapNotNull { number ->
+                calledNumbers.add(number)
+                bingoCards.find { it.bingo(calledNumbers) }
+            }.first()
+            .let { bingoCard ->
+                bingoCard.score(calledNumbers) * calledNumbers.last()
+            }
+    } 
         
     fun part2(): Int {
-        val nextCard = drawPile.iterator()
-        val bingoSet = bingoCards.toMutableSet()
-        val calledCards = mutableListOf<Int>()
-        var latestScore = 0
-        while (nextCard.hasNext()) {
-            val lastCard = nextCard.next()
-            calledCards.add(lastCard)
-            val winner = bingoSet.filter { it.bingo(calledCards) }
-            if (winner.isNotEmpty()) {
-                bingoSet.removeAll(winner.toSet())
-                latestScore = lastCard * winner.first().score(calledCards)
+        val calledNumbers = drawPile.toMutableList()
+        return drawPile
+            .reversed()
+            .asSequence()
+            .mapNotNull { lastNumber ->
+                calledNumbers.remove(lastNumber)
+                bingoCards
+                    .find { !it.bingo(calledNumbers) }
+                    ?.let { lastNumber to it }
+            }.first()
+            .let { (lastNumber, bingoCard) ->
+                bingoCard.score(calledNumbers + lastNumber) * lastNumber
             }
-        }
-        return latestScore
     }
 }
 
