@@ -32,13 +32,15 @@ object Y2016D8 {
         return screen
     }
 
-    val screen = lightScreen()
+    private val screen = lightScreen()
+    
+    fun part1() = screen.count { it }
+    
+    fun part2() = screen.ocr()
 }
 
 fun main() {
-    var time = System.nanoTime()
-    println("Part 1: ${Y2016D8.screen.count { it } } (${elapsedTime(time)}ms)") // 123
-    time = System.nanoTime()
-    println("Part 2:")
-    println("${Y2016D8.screen.representation { if (it) '#' else ' ' }} (${elapsedTime(time)}ms)") // AFBUPZBJPS
+    val time = System.nanoTime()
+    println("Part 1: ${Y2016D8.part1() }") // 123
+    println("Part 2: ${Y2016D8.part2()} (${elapsedTime(time)}ms)") // AFBUPZBJPS
 }
