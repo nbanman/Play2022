@@ -13,21 +13,21 @@ object Y2018D10 {
         .groupValues(pattern) { it.toInt() }
         .map { Point(Coord(it[0], it[1]), Coord(it[2], it[3])) }
 
-    fun List<Point>.move() = map { point -> point.copy(pos = point.pos + point.vel) }
+    private fun List<Point>.move() = map { point -> point.copy(pos = point.pos + point.vel) }
 
-    fun solve() = generateSequence (points) { it.move() }
+    private val answer = generateSequence (points) { it.move() }
         .withIndex()
         .first { indexedPoints ->
             val (_, yRange) = indexedPoints.value.map { it.pos }.minMaxRanges()
             yRange.last - yRange.first == 9
         }
+    
+    fun part1() = answer.value.map { it.pos }.toString('.').ocr()
+    fun part2() = answer.index
 }
 
 fun main() {
     val time = System.nanoTime()
-    val answers = Y2018D10.solve()
-    println("Part 1:")
-    answers.value.map { it.pos }.printToConsole(' ') // LRCXFXRP
-    println("Part 2: ${answers.index} (${elapsedTime(time)}ms)") // 10630
-
+    println("Part 1: ${Y2018D10.part1()}") // LRCXFXRP
+    println("Part 2: ${Y2018D10.part2()} (${elapsedTime(time)}ms)") // 10630
 }
