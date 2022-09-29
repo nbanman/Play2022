@@ -17,8 +17,8 @@ object Y2018D10 {
 
     private val answer = generateSequence (points) { it.move() }
         .withIndex()
-        .first { indexedPoints ->
-            val (_, yRange) = indexedPoints.value.map { it.pos }.minMaxRanges()
+        .first { (_, points) ->
+            val (_, yRange) = points.map { it.pos }.minMaxRanges()
             yRange.last - yRange.first == 9
         }
     
