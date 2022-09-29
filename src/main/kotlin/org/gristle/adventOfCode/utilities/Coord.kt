@@ -87,7 +87,7 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
         return neighbors
     }
 
-    fun manhattanDistance(coord: Coord = Coord.ORIGIN): Int = abs(x - coord.x) + abs(y - coord.y)
+    fun manhattanDistance(coord: Coord = ORIGIN): Int = abs(x - coord.x) + abs(y - coord.y)
 
     fun move(dir: Nsew, distance: Int = 1) = when (dir) {
         Nsew.NORTH -> north(distance)
@@ -132,5 +132,5 @@ fun Iterable<Coord>.toString(blankSpace: Char = '.'): String {
             append(if (Coord(x, y) in this@toString) '#' else blankSpace)
         }
         append('\n')
-    }.toString()
+    }
 }
