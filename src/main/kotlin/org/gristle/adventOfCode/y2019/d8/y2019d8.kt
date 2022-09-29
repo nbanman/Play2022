@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2019.d8
 
 import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.ocr
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
 
@@ -19,9 +20,9 @@ object Y2019D8 {
         // Make a list the same size as a layer. In each entry, grab the values in each of the layers at that index and
         // use the first non-transparent value.
         return layers[0]
-            .mapIndexed { i, _ -> layers.map { it[i] }.first { it != '2' } }
+            .mapIndexed { i, _ -> layers.map { it[i] }.first { it != '2' } == '1' }
             .toGrid(25)
-            .representation { if (it == '1') '*' else ' ' }
+            .ocr()
     }
 }
 
@@ -29,5 +30,5 @@ fun main() {
     var time = System.nanoTime()
     println("Part 1: ${Y2019D8.part1()} (${elapsedTime(time)}ms)") // 1088
     time = System.nanoTime()
-    println("Part 2: \n${Y2019D8.part2()} (${elapsedTime(time)}ms)") // LGYHB 
+    println("Part 2: ${Y2019D8.part2()} (${elapsedTime(time)}ms)") // LGYHB 
 }
