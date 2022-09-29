@@ -72,9 +72,9 @@ object Y2019D11 {
         val height = maxY - minY + 1
 
         val printGrid = List(width * height) { i->
-            if (grid[Coord(i % width + minX, i / width + minY)]?.paint == Paint.WHITE) '*' else ' '
+            if (grid[Coord(i % width + minX, i / width + minY)]?.paint == Paint.WHITE) '#' else '.'
         }.toGrid(width)
-        return printGrid.representation { it }
+        return printGrid.ocr()
     } 
 }
 
@@ -82,5 +82,5 @@ fun main() {
     var time = System.nanoTime()
     println("Part 1: ${Y2019D11.part1()} (${elapsedTime(time)}ms)") // 2720
     time = System.nanoTime()
-    println("Part 2: \n${Y2019D11.part2()}(${elapsedTime(time)}ms)") // JZPJRAGJ
+    println("Part 2: ${Y2019D11.part2()} (${elapsedTime(time)}ms)") // JZPJRAGJ
 }
