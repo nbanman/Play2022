@@ -42,6 +42,7 @@ fun Grid<Char>.ocr() = rotate90()
     .addRight(Grid(width, 1) { '\n' })
     .joinToString("")
     .replace(' ', '.')
+    .replace("....##\n...#..\n###...\n...#..\n....##", "....##\n...#..\n###...\n...#..\n....##\n......\n")
     .split("""^(\.{6,}\n)+""".toRegex(RegexOption.MULTILINE))
     .filter { it.isNotBlank() }
     .map { it.replace("\n", "") }
