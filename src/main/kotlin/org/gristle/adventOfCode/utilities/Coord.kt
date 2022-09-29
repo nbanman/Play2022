@@ -124,3 +124,13 @@ fun Iterable<Coord>.printToConsole(blankSpace: Char = '.') {
     println("\n")
 }
 
+fun Iterable<Coord>.toString(blankSpace: Char = '.'): String {
+    val (xRange, yRange) = minMaxRanges()
+    return buildString {
+        Coord.forRectangle(xRange, yRange) { x, y ->
+            if (x == xRange.first && y != yRange.first) append('\n')
+            append(if (Coord(x, y) in this@toString) '#' else blankSpace)
+        }
+        append('\n')
+    }.toString()
+}
