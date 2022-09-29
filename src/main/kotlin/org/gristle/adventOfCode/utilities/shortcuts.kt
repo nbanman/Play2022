@@ -77,7 +77,7 @@ fun <E> List<List<E>>.transpose(): List<List<E>> {
 
 /**
  * Used in algorithms that have multiple nodes with different weights representing the same location.
- * This way, nodes that have already been visited acn be skipped.
+ * This way, nodes that have already been visited can be skipped.
  */
 inline fun <E> PriorityQueue<E>.pollUntil(predicate: (E) -> Boolean): E? {
     var poll = poll()
@@ -86,13 +86,4 @@ inline fun <E> PriorityQueue<E>.pollUntil(predicate: (E) -> Boolean): E? {
         poll = poll()
     }
     return null
-}
-
-/**
- * Terminates the sequence once the given [predicate] is matched.
- *
- * The operation is _terminal_.
- */
-inline fun <T> Sequence<T>.terminate(predicate: (T) -> Boolean) {
-    for (element in this) if (predicate(element)) return
 }
