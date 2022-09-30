@@ -24,47 +24,58 @@ object Y2015D6 {
     }
 
     /**
-     * Each instruction is either ON, OFF, or TOGGLE. This class provides the appropriate adjustment function from
-     * the LightAdjustment suite.
+     * Stores the range to execute the particular instruction and executes the instruction. Comes in three 
+     * different flavors that execute different functions: On, Off, and Toggle. 
      */
-    enum class Mode { 
-        ON { override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::on }, 
-        OFF { override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::off }, 
-        TOGGLE { override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::toggle };
-        
+    sealed class Instruction(private val topLeft: Coord, private val bottomRight: Coord) {
+        /**
+         * Returns the specific function from the suite of functions provided for each part, corresponding to
+         * whether the instruction is On, Off, or Toggle.
+         */
         abstract fun getAdjuster(lightAdjustment: LightAdjustment): Adjuster
-    }
-  
-    data class Instruction(val mode: Mode, val topLeft: Coord, val bottomRight: Coord) {
+
+        /**
+         * Adjusts the light field in accordance with the instruction and the given range.
+         */
         fun execute(lights: MutableList<Int>, lightAdjustment: LightAdjustment) {
-            val adjust = mode.getAdjuster(lightAdjustment)
-            for (y in topLeft.y..bottomRight.y) {
-                for (x in topLeft.x..bottomRight.x) { 
-                    adjust(lights, x, y)
+            val adjust = getAdjuster(lightAdjustment)
+            Coord.forRectangle(topLeft, bottomRight) { x, y -> adjust(lights, x, y) }
+        }
+        
+        companion object {
+            /**
+             * Provides the appropriate instruction object.
+             */
+            fun of(groupValues: List<String>): Instruction {
+                val coords = groupValues.drop(1).map { it.toInt() }
+                val topLeft = Coord(coords[0], coords[1])
+                val bottomRight = Coord(coords[2], coords[3])
+
+                return when (groupValues[0]) {
+                    "turn on" -> On(topLeft, bottomRight)
+                    "turn off" -> Off(topLeft, bottomRight)
+                    else -> Toggle(topLeft, bottomRight)
                 }
             }
         }
     }
 
-    // Parsing...
-    private val input = readRawInput("y2015/d6")
+    class On(topLeft: Coord, bottomRight: Coord) : Instruction(topLeft, bottomRight) {
+        override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::on
+    }
+    class Off(topLeft: Coord, bottomRight: Coord) : Instruction(topLeft, bottomRight) {
+        override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::off
+    }
+    class Toggle(topLeft: Coord, bottomRight: Coord) : Instruction(topLeft, bottomRight) {
+        override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::toggle
+    }
 
-    private val pattern = """(turn (?:on|off)|toggle) (\d+),(\d+) through (\d+),(\d+)""".toRegex()
-
-    private val instructions = input
-        .groupValues(pattern)
-        .map { gv ->
-            val coords = gv.drop(1).map { it.toInt() }
-            Instruction(
-                when (gv[0]) {
-                    "turn on" -> Mode.ON
-                    "turn off" -> Mode.OFF
-                    else -> Mode.TOGGLE
-                },
-                Coord(coords[0], coords[1]),
-                Coord(coords[2], coords[3])
-            )
-        }
+    /**
+     * Parses input into List of Instructions
+     */
+    private val instructions = readRawInput("y2015/d6")
+        .groupValues("""(turn (?:on|off)|toggle) (\d+),(\d+) through (\d+),(\d+)""")
+        .map { Instruction.of(it) }
 
     /**
      * Algo for solving both parts. Creates a light field as a mutable list. Executes each instruction on the
@@ -81,8 +92,12 @@ object Y2015D6 {
      */
     fun part1() = solve(
         object : LightAdjustment {
-            override fun on(lights: MutableList<Int>, x: Int, y: Int) { lights[y * 1000 + x] = 1 }
-            override fun off(lights: MutableList<Int>, x: Int, y: Int) { lights[y * 1000 + x] = 0 }
+            override fun on(lights: MutableList<Int>, x: Int, y: Int) { 
+                lights[y * 1000 + x] = 1 
+            }
+            override fun off(lights: MutableList<Int>, x: Int, y: Int) { 
+                lights[y * 1000 + x] = 0 
+            }
             override fun toggle(lights: MutableList<Int>, x: Int, y: Int) {
                 (y * 1000 + x).let { newCoord -> lights[newCoord] = if (lights[newCoord] == 1) 0 else 1 }
             }
@@ -94,7 +109,9 @@ object Y2015D6 {
      */
     fun part2() = solve(
         object : LightAdjustment {
-            override fun on(lights: MutableList<Int>, x: Int, y: Int) { lights[y * 1000 + x]++ }
+            override fun on(lights: MutableList<Int>, x: Int, y: Int) { 
+                lights[y * 1000 + x]++ 
+            }
             override fun off(lights: MutableList<Int>, x: Int, y: Int) { 
                 lights[y * 1000 + x] = max(0, lights[y * 1000 + x] - 1) 
             }
