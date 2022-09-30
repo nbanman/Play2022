@@ -14,9 +14,11 @@ object Y2015D3 {
         else -> west()
     }
 
-    fun part1() = input.fold(mutableListOf(Coord(0, 0))) { acc, c ->
-        acc.apply { add(acc.last().move(c)) }
-    }.toSet().size
+    fun part1() = input
+        .fold(mutableListOf(Coord(0, 0))) { acc, c ->
+            acc.apply { add(acc.last().move(c)) }
+        }.toSet()
+        .size
 
     fun part2() = input
         .foldIndexed(mutableListOf(Coord(0, 0)) to mutableListOf(Coord(0, 0))) { index, acc, c ->
