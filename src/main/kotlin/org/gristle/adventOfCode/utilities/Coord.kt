@@ -9,15 +9,15 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
         val ORIGIN = Coord(0, 0)
         fun fromIndex(n: Int, width: Int) = Coord(n % width, n / width)
 
-        fun forRectangle(tl: Coord, br: Coord, action: (x: Int, y: Int) -> Unit) {
+        inline fun forRectangle(tl: Coord, br: Coord, action: (x: Int, y: Int) -> Unit) {
             for (y in tl.y..br.y) for (x in tl.x..br.x) action(x, y)
         }
 
-        fun forRectangle(xRange: IntRange, yRange: IntRange, action: (x: Int, y: Int) -> Unit) {
+        inline fun forRectangle(xRange: IntRange, yRange: IntRange, action: (x: Int, y: Int) -> Unit) {
             for (y in yRange) for (x in xRange) action(x, y)
         }
 
-        fun forRectangle(minMaxRange: Pair<IntRange, IntRange>, action: (x: Int, y: Int) -> Unit) =
+        inline fun forRectangle(minMaxRange: Pair<IntRange, IntRange>, action: (x: Int, y: Int) -> Unit) =
             forRectangle(minMaxRange.first, minMaxRange.second, action)
     }
 
