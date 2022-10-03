@@ -10,6 +10,7 @@ import kotlin.math.max
  * A function that adjusts a light in a particular location.
  */
 typealias Adjuster = (MutableList<Int>, Int, Int) -> Unit
+typealias AdjusterGetter = (Y2015D6.LightAdjustment) -> Adjuster
 object Y2015D6 {
     
     /**
@@ -27,12 +28,11 @@ object Y2015D6 {
      * Stores the range to execute the particular instruction and executes the instruction. Comes in three 
      * different flavors that execute different functions: On, Off, and Toggle. 
      */
-    sealed class Instruction(private val topLeft: Coord, private val bottomRight: Coord) {
-        /**
-         * Returns the specific function from the suite of functions provided for each part, corresponding to
-         * whether the instruction is On, Off, or Toggle.
-         */
-        abstract fun getAdjuster(lightAdjustment: LightAdjustment): Adjuster
+    class Instruction(
+        private val topLeft: Coord,
+        private val bottomRight: Coord,
+        private val getAdjuster: AdjusterGetter
+    ) {
 
         /**
          * Adjusts the light field in accordance with the instruction and the given range.
@@ -50,24 +50,14 @@ object Y2015D6 {
                 val coords = groupValues.drop(1).map { it.toInt() }
                 val topLeft = Coord(coords[0], coords[1])
                 val bottomRight = Coord(coords[2], coords[3])
-
+                
                 return when (groupValues[0]) {
-                    "turn on" -> On(topLeft, bottomRight)
-                    "turn off" -> Off(topLeft, bottomRight)
-                    else -> Toggle(topLeft, bottomRight)
+                    "turn on" -> Instruction(topLeft, bottomRight) { it::on }
+                    "turn off" -> Instruction(topLeft, bottomRight) { it::off }
+                    else -> Instruction(topLeft, bottomRight) { it::toggle }
                 }
             }
         }
-    }
-
-    class On(topLeft: Coord, bottomRight: Coord) : Instruction(topLeft, bottomRight) {
-        override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::on
-    }
-    class Off(topLeft: Coord, bottomRight: Coord) : Instruction(topLeft, bottomRight) {
-        override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::off
-    }
-    class Toggle(topLeft: Coord, bottomRight: Coord) : Instruction(topLeft, bottomRight) {
-        override fun getAdjuster(lightAdjustment: LightAdjustment) = lightAdjustment::toggle
     }
 
     /**
