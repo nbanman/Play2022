@@ -76,19 +76,20 @@ object Y2015D16 {
             }
         }
     }
+    
+    private fun buildSue(block: SueBuilder.() -> Unit): Sue = SueBuilder().apply(block).build()
 
     private const val pattern = """(Sue) (\d+): (\w+): (\d+), (\w+): (\d+), (\w+): (\d+)"""
 
     private val sues = input
         .groupValues(pattern)
         .map { gv ->
-            SueBuilder()
-                .apply {
-                    add(gv[0], gv[1].toInt())
-                    add(gv[2], gv[3].toInt())
-                    add(gv[4], gv[5].toInt())
-                    add(gv[6], gv[7].toInt())
-                }.build()
+            buildSue {
+                add(gv[0], gv[1].toInt())
+                add(gv[2], gv[3].toInt())
+                add(gv[4], gv[5].toInt())
+                add(gv[6], gv[7].toInt())
+            }
         }
 
     private const val tickerTape = "children: 3\n" +
