@@ -3,8 +3,7 @@ package org.gristle.adventOfCode.y2018.d8
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D8 {
-    private val input = readRawInput("y2018/d8")
+class Y2018D8(input: String) {
 
     private val licence = input.split(' ').map { it.toInt() }
 
@@ -62,7 +61,10 @@ object Y2018D8 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D8.part1()} (${elapsedTime(time)}ms)") // 36027
+    val c = Y2018D8(readRawInput("y2018/d8"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D8.part2()} (${elapsedTime(time)}ms)") // 23960 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 36027
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 23960
 }

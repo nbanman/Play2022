@@ -1,11 +1,11 @@
 package org.gristle.adventOfCode.y2018.d5
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 import kotlin.math.abs
 
-object Y2018D5 {
-    private val input = readRawInput("y2018/d5")
+class Y2018D5(input: String) {
 
     private fun String.react() = LinkedList<Char>()
         .apply { this@react.forEach { c -> if (isEmpty() || abs(peek() - c) != 32) push(c) else pop() } }
@@ -23,7 +23,10 @@ object Y2018D5 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D5.part1()} (${elapsedTime(time)}ms)") // 10972 
+    val c = Y2018D5(readRawInput("y2018/d5"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D5.part2()} (${elapsedTime(time)}ms)") // 5278
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 10972
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 5278
 }

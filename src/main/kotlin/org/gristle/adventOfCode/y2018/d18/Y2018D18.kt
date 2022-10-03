@@ -6,8 +6,7 @@ import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
 
 // not refactored, very impure
-object Y2018D18 {
-    private val input = readRawInput("y2018/d18")
+class Y2018D18(input: String) {
 
     private val collectionArea = input.toGrid()
     
@@ -67,7 +66,10 @@ object Y2018D18 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D18.part1()} (${elapsedTime(time)}ms)") // 605154
+    val c = Y2018D18(readRawInput("y2018/d18"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D18.part2()} (${elapsedTime(time)}ms)") // 200364
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 605154
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 200364
 }

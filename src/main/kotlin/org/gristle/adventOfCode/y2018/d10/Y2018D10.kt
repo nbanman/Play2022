@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2018.d10
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2018D10 {
-    private val input = readRawInput("y2018/d10")
+class Y2018D10(input: String) {
 
     data class Point(val pos: Coord, val vel: Coord)
 
@@ -27,7 +26,11 @@ object Y2018D10 {
 }
 
 fun main() {
-    val time = System.nanoTime()
-    println("Part 1: ${Y2018D10.part1()}") // LRCXFXRP
-    println("Part 2: ${Y2018D10.part2()} (${elapsedTime(time)}ms)") // 10630
+    var time = System.nanoTime()
+    val c = Y2018D10(readRawInput("y2018/d10"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // LRCXFXRP
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 10630
 }

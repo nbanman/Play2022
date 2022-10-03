@@ -4,8 +4,7 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D7 {
-    private val input = readRawInput("y2018/d7")
+class Y2018D7(input: String) {
 
     val pattern = """Step ([A-Z]) must be finished before step ([A-Z]) can begin.""".toRegex()
 
@@ -42,7 +41,7 @@ object Y2018D7 {
         return sb.toString()
     }
 
-    fun part2(workers: Int, offset: Int): Int {
+    fun part2(workers: Int = 5, offset: Int = 60): Int {
         // done tracks the letters that have been delivered
         val done = mutableSetOf<Char>()
         // doneSize used to terminate the sequence. When "done" has all the letters, it will stop.
@@ -93,7 +92,10 @@ object Y2018D7 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D7.part1()} (${elapsedTime(time)}ms)") // ABGKCMVWYDEHFOPQUILSTNZRJX
+    val c = Y2018D7(readRawInput("y2018/d7"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D7.part2(5, 60)} (${elapsedTime(time)}ms)") // 898
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // ABGKCMVWYDEHFOPQUILSTNZRJX
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 898
 }

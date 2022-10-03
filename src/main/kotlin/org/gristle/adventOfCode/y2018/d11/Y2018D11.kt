@@ -4,12 +4,11 @@ import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D11 {
+class Y2018D11(private val input: String) {
 
-    private val input = readRawInput("y2018/d11").toInt()
     private fun powerLevel(c: Coord): Int {
         val rackId = c.x + 10
-        return (((rackId * c.y + input) * rackId) % 1000) / 100 - 5
+        return (((rackId * c.y + input.toInt()) * rackId) % 1000) / 100 - 5
     }
 
     private data class Max1810(val c: Coord, val power: Int, val size: Int)
@@ -69,7 +68,10 @@ object Y2018D11 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D11.part1()} (${elapsedTime(time)}ms)") // 235,48
+    val c = Y2018D11(readRawInput("y2018/d11"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D11.part2()} (${elapsedTime(time)}ms)") // 285,113,11
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 235,48
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 285,113,11
 }

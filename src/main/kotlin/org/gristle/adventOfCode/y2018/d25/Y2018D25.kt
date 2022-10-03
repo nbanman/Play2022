@@ -5,8 +5,7 @@ import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
-object Y2018D25 {
-    private val input = readRawInput("y2018/d25")
+class Y2018D25(private val input: String) {
     private val pattern = """(-?\d+),(-?\d+),(-?\d+),(-?\d+)""".toRegex()
 
     data class SpaceTime(val x: Int, val y: Int, val z: Int, val t: Int) {
@@ -37,6 +36,9 @@ object Y2018D25 {
 }
 
 fun main() {
-    val time = System.nanoTime()
-    println("Part 1: ${Y2018D25.part1()} (${elapsedTime(time)}ms)") // 394 
+    var time = System.nanoTime()
+    val c = Y2018D25(readRawInput("y2018/d25"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 394
 }

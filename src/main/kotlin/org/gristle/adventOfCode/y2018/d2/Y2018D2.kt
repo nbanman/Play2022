@@ -1,9 +1,11 @@
 package org.gristle.adventOfCode.y2018.d2
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.lines
+import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D2 {
-    private val boxIds = readInput("y2018/d2")
+class Y2018D2(input: String) {
+    private val boxIds = input.lines()
 
     private fun String.containsPair() = groupingBy { it }.eachCount().values.any { it == 2 }
 
@@ -34,7 +36,10 @@ object Y2018D2 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D2.part1()} (${elapsedTime(time)}ms)") // 7688
+    val c = Y2018D2(readRawInput("y2018/d2"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D2.part2()} (${elapsedTime(time)}ms)") // lsrivmotzbdxpkxnaqmuwcchj 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 7688
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // lsrivmotzbdxpkxnaqmuwcchj
 }

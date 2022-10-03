@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2018.d3
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2018D3 {
-    private val input = readRawInput("y2018/d3")
+class Y2018D3(input: String) {
 
     val pattern = """#(\d+) @ (\d+),(\d+): (\d+)x(\d+)""".toRegex()
 
@@ -40,7 +39,10 @@ object Y2018D3 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D3.part1()} (${elapsedTime(time)}ms)") // 110891
+    val c = Y2018D3(readRawInput("y2018/d3"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D3.part2()} (${elapsedTime(time)}ms)") // 297
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 110891
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 297
 }

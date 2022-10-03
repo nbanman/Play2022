@@ -2,10 +2,9 @@ package org.gristle.adventOfCode.y2018.d6
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2018D6 {
-    private val input = readInput("y2018/d6")
+class Y2018D6(input: String) {
 
-    private val offsetCoordinates = input.map { line ->
+    private val offsetCoordinates = input.lines().map { line ->
         val (x, y) = line.split(", ").map { it.toInt() }
         Coord(x, y)
     }
@@ -54,7 +53,10 @@ object Y2018D6 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D6.part1()} (${elapsedTime(time)}ms)") // 5365
+    val c = Y2018D6(readRawInput("y2018/d6"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D6.part2()} (${elapsedTime(time)}ms)") // 42513
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5365
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 42513
 }

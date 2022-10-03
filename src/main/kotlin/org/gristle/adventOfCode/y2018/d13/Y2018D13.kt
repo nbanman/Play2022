@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2018.d13
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2018D13 {
-    private val data = readRawInput("y2018/d13")
+class Y2018D13(private val input: String) {
 
     data class Car(
         val c: Coord,
@@ -29,7 +28,7 @@ object Y2018D13 {
     }
 
     fun solve(): Pair<Coord, Coord> {
-        val maze = data.toGrid()
+        val maze = input.toGrid()
         var firstCrash = Coord.ORIGIN
         var cars = maze
             .mapIndexedNotNull { index, c ->
@@ -109,7 +108,7 @@ object Y2018D13 {
 
 fun main() {
     val time = System.nanoTime()
-    val (p1, p2) = Y2018D13.solve()
+    val (p1, p2) = Y2018D13(readRawInput("y2018/d13")).solve()
     println("Part 1: $p1") // 86,118
     println("Part 2: $p2 (${elapsedTime(time)}ms)") // 2,81
 }

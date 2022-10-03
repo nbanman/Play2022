@@ -1,9 +1,10 @@
 package org.gristle.adventOfCode.y2018.d24
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D24 {
-    private val input = readRawInput("y2018/d24")
+class Y2018D24(input: String) {
     private val data = input.split("Infection:\r\n")
 
     private var boost = 0
@@ -156,7 +157,10 @@ object Y2018D24 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D24.part1()} (${elapsedTime(time)}ms)") // 15165
+    val c = Y2018D24(readRawInput("y2018/d24"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D24.part2()} (${elapsedTime(time)}ms)") // 4037
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 15165
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 4037
 }

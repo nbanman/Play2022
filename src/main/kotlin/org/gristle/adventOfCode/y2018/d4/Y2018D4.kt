@@ -5,8 +5,7 @@ import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.transpose
 
-object Y2018D4 {
-    private val input = readRawInput("y2018/d4")
+class Y2018D4(input: String) {
 
     data class LogEntry(
         val month: Int,
@@ -78,7 +77,10 @@ object Y2018D4 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D4.part1()} (${elapsedTime(time)}ms)") // 19025
+    val c = Y2018D4(readRawInput("y2018/d4"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D4.part2()} (${elapsedTime(time)}ms)") // 23776 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 19025
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 23776
 }

@@ -4,21 +4,11 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D16 {
-    private val input = readRawInput("y2018/d16")
+fun List<Int>.store(location: Int, result: Int) = mapIndexed { index, i ->
+    if (index == location) result else i
+}
 
-    private val pattern =
-        """Before: \[(\d+), (\d+), (\d+), (\d+)]\r\n(\d+) (\d+) (\d+) (\d+)\r\nAfter: {2}\[(\d+), (\d+), (\d+), (\d+)]""".toRegex()
-
-    private data class Trainer(val before: List<Int>, val after: List<Int>, val opcode: Int,
-                               val a: Int, val b: Int, val c: Int) {
-        fun validOps(ops: Set<Ops> = Ops.values().toSet()) = ops.filter { op -> after == op.fn(before, a, b, c) }
-    }
-
-    private fun List<Int>.store(location: Int, result: Int) = mapIndexed { index, i ->
-        if (index == location) result else i
-    }
-
+class Y2018D16(private val input: String) {
     private enum class Ops(val fn: (reg: List<Int>, a: Int, b: Int, c: Int) -> List<Int>) {
         ADDR( { reg, a, b, c -> reg.store(c, reg[a] + reg[b]) } ),
         ADDI( { reg, a, b, c -> reg.store(c, reg[a] + b) } ),
@@ -35,7 +25,15 @@ object Y2018D16 {
         GTRR( { reg, a, b, c -> reg.store(c, if (reg[a] > reg[b]) 1 else 0) } ),
         EQIR( { reg, a, b, c -> reg.store(c, if (a == reg[b]) 1 else 0) } ),
         EQRI( { reg, a, b, c -> reg.store(c, if (reg[a] == b) 1 else 0) } ),
-        EQRR( { reg, a, b, c -> reg.store(c, if (reg[a] == reg[b]) 1 else 0) } )
+        EQRR( { reg, a, b, c -> reg.store(c, if (reg[a] == reg[b]) 1 else 0) } );
+    }
+    
+    private val pattern =
+        """Before: \[(\d+), (\d+), (\d+), (\d+)]\r\n(\d+) (\d+) (\d+) (\d+)\r\nAfter: {2}\[(\d+), (\d+), (\d+), (\d+)]""".toRegex()
+
+    private data class Trainer(val before: List<Int>, val after: List<Int>, val opcode: Int,
+                               val a: Int, val b: Int, val c: Int) {
+        fun validOps(ops: Set<Ops> = Ops.values().toSet()) = ops.filter { op -> after == op.fn(before, a, b, c) }
     }
 
     private val trainers = input
@@ -78,7 +76,10 @@ object Y2018D16 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D16.part1()} (${elapsedTime(time)}ms)") // 529
+    val c = Y2018D16(readRawInput("y2018/d16"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D16.part2()} (${elapsedTime(time)}ms)") // 573 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 529
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 573
 }

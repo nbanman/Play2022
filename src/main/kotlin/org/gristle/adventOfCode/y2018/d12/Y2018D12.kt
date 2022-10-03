@@ -1,14 +1,16 @@
 package org.gristle.adventOfCode.y2018.d12
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.lines
+import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D12 {
-    private val inp = readInput("y2018/d12")
+class Y2018D12(input: String) {
+    private val lines = input.lines()
 
     fun solve(generations: Int, gen2: Long = 0): Long {
-        var plants = inp[0].drop(15)
+        var plants = lines[0].drop(15)
 
-        val commands = inp
+        val commands = lines
             .drop(2)
             .filter { it.last() == '#'}
             .map { it.take(5) to it.last() }
@@ -48,7 +50,10 @@ object Y2018D12 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D12.part1()} (${elapsedTime(time)}ms)") // 4110
+    val c = Y2018D12(readRawInput("y2018/d12"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D12.part2()} (${elapsedTime(time)}ms)") // 2650000000466 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 4110
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2650000000466
 }

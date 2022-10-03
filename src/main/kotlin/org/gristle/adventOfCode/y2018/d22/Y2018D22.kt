@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2018.d22
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2018D22 {
-    private val input = readRawInput("y2018/d22")
+class Y2018D22(input: String) {
     
     private val pattern = Regex("""depth: (\d+)\r?\ntarget: (\d+),(\d+)""")
     
@@ -120,18 +119,14 @@ object Y2018D22 {
         return path.last().weight.toInt()
     }
 
-    fun dijkstra(): Int {
-        val start = Locator(Coord.ORIGIN, Tool.TORCH)
-        val path = Graph.dijkstra(start, endCondition = { it.pos == target }, defaultEdges = getEdges)
-        return path.last().weight.toInt()
-    }
 }
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D22.part1()} (${elapsedTime(time)}ms)") // 5637
+    val c = Y2018D22(readRawInput("y2018/d22"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D22.part2()} (${elapsedTime(time)}ms)") // 969
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5637
     time = System.nanoTime()
-    println("Part 2 (Dijkstra): ${Y2018D22.dijkstra()} (${elapsedTime(time)}ms)") // 969
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 969
 }

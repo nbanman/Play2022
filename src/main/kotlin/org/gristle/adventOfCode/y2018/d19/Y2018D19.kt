@@ -1,8 +1,15 @@
 package org.gristle.adventOfCode.y2018.d19
 
 import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readInput
-import org.gristle.adventOfCode.y2018.d19.Y2018D19.store
+import org.gristle.adventOfCode.utilities.lines
+import org.gristle.adventOfCode.utilities.readRawInput
+
+fun List<Long>.store(pointer: Int, location: Int, result: Long): List<Long> {
+    val newReg = mapIndexed { index, i ->
+        if (index == location) result else i
+    }
+    return newReg.mapIndexed { index, l ->  if (index == pointer) l + 1 else l }
+}
 
 enum class Ops(val fn: (reg: List<Long>, p: Int, a: Int, b: Int, c: Int) -> List<Long>) {
     ADDR( { reg, p, a, b, c -> reg.store(p, c, reg[a] + reg[b]) } ),
@@ -48,15 +55,8 @@ data class Command(val op: Ops, val p: Int, val a: Int, val b: Int, val c: Int) 
     fun execute(reg: List<Long>) = op.fn(reg, p, a, b, c)
 }
 
-object Y2018D19 {
-    private val data = readInput("y2018/d19")
-
-    fun List<Long>.store(pointer: Int, location: Int, result: Long): List<Long> {
-        val newReg = mapIndexed { index, i ->
-            if (index == location) result else i
-        }
-        return newReg.mapIndexed { index, l ->  if (index == pointer) l + 1 else l }
-    }
+class Y2018D19(input: String) {
+    private val data = input.lines()
 
     fun part1(): Long {
         val p = data.first().takeLast(1).toInt()
@@ -91,7 +91,10 @@ object Y2018D19 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D19.part1()} (${elapsedTime(time)}ms)") // 1764
+    val c = Y2018D19(readRawInput("y2018/d19"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D19.part2()} (${elapsedTime(time)}ms)") // 18992484
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1764
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 18992484
 }

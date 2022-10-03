@@ -1,11 +1,12 @@
 package org.gristle.adventOfCode.y2018.d1
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.lines
+import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D1 {
-    private val input = readInput("y2018/d1")
+class Y2018D1(input: String) {
 
-    private val changes = input.map { it.toInt() }
+    private val changes = input.lines().map { it.toInt() }
 
     fun part1() = changes.sum()
 
@@ -27,7 +28,10 @@ object Y2018D1 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D1.part1()} (${elapsedTime(time)}ms)") // 433
+    val c = Y2018D1(readRawInput("y2018/d1"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D1.part2()} (${elapsedTime(time)}ms)") // 256
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 433
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 256
 }

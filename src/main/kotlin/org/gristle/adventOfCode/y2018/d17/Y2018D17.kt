@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2018.d17
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2018D17 {
-    private val input = readRawInput("y2018/d17")
+class Y2018D17(private val input: String) {
 
     private data class Directive(val xRange: IntRange, val yRange: IntRange)
 
@@ -96,7 +95,7 @@ object Y2018D17 {
 
 fun main() {
     val time = System.nanoTime()
-    val (p1, p2) = Y2018D17.solve()
+    val (p1, p2) = Y2018D17(readRawInput("y2018/d17")).solve()
     println("Part 1: $p1") // 40879
     println("Part 2: $p2 (${elapsedTime(time)}ms)") // 34693
 }

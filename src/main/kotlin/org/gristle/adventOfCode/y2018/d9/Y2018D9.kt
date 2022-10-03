@@ -3,10 +3,8 @@ package org.gristle.adventOfCode.y2018.d9
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2018D9 {
-
-    private val input = readRawInput("y2018/d9")
-
+class Y2018D9(private val input: String) {
+    
     private val pattern = """(\d+) players; last marble is worth (\d+) points""".toRegex()
 
     class Dll<E>(val value: E, leftNode: Dll<E>? = null, rightNode: Dll<E>? = null) {
@@ -60,7 +58,10 @@ object Y2018D9 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D9.part1()} (${elapsedTime(time)}ms)") // 422980
+    val c = Y2018D9(readRawInput("y2018/d9"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D9.part2()} (${elapsedTime(time)}ms)") // 3552041936
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 422980
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 3552041936
 }

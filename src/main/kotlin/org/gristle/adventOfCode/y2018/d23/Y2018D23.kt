@@ -6,8 +6,7 @@ import kotlin.math.ceil
 import kotlin.math.ln
 import kotlin.math.pow
 
-object Y2018D23 {
-    private val data = readRawInput("y2018/d23")
+class Y2018D23(input: String) {
 
     data class Nanobot(val pos: Xyz, val radius: Int) {
         fun inRangeOf(other: Nanobot) = radius >= pos.manhattanDistance(other.pos)
@@ -75,7 +74,7 @@ object Y2018D23 {
 
     private val pattern = """pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)""".toRegex()
 
-    private val nanobots = data
+    private val nanobots = input
         .groupValues(pattern) { it.toInt() }
         .map { Nanobot(Xyz(it[0], it[1], it[2]), it[3]) }
 
@@ -115,7 +114,10 @@ object Y2018D23 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2018D23.part1()} (${elapsedTime(time)}ms)") // 481
+    val c = Y2018D23(readRawInput("y2018/d23"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2018D23.part2()} (${elapsedTime(time)}ms)") // 47141479
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 481
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 47141479
 }

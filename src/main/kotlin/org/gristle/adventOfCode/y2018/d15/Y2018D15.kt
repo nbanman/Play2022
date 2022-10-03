@@ -214,7 +214,9 @@ class Y2018D15(val input: String) {
 fun main() {
     var time = System.nanoTime()
     val c = Y2018D15(readRawInput("y2018/d15"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
     println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 224370
     time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 45539 
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 45539
 }

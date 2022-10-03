@@ -3,8 +3,7 @@ package org.gristle.adventOfCode.y2018.d20
 import org.gristle.adventOfCode.utilities.*
 import java.util.*
 
-object Y2018D20 {
-    private val data = readRawInput("y2018/d20")
+class Y2018D20(private val input: String) {
 
     fun solve(): Pair<Int, Int> {
         val myMap = makeMap()
@@ -28,7 +27,7 @@ object Y2018D20 {
     }
 
     private fun makeMap(): Grid<Char> {
-        val width = data.length / 2 + 20
+        val width = input.length / 2 + 20
         val map = MutableList(width * width) { '^' }.toMutableGrid(width)
 
         fun move(coord: Coord, c: Char): Coord {
@@ -73,7 +72,7 @@ object Y2018D20 {
             }
         }
 
-        exploreMap(data, Coord(width / 2, width / 2))
+        exploreMap(input, Coord(width / 2, width / 2))
 
         val topLeft = map.coordOfElement('#')
         val bottomRight = map.lastCoordOfElement('#')
@@ -92,7 +91,7 @@ object Y2018D20 {
 
 fun main() {
     val time = System.nanoTime()
-    val (p1, p2) = Y2018D20.solve()
+    val (p1, p2) = Y2018D20(readRawInput("y2018/d20")).solve()
     println("Part 1: $p1") // 3930
     println("Part 2: $p2 (${elapsedTime(time)}ms)") // 8240 
 }
