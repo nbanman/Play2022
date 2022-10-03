@@ -31,14 +31,14 @@ object Y2015D6 {
     class Instruction(
         private val topLeft: Coord,
         private val bottomRight: Coord,
-        private val adjuster: AdjusterGetter
+        private val getAdjuster: AdjusterGetter
     ) {
 
         /**
          * Adjusts the light field in accordance with the instruction and the given range.
          */
         fun execute(lights: MutableList<Int>, lightAdjustment: LightAdjustment) {
-            val adjust = adjuster(lightAdjustment)
+            val adjust = getAdjuster(lightAdjustment)
             Coord.forRectangle(topLeft, bottomRight) { x, y -> adjust(lights, x, y) }
         }
         
@@ -51,13 +51,11 @@ object Y2015D6 {
                 val topLeft = Coord(coords[0], coords[1])
                 val bottomRight = Coord(coords[2], coords[3])
                 
-                val adjuster: AdjusterGetter = when (groupValues[0]) {
-                    "turn on" -> { lightAdjustment: LightAdjustment -> lightAdjustment::on }
-                    "turn off" -> { lightAdjustment: LightAdjustment -> lightAdjustment::off }
-                    else -> { lightAdjustment: LightAdjustment -> lightAdjustment::toggle }
+                return when (groupValues[0]) {
+                    "turn on" -> Instruction(topLeft, bottomRight) { it::on }
+                    "turn off" -> Instruction(topLeft, bottomRight) { it::off }
+                    else -> Instruction(topLeft, bottomRight) { it::toggle }
                 }
-
-                return Instruction(topLeft, bottomRight, adjuster)
             }
         }
     }
