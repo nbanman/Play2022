@@ -1,9 +1,10 @@
 package org.gristle.adventOfCode.y2015.d10
 
 import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D10 {
-    private const val input = "1321131112"
+    private val input = readRawInput("y2015/d10")
 
     private fun lookAndSay(s: String) = buildString {
         var digit = s[0]
