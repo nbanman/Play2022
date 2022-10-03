@@ -2,10 +2,10 @@ package org.gristle.adventOfCode.y2016.d7
 
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readInput
+import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2015D7 {
-    private val lines = readInput("y2016/d7")
+class Y2016D7(input: String) {
+    private val lines = input.lines()
 
     data class IPv7(val supernets: List<String>, val hypernets: List<String>) {
         private val pattern = """(\w)(?!\1)(\w)\2\1""".toRegex()
@@ -36,7 +36,10 @@ object Y2015D7 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2015D7.part1()} (${elapsedTime(time)}ms)") // 118
+    val c = Y2016D7(readRawInput("y2016/d7"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2015D7.part2()} (${elapsedTime(time)}ms)") // 260
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 118
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 260
 }

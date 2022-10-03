@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2016.d8
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2016D8 {
-    private val input = readRawInput("y2016/d8")
+class Y2016D8(input: String) {
 
     val pattern = """(rect|rotate (?:row|column)) (?:[xy]=)?(\d+)(?: by |x)(\d+)""".toRegex()
 
@@ -40,7 +39,11 @@ object Y2016D8 {
 }
 
 fun main() {
-    val time = System.nanoTime()
-    println("Part 1: ${Y2016D8.part1() }") // 123
-    println("Part 2: ${Y2016D8.part2()} (${elapsedTime(time)}ms)") // AFBUPZBJPS
+    var time = System.nanoTime()
+    val c = Y2016D8(readRawInput("y2016/d8"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 123
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // AFBUPZBJPS
 }

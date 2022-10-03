@@ -6,8 +6,7 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toDigit
 
-object Y2016D5 {
-    private val input = readRawInput("y2016/d5")
+class Y2016D5(input: String) {
 
     private val md5Sequence = generateSequence(0) { it + 1 }
         .map { Md5.getDigest(input + it) }
@@ -37,7 +36,10 @@ object Y2016D5 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2016D5.part1()} (${elapsedTime(time)}ms)") // 4543c154
+    val c = Y2016D5(readRawInput("y2016/d5"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2016D5.part2()} (${elapsedTime(time)}ms)") // 1050cbbd
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 4543c154
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1050cbbd
 }

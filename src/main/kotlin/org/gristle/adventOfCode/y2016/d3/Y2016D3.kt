@@ -2,9 +2,7 @@ package org.gristle.adventOfCode.y2016.d3
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2016D3 {
-    private val input = readRawInput("y2016/d3")
-
+class Y2016D3(private val input: String) {
     data class Triangle(val a: Int, val b: Int, val c: Int) {
         private val asList = listOf(a, b, c).sorted()
         val isValid = asList[0] + asList[1] > asList[2]
@@ -29,7 +27,10 @@ object Y2016D3 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2016D3.part1()} (${elapsedTime(time)}ms)") // 1032
+    val c = Y2016D3(readRawInput("y2016/d3"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2016D3.part2()} (${elapsedTime(time)}ms)") // 1838
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1032
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1838
 }

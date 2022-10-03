@@ -4,13 +4,13 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2016D10 {
+class Y2016D10(input: String) {
     // Old, really bad code! Many, many sins, but not worth refactoring.
-    private val input = readRawInput("y2016/d10")
-
-    var responsibleBot: Bot? = null
 
     data class Bot(val name: Int, val high: Gift, val low: Gift, var storage: Int = -1) {
+        companion object {
+            var responsibleBot: Bot? = null
+        }
         fun take(value: Int, bots: List<Bot>, respTrack: List<Int>, output: MutableList<Output>): Boolean {
             return if (storage == -1) {
                 storage = value
@@ -68,14 +68,17 @@ object Y2016D10 {
             }
     }
 
-    fun part1() = responsibleBot?.name
+    fun part1() = Bot.responsibleBot?.name
 
     fun part2() = output.filter { it.bin < 3 }.map { it.value }.reduce { acc, i -> acc * i }
 }
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2016D10.part1()} (${elapsedTime(time)}ms)") // 101
+    val c = Y2016D10(readRawInput("y2016/d10"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2016D10.part2()} (${elapsedTime(time)}ms)") // 37789
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 101
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 37789
 }

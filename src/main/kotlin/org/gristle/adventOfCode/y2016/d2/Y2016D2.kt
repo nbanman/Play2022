@@ -2,11 +2,11 @@ package org.gristle.adventOfCode.y2016.d2
 
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readInput
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
-object Template {
-    private val codes = readInput("y2016/d2")
+class Y2016D2(input: String) {
+    private val codes = input.lines()
 
     private fun Coord.toNumpad1() = (y * 3 + x + 1).toString()
 
@@ -77,7 +77,10 @@ object Template {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Template.part1()} (${elapsedTime(time)}ms)") // 92435
+    val c = Y2016D2(readRawInput("y2016/d2"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Template.part2()} (${elapsedTime(time)}ms)") // C1A88
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 92435
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // C1A88
 }

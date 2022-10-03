@@ -4,8 +4,7 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2016D4 {
-    private val input = readRawInput("y2016/d4")
+class Y2016D4(input: String) {
 
     data class Room(val encryptedName: String, val id: Int, val checkSum: String) {
         val isReal = let {
@@ -39,7 +38,10 @@ object Y2016D4 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2016D4.part1()} (${elapsedTime(time)}ms)") // 158835
+    val c = Y2016D4(readRawInput("y2016/d4"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2016D4.part2()} (${elapsedTime(time)}ms)") // 993
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 158835
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 993
 }
