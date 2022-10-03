@@ -1,9 +1,10 @@
 package org.gristle.adventOfCode.y2015.d11
 
 import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 object Y2015D11 {
-    private const val input = "hxbxwxba"
+    private val input = readRawInput("y2015/d11")
 
     private fun isValid(s: String) = hasStraight(s) && noConfusion(s) && twoPairs(s)
 
