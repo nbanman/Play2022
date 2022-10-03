@@ -1,32 +1,33 @@
 package org.gristle.adventOfCode.y2015.d10
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
 
 object Y2015D10 {
     private const val input = "1321131112"
 
-    private fun String.lookAndSay(): String {
-        val sb = StringBuilder()
-        var digit = this[0]
+    private fun lookAndSay(s: String) = buildString {
+        var digit = s[0]
         var count = 1
-        for (i in 1 until length) {
-            if (this[i] == digit) {
+        for (i in 1 until s.length) {
+            if (s[i] == digit) {
                 count++
             } else {
-                sb.append("$count$digit")
-                digit = this[i]
+                append("$count$digit")
+                digit = s[i]
                 count = 1
             }
         }
-        return sb.append("$count$digit").toString()
+        append("$count$digit")
     }
 
-    private fun lookAndSay(n: Int) =
-        generateSequence(input) { it.lookAndSay() }.take(n + 1).last().length
+    private fun solve(n: Int) = generateSequence(input) { lookAndSay(it) }
+        .take(n + 1)
+        .last()
+        .length
 
-    fun part1() = lookAndSay(40)
+    fun part1() = solve(40)
 
-    fun part2() = lookAndSay(50)
+    fun part2() = solve(50)
 }
 
 fun main() {
