@@ -9,17 +9,17 @@ import org.gristle.adventOfCode.utilities.readRawInput
 class Y2016D17(private val input: String) {
 
     private val vaultRange = 0..3
-    data class Room17(val coord: Coord, val passCode: String, val vaultRange: IntRange) {
-        
+    data class Room(val coord: Coord, val passCode: String, val vaultRange: IntRange) {
+
         private val openRange = 'b'..'f'
-        fun getNeighbors(): List<Room17> {
+        fun getNeighbors(): List<Room> {
             val open = passCode.md5().take(4).map { it in openRange }
 
             val neighbors = listOf(
-                Room17(Coord(coord.x - 1, coord.y), passCode + 'L', vaultRange),
-                Room17(Coord(coord.x + 1, coord.y), passCode + 'R', vaultRange),
-                Room17(Coord(coord.x, coord.y - 1), passCode + 'U', vaultRange),
-                Room17(Coord(coord.x, coord.y + 1), passCode + 'D', vaultRange)
+                Room(Coord(coord.x - 1, coord.y), passCode + 'L', vaultRange),
+                Room(Coord(coord.x + 1, coord.y), passCode + 'R', vaultRange),
+                Room(Coord(coord.x, coord.y - 1), passCode + 'U', vaultRange),
+                Room(Coord(coord.x, coord.y + 1), passCode + 'D', vaultRange)
             ).filter {
                 it.coord.x in vaultRange &&
                         it.coord.y in vaultRange &&
@@ -36,10 +36,10 @@ class Y2016D17(private val input: String) {
         }
     }
 
-    private fun getPath(locations: List<Room17>): String {
+    private fun getPath(locations: List<Room>): String {
 
-        tailrec fun gP(locations: List<Room17>): Room17? {
-            val newLocations = mutableListOf<Room17>()
+        tailrec fun gP(locations: List<Room>): Room? {
+            val newLocations = mutableListOf<Room>()
             locations.forEach { newLocations.addAll(it.getNeighbors()) }
             return newLocations.find { it.coord == Coord(vaultRange.last, vaultRange.last) }
                 ?: if (newLocations.isEmpty()) {
@@ -52,19 +52,19 @@ class Y2016D17(private val input: String) {
 
     }
 
-    private fun getPath3(location: Room17): Room17? {
+    private fun getPath3(location: Room): Room? {
         if (location.coord.x == 3 && location.coord.y == 3) return location
         val neighbors = location.getNeighbors()
         if (neighbors.isEmpty()) return null
         val paths = neighbors.mapNotNull { getPath3(it) }
-        return paths.maxByOrNull { it.passCode.length } ?: Room17(Coord(0, 0), "Invalid", vaultRange)
+        return paths.maxByOrNull { it.passCode.length } ?: Room(Coord(0, 0), "Invalid", vaultRange)
     }
 
-    fun part1() = getPath(listOf(Room17(Coord(0, 0), input, vaultRange)))
+    fun part1() = getPath(listOf(Room(Coord(0, 0), input, vaultRange)))
 
     fun part2(): Int {
-        val room = getPath3(Room17(Coord(0, 0), input, vaultRange)) 
-            ?: Room17(Coord(0, 0), "Invalid", vaultRange)
+        val room = getPath3(Room(Coord(0, 0), input, vaultRange))
+            ?: Room(Coord(0, 0), "Invalid", vaultRange)
         return room.passCode.length - input.length
     }
 }
