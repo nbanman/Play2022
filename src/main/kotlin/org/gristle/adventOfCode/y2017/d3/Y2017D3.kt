@@ -11,7 +11,7 @@ import kotlin.math.sqrt
 
 class Y2017D3(private val input: String) {
 
-    data class Turtle(var dir: Nsew = Nsew.NORTH, var pos: Coord = Coord.ORIGIN, var vel: Int)
+    data class Turtle(var dir: Nsew, var pos: Coord, var vel: Int)
 
     fun part1(): Int {
         val squareRoot = ceil(sqrt(input.toFloat())).toInt().let { if (it % 2 == 0) it + 1 else it }
