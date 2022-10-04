@@ -41,8 +41,8 @@ class Y2016D9(private val input: String) {
 
         for (marker in markers) {
             sb.append(input.substring(parser, marker.range.first))
-            val repeatrange = input.substring(marker.range.last + 1, marker.range.last + 1 + marker.length)
-            sb.append(repeatrange.repeat(marker.times))
+            val repeatRange = input.substring(marker.range.last + 1, marker.range.last + 1 + marker.length)
+            sb.append(repeatRange.repeat(marker.times))
             parser = marker.range.last + 1 + marker.length
         }
         sb.append(input.drop(markers.last().range.last + markers.last().length + 1))
