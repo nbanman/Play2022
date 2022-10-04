@@ -1,12 +1,8 @@
 package org.gristle.adventOfCode.y2019.d3
 
-import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readInput
+import org.gristle.adventOfCode.utilities.*
 
-object Y2019D3 {
-    private val input = readInput("y2019/d3")
+class Y2019D3(input: String) {
 
     private fun List<String>.wireUp() = fold(mutableListOf<Coord>()) { acc, instruction ->
         val last = if (acc.isNotEmpty()) acc.last() else Coord.ORIGIN
@@ -20,7 +16,7 @@ object Y2019D3 {
         acc
     }
 
-    private val wiresInstructions = input.map { it.split(',') }.map { it.wireUp() }
+    private val wiresInstructions = input.lines().map { it.split(',') }.map { it.wireUp() }
 
     private val intersections = wiresInstructions[0].intersect(wiresInstructions[1].toSet())
 
@@ -35,7 +31,10 @@ object Y2019D3 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D3.part1()} (${elapsedTime(time)}ms)") // 266
+    val c = Y2019D3(readRawInput("y2019/d3"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D3.part2()} (${elapsedTime(time)}ms)") // 19242 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 266
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 19242
 }

@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2019.d20
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2019D20 {
-    private val input = readRawInput("y2019/d20")
+class Y2019D20(input: String) {
 
     class E1920(val node: N1920, val weight: Int) {
         override fun toString(): String {
@@ -187,7 +186,10 @@ object Y2019D20 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D20.part1()} (${elapsedTime(time)}ms)") // 528
+    val c = Y2019D20(readRawInput("y2019/d20"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D20.part2()} (${elapsedTime(time)}ms)") // 6214
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 528
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 6214
 }

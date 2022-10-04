@@ -1,9 +1,10 @@
 package org.gristle.adventOfCode.y2019.d6
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.lines
+import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2019D6 {
-    private val input = readInput("y2019/d6")
+class Y2019D6(input: String) {
 
     data class CelestialBody(val name: String, private val parentName: String) {
         companion object {
@@ -24,6 +25,7 @@ object Y2019D6 {
 
     // Create objects from input
     private val celestialBodies = input
+        .lines()
         .map { line -> line
             .split(')')
             .let { CelestialBody(it.last(), it.first()) }
@@ -41,9 +43,13 @@ object Y2019D6 {
     }
 }
 
+
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D6.part1()} (${elapsedTime(time)}ms)") // 315757
+    val c = Y2019D6(readRawInput("y2019/d6"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D6.part2()} (${elapsedTime(time)}ms)") // 481 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 315757
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 481
 }

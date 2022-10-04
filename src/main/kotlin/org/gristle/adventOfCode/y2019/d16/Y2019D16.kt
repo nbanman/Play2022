@@ -4,15 +4,14 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
-object Y2019D16 {
-    private val input = readRawInput("y2019/d16")
+class Y2019D16(private val input: String) {
     private val nos = input.map { Character.getNumericValue(it) }
-    private const val PHASES = 100
+    private val phases = 100
 
     fun part1(): String {
 
         val startPattern = listOf(0, 1, 0, -1)
-        return (1..PHASES).fold(nos) { acc, _ ->
+        return (1..phases).fold(nos) { acc, _ ->
             List(acc.size) { index ->
                 acc.foldIndexed(0) { index2, acc2, ii ->
                     val ai = ((index2 + 1) / (index + 1)) % 4
@@ -28,7 +27,7 @@ object Y2019D16 {
         val arraySize = nos.size * 10_000 - offset
         val offsetMod = offset % nos.size
         val nosi = IntArray(arraySize) { i -> nos[(offsetMod + i) % nos.size] }
-        repeat(PHASES) {
+        repeat(phases) {
             for (i in nosi.lastIndex - 1 downTo 0) {
                 nosi[i] = (nosi[i] + nosi[i + 1]) % 10
             }
@@ -39,7 +38,10 @@ object Y2019D16 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D16.part1()} (${elapsedTime(time)}ms)") // 52611030 
+    val c = Y2019D16(readRawInput("y2019/d16"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D16.part2()} (${elapsedTime(time)}ms)") // 52541026
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 52611030
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 52541026
 }

@@ -4,8 +4,7 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2019D22 {
-    private val input = readRawInput("y2019/d22")
+class Y2019D22(private val input: String) {
 
     private val pattern = """(cut|deal)[^-\d\n]+(-?\d+)?""".toRegex()
 
@@ -133,7 +132,10 @@ object Y2019D22 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D22.part1()} (${elapsedTime(time)}ms)") // 6129
+    val c = Y2019D22(readRawInput("y2019/d22"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D22.part2()} (${elapsedTime(time)}ms)") // 71345377301237
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 6129
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 71345377301237
 }

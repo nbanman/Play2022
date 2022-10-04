@@ -5,8 +5,7 @@ import org.gristle.adventOfCode.y2019.IntCode.ICSave
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-object Y2019D25 {
-    private val input = readRawInput("y2019/d25")
+class Y2019D25(private val input: String) {
 
     fun play() {
         val initialState = input.split(',').map { it.toLong() }
@@ -47,5 +46,5 @@ object Y2019D25 {
 }
 
 fun main() {
-    Y2019D25.play() 
+    Y2019D25(readRawInput("y2019/d25")).play() 
 }

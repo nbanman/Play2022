@@ -4,8 +4,7 @@ import org.gristle.adventOfCode.utilities.*
 import kotlin.math.PI
 import kotlin.math.atan2
 
-object Y2019D10 {
-    private val input = readRawInput("y2019/d10")
+class Y2019D10(private val input: String) {
 
     fun solve(): Pair<Int, Int> {
         val width = input.takeWhile { it != '\r' }.length
@@ -47,12 +46,14 @@ object Y2019D10 {
 
         return p1.first to p2
     }
-   
 }
 
 fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2019D10.solve()
+    var time = System.nanoTime()
+    val c = Y2019D10(readRawInput("y2019/d10"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
+    val (p1, p2) = c.solve()
     println("Part 1: $p1") // 286
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 504 
+    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 504
 }

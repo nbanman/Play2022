@@ -5,28 +5,27 @@ import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-object Y2019D5 {
-    private val code = readRawInput("y2019/d5")
+class Y2019D5(input: String) {
 
-    private val input: Deque<Long> = LinkedList()
+    private val intCodeInput: Deque<Long> = LinkedList()
     private val output: Deque<Long> = LinkedList()
 
     private val comp = IntCode(
         "codey",
-        code.split(',').map { it.toLong() },
-        input = input,
+        input.split(',').map { it.toLong() },
+        input = intCodeInput,
         output = output
     )
 
     fun part1(): Long {
-        input.add(1)
+        intCodeInput.add(1)
         comp.run()
         return output.last
     }
 
     fun part2(): Long {
         comp.reset()
-        input.add(5)
+        intCodeInput.add(5)
         comp.run()
         return output.last
     }
@@ -34,7 +33,10 @@ object Y2019D5 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D5.part1()} (${elapsedTime(time)}ms)") // 7839346
+    val c = Y2019D5(readRawInput("y2019/d5"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D5.part2()} (${elapsedTime(time)}ms)") // 447803 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 7839346
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 447803
 }

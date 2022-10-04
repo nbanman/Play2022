@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.*
 // Refactored: much slower but much cleaner code. Not as fast because the previous version relied on 
 // a custom Dijkstra algorithm that had a more effective cache to eliminate possible paths.
 
-object Y2019D18 {
+class Y2019D18(input: String) {
     class Edge(val node: Node, val weight: Int) {
         override fun toString(): String {
             return "E1918(node=${node.locator}, weight=$weight)"
@@ -77,11 +77,9 @@ object Y2019D18 {
         return unprunedNodes.filter { !it.safeToDelete }
     }
 
-    private val input = readRawInput("y2019/d18")
-
     private val tunnels = input.toGrid()
 
-    private const val robots = "@$%^"
+    private val robots = "@$%^"
 
     fun Grid<Char>.id(index: Int) = if (get(index) == '.') {
         index.toString()
@@ -156,7 +154,10 @@ object Y2019D18 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D18.part1()} (${elapsedTime(time)}ms)") // 3918 
+    val c = Y2019D18(readRawInput("y2019/d18"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D18.part2()} (${elapsedTime(time)}ms)") // 2004
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3918
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2004
 }

@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2019.d1
 
 import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readInput
+import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.max
 
-object Y2019D1 {
-    private val input = readInput("y2019/d1")
-    private val modules = input.map { it.toInt() }
+class Y2019D1(input: String) {
+    private val modules = input.lines().map { it.toInt() }
 
     private tailrec fun fuel(remaining: Int, total: Int = 0): Int {
         return if (remaining == 0) {
@@ -25,7 +24,10 @@ object Y2019D1 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D1.part1()} (${elapsedTime(time)}ms)") // 3325347
+    val c = Y2019D1(readRawInput("y2019/d1"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D1.part2()} (${elapsedTime(time)}ms)") // 4985145
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3325347
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 4985145
 }

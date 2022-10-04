@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2019.d12
 
 import org.gristle.adventOfCode.utilities.*
 
-object Y2019D12 {
-    private val input = readRawInput("y2019/d12")
+class Y2019D12(input: String) {
 
     data class Moon1912(val pos: MCoord, val vel: MCoord = MCoord(0, 0, 0)) {
         private val potentialEnergy = pos.manhattanDistance(MCoord(0, 0, 0))
@@ -93,7 +92,10 @@ object Y2019D12 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D12.part1()} (${elapsedTime(time)}ms)") // 10028
+    val c = Y2019D12(readRawInput("y2019/d12"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D12.part2()} (${elapsedTime(time)}ms)") // 314610635824376 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 10028
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 314610635824376
 }

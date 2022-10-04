@@ -6,8 +6,7 @@ import org.gristle.adventOfCode.utilities.toMutableGrid
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-object Y2019D21 {
-    private val input = readRawInput("y2019/d21")
+class Y2019D21(private val input: String) {
 
     fun execute(commands: String): Long {
         val initialState = input.split(',').map { it.toLong() }
@@ -61,7 +60,10 @@ RUN"""
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D21.part1()} (${elapsedTime(time)}ms)") // 19349530
+    val c = Y2019D21(readRawInput("y2019/d21"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D21.part2()} (${elapsedTime(time)}ms)") // 1142805439
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 19349530
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1142805439
 }

@@ -5,8 +5,7 @@ import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-object Y2019D19 {
-    private val input = readRawInput("y2019/d19")
+class Y2019D19(input: String) {
 
     private val initialState = input.split(',').map { it.toLong() }
     private val toDroid: Deque<Long> = LinkedList()
@@ -63,7 +62,10 @@ object Y2019D19 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D19.part1()} (${elapsedTime(time)}ms)") // 179
+    val c = Y2019D19(readRawInput("y2019/d19"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D19.part2()} (${elapsedTime(time)}ms)") // 9760485
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 179
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 9760485
 }

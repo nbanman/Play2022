@@ -5,8 +5,7 @@ import org.gristle.adventOfCode.utilities.ocr
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
 
-object Y2019D8 {
-    private val input = readRawInput("y2019/d8")
+class Y2019D8(input: String) {
 
     private val layers = input.chunked(25 * 6) // Split the data into a list of equal sized layers
     
@@ -28,7 +27,10 @@ object Y2019D8 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D8.part1()} (${elapsedTime(time)}ms)") // 1088
+    val c = Y2019D8(readRawInput("y2019/d8"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D8.part2()} (${elapsedTime(time)}ms)") // LGYHB 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1088
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // LGYHB
 }

@@ -7,8 +7,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.properties.Delegates
 
-object Y2019D15 {
-    private val input = readRawInput("y2019/d15")
+class Y2019D15(private val input: String) {
 
     enum class Sector { UNEXPLORED, WALL, PATH, O2 }
 
@@ -173,8 +172,11 @@ object Y2019D15 {
 }
 
 fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2019D15.solve()
-    println("Part 1: $p1") // 250 
+    var time = System.nanoTime()
+    val c = Y2019D15(readRawInput("y2019/d15"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
+    val (p1, p2) = c.solve()
+    println("Part 1: $p1") // 250
     println("Part 2: $p2 (${elapsedTime(time)}ms)") // 332
 }

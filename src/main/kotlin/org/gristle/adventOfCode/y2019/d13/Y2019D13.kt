@@ -4,8 +4,7 @@ import org.gristle.adventOfCode.utilities.*
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-object Y2019D13 {
-    private val input = readRawInput("y2019/d13")
+class Y2019D13(input: String) {
 
     private val initialState = input.split(',').map { it.toLong() }
     
@@ -67,7 +66,10 @@ object Y2019D13 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D13.part1()} (${elapsedTime(time)}ms)") // 348 
+    val c = Y2019D13(readRawInput("y2019/d13"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D13.part2()} (${elapsedTime(time)}ms)") // 16999
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 348
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 16999
 }

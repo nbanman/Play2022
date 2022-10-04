@@ -5,9 +5,8 @@ import org.gristle.adventOfCode.utilities.getPermutations
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 
-object Y2019D7 {
-    private val code = readRawInput("y2019/d7")
-    val initialState = code
+class Y2019D7(input: String) {
+    val initialState = input
         .split(',')
         .map { it.toLong() }
 
@@ -42,7 +41,10 @@ object Y2019D7 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D7.part1()} (${elapsedTime(time)}ms)") // 24405
+    val c = Y2019D7(readRawInput("y2019/d7"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D7.part2()} (${elapsedTime(time)}ms)") // 8271623
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 24405
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 8271623
 }

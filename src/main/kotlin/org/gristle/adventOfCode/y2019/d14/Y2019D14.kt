@@ -1,11 +1,13 @@
 package org.gristle.adventOfCode.y2019.d14
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.lines
+import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.d14.Y2019D14.Chemical.Companion.lookup
 import kotlin.math.max
 
-object Y2019D14 {
-    private val input = readInput("y2019/d14")
+class Y2019D14(private val input: String) {
     private val pattern = """(\d+) ([A-Z]+)""".toRegex()
 
     data class Chemical(val name: String, val quantity: Long) {
@@ -26,6 +28,7 @@ object Y2019D14 {
 
     fun solve(): Pair<Long, Long> {
         val rules = input
+            .lines()
             .map { line ->
                 line
                     .groupValues(pattern)
@@ -87,8 +90,11 @@ object Y2019D14 {
 }
 
 fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2019D14.solve()
+    var time = System.nanoTime()
+    val c = Y2019D14(readRawInput("y2019/d14"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
+    val (p1, p2) = c.solve()
     println("Part 1: $p1") // 751038
     println("Part 2: $p2 (${elapsedTime(time)}ms)") // 2074843
 }

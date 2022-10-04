@@ -1,11 +1,11 @@
 package org.gristle.adventOfCode.y2019.d23
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-object Y2019D23 {
-    private val input = readRawInput("y2019/d23")
+class Y2019D23(private val input: String) {
 
     data class Nat(val x: Long, val y: Long)
 
@@ -49,8 +49,11 @@ object Y2019D23 {
 }
 
 fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2019D23.solve()
-    println("Part 1: $p1") // 23701 
+    var time = System.nanoTime()
+    val c = Y2019D23(readRawInput("y2019/d23"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
+    val (p1, p2) = c.solve()
+    println("Part 1: $p1") // 23701
     println("Part 2: $p2 (${elapsedTime(time)}ms)") // 17225
 }

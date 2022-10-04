@@ -1,9 +1,9 @@
 package org.gristle.adventOfCode.y2019.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
-object Y2019D4 {
-    private val input = readRawInput("y2019/d4")
+class Y2019D4(input: String) {
 
     private val range = input.split('-').let { it[0].toInt()..it[1].toInt() }
 
@@ -32,7 +32,10 @@ object Y2019D4 {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Y2019D4.part1()} (${elapsedTime(time)}ms)") // 466
+    val c = Y2019D4(readRawInput("y2019/d4"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Y2019D4.part2()} (${elapsedTime(time)}ms)") // 292
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 466
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 292
 }
