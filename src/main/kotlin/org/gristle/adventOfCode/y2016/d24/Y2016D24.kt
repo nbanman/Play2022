@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2016.d24
 
 import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Graph.steps
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
@@ -26,7 +27,7 @@ class Y2016D24(input: String) {
     // Find the numbers in the map and associate it with their location
     private val numbers = layout.withIndex().filter { it.value.isDigit() }
 
-    // Function to find neighbors for the upcoming BFS function.
+    // Function to find neighbors for the upcoming DFS function.
     private val getNeighbors = { location: Int ->
         layout
             .getNeighborIndices(location)
@@ -36,7 +37,7 @@ class Y2016D24(input: String) {
     // Naive edge map providing distance from any given number to all the other numbers. Naive in the sense that
     // the Dijkstra algo does not use it directly because we need to generate the edges on the fly in order to 
     // track the numbers already visited.
-    private val edgeMap = numbers.associate { (location, number) ->
+    private val edgeMap: Map<Char, List<Graph.Edge<Char>>> = numbers.associate { (location, number) ->
         // Obtain list of all distances from the number to every other number in the map
         val distances = Graph
             .dfs(location, defaultEdges = getNeighbors)
@@ -59,28 +60,22 @@ class Y2016D24(input: String) {
             ?: throw IllegalStateException("Dijkstra search reached location that is not in the edgemap.")
     }
 
-    fun part1(): Int {
-        // Part one ends when all numbers have been visited
-        val endCondition = { state: State -> state.numbersVisited.size == numbers.size }
-        return Graph.dijkstra(start, endCondition, defaultEdges = getEdges).last().weight.toInt()
-    }
+    // Runs dijkstra and provides weight of shortest path. Takes in different end conditions to accommodate parts 1 & 2.
+    fun solve(endCondition: (State) -> Boolean) = Graph.dijkstra(start, endCondition, defaultEdges = getEdges).steps()
 
-    fun part2(): Int {
-        // Part two ends when all numbers have been visited AND the robot has gone back to '0'
-        val endCondition = { state: State ->
-            state.location == '0' && state.numbersVisited.size == numbers.size
-        }
-        return Graph.dijkstra(start, endCondition, defaultEdges = getEdges).last().weight.toInt()
-    }
+    // Part one ends when all numbers have been visited
+    fun part1() = solve { it.numbersVisited.size == numbers.size }
+
+    // Part two ends when all numbers have been visited AND the robot has gone back to '0'
+    fun part2() = solve { it.location == '0' && it.numbersVisited.size == numbers.size }
 }
-
 
 fun main() {
     var time = System.nanoTime()
     val c = Y2016D24(readRawInput("y2016/d24"))
     println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 470 (218ms OG) (370ms BFS) (133ms 2-stage BFS-Dijk)
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 470 (218ms OG) (370ms BFS) (133ms 2-stage DFS-Dijk)
     time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 720 (36ms OG) (638ms BFS) (10ms 2-stage BFS-Dijk)
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 720 (36ms OG) (638ms BFS) (10ms 2-stage DFS-Dijk)
 }
