@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2018.d22
 
 import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Graph.steps
 
 class Y2018D22(input: String) {
     
@@ -116,9 +117,8 @@ class Y2018D22(input: String) {
         val start = Locator(Coord.ORIGIN, Tool.TORCH)
         val heuristic = { id: Locator -> id.pos.manhattanDistance(target).toDouble() }
         val path = Graph.aStar(start, heuristic, defaultEdges = getEdges)
-        return path.last().weight.toInt()
+        return path.steps()
     }
-
 }
 
 fun main() {
