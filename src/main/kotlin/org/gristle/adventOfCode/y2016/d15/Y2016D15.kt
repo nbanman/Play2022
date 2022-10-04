@@ -4,28 +4,27 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
-// Lightly refactored! (Ugly while loop to sequence).
-
 class Y2016D15(input: String) {
 
-    private val pattern = """Disc #(\d+) has (\d+) positions; at time=0, it is at position (\d+).""".toRegex()
-
-    private data class Disc(val number: Int, val positions: Int, val startPosition: Int) {
+    private class Disc(val number: Int, val positions: Int, val startPosition: Int) {
         fun passes(startingSecond: Int) = (startingSecond + number + startPosition) % positions == 0
     }
 
-    private val discs = input
-        .groupValues(pattern)
-        .map { Disc(it[0].toInt(), it[1].toInt(), it[2].toInt()) }
+    // Regex to parse input
+    private val pattern = """Disc #(\d+) has (\d+) positions; at time=0, it is at position (\d+).""".toRegex()
 
-    fun part1() = generateSequence(0) { it + 1 }
+    // Parse input into Discs
+    private val discs = input
+        .groupValues(pattern) { it.toInt() }
+        .map { Disc(it[0], it[1], it[2]) }
+
+    // Find the first number for which all discs pass
+    private fun solve(discs: List<Disc>) = generateSequence(0) { it + 1 }
         .first { index -> discs.all { it.passes(index) } }
 
-    fun part2(): Int {
-        val discs2 = discs + Disc(7, 11, 0)
-        return generateSequence(0) { it + 1 }
-            .first { index -> discs2.all { it.passes(index) } }
-    }
+    fun part1() = solve(discs)
+
+    fun part2() = solve(discs + Disc(7, 11, 0))
 }
 
 fun main() {
