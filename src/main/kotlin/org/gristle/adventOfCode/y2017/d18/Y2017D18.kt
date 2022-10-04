@@ -10,10 +10,10 @@ class Y2017D18(input: String) {
 
     private val pattern = """([a-z]{3}) ([-a-z\d]+)(?: ([-a-z\d]+))?""".toRegex()
 
-    data class Command1718(val name: String, val arg1: String, val arg2: String)
+    data class Command(val name: String, val arg1: String, val arg2: String)
 
     data class Program(
-        val commands: List<Command1718>,
+        val commands: List<Command>,
         val p: Long,
         val ownDeque: Deque<Long>,
         val otherDeque: Deque<Long>
@@ -71,8 +71,8 @@ class Y2017D18(input: String) {
             }
         }
 
-        private fun rcv(command: Command1718) {
-            if(ownDeque.isNotEmpty()) {
+        private fun rcv(command: Command) {
+            if (ownDeque.isNotEmpty()) {
                 reg[command.arg1] = ownDeque.pop()
                 index++
                 deadlock = false
@@ -84,7 +84,7 @@ class Y2017D18(input: String) {
 
     private val commands = input
         .groupValues(pattern)
-        .map { Command1718(it[0], it[1], it[2]) }
+        .map { Command(it[0], it[1], it[2]) }
 
     fun part1(): Long {
         val registers = mutableMapOf<String, Long>()
