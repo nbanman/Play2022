@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 class DfsTest {
     @Test
     internal fun doesntBreakAocs() {
-        assertEquals(470, Y2016D24.part1())
-        assertEquals(92, Y2016D13.part1())
+        assertEquals(470, Y2016D24(readRawInput("y2016/d24")).part1())
+        assertEquals(92, Y2016D13(readRawInput("y2016/d13")).part1())
     }
 }

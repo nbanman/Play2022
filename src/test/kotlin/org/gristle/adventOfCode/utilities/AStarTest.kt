@@ -7,6 +7,7 @@ import kotlin.test.assertEquals
 class AStarTest {
     @Test
     internal fun aStarWorksMultidimensinally() {
-        assertEquals(969, Y2018D22.part2())
+        val input = readRawInput("y2018/d22")
+        assertEquals(969, Y2018D22(input).part2())
     }
 }
