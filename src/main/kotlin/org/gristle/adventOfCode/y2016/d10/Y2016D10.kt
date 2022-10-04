@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2016.d10
 
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.lesserToGreater
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2016D10(input: String) {
@@ -11,14 +12,13 @@ class Y2016D10(input: String) {
         companion object {
             var responsibleBot: Bot? = null
         }
-        fun take(value: Int, bots: List<Bot>, respTrack: List<Int>, output: MutableList<Output>): Boolean {
+        fun take(value: Int, bots: List<Bot>, respTrack: Set<Int>, output: MutableList<Output>): Boolean {
             return if (storage == -1) {
                 storage = value
                 false
             } else {
-                val lowValue = minOf(storage, value)
-                val highValue = maxOf(storage, value)
-                val isResp = (listOf(storage, value) + respTrack).distinct().size == 2
+                val (lowValue, highValue) = lesserToGreater(storage, value)
+                val isResp = setOf(storage, value) == respTrack
                 storage = -1
                 if (low.isBot) {
                     bots.find { it.name == low.name }!!.take(lowValue, bots, respTrack, output)
@@ -40,7 +40,7 @@ class Y2016D10(input: String) {
 
     data class Gift(val name: Int, val isBot: Boolean)
 
-    private val respTrack = listOf(61, 17)
+    private val respTrack = setOf(61, 17)
 
     private val botDirections = """bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output) (\d+)""".toRegex()
 
