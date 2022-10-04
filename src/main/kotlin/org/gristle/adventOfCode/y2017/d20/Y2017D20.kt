@@ -1,5 +1,6 @@
 package org.gristle.adventOfCode.y2017.d20
 
+import org.gristle.adventOfCode.utilities.Xyz
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
@@ -8,13 +9,7 @@ import kotlin.math.abs
 // not refactored
 class Y2017D20(input: String) {
 
-    data class Vector3D(val x: Int, val y: Int, val z: Int) {
-        fun sum() = abs(x) + abs(y) + abs(z)
-        operator fun plus(other: Vector3D) = Vector3D(x + other.x, y + other.y, z + other.z)
-    }
-
-    data class Particle(val number: Int, val p: Vector3D, val v: Vector3D, val a: Vector3D) {
-        fun manhattanDistance() = p.sum()
+    data class Particle(val number: Int, val p: Xyz, val v: Xyz, val a: Xyz) {
         fun stableTime(): Int {
             return listOf(
                 stableAxis(v.x, a.x),
@@ -22,6 +17,7 @@ class Y2017D20(input: String) {
                 stableAxis(v.z, a.z),
             ).maxOf { it }
         }
+
         fun particleAt(time: Int): Particle {
             if (time == 0) return this
             val newV = v + a
@@ -47,19 +43,19 @@ class Y2017D20(input: String) {
         .mapIndexed { index, gv ->
             Particle(
                 index,
-                Vector3D(gv[0].toInt(), gv[1].toInt(), gv[2].toInt()),
-                Vector3D(gv[3].toInt(), gv[4].toInt(), gv[5].toInt()),
-                Vector3D(gv[6].toInt(), gv[7].toInt(), gv[8].toInt())
+                Xyz(gv[0].toInt(), gv[1].toInt(), gv[2].toInt()),
+                Xyz(gv[3].toInt(), gv[4].toInt(), gv[5].toInt()),
+                Xyz(gv[6].toInt(), gv[7].toInt(), gv[8].toInt())
             )
-        }.sortedBy { it.a.sum() }
+        }.sortedBy { it.a.manhattanDistance() }
 
     fun part1(): Int {
         val selectParticles = particles.filter {
-            it.a.sum() == particles.first().a.sum()
+            it.a.manhattanDistance() == particles.first().a.manhattanDistance()
         }
         //    selectParticles.forEach { println("time: ${it.stableTime()}, $it") }
         val offset = selectParticles.maxOf { it.stableTime() }
-        return selectParticles.maxByOrNull { it.particleAt(offset).manhattanDistance() }!!.number
+        return selectParticles.maxByOrNull { it.particleAt(offset).p.manhattanDistance() }!!.number
     }
 
     fun part2(): Int {
