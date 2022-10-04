@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2020.d18
 
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.stripCarriageReturn
+import org.gristle.adventOfCode.utilities.stripCarriageReturns
 
 class Y2020D18(input: String) {
 
@@ -53,7 +53,7 @@ class Y2020D18(input: String) {
     }
 
     private val expressions = input
-        .stripCarriageReturn()
+        .stripCarriageReturns()
         .replace(" ", "")
         .split('\n')
         .map { SubExpression.Parens.fromString(it).components }

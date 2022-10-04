@@ -84,7 +84,7 @@ class Y2020D20(input: String) {
     }
 
     private val tiles = input
-        .stripCarriageReturn()
+        .stripCarriageReturns()
         .split("\n\n")
         .map { s ->
             val id = s.takeWhile { it != ':' }.drop(5).toInt()

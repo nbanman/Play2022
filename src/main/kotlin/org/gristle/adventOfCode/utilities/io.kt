@@ -17,4 +17,4 @@ fun readRawInput(subpackage: String = "", name: String = "input") = File("src/ma
  */
 fun readStrippedInput(subpackage: String = "", name: String = "input") = File("src/main/kotlin/org/gristle/adventOfCode/$subpackage", "$name.txt").readText().replace("\r", "")
 
-fun String.stripCarriageReturn() = replace("\r", "")
+fun String.stripCarriageReturns() = replace("\r", "")

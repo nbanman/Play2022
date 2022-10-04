@@ -67,7 +67,7 @@ class Y2021D19(input: String) {
     }
 
     private val scanners = input
-        .stripCarriageReturn()
+        .stripCarriageReturns()
         .groupValues(pattern)
         .map { g ->
             val id = g[0]

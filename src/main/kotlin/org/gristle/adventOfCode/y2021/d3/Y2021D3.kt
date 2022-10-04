@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2021.d3
 
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.stripCarriageReturn
+import org.gristle.adventOfCode.utilities.stripCarriageReturns
 import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2021D3(private val input: String) {
@@ -20,7 +20,7 @@ class Y2021D3(private val input: String) {
         }
 
         val cols = input
-            .stripCarriageReturn()
+            .stripCarriageReturns()
             .toGrid()
             .rotate90()
             .flipY()
@@ -39,7 +39,7 @@ class Y2021D3(private val input: String) {
     }
 
     fun part2(): Int {
-        val rows = input.stripCarriageReturn().split('\n')
+        val rows = input.stripCarriageReturns().split('\n')
 
         var o2Gen = rows
         var pos = 0

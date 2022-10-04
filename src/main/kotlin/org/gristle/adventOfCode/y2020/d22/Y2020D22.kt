@@ -2,13 +2,13 @@ package org.gristle.adventOfCode.y2020.d22
 
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.stripCarriageReturn
+import org.gristle.adventOfCode.utilities.stripCarriageReturns
 import kotlin.math.min
 
 class Y2020D22(input: String) {
 
     private val cardNos = input
-        .stripCarriageReturn()
+        .stripCarriageReturns()
         .split("\n\n")
         .map { half ->
             half

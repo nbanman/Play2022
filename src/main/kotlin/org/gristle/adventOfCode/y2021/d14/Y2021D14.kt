@@ -3,10 +3,10 @@ package org.gristle.adventOfCode.y2021.d14
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.stripCarriageReturn
+import org.gristle.adventOfCode.utilities.stripCarriageReturns
 
 class Y2021D14(input: String) {
-    private val data = input.stripCarriageReturn()
+    private val data = input.stripCarriageReturns()
 
     data class InsertionRule(val a: Char, val b: Char, val c: Char) {
 

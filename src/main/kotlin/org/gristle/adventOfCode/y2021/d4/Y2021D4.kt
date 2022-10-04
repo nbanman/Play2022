@@ -12,7 +12,7 @@ class Y2021D4(input: String) {
         fun score(calledNumbers: List<Int>) = grid.sum() - calledNumbers.intersect(grid).sum()
     }
 
-    val data = input.stripCarriageReturn().split("\n\n")
+    val data = input.stripCarriageReturns().split("\n\n")
 
     private val drawPile = data[0].split(',').map { it.toInt() }
 

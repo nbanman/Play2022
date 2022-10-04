@@ -2,12 +2,12 @@ package org.gristle.adventOfCode.y2020.d6
 
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.stripCarriageReturn
+import org.gristle.adventOfCode.utilities.stripCarriageReturns
 
 class Y2020D6(input: String) {
     // Read input and split into separate groups.
     private val groups = input
-        .stripCarriageReturn()
+        .stripCarriageReturns()
         .split("\n\n")
 
     // Both parts involve looking at each group separately, counting the answers in a particular way, then 

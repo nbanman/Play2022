@@ -10,7 +10,7 @@ and nested for loops.
 */
 
 class Y2021D20(input: String) {
-    private val data = input.stripCarriageReturn()
+    private val data = input.stripCarriageReturns()
     private val inputSplit = data.split("\n\n")
     private val algorithm = inputSplit[0].map { it == '#' }
     private val image = inputSplit[1].toGrid { it == '#' }
