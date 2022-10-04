@@ -27,7 +27,6 @@ class Y2017D6(input: String) {
         }.indexOfFirst { states.contains(it) }
     }
 
-
     fun part2(): Int {
         val states = mutableSetOf<List<Int>>()
         var firstIndex = 0

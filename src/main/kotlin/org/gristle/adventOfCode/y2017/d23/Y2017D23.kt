@@ -12,7 +12,7 @@ class Y2017D23(input: String) {
     
     val commands = input
         .groupValues(pattern)
-        .map { Y2017D18.Command1718(it[0], it[1], it[2]) }
+        .map { Y2017D18.Command(it[0], it[1], it[2]) }
 
     private var registers = mutableMapOf<String, Long>()
 
