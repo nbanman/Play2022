@@ -1,5 +1,6 @@
 package org.gristle.adventOfCode.y2016.d11
 
+import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
@@ -101,40 +102,32 @@ class Y2016D11(private val input: String) {
     /*
     * Solver
     */
-    private fun solveFloors(s: FloorState): Int {
-        val stateHashes = mutableListOf(s.toHash())
+    private fun solveFloors(initialState: FloorState): Int {
+
+        // cache used to prune previously visited states. The standard visit check done by the library function is
+        // insufficient because there are many states that involve different arrangement of specific items but are
+        // functionally equivalent.
+        val stateHashes = mutableSetOf(initialState.toHash())
+        val getNeighbors = { state: FloorState ->
+            state
+                .validStates()
+                .filter {
+                    val unvisited =
+                        !stateHashes.contains(it.toHash()) // checks if functionally equivalent state unvisited
+                    if (unvisited) stateHashes.add(it.toHash()) // if unvisited add it to the cache
+                    unvisited
+                }
+        }
 
         /*
-        * Recursive breadth-first search through all possible states, pruning invalid states and states that are
-        * functionally identical to previous states.
+        * breadth-first search through all possible states, pruning states that are functionally identical to previous 
+        * states.
         */
-        tailrec fun solve(states: List<FloorState>, counter: Int = 0): Int {
-            // Holder for all new states found.
-            val newStates = mutableListOf<FloorState>()
-            // Iterate through all states that have been found so far. First pass will be just the initial state, but
-            // later passes will include all valid states derivable from that initial state.
-            for (state in states) {
-                // Get the list of valid states and then prune.
-                val validStates = state.validStates().filter { !stateHashes.contains(it.toHash()) }
-                // If no new valid states found, move on to next state.
-                if (validStates.isEmpty()) continue
-                // If solved, return the number of steps.
-                if (validStates.any { it.isSolved() }) {
-                    return counter + 1
-                }
-                // Add all new valid states and add their hashes to the hash registry.
-                newStates.addAll(validStates)
-                stateHashes.addAll(validStates.map { it.toHash() })
-            }
-            // If all end up in a dead-end, unsolvable.
-            return if (newStates.isEmpty()) {
-                0
-            } else {
-                // Run the search on the new states found.
-                solve(newStates, counter + 1)
-            }
-        }
-        return solve(listOf(s))
+        return Graph
+            .bfs(startId = initialState, endCondition = { it.isSolved() }, defaultEdges = getNeighbors)
+            .last()
+            .weight
+            .toInt()
     }
 
     fun part1() = solveFloors(parseFloors(false))
@@ -147,7 +140,7 @@ fun main() {
     val c = Y2016D11(readRawInput("y2016/d11"))
     println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 47
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 47 (680ms custom BFS) (210ms library BFS)
     time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 71
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 71 (9776ms custom BFS) (409ms library BFS)
 }
