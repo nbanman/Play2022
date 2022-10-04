@@ -93,10 +93,15 @@ object Graph {
     }
 
     /**
+     * Utility function to provide the weight from the beginning to the end of the traversal as an Integer.
+     */
+    fun <E> List<Vertex<E>>.steps() = last().weight.toInt()
+
+    /**
      * Contains id of a neighboring vertex and the weight to travel there. Used in constructing
      * a map of edges and/or a default edge function for the Dijkstra and AStar functions.
      */
-    data class Edge<E> (val vertexId: E, val weight: Double) {
+    data class Edge<E>(val vertexId: E, val weight: Double) {
         fun toAStarVertex(parent: AStarVertex<E>, heuristic: (E) -> Double): AStarVertex<E> =
             AStarVertex(vertexId, parent.weight + weight, heuristic(vertexId), parent)
     }
