@@ -170,7 +170,7 @@ object Graph {
     ): List<Vertex<E>> {
         val start = StdVertex(startId, 0.0)
         val edgeMap = edges.toMutableMap()
-        val q = LinkedList<Vertex<E>>()
+        val q: Deque<Vertex<E>> = ArrayDeque()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
         // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
@@ -213,7 +213,7 @@ object Graph {
     ): List<Vertex<E>> {
         val start = StdVertex(startId, 0.0)
         val edgeMap = edges.toMutableMap()
-        val q = LinkedList<Vertex<E>>()
+        val q: Deque<Vertex<E>> = ArrayDeque()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
         // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
