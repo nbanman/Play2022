@@ -87,3 +87,8 @@ inline fun <E> PriorityQueue<E>.pollUntil(predicate: (E) -> Boolean): E? {
     }
     return null
 }
+
+/**
+ * Takes two Comparable values and returns a pair with the lesser in the first position and the greater in the second
+ */
+fun <T: Comparable<T>> lesserToGreater(a: T, b: T): Pair<T, T> = if (a <= b) a to b else b to a
