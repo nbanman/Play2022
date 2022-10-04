@@ -8,12 +8,12 @@ class Y2016D18(private val input: String) {
 
     // Sequence counts number of '.' in each row. "row" is mutable state, confined to the sequence. After the
     // first call, each subsequent call mutates the internal state to find the next row.
-    private val safeTileSequence = sequence {
+    private val safeTiles = sequence {
         fun Row.nextRow() = ".$this."
             .windowed(3)
             .map { if (it == "^^^" || it == "..." || it == "^.^" || it == ".^.") '.' else '^' }
             .joinToString("")
-
+        // Mutable state starts with input. Successive calls will find next row.
         var row = input
 
         do {
@@ -22,9 +22,11 @@ class Y2016D18(private val input: String) {
         } while (true)
     }
 
-    fun part1() = safeTileSequence.take(40).sum()
+    private fun solve(rows: Int) = safeTiles.take(rows).sum()
 
-    fun part2() = safeTileSequence.take(400_000).sum()
+    fun part1() = solve(40)
+
+    fun part2() = solve(400_000)
 }
 
 fun main() {
