@@ -3,25 +3,28 @@ package org.gristle.adventOfCode.y2016.d18
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
-// Not refactored; pretty bad!
+typealias Row = String
 class Y2016D18(private val input: String) {
 
-    private fun safeTiles(numRows: Int): Int {
-        var row1 = input
-        var safeTiles = row1.count { it == '.' }
-        for (i in 2..numRows) {
-            row1 = ".$row1."
-                .windowed(3)
-                .map { if (it == "^^^" || it == "..." || it == "^.^" || it == ".^.") '.' else '^' }
-                .joinToString("")
-            safeTiles += row1.count { it == '.' }
-        }
-        return safeTiles
+    // Sequence counts number of '.' in each row. "row" is mutable state, confined to the sequence. After the
+    // first call, each subsequent call mutates the internal state to find the next row.
+    private val safeTileSequence = sequence {
+        fun Row.nextRow() = ".$this."
+            .windowed(3)
+            .map { if (it == "^^^" || it == "..." || it == "^.^" || it == ".^.") '.' else '^' }
+            .joinToString("")
+
+        var row = input
+
+        do {
+            yield(row.count { it == '.' })
+            row = row.nextRow()
+        } while (true)
     }
 
-    fun part1() = safeTiles(40)
+    fun part1() = safeTileSequence.take(40).sum()
 
-    fun part2() = safeTiles(400_000)
+    fun part2() = safeTileSequence.take(400_000).sum()
 }
 
 fun main() {
