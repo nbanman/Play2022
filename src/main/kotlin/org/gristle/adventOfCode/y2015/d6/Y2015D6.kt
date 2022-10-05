@@ -1,15 +1,12 @@
 package org.gristle.adventOfCode.y2015.d6
 
-import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.*
 import kotlin.math.max
 
 /**
  * A function that adjusts a light in a particular location.
  */
-typealias Adjuster = (MutableList<Int>, Int, Int) -> Unit
+typealias Adjuster = (MutableGrid<Int>, Coord) -> Unit
 typealias AdjusterGetter = (Y2015D6.LightAdjustment) -> Adjuster
 class Y2015D6(input: String) {
     
@@ -19,9 +16,9 @@ class Y2015D6(input: String) {
      * on a MutableList so all return Unit.
      */
     interface LightAdjustment {
-        fun on(lights: MutableList<Int>, x: Int, y: Int)
-        fun off(lights: MutableList<Int>, x: Int, y: Int)
-        fun toggle(lights: MutableList<Int>, x: Int, y: Int)
+        fun on(lights: MutableGrid<Int>, location: Coord)
+        fun off(lights: MutableGrid<Int>, location: Coord)
+        fun toggle(lights: MutableGrid<Int>, location: Coord)
     }
 
     /**
@@ -37,9 +34,9 @@ class Y2015D6(input: String) {
         /**
          * Adjusts the light field in accordance with the instruction and the given range.
          */
-        fun execute(lights: MutableList<Int>, lightAdjustment: LightAdjustment) {
+        fun execute(lights: MutableGrid<Int>, lightAdjustment: LightAdjustment) {
             val adjust = getAdjuster(lightAdjustment)
-            Coord.forRectangle(topLeft, bottomRight) { x, y -> adjust(lights, x, y) }
+            Coord.forRectangle(topLeft, bottomRight) { location -> adjust(lights, location) }
         }
         
         companion object {
@@ -72,7 +69,7 @@ class Y2015D6(input: String) {
      * light field. Returns the sum of the brightness.
      */
     fun solve(lightAdjustment: LightAdjustment): Int {
-        val lights = MutableList(1_000_000) { 0 }
+        val lights = MutableGrid(1_000_000, 1000) { 0 }
         instructions.forEach { it.execute(lights, lightAdjustment) }
         return lights.sum()
     }
@@ -82,14 +79,16 @@ class Y2015D6(input: String) {
      */
     fun part1() = solve(
         object : LightAdjustment {
-            override fun on(lights: MutableList<Int>, x: Int, y: Int) { 
-                lights[y * 1000 + x] = 1 
+            override fun on(lights: MutableGrid<Int>, location: Coord) {
+                lights[location] = 1
             }
-            override fun off(lights: MutableList<Int>, x: Int, y: Int) { 
-                lights[y * 1000 + x] = 0 
+
+            override fun off(lights: MutableGrid<Int>, location: Coord) {
+                lights[location] = 0
             }
-            override fun toggle(lights: MutableList<Int>, x: Int, y: Int) {
-                (y * 1000 + x).let { newCoord -> lights[newCoord] = if (lights[newCoord] == 1) 0 else 1 }
+
+            override fun toggle(lights: MutableGrid<Int>, location: Coord) {
+                lights[location] = if (lights[location] == 1) 0 else 1
             }
         }
     )
@@ -99,14 +98,16 @@ class Y2015D6(input: String) {
      */
     fun part2() = solve(
         object : LightAdjustment {
-            override fun on(lights: MutableList<Int>, x: Int, y: Int) { 
-                lights[y * 1000 + x]++ 
+            override fun on(lights: MutableGrid<Int>, location: Coord) {
+                lights[location]++
             }
-            override fun off(lights: MutableList<Int>, x: Int, y: Int) { 
-                lights[y * 1000 + x] = max(0, lights[y * 1000 + x] - 1) 
+
+            override fun off(lights: MutableGrid<Int>, location: Coord) {
+                lights[location] = max(0, lights[location] - 1)
             }
-            override fun toggle(lights: MutableList<Int>, x: Int, y: Int) {
-                lights[y * 1000 + x] += 2
+
+            override fun toggle(lights: MutableGrid<Int>, location: Coord) {
+                lights[location] += 2
             }
         }
     )
