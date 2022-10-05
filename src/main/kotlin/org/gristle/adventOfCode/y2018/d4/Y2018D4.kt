@@ -39,7 +39,7 @@ class Y2018D4(input: String) {
         for (i in minute..lastIndex) this[i] = false
     }
 
-    private val guards = mutableMapOf<String, MutableList<MutableList<Boolean>>>().apply {
+    private val guards = buildMap<String, MutableList<MutableList<Boolean>>> {
         var minutes = MutableList(60) { false }
         logs.forEach { log ->
             when (log.event) {
@@ -52,25 +52,26 @@ class Y2018D4(input: String) {
                 }
             }
         }
+    } as Map<String, List<List<Boolean>>>
+
+    val getTimeList: (Map.Entry<String, List<List<Boolean>>>) -> IndexedValue<List<Boolean>> = { guard ->
+        guard
+            .value
+            .transpose()
+            .withIndex()
+            .maxByOrNull { (_, minute) -> minute.count { it } }!!
     }
 
     fun part1(): Int {
         val sleepiest = guards.entries
             .maxByOrNull { guard -> guard.value.sumOf { day -> day.count { it } } }!!
         val guardId = sleepiest.key.drop(1).toInt()
-        val sleepiestTimes = sleepiest
-            .value
-            .transpose()
-            .withIndex()
-            .maxByOrNull { (_, minute) -> minute.count { it } }!!
+        val sleepiestTimes = getTimeList(sleepiest)
         return guardId * sleepiestTimes.index
     }
 
     fun part2() = guards.entries.map { guard ->
-        val minuteMap = guard.value
-            .transpose()
-            .withIndex()
-            .maxByOrNull { (_, minute) -> minute.count { it } }!!
+        val minuteMap = getTimeList(guard)
         guard.key to minuteMap
     }.maxByOrNull { (_, minMax) -> minMax.value.count { it } }!!
         .let { it.first.drop(1).toInt() * it.second.index }}
