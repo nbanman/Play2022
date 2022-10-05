@@ -16,8 +16,9 @@ class Y2018D6(input: String) {
     private val offset = Coord(xRange.first, yRange.first)
     private val coordinates = offsetCoordinates.map { it - offset }
 
-    private val space = List((xRange.last - xRange.first + 1) * (yRange.last - yRange.first + 1)) { -2 }
-        .toMutableGrid(xRange.last - xRange.first + 1)
+    private val width = xRange.last - xRange.first + 1
+    private val height = yRange.last - yRange.first + 1
+    private val space = MutableGrid(width * height, width) { -2 }
 
     fun part1(): Int {
         for (index in space.indices) {
