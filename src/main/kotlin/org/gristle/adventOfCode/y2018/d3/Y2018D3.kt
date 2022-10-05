@@ -20,11 +20,11 @@ class Y2018D3(input: String) {
     private val width = claims.maxOf { it.tl.x + it.size.x }
     private val height = claims.maxOf { it.tl.y + it.size.y }
 
-    private val skein = List<MutableSet<Int>>(width * height) { mutableSetOf() }.toGrid(width)
+    private val skein = Grid<MutableSet<Int>>(width * height, width) { mutableSetOf() }
 
     fun part1(): Int {
         claims.forEach { claim ->
-            Coord.forRectangle(claim.tl, claim.br) { x, y -> skein[Coord(x, y)].add(claim.id) }
+            Coord.forRectangle(claim.tl, claim.br) { skein[it].add(claim.id) }
         }
         return skein.count { it.size > 1 }
     }
