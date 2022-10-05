@@ -5,17 +5,19 @@ import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2017D25(input: String) {
-    class Node1725(var isOne: Boolean = false, var left: Node1725? = null, var right: Node1725? = null) {
+    private class Node(var isOne: Boolean = false, var left: Node? = null, var right: Node? = null) {
         fun value() = if (isOne) 1 else 0
 
-        fun moveLeft(): Node1725 {
-            left = left ?: Node1725(false, null, this)
-            return left as Node1725
+        fun moveLeft(): Node {
+            left = left ?: Node(false, null, this)
+            return left as Node
         }
-        fun moveRight(): Node1725 {
-            right = right ?: Node1725(false, this, null)
-            return right as Node1725
+
+        fun moveRight(): Node {
+            right = right ?: Node(false, this, null)
+            return right as Node
         }
+
         fun sumList(): Int {
             return (sumLeft() + sumRight() - value())
         }
@@ -29,7 +31,7 @@ class Y2017D25(input: String) {
         }
     }
 
-    data class State1725(
+    private data class State(
         val zeroWrite: Boolean,
         val zeroLeft: Boolean,
         val zeroChange: String,
@@ -56,17 +58,19 @@ class Y2017D25(input: String) {
         val steps = data.groupValues(stepPattern)[0][0].toInt()
         val states = data
             .groupValues(pattern)
-            .map { it[0] to State1725(
-                it[1] == "1",
-                it[2] == "left",
-                it[3],
-                it[4] == "1",
-                it[5] == "left",
-                it[6]
-            ) }.let {
+            .map {
+                it[0] to State(
+                    it[1] == "1",
+                    it[2] == "left",
+                    it[3],
+                    it[4] == "1",
+                    it[5] == "left",
+                    it[6]
+                )
+            }.let {
                 mapOf(*it.toTypedArray())
             }
-        val startNode = Node1725()
+        val startNode = Node()
         var currentNode = startNode
         var currentName = "A"
         for (x in 1..steps) {
