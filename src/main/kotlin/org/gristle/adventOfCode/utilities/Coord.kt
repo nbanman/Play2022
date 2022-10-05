@@ -9,15 +9,15 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
         val ORIGIN = Coord(0, 0)
         fun fromIndex(n: Int, width: Int) = Coord(n % width, n / width)
 
-        inline fun forRectangle(tl: Coord, br: Coord, action: (x: Int, y: Int) -> Unit) {
-            for (y in tl.y..br.y) for (x in tl.x..br.x) action(x, y)
+        inline fun forRectangle(tl: Coord, br: Coord, action: (coord: Coord) -> Unit) {
+            for (y in tl.y..br.y) for (x in tl.x..br.x) action(Coord(x, y))
         }
 
-        inline fun forRectangle(xRange: IntRange, yRange: IntRange, action: (x: Int, y: Int) -> Unit) {
-            for (y in yRange) for (x in xRange) action(x, y)
+        inline fun forRectangle(xRange: IntRange, yRange: IntRange, action: (coord: Coord) -> Unit) {
+            for (y in yRange) for (x in xRange) action(Coord(x, y))
         }
 
-        inline fun forRectangle(minMaxRange: Pair<IntRange, IntRange>, action: (x: Int, y: Int) -> Unit) =
+        inline fun forRectangle(minMaxRange: Pair<IntRange, IntRange>, action: (coord: Coord) -> Unit) =
             forRectangle(minMaxRange.first, minMaxRange.second, action)
     }
 
@@ -82,7 +82,7 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
         val tl = Coord(x - distance, y - distance)
         val br = Coord(x + distance, y + distance)
         val neighbors = mutableListOf<Coord>()
-        forRectangle(tl, br) { x, y -> neighbors.add(Coord(x, y)) }
+        forRectangle(tl, br, neighbors::add)
         if (!includeSelf) neighbors.remove(this)
         return neighbors
     }
@@ -117,9 +117,9 @@ fun Iterable<Coord>.minMaxRanges(): Pair<IntRange, IntRange> {
 
 fun Iterable<Coord>.printToConsole(blankSpace: Char = '.') {
     val (xRange, yRange) = minMaxRanges()
-    Coord.forRectangle(xRange, yRange) { x, y ->
-        if (x == xRange.first && y != yRange.first) print('\n')
-        print(if (Coord(x, y) in this) '#' else blankSpace)
+    Coord.forRectangle(xRange, yRange) { coord ->
+        if (coord.x == xRange.first && coord.y != yRange.first) print('\n')
+        print(if (coord in this) '#' else blankSpace)
     }
     println("\n")
 }
@@ -127,9 +127,9 @@ fun Iterable<Coord>.printToConsole(blankSpace: Char = '.') {
 fun Iterable<Coord>.toString(blankSpace: Char = '.'): String {
     val (xRange, yRange) = minMaxRanges()
     return buildString {
-        Coord.forRectangle(xRange, yRange) { x, y ->
-            if (x == xRange.first && y != yRange.first) append('\n')
-            append(if (Coord(x, y) in this@toString) '#' else blankSpace)
+        Coord.forRectangle(xRange, yRange) { coord ->
+            if (coord.x == xRange.first && coord.y != yRange.first) append('\n')
+            append(if (coord in this@toString) '#' else blankSpace)
         }
         append('\n')
     }
