@@ -6,7 +6,6 @@ import org.gristle.adventOfCode.utilities.readRawInput
 
 private typealias Bridge = List<Y2017D24.MagComp>
 
-// not refactored
 class Y2017D24(input: String) {
 
     data class MagComp(val a: Int = 0, val b: Int = 0) {
@@ -15,33 +14,27 @@ class Y2017D24(input: String) {
         fun otherEnd(n: Int) = if (n == a) b else a
     }
 
-    private fun Bridge.value() = sumOf { it.strength }
+    private fun Bridge.strength() = sumOf { it.strength }
 
     private fun buildBridge(
-        n: Int,
-        bridge: Bridge,
-        remaining: List<MagComp>,
-        comparator: Comparator<Bridge>
+        comparator: Comparator<Bridge>,
+        n: Int = 0,
+        bridge: Bridge = listOf(),
+        remaining: List<MagComp> = components,
     ): Bridge {
         return remaining
             .filter { it.canJoin(n) }
-            .map { buildBridge(it.otherEnd(n), bridge + it, remaining - it, comparator)}
+            .map { buildBridge(comparator, it.otherEnd(n), bridge + it, remaining - it) }
             .maxWithOrNull(comparator) ?: bridge
     }
 
     private val components = input
-        .groupValues("""(\d+)\/(\d+)""")
-        .map { MagComp(it[0].toInt(), it[1].toInt()) }
-        .toList()
+        .groupValues("""(\d+)\/(\d+)""") { it.toInt() }
+        .map { MagComp(it[0], it[1]) }
 
-    fun part1() = buildBridge(0, listOf(), components, compareBy { it.value() }).value()
-
-    fun part2() = buildBridge(
-        0,
-        listOf(),
-        components,
-        compareBy(Bridge::size) then compareBy { it.value() }
-    ).value()
+    private val compareByStrength = compareBy { bridge: Bridge -> bridge.strength() }
+    fun part1() = buildBridge(compareByStrength).strength()
+    fun part2() = buildBridge(compareBy(Bridge::size) then compareByStrength).strength()
 }
 
 fun main() {
@@ -49,7 +42,7 @@ fun main() {
     val c = Y2017D24(readRawInput("y2017/d24"))
     println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1868
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1868 (638ms custom)
     time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1841
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1841 (533ms custom)
 }
