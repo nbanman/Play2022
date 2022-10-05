@@ -7,7 +7,7 @@ import kotlin.math.abs
 
 class Y2018D5(input: String) {
 
-    private fun String.react() = LinkedList<Char>()
+    private fun String.react() = ArrayDeque<Char>()
         .apply { this@react.forEach { c -> if (isEmpty() || abs(peek() - c) != 32) push(c) else pop() } }
         .joinToString("")
 
@@ -18,7 +18,6 @@ class Y2018D5(input: String) {
     fun part2() = ('a'..'z')
         .map { reacted.replace(it.toString(), "", true).react().length }
         .minByOrNull { it }
-
 }
 
 fun main() {
