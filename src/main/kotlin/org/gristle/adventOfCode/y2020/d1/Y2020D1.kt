@@ -14,7 +14,7 @@ class Y2020D1(input: String) {
         entrySet.forEach {
             if (entrySet.contains(2020 - it)) return it * (2020 - it)
         }
-        return -1
+        throw IllegalStateException("entrySet does not contain correct input")
     }
 
     fun part2(): Int {
@@ -26,7 +26,7 @@ class Y2020D1(input: String) {
                     return third * pairEntries[x] * pairEntries[y]
             }
         }
-        return -1
+        throw IllegalStateException("entrySet does not contain correct input")
     }
 }
 
