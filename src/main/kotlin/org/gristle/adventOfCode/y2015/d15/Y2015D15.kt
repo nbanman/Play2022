@@ -76,13 +76,23 @@ class Y2015D15(input: String) {
                 combos
             }
         }
+
         val seed = (0..total).map { listOf(it) }
         return gC(seed)
     }
 
-    fun part1() = comboScore(combos.maxByOrNull { comboScore(it) }!!)
+    fun part1() = comboScore(
+        combos
+            .maxByOrNull { comboScore(it) }
+            ?: throw NoSuchElementException("no elements!")
+    )
 
-    fun part2() = comboScore(combos.filter { meetsCalories(it) }.maxByOrNull { comboScore(it) }!!)
+    fun part2() = comboScore(
+        combos
+            .filter { meetsCalories(it) }
+            .maxByOrNull { comboScore(it) }
+            ?: throw NoSuchElementException("no elements!")
+    )
 }
 
 fun main() {

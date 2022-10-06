@@ -43,7 +43,6 @@ class IndexedLinkedList<E> (
         }
 
         override fun toString(): String {
-//            return "Node(value=$value, next=${if (next != list.header) next.toString() else "end"})"
             return "$value, ${if (next != list.header) next.toString() else "end"}"
         }
     }
@@ -85,7 +84,7 @@ class IndexedLinkedList<E> (
 fun main() {
     val l1 = listOf(1, 2, 3, 4, 5)
     val t1 = IndexedLinkedList(l1, true)
-    val cut = t1.index[3]!!.cut(3)
-    t1.index[2]!!.add(cut)
+    val cut = t1.index.getValue(3).cut(3)
+    t1.index.getValue(2).add(cut)
     println(t1)
 }
