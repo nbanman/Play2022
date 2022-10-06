@@ -145,7 +145,7 @@ class Y2018D15(val input: String) {
         override fun toString() = "OpenSpace(pos=$pos)"
     }
 
-    class Elf(pos: Coord, damage: Int) : Player(pos, damage), Entity {
+    class Elf(pos: Coord, damage: Int) : Player(pos, damage) {
         override fun getAdjacentTargets(world: MutableGrid<Entity>) =
             world.getNeighbors(pos).filterIsInstance<Goblin>()
 
@@ -154,7 +154,7 @@ class Y2018D15(val input: String) {
         override fun toString() = "Elf(pos=$pos, damage=$damage, health=$health)"
     }
 
-    class Goblin(pos: Coord) : Player(pos, 3), Entity {
+    class Goblin(pos: Coord) : Player(pos, 3) {
         override fun getAdjacentTargets(world: MutableGrid<Entity>) =
             world.getNeighbors(pos).filterIsInstance<Elf>()
 
@@ -184,11 +184,16 @@ class Y2018D15(val input: String) {
 
         val elves = world.players().count { it is Elf }
 
+        // Ends the game early if a single Elf dies, since part 2 wants to find the game where not a single elf
+        // dies. Always returns true if elfDamage is 3, so that it never stops the part 1 solution early.
         fun p2Continue() = elfDamage == 3 || (elves == world.count { it is Elf })
 
-        while (p2Continue() && world.filterIsInstance<Elf>().isNotEmpty() && world.filterIsInstance<Goblin>().isNotEmpty()) {
-
+        while (p2Continue() && world.filterIsInstance<Elf>().isNotEmpty() && world.filterIsInstance<Goblin>()
+                .isNotEmpty()
+        ) {
             val players = world.players()
+            // This loop plays the turns for all but the last player. The last player is played outside of the loop
+            // because if the game ends before all players play, that round is not counted. 
             for (player in players.dropLast(1)) {
                 player.playTurn(world)
             }
