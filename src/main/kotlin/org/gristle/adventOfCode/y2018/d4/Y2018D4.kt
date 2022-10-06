@@ -59,12 +59,14 @@ class Y2018D4(input: String) {
             .value
             .transpose()
             .withIndex()
-            .maxByOrNull { (_, minute) -> minute.count { it } }!!
+            .maxByOrNull { (_, minute) -> minute.count { it } }
+            ?: throw Exception("Map entry has no value")
     }
 
     fun part1(): Int {
         val sleepiest = guards.entries
-            .maxByOrNull { guard -> guard.value.sumOf { day -> day.count { it } } }!!
+            .maxByOrNull { guard -> guard.value.sumOf { day -> day.count { it } } }
+            ?: throw Exception("Map entry has no value")
         val guardId = sleepiest.key.drop(1).toInt()
         val sleepiestTimes = getTimeList(sleepiest)
         return guardId * sleepiestTimes.index
@@ -73,8 +75,9 @@ class Y2018D4(input: String) {
     fun part2() = guards.entries.map { guard ->
         val minuteMap = getTimeList(guard)
         guard.key to minuteMap
-    }.maxByOrNull { (_, minMax) -> minMax.value.count { it } }!!
-        .let { it.first.drop(1).toInt() * it.second.index }}
+    }.maxByOrNull { (_, minMax) -> minMax.value.count { it } }
+        ?.let { it.first.drop(1).toInt() * it.second.index }
+}
 
 fun main() {
     var time = System.nanoTime()

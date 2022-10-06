@@ -92,7 +92,7 @@ class Y2018D23(input: String) {
         val zMax = nanobots.maxOf { it.pos.z }
 
         val (min, max) = listOf(xMin to xMax, yMin to yMax, zMin to zMax)
-            .maxByOrNull { it.second - it.first }!!
+            .maxByOrNull { it.second - it.first } ?: throw Exception("list of minmax ranges empty")
 
         val length = 2.0f.pow(ceil(ln((max - min).toFloat()) / ln(2.0f))).toInt()
         val initialCube = Cube(Xyz(min, min, min), length, nanobots)

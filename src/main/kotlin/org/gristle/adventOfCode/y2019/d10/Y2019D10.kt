@@ -20,7 +20,7 @@ class Y2019D10(private val input: String) {
                     new
                 }.distinct()
                 .size to asteroid
-        }.maxByOrNull { it.first }!!
+        }.maxByOrNull { it.first } ?: throw Exception("no asteroids")
 
         //Part 2
         val station = p1.second
@@ -40,7 +40,7 @@ class Y2019D10(private val input: String) {
             (o1.first - o2.first).let { if (it < 0.0) -1 else if (it > 0.0) 1 else 0 }
         }
         for (angle in angles.keys) {
-            angles[angle]!!.forEachIndexed { index, pair -> pq.add(-10.0 * index + pair.first to pair.second) }
+            angles.getValue(angle).forEachIndexed { index, pair -> pq.add(-10.0 * index + pair.first to pair.second) }
         }
         val p2 = pq.dumpToList()[199].let { it.second.x * 100 + it.second.y }
 

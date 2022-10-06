@@ -68,7 +68,7 @@ class Y2018D16(private val input: String) {
             .groupValues(pattern)
             .map { gv -> gv.map { it.toInt() } }
         val p2 = testProgram.fold(listOf(0, 0, 0, 0)) { acc, line ->
-            translator[line[0]]!!.fn(acc, line[1], line[2], line[3])
+            translator.getValue(line[0]).fn(acc, line[1], line[2], line[3])
         }
         return p2[0]
     }

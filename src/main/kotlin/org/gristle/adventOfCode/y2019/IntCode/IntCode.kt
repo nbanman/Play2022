@@ -40,7 +40,7 @@ class IntCode(
     fun run() {
         if (isDone) return
         while (true) {
-            val instruction = program[parser]?.toInt()!!
+            val instruction = program.getValue(parser).toInt()
             val opCode = instruction % 100
             when (opCode) {
                 99 -> {
@@ -62,7 +62,7 @@ class IntCode(
                     if (verbose) getVerbose(instruction, 1, "input")
                     when {
                         !initialInputSupplied -> {
-                            program[getWrite(1)] = initialInput!!
+                            program[getWrite(1)] = initialInput ?: throw Exception("no initial input given")
                             initialInputSupplied = true
                         }
                         input == null -> {
@@ -128,8 +128,8 @@ class IntCode(
         println()
     }
     private fun getVal(parameter: Int): Long {
-        val instruction = program[parser]!!.toInt()
-        val mode = when(parameter) {
+        val instruction = program.getValue(parser).toInt()
+        val mode = when (parameter) {
             1 -> instruction % 1_000 / 100
             2 -> instruction % 10_000 / 1000
             else -> instruction / 10_0000
@@ -137,20 +137,20 @@ class IntCode(
         return when(mode) {
             0 -> program[program[parser + parameter]?.toInt()] ?: 0L
             1 -> program[parser + parameter] ?: 0L
-            else -> program[(relativeBase + program[parser + parameter]!!).toInt()] ?: 0L
+            else -> program[(relativeBase + program.getValue(parser + parameter)).toInt()] ?: 0L
         }
     }
 
     private fun getWrite(parameter: Int): Int {
-        val instruction = program[parser]!!.toInt()
-        val mode = when(parameter) {
+        val instruction = program.getValue(parser).toInt()
+        val mode = when (parameter) {
             1 -> instruction % 1_000 / 100
             2 -> instruction % 10_000 / 1000
             else -> instruction / 10_000
         }
-        return when(mode) {
-            2 -> (relativeBase + program[parser + parameter]!!).toInt()
-            else -> program[parser + parameter]!!.toInt()
+        return when (mode) {
+            2 -> (relativeBase + program.getValue(parser + parameter)).toInt()
+            else -> program.getValue(parser + parameter).toInt()
         }
     }
 

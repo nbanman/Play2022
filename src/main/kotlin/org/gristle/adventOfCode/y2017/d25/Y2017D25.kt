@@ -74,7 +74,7 @@ class Y2017D25(input: String) {
         var currentNode = startNode
         var currentName = "A"
         for (x in 1..steps) {
-            val state = states[currentName]!!
+            val state = states.getValue(currentName)
             if (currentNode.isOne) {
                 currentNode.isOne = state.oneWrite
                 currentNode = if (state.oneLeft) currentNode.moveLeft() else currentNode.moveRight()
