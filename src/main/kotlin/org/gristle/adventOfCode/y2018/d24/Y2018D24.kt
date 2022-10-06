@@ -77,12 +77,6 @@ class Y2018D24(input: String) {
 
                 round++
                 val unitSum = immuneSystem.sumOf { it.units } + infection.sumOf { it.units }
-//            println("Round $round")
-//            println("Immune System:")
-//            immuneSystem.forEach { println("Group ${it.group} contains ${it.units} units") }
-//            println("Infection:")
-//            infection.forEach { println("Group ${it.group} contains ${it.units} units") }
-//            println()
                 // target selection phase
                 val immuneSelections = selectTargets(immuneSystem.sortedWith(selectionOrder), infection, boost)
                 val infectionSelections = selectTargets(infection.sortedWith(selectionOrder), immuneSystem, boost)
@@ -94,7 +88,6 @@ class Y2018D24(input: String) {
                     val attacker = attackerDefender.first
                     val defender = attackerDefender.second
                     if (attacker.units <= 0) continue
-//                println("${attacker.team} group ${attacker.group} attacks ${defender.team} group ${defender.group}, killing ${ kotlin.math.min(defender.modifiedDamage(attacker, boost) / defender.hp, defender.units) } units")
                     defender.takeDamage(defender.modifiedDamage(attacker, boost))
                 }
 
@@ -128,7 +121,6 @@ class Y2018D24(input: String) {
             if (defender.isEmpty() || defender.first().isImmune(attacker)) {
                 acc
             } else {
-//            println("${attacker.team} group ${attacker.group} would deal ${defender.first().team} group ${defender.first().group} ${defender.first().modifiedDamage(attacker, boost)} damage")
                 attackerSelections.add(attacker to defender.first())
                 acc - defender.first()
             }
