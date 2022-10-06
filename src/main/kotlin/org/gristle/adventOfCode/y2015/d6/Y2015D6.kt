@@ -3,11 +3,6 @@ package org.gristle.adventOfCode.y2015.d6
 import org.gristle.adventOfCode.utilities.*
 import kotlin.math.max
 
-/**
- * A function that adjusts a light in a particular location.
- */
-typealias Adjuster = (MutableGrid<Int>, Coord) -> Unit
-typealias AdjusterGetter = (Y2015D6.LightAdjustment) -> Adjuster
 class Y2015D6(input: String) {
     
     /**
@@ -28,7 +23,7 @@ class Y2015D6(input: String) {
     class Instruction(
         private val topLeft: Coord,
         private val bottomRight: Coord,
-        private val getAdjuster: AdjusterGetter
+        private val getAdjuster: (LightAdjustment) -> (MutableGrid<Int>, Coord) -> Unit
     ) {
 
         /**
