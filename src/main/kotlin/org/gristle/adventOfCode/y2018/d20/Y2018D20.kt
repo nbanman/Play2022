@@ -13,9 +13,12 @@ class Y2018D20(private val input: String) {
                 .map { myMap.coordOf(it) }
         }
         val distances = MutableList<Int?>(myMap.size) { null }
-            d.forEach { v ->
-                distances[myMap.indexOf(v.id)] = v.weight.toInt()
-            }
+            .apply {
+                d.forEach { v ->
+                    this[myMap.indexOf(v.id)] = v.weight.toInt()
+                }
+            } as List<Int?>
+
 
         val p1 = distances.maxOf { it?.div(2) ?: 0 }
 
@@ -86,7 +89,7 @@ class Y2018D20(private val input: String) {
 
         return returnMap
     }
-    
+
 }
 
 fun main() {
