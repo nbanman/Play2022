@@ -17,7 +17,10 @@ class Y2020D10(input: String) {
 
     fun part1() = differences
         .count { it == 3 } // count number of 3-jolt differences
-        .let { jolt3s -> jolt3s * (differences.size - jolt3s) } // multiply # of 3-jolt diffs w/# of 1-jolt diffs
+        .let { jolt3s ->
+            val jolt1s = differences.size - jolt3s // derive number of 1-jolt differences
+            jolt1s * jolt3s
+        }
 
     fun part2() = differences
         .joinToString("") // join differences to one string before splitting in a different way
