@@ -19,7 +19,7 @@ class Y2019D2(input: String) {
         comp.program[1] = 12
         comp.program[2] = 2
         comp.run()
-        return comp.program[0]!!
+        return comp.program.getValue(0)
     }
 
     fun part2(): Long {

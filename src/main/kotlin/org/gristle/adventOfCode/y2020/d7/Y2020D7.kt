@@ -51,7 +51,7 @@ class Y2020D7(input: String) {
 
     fun part1() = rules.count { it.contains("shiny gold") }
 
-    fun part2() = Rule.bagMap["shiny gold"]!!.bagsInside()
+    fun part2() = Rule.bagMap.getValue("shiny gold").bagsInside()
 }
 
 fun main() {

@@ -32,11 +32,11 @@ class Y2020D15(input: String) {
         var lastNumberSpoken = start.last()
 
         for (turn in (start.size + 1)..iterations) {
-            val spoke = log[lastNumberSpoken]!!
-            lastNumberSpoken = if (spoke.last == null) {
+            val spoke = log.getValue(lastNumberSpoken)
+            lastNumberSpoken = if (spoke.last == null || spoke.first == null) {
                 0
             } else {
-                spoke.last - spoke.first!!
+                spoke.last - spoke.first
             }
             log[lastNumberSpoken] = log.getOrDefault(lastNumberSpoken, Spokenses.DEFAULT).update(turn)
         }

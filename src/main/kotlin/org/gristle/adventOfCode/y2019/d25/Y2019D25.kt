@@ -3,6 +3,7 @@ package org.gristle.adventOfCode.y2019.d25
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.IntCode.ICSave
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
+import java.io.IOException
 import java.util.*
 
 class Y2019D25(private val input: String) {
@@ -16,15 +17,15 @@ class Y2019D25(private val input: String) {
         val saves = mutableMapOf<String, ICSave>()
         while (true) {
             output.print()
-            val input = readLine()
+            val input = readLine() ?: throw IOException("Failed to read from console")
 
-            if (input!!.contains("save ")) {
+            if (input.contains("save ")) {
                 saves[input.drop(5)] = intCode.save()
                 continue
             }
 
             if (input.contains("load ")) {
-                intCode.restore(saves[input.drop(5)]!!)
+                intCode.restore(saves.getValue(input.drop(5)))
                 continue
             }
 

@@ -42,7 +42,7 @@ class Y2019D14(private val input: String) {
                             if (lookup[ingredient.name] == null) {
                                 lookup[ingredient.name] = mutableSetOf()
                             }
-                            lookup[ingredient.name]!!.add(result)
+                            lookup.getValue(ingredient.name).add(result)
                         }
                         result.name to reaction
                     }
@@ -57,15 +57,18 @@ class Y2019D14(private val input: String) {
             while (potentials.isNotEmpty()) {
 
                 val potential = potentials.find { pot ->
-                    rules[pot.key]!!.result.upstream.all { chem ->
+                    rules.getValue(pot.key).result.upstream.all { chem ->
                         chem.name !in potentials.map { it.key }
                     }
                 } ?: break
 
-                val rule = rules[potential.key]!!
+                val rule = rules.getValue(potential.key)
                 val timesApplied = (potential.value / rule.result.quantity) +
-                        if(potential.value % rule.result.quantity > 0) 1 else 0
-                repository[potential.key] = max(0, repository[potential.key]!! - rule.result.quantity * timesApplied)
+                        if (potential.value % rule.result.quantity > 0) 1 else 0
+                repository[potential.key] = max(
+                    0,
+                    repository.getValue(potential.key) - rule.result.quantity * timesApplied
+                )
                 for (ingredient in rule.ingredients) {
                     repository[ingredient.name] =
                         (repository[ingredient.name] ?: 0) + ingredient.quantity * timesApplied

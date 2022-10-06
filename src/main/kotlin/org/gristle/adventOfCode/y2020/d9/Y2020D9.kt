@@ -38,17 +38,17 @@ class Y2020D9(input: String) {
         while (true) {
             sum += numbers[u]
             if (sum == weakness)
-                return numbers.slice(l..u).minOrNull()!! + numbers.slice(l..u).maxOrNull()!!
+                return numbers.slice(l..u).min() + numbers.slice(l..u).max()
             if (sum > weakness) {
                 sum -= numbers[l]
                 l++
                 if (sum == weakness)
-                    return numbers.slice(l..u).minOrNull()!! + numbers.slice(l..u).maxOrNull()!!
+                    return numbers.slice(l..u).min() + numbers.slice(l..u).max()
                 while (sum > weakness) {
                     sum -= numbers[u]
                     u--
                     if (sum == weakness)
-                        return numbers.slice(l..u).minOrNull()!! + numbers.slice(l..u).maxOrNull()!!
+                        return numbers.slice(l..u).min() + numbers.slice(l..u).max()
                 }
 
             }
