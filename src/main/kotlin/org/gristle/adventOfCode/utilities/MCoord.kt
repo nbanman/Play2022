@@ -81,32 +81,19 @@ open class MCoord(val coordinates: List<Int>) {
 
 }
 
-class Xyz(x: Int, y: Int, z: Int) : MCoord(listOf(x, y, z)) {
-    val x = coordinates[0]
-    val y = coordinates[1]
-    val z = coordinates[2]
+class Xyz(val x: Int, val y: Int, val z: Int) : MCoord(listOf(x, y, z)) {
 
-    fun operate(other: Xyz, identity: Int, operation: (Int, Int) -> Int): Xyz {
-        val (larger, smaller) = if (dimensions > other.dimensions) {
-            this.coordinates to other.coordinates
-        } else {
-            other.coordinates to this.coordinates
-        }
-        val (x, y, z) = (this.coordinates zip other.coordinates)
-            .map { operation(it.first, it.second) } +
-                larger.drop(smaller.size).map { identity * it }
-        return Xyz(x, y, z)
-    }
+    constructor(mCoord: MCoord) : this(mCoord[0], mCoord[1], mCoord[2])
 
-    operator fun plus(other: Xyz) = operate(other, 1) { a, b -> a + b }
+    operator fun plus(other: Xyz) = Xyz(super.plus(other))
 
-    operator fun minus(other: Xyz) = operate(other, -1) { a, b -> a - b }
+    operator fun minus(other: Xyz) = Xyz(super.minus(other))
 
-    operator fun times(other: Xyz) = operate(other, 0) { a, b -> a * b }
+    operator fun times(other: Xyz) = Xyz(super.times(other))
 
-    operator fun div(other: Xyz) = operate(other, 0) { a, b -> a / b }
+    operator fun div(other: Xyz) = Xyz(super.div(other))
 
-    operator fun rem(other: Xyz) = operate(other, 0) { a, b -> a % b }
+    operator fun rem(other: Xyz) = Xyz(super.rem(other))
 
     override fun toString(): String {
         return "Xyz(x=$x, y=$y, z=$z)"
