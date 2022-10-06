@@ -30,10 +30,11 @@ class Y2015D17(input: String) {
     private val containers = lines
         .map { it.toInt() }
         .sortedDescending()
-    
+
     private val storage = 150
     private val combos = getCombos()
-    private val minimumContainers = combos.minByOrNull { it.size }!!.size
+    private val minimumContainers = combos.minByOrNull { it.size }?.size
+        ?: throw NoSuchElementException("combos empty!")
 
     fun part1() = combos.size
 
