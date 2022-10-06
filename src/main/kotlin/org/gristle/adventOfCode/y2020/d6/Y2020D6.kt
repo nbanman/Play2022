@@ -16,16 +16,17 @@ class Y2020D6(input: String) {
     // problem.
     private inline fun solve(count: (String) -> Set<Char>) = groups
         .map(count)
-        .sumOf { it.size }
+        .sumOf(Set<Char>::size)
 
     // For each group, count the number of questions to which *anyone* answered "yes."
     fun part1() = solve { group -> group.toSet() - '\n' } // Simply converting to set removes duplicates, providing p1 answer
 
     // For each group, count the number of questions to which *everyone* answered "yes."
-    fun part2() = solve { group -> group
-        .split('\n') // split group into separate people
-        .map { it.toSet() } // represent each person as a set of characters
-        .reduce { acc, set -> acc.intersect(set) } // represent each group as set of characters shared by each person
+    fun part2() = solve { group ->
+        group
+            .split('\n') // split group into separate people
+            .map(String::toSet) // represent each person as a set of characters
+            .reduce(Set<Char>::intersect) // represent each group as set of characters shared by each person
     }
 }
 
