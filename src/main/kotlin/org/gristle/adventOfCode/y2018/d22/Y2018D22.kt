@@ -4,46 +4,42 @@ import org.gristle.adventOfCode.utilities.*
 import org.gristle.adventOfCode.utilities.Graph.steps
 
 class Y2018D22(input: String) {
-    
+
     private val pattern = Regex("""depth: (\d+)\r?\ntarget: (\d+),(\d+)""")
-    
+
     private val gv = input.groupValues(pattern) { it.toInt() }.first()
-    
+
     private val depth = gv[0]
     private val target = Coord(gv[1], gv[2])
-    
+
     private val width = target.x + 201
     private val height = target.y + 201
-    
-    private val caveGi = MutableGrid(width * height, width) { -1L }
+
+    // cavern is the representation of the terrain in the cavern. First a mutable grid is created, then the 
+    // apply block fills in the geologic index. You can't do it in a constructor because apart from some defaults
+    // each spot is dependent on the geologic indexes of spots to the north and west.
+    // Afterwards, the grid is mapped to CavernType but converting the geoIndexes to erosion levels and modding 3.
+    private val cavern = MutableGrid(width * height, width) { -1L }
         .apply {
             for (i in indices) {
-                val coord = Coord(i % width, i / width)
-                val geologicIndex = geoIndex(coord, this)
-                this[i] = geologicIndex
+                this[i] = geoIndex(Coord(i % width, i / width), this)
             }
-        } as Grid<Long>
-            
-    private val caveRi = List(caveGi.size) { i -> erosionLevel(Coord.fromIndex(i, width), caveGi) }
-    
-    private val cavern = List(caveRi.size) { i ->
-        when (caveRi[i] % 3) {
-            0L -> CavernType.ROCKY
-            1L -> CavernType.WET
-            else -> CavernType.NARROW
+        }.mapToGrid {
+            when (it.erosionLevel() % 3) {
+                0L -> CavernType.ROCKY
+                1L -> CavernType.WET
+                else -> CavernType.NARROW
+            }
         }
-    }.toGrid(width)
 
     private fun geoIndex(coord: Coord, cave: Grid<Long>) = when {
-        coord == target || coord == Coord(0, 0) -> 0L
+        coord == target || coord == Coord.ORIGIN -> 0L
         coord.y == 0 -> coord.x * 16807L
         coord.x == 0 -> coord.y * 48271L
-        else -> erosionLevel(coord.west(), cave) * erosionLevel(coord.north(), cave)
+        else -> cave[coord.west()].erosionLevel() * cave[coord.north()].erosionLevel()
     }
 
-    private fun erosionLevel(coord: Coord, cave: Grid<Long>): Long {
-        return (cave[coord] + depth) % 20183
-    }
+    private fun Long.erosionLevel() = (this + depth) % 20183
 
     enum class CavernType { ROCKY, WET, NARROW }
 
