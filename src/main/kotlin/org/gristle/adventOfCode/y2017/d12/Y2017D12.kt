@@ -15,7 +15,7 @@ class Y2017D12(input: String) {
                 } else {
                     val newFound = found + evaluate
                     val newRegisters = evaluate.fold(listOf<Int>()) { acc, i ->
-                        acc + links[i]!!.filter { it !in newFound }
+                        acc + links.getValue(i).filter { it !in newFound }
                     }.toSet()
                     aL(found + evaluate, newRegisters)
                 }

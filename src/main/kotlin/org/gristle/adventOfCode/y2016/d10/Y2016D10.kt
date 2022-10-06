@@ -21,12 +21,18 @@ class Y2016D10(input: String) {
                 val isResp = setOf(storage, value) == respTrack
                 storage = -1
                 if (low.isBot) {
-                    bots.find { it.name == low.name }!!.take(lowValue, bots, respTrack, output)
+                    bots
+                        .find { it.name == low.name }
+                        ?.take(lowValue, bots, respTrack, output)
+                        ?: throw Exception("low bot name not found in list of bots")
                 } else {
                     output.add(Output(lowValue, low.name))
                 }
                 if (high.isBot) {
-                    bots.find { it.name == high.name }!!.take(highValue, bots, respTrack, output)
+                    bots
+                        .find { it.name == high.name }
+                        ?.take(highValue, bots, respTrack, output)
+                        ?: throw Exception("high bot name not found in list of bots")
                 } else {
                     output.add(Output(highValue, high.name))
                 }
@@ -63,7 +69,8 @@ class Y2016D10(input: String) {
         input
             .groupValues(chipAssignments)
             .forEach { gv ->
-                val bot = bots.find { it.name == gv[1].toInt() }!!
+                val bot = bots.find { it.name == gv[1].toInt() }
+                    ?: throw Exception("Chip assignment bot name not found in list of bots.")
                 bot.take(gv[0].toInt(), bots, respTrack, output)
             }
     }
