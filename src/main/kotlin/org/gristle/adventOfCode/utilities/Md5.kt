@@ -3,7 +3,7 @@ package org.gristle.adventOfCode.utilities
 import java.security.MessageDigest
 
 object Md5 {
-    private val mDigest = MessageDigest.getInstance("MD5")!!
+    private val mDigest = MessageDigest.getInstance("MD5")!! // getInstance annotated @NotNull
     private const val HEXCHARS = "0123456789abcdef"
 
     fun getDigest(s: String): ByteArray = mDigest.apply { update(s.toByteArray()) }.digest()
