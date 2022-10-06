@@ -113,10 +113,10 @@ class Y2018D22(input: String) {
                 cavern
                     .getNeighborIndices(state.pos)
                     .map { neighborIndex ->
-                        val pos = cavern.coordOf(neighborIndex)
-                        val (newTool, weight) = changeGear(pos, state)
-                        val weightMod = if (pos == target && newTool != Tool.TORCH) 7 else 0
-                        Graph.Edge(State(pos, newTool), weight.toDouble() + weightMod)
+                        val neighborCoord = cavern.coordOf(neighborIndex)
+                        val (newTool, weight) = changeGear(neighborCoord, state)
+                        val weightMod = if (neighborCoord == target && newTool != Tool.TORCH) 7 else 0
+                        Graph.Edge(State(neighborCoord, newTool), weight.toDouble() + weightMod)
                     }
             }
         ).steps()
