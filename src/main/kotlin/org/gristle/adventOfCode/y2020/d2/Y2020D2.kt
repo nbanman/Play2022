@@ -9,8 +9,7 @@ class Y2020D2(input: String) {
     data class PassPolicy(val letter: Char, val range: IntRange, val password: String) {
         val isValidUnderOldJobPolicy = password.count { it == letter } in range
         val isValidUnderCurrentPolicy =
-            1 == ((if (password[range.first - 1] == letter) 1 else 0) +
-                    (if (password[range.last - 1] == letter) 1 else 0))
+            (password[range.first - 1] == letter) xor (password[range.last - 1] == letter)
     }
 
     private val policies = input
