@@ -17,8 +17,9 @@ class Y2018D22(input: String) {
 
     // cavern is the representation of the terrain in the cavern. First a mutable grid is created, then the 
     // apply block fills in the geologic index. You can't do it in a constructor because apart from some defaults
-    // each spot is dependent on the geologic indexes of spots to the north and west.
-    // Afterwards, the grid is mapped to CavernType but converting the geoIndexes to erosion levels and modding 3.
+    // each spot is dependent in a bootstrapping fashion on the previously calculated  geologic indexes of spots 
+    // to the north and west. Afterwards, the grid is mapped to CavernType by converting the geoIndexes to erosion 
+    // levels and modding 3.
     private val cavern = MutableGrid(width * height, width) { -1L }
         .apply {
             for (i in indices) {
