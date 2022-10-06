@@ -9,7 +9,7 @@ class Y2020D7(input: String) {
 
     class HeldBag(val color: String, private val amount: Int) {
         fun bagsInside(): Long {
-            return amount + amount * Rule.bagMap[color]!!.heldBags.sumOf { it.bagsInside() }
+            return amount + amount * Rule.bagMap.getValue(color).heldBags.sumOf { it.bagsInside() }
         }
     }
 
@@ -30,7 +30,7 @@ class Y2020D7(input: String) {
                 val current = q.poll().color
                 if (current == other) return true
                 visited.add(current)
-                q.addAll(bagMap[current]!!.heldBags.filter { !visited.contains(it.color) })
+                q.addAll(bagMap.getValue(current).heldBags.filter { !visited.contains(it.color) })
             }
             return false
         }
