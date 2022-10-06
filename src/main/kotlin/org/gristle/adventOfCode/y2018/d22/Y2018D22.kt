@@ -15,15 +15,14 @@ class Y2018D22(input: String) {
     private val width = target.x + 201
     private val height = target.y + 201
     
-    private val caveGi = List(width * height) { -1L }
-        .toMutableGrid(width)
+    private val caveGi = MutableGrid(width * height, width) { -1L }
         .apply {
             for (i in indices) {
                 val coord = Coord(i % width, i / width)
                 val geologicIndex = geoIndex(coord, this)
                 this[i] = geologicIndex
             }
-        }
+        } as Grid<Long>
             
     private val caveRi = List(caveGi.size) { i -> erosionLevel(Coord.fromIndex(i, width), caveGi) }
     
