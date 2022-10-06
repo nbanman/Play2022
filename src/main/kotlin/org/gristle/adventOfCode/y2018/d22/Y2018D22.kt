@@ -45,15 +45,19 @@ class Y2018D22(input: String) {
         return (cave[coord] + depth) % 20183
     }
 
-    enum class CavernType { ROCKY, WET, NARROW } 
+    enum class CavernType { ROCKY, WET, NARROW }
 
     enum class Tool { GEAR, TORCH, NEITHER }
-    
-    data class Locator(val pos: Coord, val tool: Tool)
+
+    data class State(val pos: Coord, val tool: Tool)
 
     fun part1() = cavern.subGrid(Coord.ORIGIN, target).sumOf { it.ordinal }
 
-    private fun changeGear(pos: Coord, id: Locator) = when (cavern[pos]) {
+    /**
+     * For a given proposed new location and current state, provides what tool will have to be used and the
+     * time that it will take to change any tool, if necessary.
+     */
+    private fun changeGear(pos: Coord, id: State) = when (cavern[pos]) {
         CavernType.ROCKY -> {
             when (cavern[id.pos]) {
                 CavernType.ROCKY -> id.tool to 1
@@ -101,23 +105,21 @@ class Y2018D22(input: String) {
         }
     }
 
-    private val getEdges = { id: Locator ->
-        cavern
-            .getNeighborIndices(id.pos)
-            .map {
-                val pos = cavern.coordOf(it)
-                val (newTool, weight) = changeGear(pos, id)
-                val weightMod = if (pos == target && newTool != Tool.TORCH) 7 else 0
-                Graph.Edge(Locator(pos, newTool), weight.toDouble() + weightMod)
+    fun part2() = Graph
+        .aStar(
+            startId = State(Coord.ORIGIN, Tool.TORCH),
+            heuristic = { state -> state.pos.manhattanDistance(target).toDouble() },
+            defaultEdges = { state ->
+                cavern
+                    .getNeighborIndices(state.pos)
+                    .map { neighborIndex ->
+                        val pos = cavern.coordOf(neighborIndex)
+                        val (newTool, weight) = changeGear(pos, state)
+                        val weightMod = if (pos == target && newTool != Tool.TORCH) 7 else 0
+                        Graph.Edge(State(pos, newTool), weight.toDouble() + weightMod)
+                    }
             }
-    }
-
-    fun part2(): Int {
-        val start = Locator(Coord.ORIGIN, Tool.TORCH)
-        val heuristic = { id: Locator -> id.pos.manhattanDistance(target).toDouble() }
-        val path = Graph.aStar(start, heuristic, defaultEdges = getEdges)
-        return path.steps()
-    }
+        ).steps()
 }
 
 fun main() {
