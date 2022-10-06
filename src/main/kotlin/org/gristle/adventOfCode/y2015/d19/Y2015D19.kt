@@ -11,7 +11,8 @@ class Y2015D19(input: String) {
 
     private val work = input
     private val moleculePattern = """^[A-z]+${'$'}""".toRegex(RegexOption.MULTILINE)
-    private val molecule = moleculePattern.find(work)!!.value
+    private val molecule = moleculePattern.find(work)?.value
+        ?: throw IllegalStateException("No molecule found in input")
 
     private val rulePattern = """([A-Z][a-z]?) => (\w+)""".toRegex()
     private val rules = work
