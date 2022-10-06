@@ -53,9 +53,11 @@ class Y2017D20(input: String) {
         val selectParticles = particles.filter {
             it.a.manhattanDistance() == particles.first().a.manhattanDistance()
         }
-        //    selectParticles.forEach { println("time: ${it.stableTime()}, $it") }
         val offset = selectParticles.maxOf { it.stableTime() }
-        return selectParticles.maxByOrNull { it.particleAt(offset).p.manhattanDistance() }!!.number
+        return selectParticles
+            .maxByOrNull { it.particleAt(offset).p.manhattanDistance() }
+            ?.number
+            ?: throw Exception("selectParticles has no elements")
     }
 
     fun part2(): Int {

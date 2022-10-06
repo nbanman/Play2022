@@ -31,8 +31,11 @@ class Y2017D21(private val input: String) {
             }
         }
         val transformedSubs = subGrids.map { transGrid ->
-            val rule = rules.find { it.matches(transGrid) }!!
-            rule.replacement.toGrid(square + 1)
+            rules
+                .find { it.matches(transGrid) }
+                ?.replacement
+                ?.toGrid(square + 1)
+                ?: throw Exception("no rule matches transGrid")
         }
         return transformedSubs
             .chunked(kotlin.math.sqrt(transformedSubs.size.toDouble()).toInt())
