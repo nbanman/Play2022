@@ -4,46 +4,41 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2020D12(input: String) {
 
-    data class Instruction(val action: Char, val amount: Int)
-    val instructions = input.lines().map { Instruction(it.first(), it.drop(1).toInt()) }
-    fun part1(): Int {
-        var dir = Nsew.EAST
-        var coord = Coord.ORIGIN
-        instructions.forEach { instruction ->
-            when (instruction.action) {
-                'N' -> coord = coord.north(instruction.amount)
-                'S' -> coord = coord.south(instruction.amount)
-                'E' -> coord = coord.east(instruction.amount)
-                'W' -> coord = coord.west(instruction.amount)
-                'L' -> dir = (1..(instruction.amount / 90)).fold(dir) { acc, _ -> acc.left() }
-                'R' -> dir = (1..(instruction.amount / 90)).fold(dir) { acc, _ -> acc.right() }
-                else -> coord = coord.move(dir, instruction.amount)
-            }
-        }
-        return coord.manhattanDistance()
+    private data class Instruction(val action: Char, val amount: Int)
+    private data class State(val pos: Coord, val dir: Nsew, val waypoint: Coord)
+    
+    private val instructions = input.lines().map { Instruction(it.first(), it.drop(1).toInt()) }
+
+    private fun solve(execute: State.(Instruction) -> State): Int {
+        val initialState = State(Coord.ORIGIN, Nsew.EAST, Coord(10, -1))
+        return instructions
+            .fold(initialState) { state, instruction -> state.execute(instruction) }
+            .pos
+            .manhattanDistance()
     }
 
-    fun part2(): Int {
-        var coord = Coord(0, 0)
-        var wayPoint = coord + Coord(10, -1)
-        instructions.forEach { instruction ->
-            when (instruction.action) {
-                'N' -> wayPoint = wayPoint.north(instruction.amount)
-                'S' -> wayPoint = wayPoint.south(instruction.amount)
-                'E' -> wayPoint = wayPoint.east(instruction.amount)
-                'W' -> wayPoint = wayPoint.west(instruction.amount)
-                'L' -> wayPoint = (1..(instruction.amount / 90)).fold(wayPoint) { acc, _ ->
-                    Coord(acc.y, -acc.x)
-                }
-                'R' -> wayPoint = (1..(instruction.amount / 90)).fold(wayPoint) { acc, _ ->
-                    Coord(-acc.y, acc.x)
-                }
-                else -> coord = (1..instruction.amount).fold(coord) { acc, _ ->
-                    acc + wayPoint
-                }
-            }
+    fun part1() = solve { instruction ->
+        when (instruction.action) {
+            'N' -> copy(pos = pos.north(instruction.amount))
+            'S' -> copy(pos = pos.south(instruction.amount))
+            'E' -> copy(pos = pos.east(instruction.amount))
+            'W' -> copy(pos = pos.west(instruction.amount))
+            'L' -> copy(dir = (1..(instruction.amount / 90)).fold(dir) { acc, _ -> acc.left() })
+            'R' -> copy(dir = (1..(instruction.amount / 90)).fold(dir) { acc, _ -> acc.right() })
+            else -> copy(pos = pos.move(dir, instruction.amount))
         }
-        return coord.manhattanDistance()
+    }
+
+    fun part2() = solve { instruction ->
+        when (instruction.action) {
+            'N' -> copy(waypoint = waypoint.north(instruction.amount))
+            'S' -> copy(waypoint = waypoint.south(instruction.amount))
+            'E' -> copy(waypoint = waypoint.east(instruction.amount))
+            'W' -> copy(waypoint = waypoint.west(instruction.amount))
+            'L' -> copy(waypoint = (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(acc.y, -acc.x) })
+            'R' -> copy(waypoint = (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(-acc.y, acc.x) })
+            else -> copy(pos = (1..instruction.amount).fold(pos) { acc, _ -> acc + waypoint })
+        }
     }
 }
 
