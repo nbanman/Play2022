@@ -4,42 +4,57 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2020D12(input: String) {
 
-    private data class Instruction(val action: Char, val amount: Int)
-    private data class State(val pos: Coord, val dir: Nsew, val waypoint: Coord)
-    
+    data class Instruction(val action: Char, val amount: Int)
+    sealed class State(val pos: Coord) {
+        abstract fun executeInstruction(instruction: Instruction): State
+    }
+
+    class DirState(pos: Coord = Coord.ORIGIN, private val dir: Nsew = Nsew.EAST) : State(pos) {
+        override fun executeInstruction(instruction: Instruction): DirState {
+            return when (instruction.action) {
+                'N' -> DirState(pos.north(instruction.amount), dir)
+                'S' -> DirState(pos.south(instruction.amount), dir)
+                'E' -> DirState(pos.east(instruction.amount), dir)
+                'W' -> DirState(pos.west(instruction.amount), dir)
+                'L' -> DirState(pos, dir.left(instruction.amount / 90))
+                'R' -> DirState(pos, dir.right(instruction.amount / 90))
+                else -> DirState(pos.move(dir, instruction.amount), dir)
+            }
+        }
+    }
+
+    class WaypointState(pos: Coord = Coord.ORIGIN, private val waypoint: Coord = Coord(10, -1)) : State(pos) {
+        override fun executeInstruction(instruction: Instruction): WaypointState {
+            return when (instruction.action) {
+                'N' -> WaypointState(pos, waypoint.north(instruction.amount))
+                'S' -> WaypointState(pos, waypoint.south(instruction.amount))
+                'E' -> WaypointState(pos, waypoint.east(instruction.amount))
+                'W' -> WaypointState(pos, waypoint.west(instruction.amount))
+                'L' -> WaypointState(
+                    pos,
+                    (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(acc.y, -acc.x) }
+                )
+                'R' -> WaypointState(
+                    pos,
+                    (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(-acc.y, acc.x) }
+                )
+                else -> WaypointState((1..instruction.amount).fold(pos) { acc, _ -> acc + waypoint }, waypoint)
+            }
+        }
+    }
+
     private val instructions = input.lines().map { Instruction(it.first(), it.drop(1).toInt()) }
 
-    private fun solve(execute: State.(Instruction) -> State): Int {
-        val initialState = State(Coord.ORIGIN, Nsew.EAST, Coord(10, -1))
+    private fun solve(initialState: State): Int {
         return instructions
-            .fold(initialState) { state, instruction -> state.execute(instruction) }
+            .fold(initialState, State::executeInstruction)
             .pos
             .manhattanDistance()
     }
 
-    fun part1() = solve { instruction ->
-        when (instruction.action) {
-            'N' -> copy(pos = pos.north(instruction.amount))
-            'S' -> copy(pos = pos.south(instruction.amount))
-            'E' -> copy(pos = pos.east(instruction.amount))
-            'W' -> copy(pos = pos.west(instruction.amount))
-            'L' -> copy(dir = (1..(instruction.amount / 90)).fold(dir) { acc, _ -> acc.left() })
-            'R' -> copy(dir = (1..(instruction.amount / 90)).fold(dir) { acc, _ -> acc.right() })
-            else -> copy(pos = pos.move(dir, instruction.amount))
-        }
-    }
+    fun part1() = solve(DirState())
 
-    fun part2() = solve { instruction ->
-        when (instruction.action) {
-            'N' -> copy(waypoint = waypoint.north(instruction.amount))
-            'S' -> copy(waypoint = waypoint.south(instruction.amount))
-            'E' -> copy(waypoint = waypoint.east(instruction.amount))
-            'W' -> copy(waypoint = waypoint.west(instruction.amount))
-            'L' -> copy(waypoint = (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(acc.y, -acc.x) })
-            'R' -> copy(waypoint = (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(-acc.y, acc.x) })
-            else -> copy(pos = (1..instruction.amount).fold(pos) { acc, _ -> acc + waypoint })
-        }
-    }
+    fun part2() = solve((WaypointState()))
 }
 
 fun main() {
