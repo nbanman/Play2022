@@ -34,4 +34,7 @@ enum class Nsew {
             forward(c, it)
         }
     }
+
+    fun left(times: Int): Nsew = (1..times).fold(this) { acc, _ -> acc.left() }
+    fun right(times: Int): Nsew = (1..times).fold(this) { acc, _ -> acc.right() }
 }
