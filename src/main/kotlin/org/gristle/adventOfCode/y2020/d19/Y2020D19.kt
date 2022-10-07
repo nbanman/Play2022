@@ -18,7 +18,7 @@ class Y2020D19(input: String) {
 
         class Seq(name: Int, private val subRules: List<Int>) : Rule(name) {
             override fun expand(register: Map<Int, Rule>): String {
-                return subRules.joinToString("") { register[it]!!.expand(register) }
+                return subRules.joinToString("") { register.getValue(it).expand(register) }
             }
 
             override fun toString() = "Seq: $name, $subRules"
@@ -42,7 +42,7 @@ class Y2020D19(input: String) {
                         append(')')
                     }
                 } else {
-                    left.joinToString("") { register[it]!!.expand(register) }
+                    left.joinToString("") { register.getValue(it).expand(register) }
                 }
             }
 
@@ -73,40 +73,30 @@ class Y2020D19(input: String) {
         .map { it.value }
         .toSet()
 
-    fun part1(): Int {
-        val register = mutableMapOf<Int, Rule>()
-            .apply {
-                rules.forEach { rule ->
-                    put(rule.name, rule)
-                }
-            }.toMap()
-
-        val matchPattern = rules.find { it.name == 0 }!!.expand(register).toRegex()
+    fun solve(rules: List<Rule>): Int {
+        val register = buildMap {
+            rules.forEach { rule ->
+                put(rule.name, rule)
+            }
+        }
+        val matchPattern = register.getValue(0).expand(register).toRegex()
 
         return messages.count { matchPattern.matches(it) }
-
     }
 
+    fun part1() = solve(rules)
+
     fun part2(): Int {
-        val newRules = rules.sortedBy { it.name }.toMutableList()
-        val new8 = Rule.Fork(8, listOf(42), listOf(42, 8))
-        val new11 = Rule.Fork(11, listOf(42, 31), listOf(42, 11, 31))
-
-        newRules[8] = new8
-        newRules[11] = new11
-
-
-        val register = mutableMapOf<Int, Rule>()
-            .apply {
-                newRules.forEach { rule ->
-                    put(rule.name, rule)
+        val newRules = rules
+            .sortedBy { it.name }
+            .mapIndexed { index, rule ->
+                when (index) {
+                    8 -> Rule.Fork(8, listOf(42), listOf(42, 8))
+                    11 -> Rule.Fork(11, listOf(42, 31), listOf(42, 11, 31))
+                    else -> rule
                 }
-            }.toMap()
-
-        val matchPattern = newRules.find { it.name == 0 }!!.expand(register).toRegex()
-
-        return messages.count { matchPattern.matches(it) }
-
+            }
+        return solve(newRules)
     }
 }
 
