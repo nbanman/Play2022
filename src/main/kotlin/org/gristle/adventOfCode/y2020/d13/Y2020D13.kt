@@ -8,25 +8,21 @@ class Y2020D13(input: String) {
     private val lines = input.lines()
     data class Bus(val id: Long, val offset: Long)
 
+    data class BusState(val time: Int, val busId: Int)
     fun part1(): Int {
         val start = lines.first().toInt()
         val ids = lines.last().split(',').mapNotNull { it.toIntOrNull() }
-        var time = start
-        while (true) {
-            val available = ids.find { time % it == 0 }
-            if (available != null) return available * (time - start)
-            time++
+        val timeSequence = generateSequence(BusState(start, 0)) { (time, _) ->
+            BusState(time + 1, ids.find { (time + 1) % it == 0 } ?: 0)
         }
+        return timeSequence
+            .first { (_, available) -> available != 0 }
+            .let { it.busId * (it.time - start) }
     }
 
-    private fun modularInverse(ni: Long, mod: Long): Long {
-        val reducedNi = ni % mod
-        var mult = 1L
-        while (true) {
-            if ((reducedNi * mult) % mod == 1L) return mult
-            mult++
-        }
-    }
+    private fun modularInverse(ni: Long, mod: Long) =
+        generateSequence(1L) { it + 1 }
+            .first { (ni % mod * it) % mod == 1L }
 
     private fun crt(buses: List<Bus>): Bus {
         val n = buses.fold(1L) { acc, bus -> acc * bus.id }
