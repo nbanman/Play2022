@@ -7,6 +7,8 @@ class Y2020D12(input: String) {
     // Holds instruction info
     data class Instruction(val action: Char, val amount: Int)
 
+    // State interface allows use of two different State objects with different values/functions to work with the 
+    // solve function.
     interface State {
         val pos: Coord
         fun executeInstruction(instruction: Instruction): State
@@ -14,7 +16,7 @@ class Y2020D12(input: String) {
 
     // State used for part 1. Holds the current position and direction. 
     class DirState(override val pos: Coord = Coord.ORIGIN, private val dir: Nsew = Nsew.EAST) : State {
-        // Provides a new state based on part 1 parsing of instructions.
+        // Provides a new state based on part 1 execution of instructions.
         override fun executeInstruction(instruction: Instruction): DirState {
             return when (instruction.action) {
                 'N' -> DirState(pos.north(instruction.amount), dir)
@@ -33,7 +35,7 @@ class Y2020D12(input: String) {
         override val pos: Coord = Coord.ORIGIN,
         private val waypoint: Coord = Coord(10, -1)
     ) : State {
-        // Provides a new state based on part 2 parsing of instructions.
+        // Provides a new state based on part 2 execution of instructions.
         override fun executeInstruction(instruction: Instruction): WaypointState {
             return when (instruction.action) {
                 'N' -> WaypointState(pos, waypoint.north(instruction.amount))
@@ -58,12 +60,10 @@ class Y2020D12(input: String) {
 
     // for both parts, start with initial state, execute instructions on each successive state, then take the
     // final location and find the distance from the origin.
-    private fun solve(initialState: State): Int {
-        return instructions
-            .fold(initialState, State::executeInstruction)
-            .pos
-            .manhattanDistance()
-    }
+    private fun solve(initialState: State) = instructions
+        .fold(initialState, State::executeInstruction)
+        .pos
+        .manhattanDistance()
 
     fun part1() = solve(DirState())
 
