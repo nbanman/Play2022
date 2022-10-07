@@ -4,25 +4,29 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2020D10(input: String) {
-    // parse adapters from outlet, sort from lowest rating
-    private val adapters = input.lines().map { it.toInt() }.sorted()
+    // parse adapters from outlet, sort from lowest rating. Then add charging outlet and end devices.
+    // Finally convert to a list of the joltage differences between devices.
+    private val joltageDifferences = input // raw String
+        .lines() // to List of String broken up by line
+        .map { it.toInt() } // convert List<String> to List<Int> 
+        .sorted() // sort List lowest to highest
+        .let { adapters -> listOf(0) + adapters + (adapters.last() + 3) } // add charging outlet and end device to List
+        .zipWithNext() // create List of previous/next pairs
+        .map { (prev, next) -> next - prev } // map to List of delta from prev device
 
-    // include charging outlet and end device
-    private val allDevices = listOf(0) + adapters + (adapters.last() + 3)
-
-    // get list of joltage differences between devices
-    private val differences = allDevices
-        .zipWithNext() // create previous/next pairs
-        .map { (prev, next) -> next - prev } // map delta from prev device
-
-    fun part1() = differences
+    fun part1() = joltageDifferences
         .count { it == 3 } // count number of 3-jolt differences
         .let { jolt3s ->
-            val jolt1s = differences.size - jolt3s // derive number of 1-jolt differences
-            jolt1s * jolt3s
+            val jolt1s = joltageDifferences.size - jolt3s // derive number of 1-jolt differences
+            jolt1s * jolt3s // answer to pt 1
         }
 
-    fun part2() = differences
+    // basic idea to reduce the calculations is divide and conquer. Wherever there is a 3-jolt difference
+    // that adapter and the adapter before it *must* be in the combination. So split the list using the 3-jolt 
+    // differences. You then have a bunch of sublists with 1-jolt differences. The maximum number of 1s you see is
+    // 4, so you can use a lookup table to count the number of possible permutations in each sublist. Multiply them all 
+    // together and you get your answer.
+    fun part2() = joltageDifferences
         .joinToString("") // join differences to one string before splitting in a different way
         .split('3') // both devices 3 apart must be in chain so don't permute
         .map { // each string of 1s represents devices one away from each other.
@@ -33,8 +37,7 @@ class Y2020D10(input: String) {
                 2 -> 2 // 11, 01
                 else -> 1 // 1
             }
-        }.fold(1L) { acc, i -> acc * i } // multiply them by each other
-
+        }.fold(1L) { acc, i -> acc * i } // multiply them by each other to get answer to pt 2
 }
 
 fun main() {
