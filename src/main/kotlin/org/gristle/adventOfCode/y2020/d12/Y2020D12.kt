@@ -15,43 +15,33 @@ class Y2020D12(input: String) {
     }
 
     // State used for part 1. Holds the current position and direction. 
-    class DirState(override val pos: Coord = Coord.ORIGIN, private val dir: Nsew = Nsew.EAST) : State {
+    data class DirState(override val pos: Coord = Coord.ORIGIN, private val dir: Nsew = Nsew.EAST) : State {
         // Provides a new state based on part 1 execution of instructions.
-        override fun executeInstruction(instruction: Instruction): DirState {
-            return when (instruction.action) {
-                'N' -> DirState(pos.north(instruction.amount), dir)
-                'S' -> DirState(pos.south(instruction.amount), dir)
-                'E' -> DirState(pos.east(instruction.amount), dir)
-                'W' -> DirState(pos.west(instruction.amount), dir)
-                'L' -> DirState(pos, dir.left(instruction.amount / 90))
-                'R' -> DirState(pos, dir.right(instruction.amount / 90))
-                else -> DirState(pos.move(dir, instruction.amount), dir)
-            }
+        override fun executeInstruction(instruction: Instruction) = when (instruction.action) {
+            'N' -> copy(pos = pos.north(instruction.amount))
+            'S' -> copy(pos = pos.south(instruction.amount))
+            'E' -> copy(pos = pos.east(instruction.amount))
+            'W' -> copy(pos = pos.west(instruction.amount))
+            'L' -> copy(dir = dir.left(instruction.amount / 90))
+            'R' -> copy(dir = dir.right(instruction.amount / 90))
+            else -> copy(pos = pos.move(dir, instruction.amount))
         }
     }
 
     // State used for part 2. Holds the current position and waypoint coordinates.
-    class WaypointState(
+    data class WaypointState(
         override val pos: Coord = Coord.ORIGIN,
         private val waypoint: Coord = Coord(10, -1)
     ) : State {
         // Provides a new state based on part 2 execution of instructions.
-        override fun executeInstruction(instruction: Instruction): WaypointState {
-            return when (instruction.action) {
-                'N' -> WaypointState(pos, waypoint.north(instruction.amount))
-                'S' -> WaypointState(pos, waypoint.south(instruction.amount))
-                'E' -> WaypointState(pos, waypoint.east(instruction.amount))
-                'W' -> WaypointState(pos, waypoint.west(instruction.amount))
-                'L' -> WaypointState(
-                    pos,
-                    (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(acc.y, -acc.x) }
-                )
-                'R' -> WaypointState(
-                    pos,
-                    (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(-acc.y, acc.x) }
-                )
-                else -> WaypointState((1..instruction.amount).fold(pos) { acc, _ -> acc + waypoint }, waypoint)
-            }
+        override fun executeInstruction(instruction: Instruction) = when (instruction.action) {
+            'N' -> copy(waypoint = waypoint.north(instruction.amount))
+            'S' -> copy(waypoint = waypoint.south(instruction.amount))
+            'E' -> copy(waypoint = waypoint.east(instruction.amount))
+            'W' -> copy(waypoint = waypoint.west(instruction.amount))
+            'L' -> copy(waypoint = (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(acc.y, -acc.x) })
+            'R' -> copy(waypoint = (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(-acc.y, acc.x) })
+            else -> copy(pos = (1..instruction.amount).fold(pos) { acc, _ -> acc + waypoint })
         }
     }
 
