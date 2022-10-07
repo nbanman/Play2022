@@ -4,12 +4,17 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2020D12(input: String) {
 
+    // Holds instruction info
     data class Instruction(val action: Char, val amount: Int)
-    sealed class State(val pos: Coord) {
-        abstract fun executeInstruction(instruction: Instruction): State
+
+    interface State {
+        val pos: Coord
+        fun executeInstruction(instruction: Instruction): State
     }
 
-    class DirState(pos: Coord = Coord.ORIGIN, private val dir: Nsew = Nsew.EAST) : State(pos) {
+    // State used for part 1. Holds the current position and direction. 
+    class DirState(override val pos: Coord = Coord.ORIGIN, private val dir: Nsew = Nsew.EAST) : State {
+        // Provides a new state based on part 1 parsing of instructions.
         override fun executeInstruction(instruction: Instruction): DirState {
             return when (instruction.action) {
                 'N' -> DirState(pos.north(instruction.amount), dir)
@@ -23,7 +28,12 @@ class Y2020D12(input: String) {
         }
     }
 
-    class WaypointState(pos: Coord = Coord.ORIGIN, private val waypoint: Coord = Coord(10, -1)) : State(pos) {
+    // State used for part 2. Holds the current position and waypoint coordinates.
+    class WaypointState(
+        override val pos: Coord = Coord.ORIGIN,
+        private val waypoint: Coord = Coord(10, -1)
+    ) : State {
+        // Provides a new state based on part 2 parsing of instructions.
         override fun executeInstruction(instruction: Instruction): WaypointState {
             return when (instruction.action) {
                 'N' -> WaypointState(pos, waypoint.north(instruction.amount))
@@ -43,8 +53,11 @@ class Y2020D12(input: String) {
         }
     }
 
+    // parses input into list of Instructions
     private val instructions = input.lines().map { Instruction(it.first(), it.drop(1).toInt()) }
 
+    // for both parts, start with initial state, execute instructions on each successive state, then take the
+    // final location and find the distance from the origin.
     private fun solve(initialState: State): Int {
         return instructions
             .fold(initialState, State::executeInstruction)
