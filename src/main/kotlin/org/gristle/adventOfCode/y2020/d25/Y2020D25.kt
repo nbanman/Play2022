@@ -5,24 +5,19 @@ import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2020D25(input: String) {
 
+    private val divisor = 20201227
+
     private val keys = input.lines().map { it.toLong() }
     private val cardKey = keys[0]
     private val doorKey = keys[1]
 
     fun part1(): Long {
-        var loopSize = 0L
-        var value = 1L
-        var subjectNumber = 7L
-        while (value != cardKey) {
-            loopSize++
-            value = (value * subjectNumber) % 20201227L
-        }
-        subjectNumber = doorKey
-        value = 1
-        for (i in 1..loopSize) {
-            value = (value * subjectNumber) % 20201227L
-        }
-        return value
+        val loopSize = generateSequence(0 to 1L) { (count, value) -> (count + 1) to (value * 7) % divisor }
+            .first { (_, value) -> value == cardKey }
+            .first
+        return generateSequence(doorKey % divisor) { (it * doorKey) % divisor }
+            .take(loopSize)
+            .last()
     }
 }
 
