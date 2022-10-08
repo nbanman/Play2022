@@ -26,28 +26,25 @@ class Y2020D24(input: String) {
                 }
         }
     private val home = Hexagon()
-    private val flipped = mutableMapOf<Hexagon, Boolean>()
-        .also {
-            rules.forEach { rule ->
-                val start = home
-                val tile = rule.fold(start) { acc, move -> acc.hexAt(move) }
-                it[tile] = !it.computeIfAbsent(tile) { false }
-            }
-        }.toMap()
+    private val flipped: Map<Hexagon, Boolean> = buildMap {
+        rules.forEach { rule ->
+            val tile = rule.fold(home, Hexagon::hexAt)
+            this[tile] = !computeIfAbsent(tile) { false }
+        }
+    }
 
     fun part1(): Int {
         return flipped.count { it.value }
     }
 
     fun part2(): Int {
-        fun hexRing(n: Int): List<Hexagon> {
-            return mutableListOf<Hexagon>().apply {
-                for (r in 0..n) add(Hexagon(-n, r))
-                for (q in -(n - 1)..0) {
-                    add(Hexagon(q, n))
-                    add(Hexagon(q, -(n + q)))
-                }
-            }.let { it + it.dropLast(2).map { hex -> Hexagon(-hex.q, -hex.r) } }
+        fun hexRing(n: Int): List<Hexagon> = buildList {
+            for (r in 0..n) add(Hexagon(-n, r))
+            for (q in -(n - 1)..0) {
+                add(Hexagon(q, n))
+                add(Hexagon(q, -(n + q)))
+            }
+            addAll(dropLast(2).map { hex -> Hexagon(-hex.q, -hex.r) })
         }
 
         var flipMap = flipped
