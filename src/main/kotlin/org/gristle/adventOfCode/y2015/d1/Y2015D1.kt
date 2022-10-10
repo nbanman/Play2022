@@ -5,14 +5,11 @@ import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2015D1(private val input: String) {
 
-    fun part1() = input.fold(0) { acc, c -> acc + if (c == '(') 1 else -1 }
+    private fun moveFloor(floor: Int, paren: Char) = floor + if (paren == '(') 1 else -1
+    fun part1() = input.fold(0, this::moveFloor)
 
-    tailrec fun part2(floor: Int = 0, index: Int = 0): Int {
-        return if (floor == -1) index else part2(
-            if (input[index] == '(') floor + 1 else floor - 1,
-            index + 1
-        )
-    }
+    tailrec fun part2(floor: Int = 0, index: Int = 0): Int =
+        if (floor == -1) index else part2(moveFloor(floor, input[index]), index + 1)
 }
 
 fun main() {
