@@ -23,15 +23,15 @@ class Y2015D14(input: String) {
         .groupValues("""(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds\.""")
         .map { gv -> Reindeer(gv[0], gv[1].toInt(), gv[2].toInt(), gv[3].toInt()) }
 
-    fun part1() = racers.maxOfOrNull { it.distanceRaced(SECONDS) } ?: 0
+    fun part1() = racers.maxOf { it.distanceRaced(SECONDS) }
 
     fun part2(): Int {
-        return (1..SECONDS).fold(mutableListOf<Reindeer>()) { acc, second ->
+        return (1..SECONDS)
+            .fold(mutableListOf<Reindeer>()) { acc, second ->
                 val maxDistance = racers.maxOf { it.distanceRaced(second) }
                 acc.apply { addAll(racers.filter { it.distanceRaced(second) == maxDistance }) }
             }.eachCount()
-            .maxBy { it.value }
-            .value
+            .maxOf { it.value }
     }
 }
 
