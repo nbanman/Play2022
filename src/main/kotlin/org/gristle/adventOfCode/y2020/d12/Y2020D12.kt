@@ -9,15 +9,16 @@ class Y2020D12(input: String) {
 
     // State interface allows use of two different State objects with different values/functions to work with the 
     // solve function.
-    interface State {
-        val pos: Coord
-        fun executeInstruction(instruction: Instruction): State
+    interface ShipState {
+        fun nextState(instruction: Instruction): ShipState
+
+        fun manhattanDistance(): Int
     }
 
     // State used for part 1. Holds the current position and direction. 
-    data class DirState(override val pos: Coord = Coord.ORIGIN, private val dir: Nsew = Nsew.EAST) : State {
+    data class DirShipState(val pos: Coord = Coord.ORIGIN, val dir: Nsew = Nsew.EAST) : ShipState {
         // Provides a new state based on part 1 execution of instructions.
-        override fun executeInstruction(instruction: Instruction) = when (instruction.action) {
+        override fun nextState(instruction: Instruction): DirShipState = when (instruction.action) {
             'N' -> copy(pos = pos.north(instruction.amount))
             'S' -> copy(pos = pos.south(instruction.amount))
             'E' -> copy(pos = pos.east(instruction.amount))
@@ -26,15 +27,17 @@ class Y2020D12(input: String) {
             'R' -> copy(dir = dir.right(instruction.amount / 90))
             else -> copy(pos = pos.move(dir, instruction.amount))
         }
+
+        override fun manhattanDistance(): Int = pos.manhattanDistance()
     }
 
     // State used for part 2. Holds the current position and waypoint coordinates.
-    data class WaypointState(
-        override val pos: Coord = Coord.ORIGIN,
-        private val waypoint: Coord = Coord(10, -1)
-    ) : State {
+    data class WaypointShipState(
+        val pos: Coord = Coord.ORIGIN,
+        val waypoint: Coord = Coord(10, -1)
+    ) : ShipState {
         // Provides a new state based on part 2 execution of instructions.
-        override fun executeInstruction(instruction: Instruction) = when (instruction.action) {
+        override fun nextState(instruction: Instruction): WaypointShipState = when (instruction.action) {
             'N' -> copy(waypoint = waypoint.north(instruction.amount))
             'S' -> copy(waypoint = waypoint.south(instruction.amount))
             'E' -> copy(waypoint = waypoint.east(instruction.amount))
@@ -43,6 +46,8 @@ class Y2020D12(input: String) {
             'R' -> copy(waypoint = (1..(instruction.amount / 90)).fold(waypoint) { acc, _ -> Coord(-acc.y, acc.x) })
             else -> copy(pos = (1..instruction.amount).fold(pos) { acc, _ -> acc + waypoint })
         }
+
+        override fun manhattanDistance(): Int = pos.manhattanDistance()
     }
 
     // parses input into list of Instructions
@@ -50,14 +55,14 @@ class Y2020D12(input: String) {
 
     // for both parts, start with initial state, execute instructions on each successive state, then take the
     // final location and find the distance from the origin.
-    private fun solve(initialState: State) = instructions
-        .fold(initialState, State::executeInstruction)
-        .pos
-        .manhattanDistance()
+    private fun solve(initialShipState: ShipState) =
+        instructions
+            .fold(initialShipState, ShipState::nextState)
+            .manhattanDistance()
 
-    fun part1() = solve(DirState())
+    fun part1() = solve(DirShipState())
 
-    fun part2() = solve((WaypointState()))
+    fun part2() = solve((WaypointShipState()))
 }
 
 fun main() {
