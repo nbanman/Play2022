@@ -3,6 +3,7 @@ package org.gristle.adventOfCode.y2015.d12
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
+// refactor candidate: lots of vars, while loops, may as well be js
 class Y2015D12(private val input: String) {
 
     data class Block(val value: Int, val length: Int)
