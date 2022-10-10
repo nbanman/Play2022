@@ -6,7 +6,7 @@ import org.gristle.adventOfCode.utilities.readRawInput
 class Y2015D11(input: String) {
     private fun isValid(s: String) = hasStraight(s) && noConfusion(s) && twoPairs(s)
 
-    private fun iterate(s: String): String {
+    private fun increment(s: String): String {
         val changeIndex = s.indexOfLast { it != 'z' }
         val zs = s.lastIndex - changeIndex
         return s.substring(0, changeIndex) + (s[changeIndex] + 1) + (1..zs).fold("") { acc, _ -> acc + 'a' }
@@ -36,10 +36,11 @@ class Y2015D11(input: String) {
             }
     }
 
-    private val nextTwo = generateSequence(iterate(input)) { iterate(it) }
-        .filter { isValid(it) }
-        .take(2)
-        .toList()
+    private val nextTwo = generateSequence(input, ::increment) // sequence starts with password and increments by one
+        .drop(1) // do not consider the current password
+        .filter(::isValid) // only consider valid passwords
+        .take(2) // grab the first two
+        .toList() // terminate sequence
 
     fun part1() = nextTwo.first()
 

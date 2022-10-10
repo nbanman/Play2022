@@ -5,6 +5,7 @@ import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.pow
 
+// Refactor candidate: uses global mutable "register"; stateful, would give different answer if run twice
 class Y2015D7(input: String) {
     sealed class Instruction(val arg1: String, val wire: String) {
         companion object {
