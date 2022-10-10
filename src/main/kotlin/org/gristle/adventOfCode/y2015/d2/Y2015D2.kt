@@ -9,20 +9,20 @@ class Y2015D2(input: String) {
     data class Box(val l: Int, val w: Int, val h: Int) {
         private val asList = listOf(l, w, h).sorted()
         private val surfaceArea = 2 * l * w + 2 * w * h + 2 * h * l
-        private val smallestSideArea = asList.dropLast(1).reduce { acc, i -> acc * i }
+        private val smallestSideArea = asList.dropLast(1).reduce(Int::times)
         val paperNeeded = surfaceArea + smallestSideArea
-        private val cubicVolume = asList.reduce { acc, i -> acc * i }
+        private val cubicVolume = asList.reduce(Int::times)
         private val ribbonToWrap = asList.dropLast(1).sum() * 2
         val ribbonNeeded = cubicVolume + ribbonToWrap
     }
 
     private val boxes = input
-        .groupValues("""(\d+)x(\d+)x(\d+)""") { it.toInt() }
+        .groupValues("""(\d+)x(\d+)x(\d+)""", String::toInt)
         .map { Box(it[0], it[1], it[2]) }
 
-    fun part1() = boxes.sumOf { it.paperNeeded }
+    fun part1() = boxes.sumOf(Box::paperNeeded)
 
-    fun part2() = boxes.sumOf { it.ribbonNeeded }
+    fun part2() = boxes.sumOf(Box::ribbonNeeded)
 }
 
 
