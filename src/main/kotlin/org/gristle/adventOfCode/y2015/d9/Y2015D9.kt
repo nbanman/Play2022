@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2015.d9
 
 import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Graph.steps
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
@@ -12,7 +13,7 @@ class Y2015D9(private val input: String) {
             computeIfAbsent(gv[0]) { mutableListOf() }.add(Graph.Edge(gv[1], gv[2].toDouble()))
             computeIfAbsent(gv[1]) { mutableListOf() }.add(Graph.Edge(gv[0], gv[2].toDouble()))
         }
-    }
+    } as Map<String, List<Graph.Edge<String>>>
 
     data class Leg(val startCity: String, val endCity: String, val distance: Int)
 
@@ -65,7 +66,7 @@ class Y2015D9(private val input: String) {
             startId = listOf(city),
             endCondition = { visited -> cities.size == visited.size },
             defaultEdges = defaultEdges
-        ).last().weight.toInt()
+        ).steps()
     }
 
     fun part2() = longestDistance(emptyList(), legs, cities.toList())
