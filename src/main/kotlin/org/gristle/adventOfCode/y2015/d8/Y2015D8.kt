@@ -12,9 +12,11 @@ class Y2015D8(input: String) {
 
     private fun String.encodedLength() = length + 2 + count { it in """\"""" }
 
-    fun part1() = lines.sumOf { it.length } - lines.sumOf { it.charsInMemory() }
+    private val totalLength = lines.sumOf(String::length)
 
-    fun part2() = lines.sumOf { it.encodedLength() } - lines.sumOf { it.length }
+    fun part1() = totalLength - lines.sumOf { it.charsInMemory() }
+
+    fun part2() = lines.sumOf { it.encodedLength() } - totalLength
 }
 
 fun main() {
