@@ -21,16 +21,17 @@ class Y2016D5(input: String) {
 
     fun part2(): String {
         val password = CharArray(8) { '.' }
-        md5Sequence
-            .map { it[5] to it[6] }
-            .forEach { charCharPair ->
-                val place = charCharPair.first.toDigit()
+        return md5Sequence
+            .mapNotNull { hash ->
+                val place = hash[5].toDigit()
                 if (place in 0..7 && password[place] == '.') {
-                    password[place] = charCharPair.second
-                    if (password.all { it != '.' }) return password.joinToString("")
+                    password[place] = hash[6]
+                    password
+                } else {
+                    null
                 }
-            }
-        return "Should never see this"
+            }.first { password.all { it != '.' } }
+            .joinToString("")
     }
 }
 
