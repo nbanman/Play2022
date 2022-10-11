@@ -15,7 +15,7 @@ class Y2016D15(input: String) {
 
     // Parse input into Discs
     private val discs = input
-        .groupValues(pattern) { it.toInt() }
+        .groupValues(pattern, String::toInt)
         .map { Disc(it[0], it[1], it[2]) }
 
     // Find the first number for which all discs pass
