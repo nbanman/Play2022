@@ -41,7 +41,10 @@ class Y2015D22(input: String) {
             val newShield = if (spell.name == "shield") spell.duration else maxOf(0, shield - 1)
             val newPoison = if (spell.name == "poison") spell.duration else maxOf(0, poison - 1)
             val newRecharge = if (spell.name == "recharge") spell.duration else maxOf(0, recharge - 1)
-            return State(newPlayerHP, damage, newDead, newBossHP, newCurrentMana, newManaSpent, newShield, newPoison, newRecharge)
+            return State(
+                newPlayerHP, damage, newDead, newBossHP, newCurrentMana,
+                newManaSpent, newShield, newPoison, newRecharge
+            )
         }
 
         fun bossTurn(): State {
@@ -51,7 +54,10 @@ class Y2015D22(input: String) {
             val newShield = maxOf(0, shield - 1)
             val newPoison = maxOf(0, poison - 1)
             val newRecharge = maxOf(0, recharge - 1)
-            return State(newPlayerHP, damage, alreadyDead, newBossHP, newCurrentMana, manaSpent, newShield, newPoison, newRecharge)
+            return State(
+                newPlayerHP, damage, alreadyDead, newBossHP, newCurrentMana,
+                manaSpent, newShield, newPoison, newRecharge
+            )
         }
 
         override fun compareTo(other: State) = playerHP - other.playerHP
