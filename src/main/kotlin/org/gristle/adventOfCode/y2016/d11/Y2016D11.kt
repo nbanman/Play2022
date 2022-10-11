@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2016.d11
 
 import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Graph.steps
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
@@ -14,7 +15,7 @@ class Y2016D11(private val input: String) {
     */
     private data class FloorState(val elevator: Int, val floors: List<Floor>) {
 
-        fun isValid() = floors.all { it.isValid() } // Checks that all floors are valid
+        fun isValid() = floors.all(Floor::isValid) // Checks that all floors are valid
         fun isSolved() = toHash().drop(1).dropLast(2).all { it == '0' } // Checks if all items on top floor
 
         // Gives "hash" of the state, which is just numbers corresponding to the elevator position + number of items
@@ -124,10 +125,8 @@ class Y2016D11(private val input: String) {
         * states.
         */
         return Graph
-            .bfs(startId = initialState, endCondition = { it.isSolved() }, defaultEdges = getNeighbors)
-            .last()
-            .weight
-            .toInt()
+            .bfs(startId = initialState, endCondition = FloorState::isSolved, defaultEdges = getNeighbors)
+            .steps()
     }
 
     fun part1() = solveFloors(parseFloors(false))
