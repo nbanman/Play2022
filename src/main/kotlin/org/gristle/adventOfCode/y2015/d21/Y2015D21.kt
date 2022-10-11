@@ -71,12 +71,12 @@ Defense +3   80     0       3"""
     }
 
     fun part1() = combined
-        .sortedBy { it.cost }
+        .sortedBy(Item::cost)
         .find { boss.roundsToDie(it.damage) <= boss.roundsToKill(it.armor, 100) }
         ?.cost
 
     fun part2() = combined
-        .sortedByDescending { it.cost }
+        .sortedByDescending(Item::cost)
         .find { boss.roundsToDie(it.damage) > boss.roundsToKill(it.armor, 100) }
         ?.cost
 }
