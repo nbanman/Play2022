@@ -17,9 +17,9 @@ class Y2015D25(input: String) {
         val extra = if (col == 1) {
             0
         } else {
-            (row until row + col).reduce { acc, i -> acc + i } - (row)
+            (row until row + col).reduce(Int::plus) - row
         }
-        return (1 until row).reduce { acc, i -> acc + i } + 1 + extra
+        return (1 until row).reduce(Int::plus) + 1 + extra
     }
 
     fun part1() = (2..getPlace()).fold(20151125L) { acc, _ -> (acc * 252533) % 33554393 }
