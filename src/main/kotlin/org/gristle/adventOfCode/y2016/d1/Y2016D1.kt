@@ -9,42 +9,42 @@ class Y2016D1(input: String) {
 
     data class Instruction(val turn: Char, val distance: Int)
 
-    data class Me(val dir: Nsew = Nsew.NORTH, val coord: Coord = Coord.ORIGIN)
+    data class State(val dir: Nsew = Nsew.NORTH, val coord: Coord = Coord.ORIGIN) {
+        fun move(instruction: Instruction): State = when (instruction.turn) {
+            'L' -> State(dir.left(), coord.move(dir.left(), instruction.distance))
+            else -> State(dir.right(), coord.move(dir.right(), instruction.distance))
+        }
+
+        fun manhattanDistance() = coord.manhattanDistance()
+    }
 
     val instructions = input
         .split(", ")
         .map { Instruction(it[0], it.drop(1).toInt()) }
 
-    fun part1(): Int {
-        val hq = instructions.fold(Me()) { acc, instruction ->
-            newMe(instruction, acc)
-        }
-        return hq.coord.manhattanDistance()
-    }
-
-    private fun newMe(instruction: Instruction, me: Me) = when (instruction.turn) {
-        'L' -> Me(me.dir.left(), me.coord.move(me.dir.left(), instruction.distance))
-        else -> Me(me.dir.right(), me.coord.move(me.dir.right(), instruction.distance))
-    }
+    fun part1(): Int = instructions
+        .fold(State(), State::move)
+        .manhattanDistance()
 
     tailrec fun part2(
-        me: Me = Me(),
+        state: State = State(),
         visited: Set<Coord> = setOf(Coord.ORIGIN),
         instructions: List<Instruction> = this.instructions
     ): Int {
         val instruction = instructions.first()
-        val newDir = if (instruction.turn == 'L') me.dir.left() else me.dir.right()
+        val newDir = if (instruction.turn == 'L') state.dir.left() else state.dir.right()
         val newVisited = mutableSetOf<Coord>()
         for (i in 1..instruction.distance) {
-            val newPos = me.coord.move(newDir, i)
+            val newPos = state.coord.move(newDir, i)
             if (visited.contains(newPos)) return newPos.manhattanDistance() else newVisited.add(newPos)
         }
         return part2(
-            newMe(instruction, me),
+            state.move(instruction),
             visited + newVisited,
             instructions.drop(1)
         )
-    }}
+    }
+}
 
 fun main() {
     var time = System.nanoTime()
