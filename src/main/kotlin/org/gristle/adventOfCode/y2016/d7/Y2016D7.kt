@@ -28,9 +28,9 @@ class Y2016D7(input: String) {
         IPv7(standard, hyper.map { it.drop(1).dropLast(1) })
     }
 
-    fun part1() = addresses.count { it.supportsTls }
+    fun part1() = addresses.count(IPv7::supportsTls)
 
-    fun part2() = addresses.count { it.supportsSsl }
+    fun part2() = addresses.count(IPv7::supportsSsl)
 
 }
 
