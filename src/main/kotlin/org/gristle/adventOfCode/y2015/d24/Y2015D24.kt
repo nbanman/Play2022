@@ -7,7 +7,7 @@ class Y2015D24(input: String) {
 
     private val lines = input.lines()
 
-    private fun List<Int>.qE() = this.fold(1L) { acc, i -> acc * i }
+    private fun List<Int>.qE() = this.fold(1L, Long::times)
 
     private fun uniqueCombos(validCombos: List<List<Int>>, taken: List<List<Int>>, uniqueGroups: Int): List<Int>? {
         if (validCombos.isEmpty()) {
@@ -32,7 +32,7 @@ class Y2015D24(input: String) {
     }
 
     private val weights = lines
-        .map { it.toInt() }
+        .map(String::toInt)
         .sortedDescending()
 
     data class Package(val weight: Int, val range: IntRange)
