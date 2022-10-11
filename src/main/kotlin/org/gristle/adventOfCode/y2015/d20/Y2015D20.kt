@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2015.d20
 
 import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.foldToList
 import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.sqrt
 
@@ -26,18 +25,16 @@ class Y2015D20(input: String) {
 
         if (n > 2) factors.add(n)
 
-        // println("factors of $number: $factors")
         return factors
     }
 
     private tailrec fun expandFactors(primeFactors: List<Int>, factors: List<Int> = listOf(1)): List<Int> {
         return if (primeFactors.isNotEmpty()) {
-            @Suppress("RemoveExplicitTypeArguments")
             val latest = primeFactors
                 .dropLastWhile { it != primeFactors.first() }
-                .foldToList<Int, Int> { i ->
-                    add(if (isEmpty()) i else last() * i)
-                }
+                .drop(1)
+                .fold(mutableListOf(primeFactors.first())) { acc, i -> acc.apply { add(acc.last() * i) } }
+                    as List<Int>
             val newFactors = factors.fold(listOf<Int>()) { acc, i ->
                 acc + listOf(i) + latest.map { it * i }
             }
@@ -47,19 +44,17 @@ class Y2015D20(input: String) {
         }
     }
 
-    fun part1() = generateSequence(1) { it + 1 }
-        .indexOfFirst {
-            val elves = expandFactors(primeFactors(it))
-            val presents = elves.fold(0) { acc, i -> acc + i * 10 }
+    fun solve(multiplier: Int, filter: (houseNumber: Int, elf: Int) -> Boolean) = generateSequence(1) { it + 1 }
+        .indexOfFirst { houseNumber ->
+            val elves = expandFactors(primeFactors(houseNumber)).filter { filter(houseNumber, it) }
+            val presents = elves.fold(0) { acc, i -> acc + i * multiplier }
             presents >= minimumPresents
         } + 1
 
-    fun part2() = generateSequence(1) { it + 1 }
-        .indexOfFirst { houseNumber ->
-            val elves = expandFactors(primeFactors(houseNumber)).filter { it * 50 > houseNumber }
-            val presents = elves.fold(0) { acc, i -> acc + i * 11 }
-            presents >= minimumPresents
-        } + 1
+
+    fun part1() = solve(10) { _, _ -> true }
+
+    fun part2() = solve(11) { houseNumber, elf -> elf * 50 > houseNumber }
 }
 
 fun main() {
