@@ -17,7 +17,7 @@ class Y2016D4(input: String) {
                 .sortedWith(compareByDescending<Map.Entry<Char, Int>> { it.value }.thenBy { it.key })
                 .take(5) // take 1st 5
                 .map { it.key } // use only the char
-                .joinToString("") // joint them to string
+                .joinToString("") // join them to string
             checkSum == mostCommon
         }
 
@@ -29,9 +29,9 @@ class Y2016D4(input: String) {
     private val rooms = input
         .groupValues("""([a-z-]+)-(\d+)\[([a-z]+)\]""")
         .map { Room(it[0], it[1].toInt(), it[2]) }
-        .filter { it.isReal }
+        .filter(Room::isReal)
 
-    fun part1() = rooms.sumOf { it.id }
+    fun part1() = rooms.sumOf(Room::id)
 
     fun part2() = rooms.find { it.name == "northpole object storage" }?.id?.toString() ?: "not found"
 }
