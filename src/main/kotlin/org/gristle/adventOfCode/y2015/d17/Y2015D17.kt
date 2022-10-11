@@ -27,14 +27,11 @@ class Y2015D17(input: String) {
         return gC(containers, emptyList()).filter { it.sum() == storage }
     }
 
-    private val containers = lines
-        .map { it.toInt() }
-        .sortedDescending()
+    private val containers = lines.map(String::toInt).sortedDescending()
 
     private val storage = 150
     private val combos = getCombos()
-    private val minimumContainers = combos.minByOrNull { it.size }?.size
-        ?: throw NoSuchElementException("combos empty!")
+    private val minimumContainers = combos.minOf(List<Int>::size)
 
     fun part1() = combos.size
 
