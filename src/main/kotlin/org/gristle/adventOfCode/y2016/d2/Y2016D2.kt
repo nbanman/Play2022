@@ -28,7 +28,6 @@ class Y2016D2(input: String) {
     }
 
     fun solve(
-        size: Coord,
         start: Coord,
         padTraverse: (Coord, Char) -> Coord,
         conversion: Coord.() -> String
@@ -40,8 +39,8 @@ class Y2016D2(input: String) {
     }
 
     fun part1(): String {
-        val size = Coord(3, 3)
         val start = Coord(1, 1)
+        val size = Coord(3, 3)
         val padTraverse = { coord: Coord, c: Char ->
             when (c) {
                 'R' -> coord.east(1, size)
@@ -51,12 +50,12 @@ class Y2016D2(input: String) {
             }
         }
         val conversion: Coord.() -> String = { toNumpad1() }
-        return solve(size, start, padTraverse, conversion)
+        return solve(start, padTraverse, conversion)
     }
 
     fun part2(): String {
-        val size = Coord(5, 5)
         val start = Coord(0, 2)
+        val size = Coord(5, 5)
         val padTraverse = { coord: Coord, c: Char ->
             val xRestrict = abs(coord.y - 2)
             val yRestrict = abs(coord.x - 2)
@@ -88,7 +87,7 @@ class Y2016D2(input: String) {
         }
         val conversion: Coord.() -> String = { toNumpad2() }
 
-        return solve(size, start, padTraverse, conversion)
+        return solve(start, padTraverse, conversion)
     }
 }
 
