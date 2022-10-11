@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2016.d13
 
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Graph.steps
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
@@ -9,9 +10,6 @@ import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2016D13(input: String) {
     private val favoriteNumber = input.toInt()
-    private val start = Coord(1, 1)
-    private val end = Coord(31, 39)
-
     private fun Coord.isOpen(): Boolean {
         val (x, y) = this
         if (x < 0 || y < 0) return false
@@ -20,13 +18,12 @@ class Y2016D13(input: String) {
         return ones % 2 == 0
     }
 
-    private val distances = Graph.bfs(start, { it == end }) { coord ->
-        coord
-            .getNeighbors()
-            .filter { it.isOpen() }
-    }
+    private val start = Coord(1, 1)
+    private val endCondition = { pos: Coord -> pos == Coord(31, 39) }
+    private val getEdges = { pos: Coord -> pos.getNeighbors().filter { it.isOpen() } }
+    private val distances = Graph.bfs(start, endCondition, defaultEdges = getEdges)
 
-    fun part1() = distances.last().weight.toInt()
+    fun part1() = distances.steps()
 
     fun part2() = distances.count { it.weight <= 50 }
 }
