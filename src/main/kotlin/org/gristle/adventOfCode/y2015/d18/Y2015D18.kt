@@ -16,14 +16,14 @@ class Y2015D18(input: String) {
             emptyList()
         }
 
-        return List(size) { i ->
+        return Grid(size, width) { i ->
             if (i in corners) {
                 true
             } else {
                 val neighborsOn = getNeighbors(i, true).count { it }
                 neighborsOn == 3 || (neighborsOn == 2 && this[i])
             }
-        }.toGrid(width)
+        }
     }
 
     private fun solve(cornersStuck: Boolean) = generateSequence(lights) { it.iterate(cornersStuck) }
