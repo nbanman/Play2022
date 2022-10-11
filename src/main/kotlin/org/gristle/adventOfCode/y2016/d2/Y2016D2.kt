@@ -27,53 +27,70 @@ class Y2016D2(input: String) {
         else -> throw IllegalArgumentException()
     }
 
+    fun solve(
+        size: Coord,
+        start: Coord,
+        padTraverse: (Coord, Char) -> Coord,
+        conversion: Coord.() -> String
+    ): String {
+        val coords = codes.fold(listOf(start)) { coordList, s ->
+            coordList + s.fold(coordList.last(), padTraverse)
+        }
+        return coords.drop(1).joinToString("") { it.conversion() }
+    }
+
     fun part1(): String {
         val size = Coord(3, 3)
-        val coords = codes.fold(listOf(Coord(1, 1))) { coordList, s ->
-            coordList + s.fold(coordList.last()) { coord, c ->
-                when(c) {
-                    'R' -> coord.east(1, size)
-                    'L' -> coord.west(1, size)
-                    'U' -> coord.north(1, size)
-                    else -> coord.south(1, size)
-                }
+        val start = Coord(1, 1)
+        val padTraverse = { coord: Coord, c: Char ->
+            when (c) {
+                'R' -> coord.east(1, size)
+                'L' -> coord.west(1, size)
+                'U' -> coord.north(1, size)
+                else -> coord.south(1, size)
             }
         }
-        return coords.drop(1).joinToString("") { it.toNumpad1() }
+        val conversion: Coord.() -> String = { toNumpad1() }
+        return solve(size, start, padTraverse, conversion)
     }
 
     fun part2(): String {
         val size = Coord(5, 5)
-        val coords = codes.fold(listOf(Coord(2, 2))) { coordList, s ->
-            coordList + s.fold(coordList.last()) { coord, c ->
-                val xRestrict = abs(coord.y - 2)
-                val yRestrict = abs(coord.x - 2)
-                when(c) {
-                    'R' -> if (coord.x + 1 > 4 - xRestrict) {
-                        coord
-                    } else {
-                        coord.east(1, size)
-                    }
-                    'L' -> if (coord.x - 1 < xRestrict) {
-                        coord
-                    } else {
-                        coord.west(1, size)
-                    }
-                    'U' -> if (coord.y - 1 < yRestrict) {
-                        coord
-                    } else {
-                        coord.north(1, size)
-                    }
-                    else -> if (coord.y + 1 > 4 - yRestrict) {
-                        coord
-                    } else {
-                        coord.south(1, size)
-                    }
+        val start = Coord(0, 2)
+        val padTraverse = { coord: Coord, c: Char ->
+            val xRestrict = abs(coord.y - 2)
+            val yRestrict = abs(coord.x - 2)
+            when (c) {
+                'R' -> if (coord.x + 1 > 4 - xRestrict) {
+                    coord
+                } else {
+                    coord.east(1, size)
+                }
+
+                'L' -> if (coord.x - 1 < xRestrict) {
+                    coord
+                } else {
+                    coord.west(1, size)
+                }
+
+                'U' -> if (coord.y - 1 < yRestrict) {
+                    coord
+                } else {
+                    coord.north(1, size)
+                }
+
+                else -> if (coord.y + 1 > 4 - yRestrict) {
+                    coord
+                } else {
+                    coord.south(1, size)
                 }
             }
         }
-        return coords.drop(1).joinToString("") { it.toNumpad2() }
-    }}
+        val conversion: Coord.() -> String = { toNumpad2() }
+
+        return solve(size, start, padTraverse, conversion)
+    }
+}
 
 fun main() {
     var time = System.nanoTime()
