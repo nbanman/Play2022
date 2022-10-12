@@ -1,5 +1,6 @@
 package org.gristle.adventOfCode.y2017.d4
 
+import org.gristle.adventOfCode.utilities.eachCount
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
@@ -7,11 +8,13 @@ class Y2017D4(input: String) {
 
     private val passphrases = input.lines().map { it.split(' ') }
 
-    fun part1() = passphrases.count { it.size == it.distinct().size }
+    private fun <T> List<List<T>>.countUnique() = count { it == it.distinct() }
+
+    fun part1() = passphrases.countUnique()
 
     fun part2() = passphrases
-        .map { phrase -> phrase.map { word -> word.groupingBy { it }.eachCount() } }
-        .count { it.size == it.distinct().size }
+        .map { phrase -> phrase.map { word -> word.eachCount() } } // convert words into letter distributions
+        .countUnique()
 }
 
 fun main() {
