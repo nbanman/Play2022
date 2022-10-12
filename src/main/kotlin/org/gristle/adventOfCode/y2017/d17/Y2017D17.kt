@@ -4,7 +4,7 @@ import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2017D17(input: String) {
-    val inputNum = input.toInt()
+    private val inputNum = input.toInt()
 
     fun part1(): Int {
         val buffer = mutableListOf(0)
