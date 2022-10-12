@@ -60,7 +60,8 @@ class Y2016D24(input: String) {
             ?: throw IllegalStateException("Dijkstra search reached location that is not in the edgemap.")
     }
 
-    // Runs dijkstra and provides weight of shortest path. Takes in different end conditions to accommodate parts 1 & 2.
+    // Runs dijkstra and provides weight of the shortest path. Takes in different end conditions to accommodate 
+    // parts 1 & 2.
     fun solve(endCondition: (State) -> Boolean) = Graph.dijkstra(start, endCondition, defaultEdges = getEdges).steps()
 
     // Part one ends when all numbers have been visited
