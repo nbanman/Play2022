@@ -2,144 +2,8 @@ package org.gristle.adventOfCode.y2017.d22
 
 import org.gristle.adventOfCode.utilities.*
 
-// not refactored!
-class Y2017D22(private val input: String) {
-    class Virus(private var location: Coord, private var orientation: String, private val space: MutableGrid<Boolean>) {
-        var infections = 0
-        fun burst() {
-            if (space[location]) {
-                space[location] = false
-                when (orientation) {
-                    "up" -> {
-                        orientation = "right"
-                        location += Coord(1, 0)
-                    }
-                    "right" -> {
-                        orientation = "down"
-                        location += Coord(0, 1)
-                    }
-                    "down" -> {
-                        orientation = "left"
-                        location += Coord(-1, 0)
-                    }
-                    "left" -> {
-                        orientation = "up"
-                        location += Coord(0, -1)
-                    }
-                }
-            } else {
-                space[location] = true
-                infections++
-                when (orientation) {
-                    "up" -> {
-                        orientation = "left"
-                        location += Coord(-1, 0)
-                    }
-                    "right" -> {
-                        orientation = "up"
-                        location += Coord(0, -1)
-                    }
-                    "down" -> {
-                        orientation = "right"
-                        location += Coord(1, 0)
-                    }
-                    "left" -> {
-                        orientation = "down"
-                        location += Coord(0, 1)
-                    }
-                }
-            }
-        }
-    }
-
-    class Virus2(private var location: Coord, private var orientation: String, private val space: MutableGrid<NState>) {
-        var infections = 0
-        fun burst() {
-            val state = space[location]
-            space[location] = space[location].advance()
-            if (space[location] == NState.INFECTED) infections++
-            when (state) {
-                NState.CLEAN -> {
-                    when (orientation) {
-                        "up" -> {
-                            orientation = "left"
-                            location += Coord(-1, 0)
-                        }
-                        "right" -> {
-                            orientation = "up"
-                            location += Coord(0, -1)
-                        }
-                        "down" -> {
-                            orientation = "right"
-                            location += Coord(1, 0)
-                        }
-                        "left" -> {
-                            orientation = "down"
-                            location += Coord(0, 1)
-                        }
-                    }
-                }
-                NState.WEAKENED -> {
-                    when (orientation) {
-                        "up" -> {
-                            location += Coord(0, -1)
-                        }
-                        "right" -> {
-                            location += Coord(1, 0)
-                        }
-                        "down" -> {
-                            location += Coord(0, 1)
-                        }
-                        "left" -> {
-                            location += Coord(-1, 0)
-                        }
-                    }
-                }
-                NState.INFECTED -> {
-                    when (orientation) {
-                        "up" -> {
-                            orientation = "right"
-                            location += Coord(1, 0)
-                        }
-                        "right" -> {
-                            orientation = "down"
-                            location += Coord(0, 1)
-                        }
-                        "down" -> {
-                            orientation = "left"
-                            location += Coord(-1, 0)
-                        }
-                        "left" -> {
-                            orientation = "up"
-                            location += Coord(0, -1)
-                        }
-                    }
-                }
-                NState.FLAGGED -> {
-                    when (orientation) {
-                        "up" -> {
-                            orientation = "down"
-                            location += Coord(0, 1)
-                        }
-                        "right" -> {
-                            orientation = "left"
-                            location += Coord(-1, 0)
-                        }
-                        "down" -> {
-                            orientation = "up"
-                            location += Coord(0, -1)
-                        }
-                        "left" -> {
-                            orientation = "right"
-                            location += Coord(1, 0)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    enum class NState {
+class Y2017D22(input: String) {
+    enum class NodeState {
         CLEAN {
             override fun advance() = WEAKENED
         },
@@ -153,37 +17,79 @@ class Y2017D22(private val input: String) {
             override fun advance() = CLEAN
         };
 
-        abstract fun advance(): NState
+        abstract fun advance(): NodeState
     }
-    
-    fun part1(): Int {
-        val core = input.toGrid { it == '#' }
-        val blank = List(500_500) { false }.toGrid(1_001)
-        val coreFiller = List(((1_001 - core.width) / 2) * core.height) { false }.toGrid(((1_001 - core.width) / 2))
-        val coreLines = coreFiller.addRight(core).addRight(coreFiller)
-        val space = blank
-            .addDown(coreLines)
-            .addDown(blank)
-            .toMutableGrid(1_001)
-        val virus = Virus(Coord(space.width / 2, space.height / 2), "up", space)
-        for (x in 1..10_000) { virus.burst() }
-        return virus.infections
 
+    class Virus(
+        val pos: Coord,
+        val dir: Nsew,
+        val nodes: MutableMap<Coord, NodeState>,
+        private val burst: Virus.() -> Virus,
+        val infections: Int
+    ) {
+        fun move(infected: Boolean, turn: Nsew.() -> Nsew): Virus {
+            val newDir = dir.turn()
+            return Virus(pos.move(newDir), newDir, nodes, burst, infections + if (infected) 1 else 0)
+        }
+    }
+
+    private val grid = input.toGrid()
+
+    private val initialPos = Coord(grid.width / 2, grid.height / 2)
+
+    private val initialNodes =
+        buildMap {
+            grid.forEachIndexed { index, c -> if (c == '#') put(grid.coordOf(index), NodeState.INFECTED) }
+        }
+
+    fun solve(bursts: Int, burst: Virus.() -> Virus): Int {
+        val virus = Virus(
+            initialPos,
+            Nsew.NORTH,
+            initialNodes.toMutableMap().withDefault { NodeState.CLEAN },
+            burst,
+            0
+        )
+        return (1..bursts).fold(virus) { acc, _ -> acc.burst() }.infections
+    }
+
+    fun part1(): Int {
+        val burst: Virus.() -> Virus = {
+            val currentNode = nodes.getValue(pos)
+            if (currentNode == NodeState.CLEAN) {
+                nodes[pos] = NodeState.INFECTED
+                move(true, Nsew::left)
+            } else {
+                nodes[pos] = NodeState.CLEAN
+                move(false, Nsew::right)
+            }
+        }
+        return solve(10_000, burst)
     }
     
     fun part2(): Int {
-        val core = input.toGrid { if (it == '#') NState.INFECTED else NState.CLEAN }
-        val blank = List(500_500) { NState.CLEAN }.toGrid(1_001)
-        val coreFiller = List(((1_001 - core.width) / 2) * core.height) { NState.CLEAN }
-            .toGrid(((1_001 - core.width) / 2))
-        val coreLines = coreFiller.addRight(core).addRight(coreFiller)
-        val space = blank
-            .addDown(coreLines)
-            .addDown(blank)
-            .toMutableGrid(1_001)
-        val virus = Virus2(Coord(space.width / 2, space.height / 2), "up", space)
-        for (x in 1..10_000_000) { virus.burst() }
-        return virus.infections
+        val burst: Virus.() -> Virus = {
+            val currentNode = nodes.getValue(pos)
+            nodes[pos] = currentNode.advance()
+            when (currentNode) {
+                NodeState.CLEAN -> {
+                    move(false, Nsew::left)
+                }
+
+                NodeState.WEAKENED -> {
+                    move(true) { this }
+                }
+
+                NodeState.INFECTED -> {
+                    move(false, Nsew::right)
+                }
+
+                NodeState.FLAGGED -> {
+                    move(false, Nsew::opposite)
+                }
+            }
+        }
+        return solve(10_000_000, burst)
     }
 }
 
@@ -192,7 +98,7 @@ fun main() {
     val c = Y2017D22(readRawInput("y2017/d22"))
     println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5348
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5348 (25ms)
     time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2512225
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2512225 (2033ms)
 }
