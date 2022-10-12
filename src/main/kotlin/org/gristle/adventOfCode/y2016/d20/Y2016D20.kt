@@ -11,7 +11,7 @@ class Y2016D20(input: String) {
     // avoid overflow issues.
     private val ranges = input
         .groupValues("""(\d+)-(\d+)""", String::toLong)
-        .map { LongRange(it[0], it[1]) }
+        .map { it[0]..it[1] }
         .sortedBy(LongRange::first)
 
     // delivers a sequence of ips not blocked by the whitelist by starting at 0
@@ -22,7 +22,7 @@ class Y2016D20(input: String) {
             ip = max(ip, range.last + 1) // ip cannot be w/in range so bump ip to the end of the range + 1
         }
         // if last range did not go to 4294967295, this would continue to yield numbers until that max was reached
-        yieldAll(LongRange(ip, UInt.MAX_VALUE.toLong()))
+        yieldAll(ip..UInt.MAX_VALUE.toLong())
     }
 
     fun part1() = ipSequence.first() // gets first (i.e., lowest) unblocked ip
