@@ -60,7 +60,7 @@ fun Int.reversed(bits: Int): Int {
 /**
  * Shortcut for groupingBy { it }.eachCount().entries
  */
-fun <E> List<E>.eachCount() = groupingBy { it }.eachCount().entries
+fun <E> Iterable<E>.eachCount() = groupingBy { it }.eachCount()
 
 /**
  * Shifts the start index of the list by n. The skipped parts get wrapped to the end. Accepts
