@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2017.d8
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
-import kotlin.math.max
 
 class Y2017D8(input: String) {
 
@@ -43,12 +42,10 @@ class Y2017D8(input: String) {
 
     fun solve(): Pair<Int?, Int> {
         val register = mutableMapOf<String, Int>().withDefault { 0 }
-        var highest = 0
-        instructions.forEach {
-            highest = max(highest, it.execute(register))
-        }
+        val highest = instructions.maxOf { it.execute(register) }
         return register.values.maxOrNull() to highest
-    }}
+    }
+}
 
 fun main() {
     val time = System.nanoTime()
