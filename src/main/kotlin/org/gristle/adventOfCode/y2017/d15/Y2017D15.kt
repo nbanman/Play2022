@@ -23,16 +23,21 @@ class Y2017D15(input: String) {
         }
     }
 
+    fun solve(pairs: Int, genA: Generator, genB: Generator): Int =
+        generateSequence(genA.value to genB.value) { genA.next() to genB.next() }
+            .take(pairs)
+            .count { (aValue, bValue) -> aValue == bValue }
+
     fun part1(): Int {
         val genA = Generator(generatorValues[0], 16807)
         val genB = Generator(generatorValues[1], 48271)
-        return (1..40_000_000).count { genA.next() == genB.next() }
+        return solve(40_000_000, genA, genB)
     }
 
     fun part2(): Int {
         val genA = Generator(generatorValues[0], 16807, 4)
         val genB = Generator(generatorValues[1], 48271, 8)
-        return (1..5_000_000).count { genA.next() == genB.next() }
+        return solve(5_000_000, genA, genB)
     }
 }
 
