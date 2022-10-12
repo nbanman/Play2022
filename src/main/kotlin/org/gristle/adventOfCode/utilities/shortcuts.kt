@@ -31,6 +31,11 @@ fun <E> Collection<E>.testPrint(transform: (E) -> String = { e -> e.toString() }
     if (isEmpty()) println("Empty collection.") else forEach { println(transform(it)) }
 
 /**
+ * Takes two Comparable values and returns a pair with the lesser in the first position and the greater in the second
+ */
+fun <T : Comparable<T>> lesserToGreater(a: T, b: T): Pair<T, T> = if (a <= b) a to b else b to a
+
+/**
  * Proper mod function.
  */
 infix fun Int.fmod(other: Int) = Math.floorMod(this, other)
@@ -104,6 +109,9 @@ inline fun <E> PriorityQueue<E>.pollUntil(predicate: (E) -> Boolean): E? {
 }
 
 /**
- * Takes two Comparable values and returns a pair with the lesser in the first position and the greater in the second
+ * Finds all numbers in a string and returns them as a List of Int.
  */
-fun <T: Comparable<T>> lesserToGreater(a: T, b: T): Pair<T, T> = if (a <= b) a to b else b to a
+fun String.getInts(): List<Int> = Regex("""-?\d+""")
+    .findAll(this)
+    .toList()
+    .mapNotNull { it.value.toIntOrNull() }

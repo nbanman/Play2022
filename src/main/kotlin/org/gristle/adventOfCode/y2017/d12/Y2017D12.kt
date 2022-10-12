@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2017.d12
 
 import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
@@ -28,13 +29,7 @@ class Y2017D12(input: String) {
 
     private val links = input
         .groupValues(pattern)
-        .let { gvs ->
-            val massaged = gvs.map { gv ->
-                val values = gv[1].split(", ").map { it.toInt() }
-                gv[0].toInt() to values
-            }.toTypedArray()
-            mapOf(*massaged)
-        }
+        .associate { it[0].toInt() to it[1].getInts() }
 
     fun part1() = allLinks(links, 0).size
 
