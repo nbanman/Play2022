@@ -3,7 +3,7 @@ package org.gristle.adventOfCode.y2017.d15
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
-private typealias Generator = Sequence<Long>
+private typealias Generator = Sequence<Short>
 class Y2017D15(input: String) {
     private val seeds = Regex("""\d+""").findAll(input).map { it.value.toLong() }.toList()
     private val seedA = seeds[0]
@@ -22,7 +22,7 @@ class Y2017D15(input: String) {
             .drop(1) // drop the seed value
             .let { sequence -> // filter for part2 rules (skip for part1)   
                 if (multiples == null) sequence else sequence.filter { it % multiples == 0L }
-            }.map { it and UShort.MAX_VALUE.toLong() } // only look at lowest 16 bits
+            }.map(Long::toShort) // only look at lowest 16 bits
 
     /**
      * Used for both parts. Zips the two generator sequences together to create one sequence that generates pairs
