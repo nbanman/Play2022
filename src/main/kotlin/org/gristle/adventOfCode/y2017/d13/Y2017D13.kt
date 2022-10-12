@@ -16,16 +16,15 @@ class Y2017D13(input: String) {
     }
 
     private val layers = input
-        .groupValues("""(\d+): (\d+)""")
-        .map { Layer(it[0].toInt(), it[1].toInt()) }
-
+        .groupValues("""(\d+): (\d+)""", String::toInt)
+        .map { Layer(it[0], it[1]) }
 
     var index = 0
 
-    fun part1() = layers.sumOf { it.severity() }
+    fun part1() = layers.sumOf(Layer::severity)
 
     fun part2() = generateSequence(0) { it + 1 }
-        .first { index -> layers.all { !it.isTriggered(index) } }
+        .first { index -> layers.none { it.isTriggered(index) } }
 }
 
 fun main() {
