@@ -95,13 +95,9 @@ class Y2016D21(input: String) {
         .groupValues(pattern)
         .map { Command(it[0], it[1], it[2]) }
 
-    fun part1() = commands.fold(passcode) { acc, command ->
-        command.execute(acc)
-    }
+    fun part1() = commands.fold(passcode) { acc, command -> command.execute(acc) }
 
-    fun part2() = commands.reversed().fold(passcode2) { acc, command ->
-        command.execute(acc, reversed = true)
-    }
+    fun part2() = commands.foldRight(passcode2) { command, acc -> command.execute(acc, reversed = true) }
 }
 
 fun main() {
