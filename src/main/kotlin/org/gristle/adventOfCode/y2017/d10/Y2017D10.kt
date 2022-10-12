@@ -7,14 +7,12 @@ import org.gristle.adventOfCode.utilities.shift
 class Y2017D10(private val input: String) {
 
     companion object {
-        fun denseHash(
-            p2Lengths: List<Int>
-        ): String {
-            val ring = List (256) { it }
-            val shiftSum = p2Lengths.sum() * 64
-            val skipSum = (p2Lengths.size) * 64
+        fun denseHash(lengths: List<Int>): String {
+            val ring = List(256) { it }
+            val shiftSum = lengths.sum() * 64
+            val skipSum = (lengths.size) * 64
             val p2 = (0 until 64).fold(ring) { acc, i ->
-                acc.knotHash(p2Lengths, i * (p2Lengths.size))
+                acc.knotHash(lengths, i * (lengths.size))
             }
             val totalSkips = (1 until skipSum).reduce { acc, i -> acc + i }
             val reshifted = p2.shift(0 - (shiftSum + totalSkips))
