@@ -10,7 +10,7 @@ class Y2017D4(input: String) {
     fun part1() = passphrases.count { it.size == it.distinct().size }
 
     fun part2() = passphrases
-        .map { phrase -> phrase.map { it.toCharArray().sorted() } }
+        .map { phrase -> phrase.map { word -> word.groupingBy { it }.eachCount() } }
         .count { it.size == it.distinct().size }
 }
 

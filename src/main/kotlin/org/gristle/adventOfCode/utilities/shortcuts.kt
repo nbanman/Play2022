@@ -20,6 +20,11 @@ fun Boolean.print(s: String) {
 fun Char.toDigit() = Character.getNumericValue(this)
 
 /**
+ * Shortcut for groupingBy { it }.eachCount()
+ */
+fun CharSequence.eachCount() = groupingBy { it }.eachCount()
+
+/**
  * Prints contents of a collection line by line
  */
 fun <E> Collection<E>.testPrint(transform: (E) -> String = { e -> e.toString() }) =
@@ -58,7 +63,7 @@ fun Int.reversed(bits: Int): Int {
 }
 
 /**
- * Shortcut for groupingBy { it }.eachCount().entries
+ * Shortcut for groupingBy { it }.eachCount()
  */
 fun <E> Iterable<E>.eachCount() = groupingBy { it }.eachCount()
 

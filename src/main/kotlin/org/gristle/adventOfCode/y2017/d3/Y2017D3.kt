@@ -1,9 +1,6 @@
 package org.gristle.adventOfCode.y2017.d3
 
-import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.*
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -14,7 +11,7 @@ class Y2017D3(private val input: String) {
     data class Turtle(var dir: Nsew, var pos: Coord, var vel: Int)
 
     fun part1(): Int {
-        val squareRoot = ceil(sqrt(input.toFloat())).toInt().let { if (it % 2 == 0) it + 1 else it }
+        val squareRoot = ceil(sqrt(input.toFloat())).toInt().let { if (it.isEven()) it + 1 else it }
         val furthest = (squareRoot / 2) * 2
         val br = squareRoot * squareRoot
         val diff = (br - input.toInt()) % furthest
