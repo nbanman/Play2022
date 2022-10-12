@@ -18,11 +18,11 @@ class Y2017D15(input: String) {
     To calculate each generator's first value, it instead uses a specific starting value as its "previous value" 
     (as listed in your puzzle input). */
     private fun generator(seed: Long, factor: Int, multiples: Int? = null): Generator =
-        generateSequence(seed) { (it * factor) % 2147483647 }
+        generateSequence(seed) { (it * factor) % Int.MAX_VALUE }
             .drop(1) // drop the seed value
             .let { sequence -> // filter for part2 rules (skip for part1)   
                 if (multiples == null) sequence else sequence.filter { it % multiples == 0L }
-            }.map { it and 65535 } // only look at lowest 16 bits
+            }.map { it and UShort.MAX_VALUE.toLong() } // only look at lowest 16 bits
 
     /**
      * Used for both parts. Zips the two generator sequences together to create one sequence that generates pairs
