@@ -31,6 +31,16 @@ fun <E> Collection<E>.testPrint(transform: (E) -> String = { e -> e.toString() }
 infix fun Int.fmod(other: Int) = Math.floorMod(this, other)
 
 /**
+ * Returns status of whether Int is even
+ */
+fun Int.isEven(): Boolean = this % 2 == 0
+
+/**
+ * Returns status of whether Int is odd
+ */
+fun Int.isOdd(): Boolean = this % 2 == 1
+
+/**
  * Reverse the bits in an integer
  */
 fun Int.reversed(bits: Int): Int {
