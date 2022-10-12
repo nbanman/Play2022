@@ -5,9 +5,14 @@ import org.gristle.adventOfCode.utilities.getPairs
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2017D2(input: String) {
-    private val lines = input.lines()
 
-    private val spreadsheet = lines.map { line -> line.split(' ', '\t').mapNotNull { it.toIntOrNull() } }
+    private val spreadsheet = input
+        .lines()
+        .map { line ->
+            line
+                .split(' ', '\t')
+                .mapNotNull(String::toIntOrNull)
+        }
 
     fun part1() = spreadsheet
         .sumOf { (it.maxOrNull()?.minus(it.minOrNull() ?: 0) ?: 0) }
