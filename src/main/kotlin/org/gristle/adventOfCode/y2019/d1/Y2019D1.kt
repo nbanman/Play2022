@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.max
 
 class Y2019D1(input: String) {
-    private val modules = input.lines().map { it.toInt() }
+    private val modules = input.lines().map(String::toInt)
 
     private tailrec fun fuel(remaining: Int, total: Int = 0): Int {
         return if (remaining == 0) {
