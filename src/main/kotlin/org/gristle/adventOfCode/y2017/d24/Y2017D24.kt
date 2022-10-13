@@ -14,7 +14,7 @@ class Y2017D24(input: String) {
         fun otherEnd(n: Int) = if (n == a) b else a
     }
 
-    private fun Bridge.strength() = sumOf { it.strength }
+    private fun Bridge.strength() = sumOf(MagComp::strength)
 
     private fun buildBridge(
         comparator: Comparator<Bridge>,
@@ -29,7 +29,7 @@ class Y2017D24(input: String) {
     }
 
     private val components = input
-        .groupValues("""(\d+)\/(\d+)""") { it.toInt() }
+        .groupValues("""(\d+)\/(\d+)""", String::toInt)
         .map { MagComp(it[0], it[1]) }
 
     private val compareByStrength = compareBy { bridge: Bridge -> bridge.strength() }
