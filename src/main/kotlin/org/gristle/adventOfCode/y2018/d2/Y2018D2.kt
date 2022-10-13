@@ -1,5 +1,6 @@
 package org.gristle.adventOfCode.y2018.d2
 
+import org.gristle.adventOfCode.utilities.eachCount
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.lines
 import org.gristle.adventOfCode.utilities.readRawInput
@@ -7,22 +8,20 @@ import org.gristle.adventOfCode.utilities.readRawInput
 class Y2018D2(input: String) {
     private val boxIds = input.lines()
 
-    private fun String.containsPair() = groupingBy { it }.eachCount().values.any { it == 2 }
+    private fun String.has(n: Int) = eachCount().values.any { it == n }
 
-    private fun String.containsTrips() = groupingBy { it }.eachCount().values.any { it == 3 }
-
-    fun part1() = boxIds.count { it.containsPair() } * boxIds.count { it.containsTrips() }
+    fun part1() = boxIds.count { it.has(2) } * boxIds.count { it.has(3) }
 
     fun part2(): String {
-        fun List<String>.countDifferences(): Int {
-            val second = last()
-            return first().foldIndexed(0) { index, acc, c -> acc + if (c == second[index]) 0 else 1 }
-        }
+        fun List<String>.countDifferences() = first()
+            .zip(last())
+            .count { (first, last) -> first != last }
 
-        fun List<String>.shared(): String {
-            val second = last()
-            return first().foldIndexed("") { index, acc, c -> acc + if (c == second[index]) c.toString() else "" }
-        }
+        fun List<String>.shared() = first()
+            .zip(last())
+            .filter { (first, last) -> first == last }
+            .map { (first, _) -> first }
+            .joinToString("")
 
         fun <E> List<E>.getPairs(): List<List<E>> {
             val combos = mutableListOf<List<E>>()

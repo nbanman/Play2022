@@ -6,7 +6,7 @@ import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2018D1(input: String) {
 
-    private val changes = input.lines().map { it.toInt() }
+    private val changes = input.lines().map(String::toInt)
 
     fun part1() = changes.sum()
 
