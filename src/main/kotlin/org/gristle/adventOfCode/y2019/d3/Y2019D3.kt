@@ -10,7 +10,8 @@ class Y2019D3(input: String) {
             'R' -> Nsew.EAST
             'L' -> Nsew.WEST
             'U' -> Nsew.NORTH
-            else -> Nsew.SOUTH
+            'S' -> Nsew.SOUTH
+            else -> throw IllegalArgumentException()
         }
         for (i in 1..instruction.drop(1).toInt()) acc.add(last.move(dir, i))
         acc
