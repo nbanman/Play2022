@@ -19,23 +19,20 @@ class Y2018D12(input: String) {
             .forEach { put(it.take(5), it.last()) }
     }
 
-    // generate subsequent generations of plants
+    // sequence that provides successive generations of plant rows
     private val generator = generateSequence(initialRow) { it ->
         val plants = "..$it.." // pad the row to account for growth
         plants // build the next generation
             .mapIndexed { index, _ ->
-                val pattern = buildString {
+                val pattern = buildString { // make a pattern using the spot and the spots around it
                     append(if (index - 2 < 0) '.' else plants[index - 2])
                     append(if (index - 1 < 0) '.' else plants[index - 1])
                     append(plants[index])
                     append(if (index + 1 > plants.lastIndex) '.' else plants[index + 1])
                     append(if (index + 2 > plants.lastIndex) '.' else plants[index + 2])
                 }
-                if (commands[pattern] != null) {
-                    '#'
-                } else {
-                    '.'
-                }
+                // use the translation map with the pattern to determine if there is a plant at that spot
+                if (commands[pattern] != null) '#' else '.'
             }.joinToString("")
     }
 
@@ -48,6 +45,8 @@ class Y2018D12(input: String) {
 
     fun part1(): Int {
         val generations = 20
+        // take the sequence, run it 21 times (first time yields the initial row), then get the pot number sum
+        // of the last row generation generated.
         return generator
             .take(generations + 1) // the generator also includes the original row, thus generations + 1
             .last() // terminate sequence on last row
@@ -57,12 +56,13 @@ class Y2018D12(input: String) {
     fun part2(): Long {
         // too many generations to naively compute!
         val generations = 50_000_000_000
-        val groupSize = 10
 
         // upon observation, the growth is chaotic at first but then finds a stable pattern where growth is constant.
         // Thus, the strategy is to look at generations 10 at a time. When the difference between each is the 
         // same, we can surmise that the growth has stabilized. That group provides enough information to 
         // solve part 2.
+
+        val groupSize = 10
         val firstStable = generator
             .withIndex()
             .map { (index, value) -> IndexedValue(index, value.sumOfPotNumbers(index)) }
