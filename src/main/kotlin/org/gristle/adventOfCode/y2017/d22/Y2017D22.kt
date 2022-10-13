@@ -33,14 +33,18 @@ class Y2017D22(input: String) {
         }
     }
 
-    private val grid = input.toGrid()
+    private val initialPos: Coord
 
-    private val initialPos = Coord(grid.width / 2, grid.height / 2)
+    private val initialNodes: Map<Coord, NodeState>
 
-    private val initialNodes =
-        buildMap {
-            grid.forEachIndexed { index, c -> if (c == '#') put(grid.coordOf(index), NodeState.INFECTED) }
+    init {
+        input.toGrid().let { grid ->
+            initialPos = Coord(grid.width / 2, grid.height / 2)
+            initialNodes = buildMap {
+                grid.forEachIndexed { index, c -> if (c == '#') put(grid.coordOf(index), NodeState.INFECTED) }
+            }
         }
+    }
 
     fun solve(bursts: Int, burst: Virus.() -> Virus): Int {
         val virus = Virus(
