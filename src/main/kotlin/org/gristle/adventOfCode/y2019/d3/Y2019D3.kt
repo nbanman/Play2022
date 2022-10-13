@@ -4,13 +4,13 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2019D3(input: String) {
 
-    private fun List<String>.wireUp() = fold(mutableListOf<Coord>()) { acc, instruction ->
+    private fun List<String>.wireUp(): List<Coord> = fold(mutableListOf<Coord>()) { acc, instruction ->
         val last = if (acc.isNotEmpty()) acc.last() else Coord.ORIGIN
         val dir = when (instruction[0]) {
             'R' -> Nsew.EAST
             'L' -> Nsew.WEST
             'U' -> Nsew.NORTH
-            'S' -> Nsew.SOUTH
+            'D' -> Nsew.SOUTH
             else -> throw IllegalArgumentException()
         }
         for (i in 1..instruction.drop(1).toInt()) acc.add(last.move(dir, i))
