@@ -18,20 +18,21 @@ class Y2018D18(input: String) {
     }
 
     // Calculates resource value of a collection area by counting the number of '|' and '#' and multiplying them.
-    private fun CollectionArea.resourceValue() = eachCount().let { it.getValue('|') * it.getValue('#') }
+    private fun CollectionArea.resourceValue() = count { it == '|' } * count { it == '#' }
 
     // Generate 10 minutes' worth of changes, then get the resource value.
     fun part1() = generator
-        .take(11) // 11 instead of 10 because the first result is minute 0 (initial state)
-        .last()
-        .resourceValue()
+        .take(11) // take 11 instead of 10 because the first is minute 0 (initial state)
+        .last() // grab last generated value
+        .resourceValue() // get resource value
 
     // Generates new states and stores the states in a cache. When the new state is the same as a previous state,
     // stop generating. The cache plus the first repeat value provides the information needed to provide the state
     // after 1 billion generations.
     fun part2(): Int {
-        // Cache is a simple *ordered* set
+        // Cache is a simple *ordered* Set of states. 
         val cache = mutableSetOf<CollectionArea>()
+
         // Runs the generator, with each minute adding the latest state into the cache. Stops and returns the first
         // state that is contained within the cache; i.e., is a repeated state.
         val repeated = generator.first { area -> cache.contains(area).also { cache.add(area) } }
