@@ -1,28 +1,25 @@
 package org.gristle.adventOfCode.y2018.d25
 
+import org.gristle.adventOfCode.utilities.MCoord
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
-import kotlin.math.abs
 
 class Y2018D25(private val input: String) {
     private val pattern = """(-?\d+),(-?\d+),(-?\d+),(-?\d+)""".toRegex()
-
-    data class SpaceTime(val x: Int, val y: Int, val z: Int, val t: Int) {
-        fun manhattanDistance(other: SpaceTime) =
-            abs(x - other.x) + abs(y - other.y) + abs(z - other.z) + abs(t - other.t)
-        fun inRange(other: SpaceTime) = manhattanDistance(other) <= 3
-    }
+    private fun MCoord.inRange(other: MCoord) = manhattanDistance(other) <= 3
 
     fun part1(): Int {
         val points = input
             .groupValues(pattern) { it.toInt() }
-            .map { SpaceTime(it[0], it[1], it[2], it[3]) }
+            .map { MCoord(it[0], it[1], it[2], it[3]) }
 
-        val constellations = mutableListOf<MutableList<SpaceTime>>()
+        val constellations = mutableListOf<MutableList<MCoord>>()
 
         for (point in points) {
-            val inRange = constellations.filter { constellation -> constellation.any { it.inRange(point) } }.toMutableList()
+            val inRange = constellations
+                .filter { constellation -> constellation.any { it.inRange(point) } }
+                .toMutableList()
             if (inRange.size == 0) {
                 constellations.add(mutableListOf(point))
             } else {
