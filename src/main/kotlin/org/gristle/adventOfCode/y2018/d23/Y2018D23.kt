@@ -75,11 +75,11 @@ class Y2018D23(input: String) {
     private val pattern = """pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)""".toRegex()
 
     private val nanobots = input
-        .groupValues(pattern) { it.toInt() }
+        .groupValues(pattern, String::toInt)
         .map { Nanobot(Xyz(it[0], it[1], it[2]), it[3]) }
 
     fun part1(): Int {
-        val strongest = nanobots.maxByOrNull { it.radius } ?: return -1
+        val strongest = nanobots.maxByOrNull(Nanobot::radius) ?: return -1
         return nanobots.count { strongest.inRangeOf(it) }
     }
 

@@ -7,7 +7,7 @@ class Y2018D22(input: String) {
 
     private val pattern = Regex("""depth: (\d+)\r?\ntarget: (\d+),(\d+)""")
 
-    private val gv = input.groupValues(pattern) { it.toInt() }.first()
+    private val gv = input.groupValues(pattern, String::toInt).first()
 
     private val depth = gv[0]
     private val target = Coord(gv[1], gv[2])
@@ -54,7 +54,7 @@ class Y2018D22(input: String) {
     data class State(val pos: Coord, val tool: Tool)
 
 
-    fun part1() = cavern.subGrid(Coord.ORIGIN, target).sumOf { it.ordinal }
+    fun part1() = cavern.subGrid(Coord.ORIGIN, target).sumOf(CavernType::ordinal)
 
     /**
      * For a given proposed new location and current state, provides what tool will have to be used and the
