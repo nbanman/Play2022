@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.*
 class Y2018D6(input: String) {
 
     private val offsetCoordinates = input.lines().map { line ->
-        val (x, y) = line.split(", ").map { it.toInt() }
+        val (x, y) = line.split(", ").map(String::toInt)
         Coord(x, y)
     }
 
@@ -20,7 +20,7 @@ class Y2018D6(input: String) {
     private val height = yRange.last - yRange.first + 1
     private val space = MutableGrid(width * height, width) { -2 }
 
-    fun part1(): Int {
+    init {
         for (index in space.indices) {
             if (space[index] >= 0) continue
             val coord = space.coordOf(index)
@@ -35,6 +35,9 @@ class Y2018D6(input: String) {
                 space[index] = closest.index
             }
         }
+    }
+
+    fun part1(): Int {
         val borderingIds = (space.row(0) + space.row(space.height - 1) +
                 space.column(0) + space.column(space.width - 1)).toSet()
 
@@ -46,9 +49,8 @@ class Y2018D6(input: String) {
             .maxOf { it.value }
     }
 
-    fun part2() = space.withIndex().count { (index, _) ->
-        val coord = space.coordOf(index)
-        coordinates.sumOf { it.manhattanDistance(coord) } < 10_000
+    fun part2() = space.indices.count { index ->
+        coordinates.sumOf { it.manhattanDistance(space.coordOf(index)) } < 10_000
     }
 }
 
