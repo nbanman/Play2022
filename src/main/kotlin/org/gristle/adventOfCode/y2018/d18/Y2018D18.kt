@@ -1,66 +1,52 @@
 package org.gristle.adventOfCode.y2018.d18
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.md5
-import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.toGrid
+import org.gristle.adventOfCode.utilities.*
 
-// not refactored, very impure
+typealias CollectionArea = Grid<Char>
 class Y2018D18(input: String) {
 
-    private val collectionArea = input.toGrid()
-    
-    fun part1(): Int {
-        val p1Minutes = 10
-        val newCollectionArea = (1..p1Minutes).fold(collectionArea) { acc, _ ->
-            acc.mapIndexed { index, c ->
-                val neighbors = acc.getNeighbors(index, true)
-                when (c) {
-                    '.' -> {
-                        if (neighbors.count { it == '|' } >= 3) '|' else c
-                    }
-                    '|' -> {
-                        if (neighbors.count { it == '#' } >= 3) '#' else c
-                    }
-                    else -> {
-                        if ('#' in neighbors && '|' in neighbors) '#' else '.'
-                    }
-                }
-            }.toGrid(acc.width)
+    // Provides successive generations of the collection area, starting at minute 0 (initial).
+    private val generator: Sequence<CollectionArea> = generateSequence(input.toGrid()) { prev ->
+        prev.mapToGridIndexed { index, acre ->
+            val neighbors = prev.getNeighbors(index, true)
+            when (acre) { // particular game of life rules
+                '.' -> if (neighbors.count { it == '|' } >= 3) '|' else acre
+                '|' -> if (neighbors.count { it == '#' } >= 3) '#' else acre
+                else -> if ('#' in neighbors && '|' in neighbors) '#' else '.'
+            }
         }
-        return newCollectionArea.count { it == '|' } * newCollectionArea.count { it == '#' }
     }
 
+    // Calculates resource value of a collection area by counting the number of '|' and '#' and multiplying them.
+    private fun CollectionArea.resourceValue() = eachCount().let { it.getValue('|') * it.getValue('#') }
+
+    // Generate 10 minutes' worth of changes, then get the resource value.
+    fun part1() = generator
+        .take(11) // 11 instead of 10 because the first result is minute 0 (initial state)
+        .last()
+        .resourceValue()
+
+    // Generates new states and stores the states in a cache. When the new state is the same as a previous state,
+    // stop generating. The cache plus the first repeat value provides the information needed to provide the state
+    // after 1 billion generations.
     fun part2(): Int {
-        // Part 2
-        val p2Minutes = 494
-        var hashes = mutableListOf<Pair<String, Int>>()
-        var repeatStart = 0
-        (1..p2Minutes).fold(collectionArea) { acc, _ ->
-            val new = acc.mapIndexed { index, c ->
-                val neighbors = acc.getNeighbors(index, true)
-                when (c) {
-                    '.' -> {
-                        if (neighbors.count { it == '|' } >= 3) '|' else c
-                    }
-                    '|' -> {
-                        if (neighbors.count { it == '#' } >= 3) '#' else c
-                    }
-                    else -> {
-                        if ('#' in neighbors && '|' in neighbors) '#' else '.'
-                    }
-                }
-            }.toGrid(acc.width)
-            val md5 = new.joinToString("").md5() to acc.count { it == '|' } * acc.count { it == '#' }
-            if (md5 in hashes) {
-                repeatStart = hashes.indexOf(md5)
-            } else {
-                hashes.add(md5)
-            }
-            new
-        }
-        hashes = hashes.drop(repeatStart).toMutableList()
-        return hashes[(1000000000 - repeatStart) % hashes.size].second
+        // Cache is a simple *ordered* set
+        val cache = mutableSetOf<CollectionArea>()
+        // Runs the generator, with each minute adding the latest state into the cache. Stops and returns the first
+        // state that is contained within the cache; i.e., is a repeated state.
+        val repeated = generator.first { area -> cache.contains(area).also { cache.add(area) } }
+
+        // The index of the first instance of a repeated state, which means all values with an index lower than that
+        // are not repeats.
+        val repeatStartIndex = cache.indexOf(repeated)
+
+        // We want to get the state in the cache that we would have if we ran 1 billion times. The values before
+        // the repeatStartIndex are unique values before the permutations stabilized. So the "base" index for the
+        // value is repeatStartIndex. From there, we add an index value corresponding to the place in the repeating
+        // loop. Once we get that state we return its resource value.
+        return cache
+            .elementAt(repeatStartIndex + (1_000_000_000 - repeatStartIndex) % (cache.size - repeatStartIndex))
+            .resourceValue()
     }
 }
 
