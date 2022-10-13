@@ -8,8 +8,10 @@ import org.gristle.adventOfCode.utilities.*
  * World functions
  */
 
-fun Grid<Y2018D15.Entity>.finished() = count { it is Y2018D15.Elf }.let { elfCount -> elfCount == 0 || elfCount == count { it is Y2018D15.Player }
-}
+fun Grid<Y2018D15.Entity>.finished() = count { it is Y2018D15.Elf }
+    .let { elfCount ->
+        elfCount == 0 || elfCount == count { it is Y2018D15.Player }
+    }
 
 fun MutableGrid<Y2018D15.Entity>.kill(deadPlayer: Y2018D15.Player) {
     this[deadPlayer.pos] = Y2018D15.OpenSpace(deadPlayer.pos)
@@ -58,6 +60,14 @@ class Y2018D15(val input: String) {
 
     sealed interface Entity {
         var pos: Coord
+    }
+
+    class Wall(override var pos: Coord) : Entity {
+        override fun toString() = "Wall(pos=$pos)"
+    }
+
+    class OpenSpace(override var pos: Coord) : Entity {
+        override fun toString() = "OpenSpace(pos=$pos)"
     }
 
     abstract class Player(override var pos: Coord, val damage: Int) : Entity {
@@ -137,14 +147,6 @@ class Y2018D15(val input: String) {
         abstract fun isEnemy(other: Player): Boolean
     }
 
-    class Wall(override var pos: Coord) : Entity {
-        override fun toString() = "Wall(pos=$pos)"
-    }
-
-    class OpenSpace(override var pos: Coord) : Entity {
-        override fun toString() = "OpenSpace(pos=$pos)"
-    }
-
     class Elf(pos: Coord, damage: Int) : Player(pos, damage) {
         override fun getAdjacentTargets(world: MutableGrid<Entity>) =
             world.getNeighbors(pos).filterIsInstance<Goblin>()
@@ -188,8 +190,10 @@ class Y2018D15(val input: String) {
         // dies. Always returns true if elfDamage is 3, so that it never stops the part 1 solution early.
         fun p2Continue() = elfDamage == 3 || (elves == world.count { it is Elf })
 
-        while (p2Continue() && world.filterIsInstance<Elf>().isNotEmpty() && world.filterIsInstance<Goblin>()
-                .isNotEmpty()
+        while (
+            p2Continue()
+            && world.filterIsInstance<Elf>().isNotEmpty()
+            && world.filterIsInstance<Goblin>().isNotEmpty()
         ) {
             val players = world.players()
             // This loop plays the turns for all but the last player. The last player is played outside of the loop
@@ -210,6 +214,8 @@ class Y2018D15(val input: String) {
 
     fun part1() = solve(3).second
 
+    // Plays the game several times, each time increasing elven damage until the elves with without losing
+    // a single Elf.
     fun part2() = generateSequence(4) { it + 1 }
         .map { solve(it) }
         .first { (victor, _) -> victor == "Elves" }
