@@ -1,51 +1,26 @@
 package org.gristle.adventOfCode.y2018.d20
 
 import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Graph.steps
 import java.util.*
 
 class Y2018D20(private val input: String) {
 
-    fun solve(): Pair<Int, Int> {
-        val myMap = makeMap()
-        val d = Graph.bfs(myMap.coordOfElement('X')) { coord ->
-            myMap.getNeighborIndices(coord)
-                .filter { myMap[it] != '#' }
-                .map { myMap.coordOf(it) }
-        }
-        val distances = MutableList<Int?>(myMap.size) { null }
-            .apply {
-                d.forEach { v ->
-                    this[myMap.indexOf(v.id)] = v.weight.toInt()
-                }
-            } as List<Int?>
-
-
-        val p1 = distances.maxOf { it?.div(2) ?: 0 }
-
-        val p2 = distances
-            .filterIndexed { index, i ->
-                myMap[index] in "X." && i?.let { it >= 2000 } ?: false
-            }.size
-        return p1 to p2
-    }
-
     private fun makeMap(): Grid<Char> {
         val width = input.length / 2 + 20
-        val map = MutableList(width * width) { '^' }.toMutableGrid(width)
+        val map = MutableGrid(width * width, width) { '^' }
 
         fun move(coord: Coord, c: Char): Coord {
+            if (c !in "NSEW") return coord
             val (doorCoord, doorSymbol, newCoord) = when (c) {
                 'N' -> Triple(coord.north(), '-', coord.north(2))
                 'W' -> Triple(coord.west(), '|', coord.west(2))
                 'E' -> Triple(coord.east(), '|', coord.east(2))
                 'S' -> Triple(coord.south(), '-', coord.south(2))
-                else -> Triple(coord, 'Z', coord)
+                else -> throw IllegalArgumentException()
             }
-            if (doorSymbol != 'Z') {
-                map[doorCoord] = doorSymbol
-            }
+            map[doorCoord] = doorSymbol
             return newCoord
-
         }
 
         fun decorate(coord: Coord) {
@@ -83,18 +58,28 @@ class Y2018D20(private val input: String) {
 
         val returnMap = map
             .subGrid(topLeft, gridSizes.x + 1, gridSizes.y + 1)
-            .let { m ->
-                m.map { if (it == '?') '#' else it }.toGrid(m.width)
-            }
+            .let { m -> m.mapToGrid { if (it == '?') '#' else it } }
 
         return returnMap
     }
 
+    private val area = makeMap()
+    private val distances = Graph.bfs(area.coordOfElement('X')) { coord ->
+        area.getNeighborIndices(coord)
+            .filter { area[it] != '#' }
+            .map { area.coordOf(it) }
+    }
+
+    fun part1() = distances.steps() / 2
+    fun part2() = distances.count { area[it.id] == '.' && it.weight >= 2000 }
 }
 
 fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2018D20(readRawInput("y2018/d20")).solve()
-    println("Part 1: $p1") // 3930
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 8240 
+    var time = System.nanoTime()
+    val c = Y2018D20(readRawInput("y2018/d20"))
+    println("Class creation: ${elapsedTime(time)}ms")
+    time = System.nanoTime()
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3930
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 8240
 }
