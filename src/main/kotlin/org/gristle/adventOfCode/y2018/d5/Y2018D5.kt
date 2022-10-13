@@ -8,7 +8,7 @@ import kotlin.math.abs
 class Y2018D5(input: String) {
 
     private fun String.react() = ArrayDeque<Char>()
-        .apply { this@react.forEach { c -> if (isEmpty() || abs(peek() - c) != 32) push(c) else pop() } }
+        .also { forEach { c -> if (it.isEmpty() || abs(it.peek() - c) != 32) it.push(c) else it.pop() } }
         .joinToString("")
 
     private val reacted = input.react()

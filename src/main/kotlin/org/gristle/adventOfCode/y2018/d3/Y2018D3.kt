@@ -14,7 +14,7 @@ class Y2018D3(input: String) {
     }
 
     private val claims = input
-        .groupValues(pattern) { it.toInt() }
+        .groupValues(pattern, String::toInt)
         .map { Claim(it[0], Coord(it[1], it[2]), Coord(it[3], it[4])) }
 
     private val width = claims.maxOf { it.tl.x + it.size.x }
@@ -22,12 +22,14 @@ class Y2018D3(input: String) {
 
     private val skein = Grid<MutableSet<Int>>(width * height, width) { mutableSetOf() }
 
-    fun part1(): Int {
+    init {
         claims.forEach { claim ->
             Coord.forRectangle(claim.tl, claim.br) { skein[it].add(claim.id) }
         }
-        return skein.count { it.size > 1 }
     }
+    
+
+    fun part1() = skein.count { it.size > 1 }
 
     fun part2(): Int {
         val noOverlaps = skein.filter { it.size == 1 }.groupingBy { it.first() }.eachCount()

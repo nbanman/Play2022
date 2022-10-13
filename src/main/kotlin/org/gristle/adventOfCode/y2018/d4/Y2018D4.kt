@@ -72,10 +72,12 @@ class Y2018D4(input: String) {
         return guardId * sleepiestTimes.index
     }
 
-    fun part2() = guards.entries.map { guard ->
-        val minuteMap = getTimeList(guard)
-        guard.key to minuteMap
-    }.maxByOrNull { (_, minMax) -> minMax.value.count { it } }
+    fun part2() = guards
+        .entries
+        .map { guard ->
+            val minuteMap = getTimeList(guard)
+            guard.key to minuteMap
+        }.maxByOrNull { (_, minMax) -> minMax.value.count { it } }
         ?.let { it.first.drop(1).toInt() * it.second.index }
 }
 
