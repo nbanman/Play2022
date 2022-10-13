@@ -57,31 +57,31 @@ class Y2018D12(input: String) {
     fun part2(): Long {
         // too many generations to naively compute!
         val generations = 50_000_000_000
+        val groupSize = 10
 
         // upon observation, the growth is chaotic at first but then finds a stable pattern where growth is constant.
         // Thus, the strategy is to look at generations 10 at a time. When the difference between each is the 
-        // same, we can surmise that the growth has stabilized. We then grab the first two values of that first 
-        // stable group, along with their indices in the original sequence. That provides enough information to 
+        // same, we can surmise that the growth has stabilized. That group provides enough information to 
         // solve part 2.
-        val firstRepeat = generator
+        val firstStable = generator
             .withIndex()
             .map { (index, value) -> IndexedValue(index, value.sumOfPotNumbers(index)) }
-            .windowed(10)
-            .first { five ->
-                five
+            .windowed(groupSize)
+            .first { group ->
+                group
                     .zipWithNext()
                     .map { (prev, next) -> next.value - prev.value }
                     .eachCount()
                     .size == 1
-            }.take(2)
+            }
 
         // the last "chaotic" value obtained by the generator
-        val lastUnstableValue = firstRepeat.first().value
+        val lastUnstableValue = firstStable.first().value
         // the generation of this last chaotic value, so we don't double count generations when applying the stable
         // generation count
-        val repeatIndex = firstRepeat.first().index
+        val repeatIndex = firstStable.first().index
         // the amount that each successive generation adds to the pot number count
-        val stableIncrement = firstRepeat.let { it.last().value - it.first().value }
+        val stableIncrement = firstStable.let { it[1].value - it[0].value }
         // putting it all together
         return lastUnstableValue + stableIncrement * (generations - repeatIndex)
     }
