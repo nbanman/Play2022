@@ -64,15 +64,19 @@ class Y2018D12(input: String) {
 
         val groupSize = 10
         val firstStable = generator
-            .withIndex()
+            .withIndex() // pair up rows with their index, which is the number of generations
+            // transform rows to their pot sum
             .map { (index, value) -> IndexedValue(index, value.sumOfPotNumbers(index)) }
+            // look at generations 10 at a time
             .windowed(groupSize)
+            // terminate and provide the first group where the difference in pot sums between each in the group is
+            // the same
             .first { group ->
                 group
-                    .zipWithNext()
-                    .map { (prev, next) -> next.value - prev.value }
-                    .eachCount()
-                    .size == 1
+                    .zipWithNext() // compare each value with the next one
+                    .map { (prev, next) -> next.value - prev.value } // get the difference in value between the two
+                    .eachCount() // separate into groups based on the difference
+                    .size == 1 // return true if there is only one group; i.e., they all have the same difference
             }
 
         // the last "chaotic" value obtained by the generator
