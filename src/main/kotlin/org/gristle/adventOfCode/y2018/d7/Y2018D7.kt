@@ -10,17 +10,17 @@ class Y2018D7(input: String) {
 
     val instructions = input.groupValues(pattern) { it[0] }
 
-    private val steps = mutableMapOf<Char, MutableList<Char>>().apply {
+    private val steps = buildMap<Char, MutableList<Char>> {
         instructions.forEach { instruction ->
             computeIfAbsent(instruction[0]) { mutableListOf() }.add(instruction[1])
         }
-    }
+    } as Map<Char, List<Char>>
 
-    private val reverseSteps = mutableMapOf<Char, MutableList<Char>>().apply {
+    private val reverseSteps = buildMap<Char, MutableList<Char>> {
         instructions.forEach { instruction ->
             computeIfAbsent(instruction[1]) { mutableListOf() }.add(instruction[0])
         }
-    }
+    } as Map<Char, List<Char>>
 
     private val start = (instructions.map { it[0] }.toSet() - instructions.map { it[1] }.toSet())
 

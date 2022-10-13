@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2018D8(input: String) {
 
-    private val licence = input.split(' ').map { it.toInt() }
+    private val licence = input.split(' ').map(String::toInt)
 
     data class Node(val children: List<Node>, val metadata: List<Int>) {
         companion object {
