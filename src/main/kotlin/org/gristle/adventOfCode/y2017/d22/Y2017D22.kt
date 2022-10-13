@@ -72,21 +72,10 @@ class Y2017D22(input: String) {
             val currentNode = nodes.getValue(pos)
             nodes[pos] = currentNode.advance()
             when (currentNode) {
-                NodeState.CLEAN -> {
-                    move(false, Nsew::left)
-                }
-
-                NodeState.WEAKENED -> {
-                    move(true) { this }
-                }
-
-                NodeState.INFECTED -> {
-                    move(false, Nsew::right)
-                }
-
-                NodeState.FLAGGED -> {
-                    move(false, Nsew::opposite)
-                }
+                NodeState.CLEAN -> move(false, Nsew::left)
+                NodeState.WEAKENED -> move(true) { this }
+                NodeState.INFECTED -> move(false, Nsew::right)
+                NodeState.FLAGGED -> move(false, Nsew::opposite)
             }
         }
         return solve(10_000_000, burst)
