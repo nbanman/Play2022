@@ -6,9 +6,11 @@ import org.gristle.adventOfCode.utilities.ocr
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2019D8(input: String) {
+    private val width = 25
+    private val height = 6
 
-    private val layers = input.chunked(25 * 6) // Split the data into a list of equal sized layers
-    
+    private val layers = input.chunked(width * height) // Split the data into a list of equal sized layers
+
     fun part1(): Int? {
         return layers
             .minByOrNull { layer -> layer.count { it == '0' } }  // Get the layer with the fewest 0s
@@ -23,7 +25,7 @@ class Y2019D8(input: String) {
 
         // Make a representing the visible pixels of the image. Then run OCR to turn the grid into a
         // string of letters.
-        return Grid(25 * 6, 25) { i -> layers.visiblePixel(i) }.ocr()
+        return Grid(width, height) { i -> layers.visiblePixel(i) }.ocr()
     }
 }
 

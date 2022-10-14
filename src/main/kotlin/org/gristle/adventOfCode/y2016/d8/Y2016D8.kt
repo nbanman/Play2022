@@ -26,7 +26,7 @@ class Y2016D8(input: String) {
     val instructions = input.groupValues(pattern).map { Instruction(it[0], it[1].toInt(), it[2].toInt()) }
 
     private fun lightScreen(): Grid<Boolean> {
-        val screen = MutableGrid(300, 50) { false }
+        val screen = MutableGrid(50, 6) { false }
         instructions.forEach { it.execute(screen) }
         return screen
     }

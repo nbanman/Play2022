@@ -20,7 +20,7 @@ class Y2018D3(input: String) {
     private val width = claims.maxOf { it.tl.x + it.size.x }
     private val height = claims.maxOf { it.tl.y + it.size.y }
 
-    private val skein = Grid<MutableSet<Int>>(width * height, width) { mutableSetOf() }
+    private val skein = Grid<MutableSet<Int>>(width, height) { mutableSetOf() }
 
     init {
         claims.forEach { claim ->

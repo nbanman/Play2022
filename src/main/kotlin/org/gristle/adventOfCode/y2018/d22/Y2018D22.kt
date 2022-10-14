@@ -36,7 +36,7 @@ class Y2018D22(input: String) {
     // each spot is dependent in a bootstrapping fashion on the previously calculated  geologic indexes of spots 
     // to the north and west. Afterwards, the grid is mapped to CavernType by converting the geoIndexes to erosion 
     // levels and modding 3.
-    private val cavern = MutableGrid(width * height, width) { -1L }
+    private val cavern = MutableGrid(width, height) { -1L }
         .apply {
             for (i in indices) {
                 this[i] = geoIndex(Coord(i % width, i / width), this)

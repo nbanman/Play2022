@@ -52,7 +52,7 @@ class Y2021D13(input: String) {
     private val paperWidth = dots.maxOf { it.x } + 1
     private val paperHeight = dots.maxOf { it.y } + 1
 
-    private val paper = MutableGrid(paperWidth * paperHeight, paperWidth) { false }
+    private val paper = MutableGrid(paperWidth, paperHeight) { false }
         .apply {
             dots.forEach { dot -> this[dot] = true }
         } as Grid<Boolean>

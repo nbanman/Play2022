@@ -18,7 +18,7 @@ class Y2018D6(input: String) {
 
     private val width = xRange.last - xRange.first + 1
     private val height = yRange.last - yRange.first + 1
-    private val space = MutableGrid(width * height, width) { -2 }
+    private val space = MutableGrid(width, height) { -2 }
 
     init {
         for (index in space.indices) {

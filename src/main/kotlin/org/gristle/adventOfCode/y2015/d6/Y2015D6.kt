@@ -64,7 +64,7 @@ class Y2015D6(input: String) {
      * light field. Returns the sum of the brightness.
      */
     fun solve(lightAdjustment: LightAdjustment): Int {
-        val lights = MutableGrid(1_000_000, 1000) { 0 }
+        val lights = MutableGrid(1000, 1000) { 0 }
         instructions.forEach { it.execute(lights, lightAdjustment) }
         return lights.sum()
     }

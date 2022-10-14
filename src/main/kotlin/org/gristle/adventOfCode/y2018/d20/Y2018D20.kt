@@ -7,8 +7,8 @@ import java.util.*
 class Y2018D20(private val input: String) {
 
     private fun makeMap(): Grid<Char> {
-        val width = input.length / 2 + 20
-        val map = MutableGrid(width * width, width) { '^' }
+        val length = input.length / 2 + 20
+        val map = MutableGrid(length, length) { '^' }
 
         fun move(coord: Coord, c: Char): Coord {
             if (c !in "NSEW") return coord
@@ -50,7 +50,7 @@ class Y2018D20(private val input: String) {
             }
         }
 
-        exploreMap(input, Coord(width / 2, width / 2))
+        exploreMap(input, Coord(length / 2, length / 2))
 
         val topLeft = map.coordOfElement('#')
         val bottomRight = map.lastCoordOfElement('#')

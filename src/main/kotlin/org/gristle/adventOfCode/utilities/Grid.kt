@@ -330,11 +330,11 @@ fun <E> gridOf(width: Int, vararg elements: E): Grid<E> = elements.toGrid(width)
 
 fun <E> mutableGridOf(width: Int, vararg elements: E): Grid<E> = elements.toMutableGrid(width)
 
-inline fun <T> Grid(size: Int, width: Int, init: (index: Int) -> T): Grid<T> = MutableGrid(size, width, init)
+inline fun <T> Grid(width: Int, height: Int, init: (index: Int) -> T): Grid<T> = MutableGrid(width, height, init)
 
-inline fun <T> MutableGrid(size: Int, width: Int, init: (index: Int) -> T): MutableGrid<T> {
-    val list = ArrayList<T>(size)
-    repeat(size) { index -> list.add(init(index)) }
+inline fun <T> MutableGrid(width: Int, height: Int, init: (index: Int) -> T): MutableGrid<T> {
+    val list = ArrayList<T>(width * height)
+    repeat(width * height) { index -> list.add(init(index)) }
     return ArrayGrid(list, width)
 }
 

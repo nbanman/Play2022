@@ -29,7 +29,7 @@ class Y2021D20(input: String) {
             // Each step, the finite grid becomes one larger on every side. The offset is used
             // to refer to the equivalent point on the previous, smaller grid.
             val offset = Coord(1, 1)
-            Grid((acc.height + 2) * (acc.width + 2), acc.width + 2) { i ->
+            Grid(acc.width + 2, acc.height + 2) { i ->
                 // Finds the index to look up the algorithm string.
                 val algorithmIndex = Coord.fromIndex(i, acc.width + 2) // start with the coordinates
                     .nine() // include the coordinates of the surrounding spots

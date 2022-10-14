@@ -16,7 +16,7 @@ class Y2015D18(input: String) {
             emptyList()
         }
 
-        return Grid(size, width) { i ->
+        return Grid(height, width) { i ->
             if (i in corners) {
                 true
             } else {

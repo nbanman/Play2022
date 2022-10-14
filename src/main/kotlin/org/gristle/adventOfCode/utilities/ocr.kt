@@ -43,7 +43,7 @@ private val letterForms = buildMap<String, Char> {
 fun Grid<Char>.ocr() = rotate90() // rotation makes for easy separation of each letter
     // newline helps maintain shape of data through string transforms. The width is 1, the size is the width of the
     // original grid before rotation, i.e., the height
-    .addRight(Grid(size = width, width = 1) { '\n' }) 
+    .addRight(Grid(width = 1, height = width) { '\n' })
     .joinToString("") // change into string to make replacements and splits easier
     .replace(' ', '.') // conform spaces into dots
     // Fixes bug where some 'Y' characters do not have a space between it and the next letter
