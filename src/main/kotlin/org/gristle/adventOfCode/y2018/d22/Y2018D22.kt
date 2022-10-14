@@ -49,65 +49,42 @@ class Y2018D22(input: String) {
             }
         }
 
+    fun part1() = cavern.subGrid(Coord.ORIGIN, target).sumOf(CavernType::ordinal)
+
     enum class Tool { GEAR, TORCH, NEITHER }
 
     data class State(val pos: Coord, val tool: Tool)
-
-
-    fun part1() = cavern.subGrid(Coord.ORIGIN, target).sumOf(CavernType::ordinal)
 
     /**
      * For a given proposed new location and current state, provides what tool will have to be used and the
      * time that it will take to change any tool, if necessary.
      */
-    private fun changeGear(pos: Coord, state: State) = when (cavern[pos]) {
-        CavernType.ROCKY -> {
-            when (cavern[state.pos]) {
-                CavernType.ROCKY -> state.tool to 1
-                CavernType.WET -> if (state.tool == Tool.GEAR) {
-                    state.tool to 1
-                } else {
-                    Tool.GEAR to 8
-                }
-                CavernType.NARROW -> if (state.tool == Tool.TORCH) {
-                    state.tool to 1
-                } else {
-                    Tool.TORCH to 8
-                }
+    private fun changeGear(neighborPos: Coord, state: State): Pair<Tool, Int> {
+        val stateTerrain = cavern[state.pos]
+        val neighborTerrain = cavern[neighborPos]
+        // if terrain is the same, no tool change needed and the weight is 1
+        return if (stateTerrain == neighborTerrain) {
+            state.tool to 1
+        } else {
+            // if terrain is different, provide the tool that works for those two terrains by adding the ordinal values of the terrain
+            // together to obtain a unique value specific to that terrain combination.
+            val tool = when (stateTerrain.ordinal + neighborTerrain.ordinal) {
+                1 -> Tool.GEAR
+                2 -> Tool.TORCH
+                3 -> Tool.NEITHER
+                else -> throw IllegalArgumentException("Terrain ordinals did not add up correctly")
             }
-        }
-        CavernType.WET -> {
-            when (cavern[state.pos]) {
-                CavernType.ROCKY -> if (state.tool == Tool.GEAR) {
-                    state.tool to 1
-                } else {
-                    Tool.GEAR to 8
-                }
-                CavernType.WET -> state.tool to 1
-                CavernType.NARROW -> if (state.tool == Tool.NEITHER) {
-                    state.tool to 1
-                } else {
-                    Tool.NEITHER to 8
-                }
-            }
-        }
-        CavernType.NARROW -> {
-            when (cavern[state.pos]) {
-                CavernType.ROCKY -> if (state.tool == Tool.TORCH) {
-                    state.tool to 1
-                } else {
-                    Tool.TORCH to 8
-                }
-                CavernType.WET -> if (state.tool == Tool.NEITHER) {
-                    state.tool to 1
-                } else {
-                    Tool.NEITHER to 8
-                }
-                CavernType.NARROW -> state.tool to 1
-            }
+            // return this tool. If the tool as the same as the one in the state, weight is 1, else 7 to accomodate
+            // gear change.
+            tool to if (state.tool == tool) 1 else 8
         }
     }
 
+    /**
+     * Run A* algorithm to find shortest path, using a State object that tracks both the position and the current tool.
+     * The heuristic is the manhattan distance to the target. Edges are found by looking at neighboring positions
+     * and calculating what tool change, if necessary, needs to be made.
+     */
     fun part2() = Graph
         .aStar(
             startId = State(Coord.ORIGIN, Tool.TORCH),
@@ -117,9 +94,9 @@ class Y2018D22(input: String) {
                     .getNeighborIndices(state.pos)
                     .map { neighborIndex ->
                         val neighborCoord = cavern.coordOf(neighborIndex)
-                        val (newTool, weight) = changeGear(neighborCoord, state)
-                        val weightMod = if (neighborCoord == target && newTool != Tool.TORCH) 7 else 0
-                        Graph.Edge(State(neighborCoord, newTool), weight.toDouble() + weightMod)
+                        val (tool, weight) = changeGear(neighborCoord, state)
+                        val weightMod = if (neighborCoord == target && tool != Tool.TORCH) 7 else 0
+                        Graph.Edge(State(neighborCoord, tool), weight.toDouble() + weightMod)
                     }
             }
         ).steps()
