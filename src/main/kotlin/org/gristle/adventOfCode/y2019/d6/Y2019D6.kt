@@ -11,7 +11,8 @@ class Y2019D6(input: String) {
             // register is a mutable hashmap shared by all instances used to get a parent from the parent's name
             private val register = mutableMapOf<String, CelestialBody>()
             // public getter of register
-            operator fun get(name: String): CelestialBody? = register[name]
+            operator fun get(name: String): CelestialBody = register[name]
+                ?: throw IllegalArgumentException("No CelestialBody in register with name '$name.'")
         }
         // init registers the instance to the shared register.
         init { register[name] = this }
@@ -31,13 +32,13 @@ class Y2019D6(input: String) {
             .let { CelestialBody(it.last(), it.first()) }
         } + CelestialBody("COM", "")
 
-    fun part1() = celestialBodies.sumOf { it.orbits }
+    fun part1() = celestialBodies.sumOf(CelestialBody::orbits)
 
     fun part2(): Int {
         // Part 2. Get paths from the two objects, find how much of a path they share, sum the lengths
         // of the two paths, subtract the shared lengths from the sum.
-        val me = CelestialBody["YOU"]?.path?.dropLast(1) ?: throw IllegalStateException()
-        val santa = CelestialBody["SAN"]?.path?.dropLast(1) ?: throw IllegalStateException()
+        val me = CelestialBody["YOU"].path.dropLast(1)
+        val santa = CelestialBody["SAN"].path.dropLast(1)
         val sharedSize = me.indices.first { i -> me[i] != santa[i] }
         return me.size + santa.size - sharedSize * 2
     }
