@@ -6,24 +6,33 @@ import kotlin.math.atan2
 
 class Y2019D10(private val input: String) {
 
-    fun solve(): Pair<Int, Int> {
+    private val asteroids: List<Coord>
+    private val station: Coord
+    private val detectableFromStation: Int
+
+    init {
         val width = input.takeWhile { it != '\r' }.length
-        val asteroids = input
+        asteroids = input
             .replace("\r\n", "")
             .mapIndexedNotNull { index, c -> if (c == '.') null else Coord(index % width, index / width) }
-        val p1 = asteroids.map { asteroid ->
-            (asteroids - asteroid)
-                .map { otherAsteroid ->
-                    val relativeCoord = asteroid - otherAsteroid
-                    val gcd = gcd(relativeCoord.x, relativeCoord.y)
-                    val new = Coord(relativeCoord.x / gcd, relativeCoord.y / gcd)
-                    new
-                }.distinct()
-                .size to asteroid
-        }.maxByOrNull { it.first } ?: throw Exception("no asteroids")
+        val (detectableFromStation, station) = asteroids
+            .map { asteroid ->
+                (asteroids - asteroid)
+                    .map { otherAsteroid ->
+                        val relativeCoord = asteroid - otherAsteroid
+                        val gcd = gcd(relativeCoord.x, relativeCoord.y)
+                        val new = Coord(relativeCoord.x / gcd, relativeCoord.y / gcd)
+                        new
+                    }.distinct()
+                    .size to asteroid
+            }.maxByOrNull { it.first } ?: throw Exception("no asteroids")
+        this.station = station
+        this.detectableFromStation = detectableFromStation
+    }
 
-        //Part 2
-        val station = p1.second
+    fun part1() = detectableFromStation
+
+    fun part2(): Int {
         val angles = (asteroids - station)
             .map { asteroid ->
                 val relativeCoord = station - asteroid
@@ -35,16 +44,16 @@ class Y2019D10(private val input: String) {
             }
             .sortedBy { it.second.manhattanDistance(station) }
             .groupBy { it.first }
+            .values
 
         val pq = IndexedHeap.maxHeap<Pair<Double, Coord>> { o1, o2 ->
             (o1.first - o2.first).let { if (it < 0.0) -1 else if (it > 0.0) 1 else 0 }
         }
-        for (angle in angles.keys) {
-            angles.getValue(angle).forEachIndexed { index, pair -> pq.add(-10.0 * index + pair.first to pair.second) }
+        for (angle in angles) {
+            angle.forEachIndexed { index, pair -> pq.add(-10.0 * index + pair.first to pair.second) }
         }
-        val p2 = pq.dumpToList()[199].let { it.second.x * 100 + it.second.y }
 
-        return p1.first to p2
+        return pq.toList()[199].let { it.second.x * 100 + it.second.y }
     }
 }
 
@@ -53,7 +62,8 @@ fun main() {
     val c = Y2019D10(readRawInput("y2019/d10"))
     println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    val (p1, p2) = c.solve()
-    println("Part 1: $p1") // 286
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 504
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 286
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 504
+
 }

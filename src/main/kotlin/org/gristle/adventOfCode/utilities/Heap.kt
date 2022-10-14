@@ -17,11 +17,11 @@ class Heap<K: Comparable<K>, E> private constructor(
     }
 
     companion object {
-        fun <K: Comparable<K>, E> minHeap(elements: Iterable<Pair<K, E>> = emptyList()) = Heap<K, E>(elements) { a, b ->
+        fun <K : Comparable<K>, E> minHeap(elements: Iterable<Pair<K, E>> = emptyList()) = Heap(elements) { a, b ->
             a < b
         }
 
-        fun <K: Comparable<K>, E> maxHeap(elements: Iterable<Pair<K, E>> = emptyList()) = Heap<K, E>(elements) { a, b ->
+        fun <K : Comparable<K>, E> maxHeap(elements: Iterable<Pair<K, E>> = emptyList()) = Heap(elements) { a, b ->
             a > b
         }
 
@@ -88,7 +88,7 @@ class Heap<K: Comparable<K>, E> private constructor(
     tailrec fun pollUntil(predicate: (E) -> Boolean): E? {
         val poll = poll()
         return when {
-            poll == null -> poll
+            poll == null -> null
             predicate(poll) -> poll
             else -> pollUntil(predicate)
         }
@@ -119,19 +119,19 @@ class IndexedHeap<E> private constructor(
     }
 
     companion object {
-        fun <E: Comparable<E>> minHeap(elements: Iterable<E> = emptyList()) = IndexedHeap<E>(elements) { a, b ->
+        fun <E : Comparable<E>> minHeap(elements: Iterable<E> = emptyList()) = IndexedHeap(elements) { a, b ->
             a < b
         }
 
-        fun <E: Comparable<E>> maxHeap(elements: Iterable<E> = emptyList()) = IndexedHeap<E>(elements) { a, b ->
+        fun <E : Comparable<E>> maxHeap(elements: Iterable<E> = emptyList()) = IndexedHeap(elements) { a, b ->
             a > b
         }
 
-        fun <E> minHeap(elements: Iterable<E>, comparator: Comparator<E>) = IndexedHeap<E>(elements) { a, b ->
+        fun <E> minHeap(elements: Iterable<E>, comparator: Comparator<E>) = IndexedHeap(elements) { a, b ->
             comparator.compare(a, b) < 0
         }
 
-        fun <E> maxHeap(elements: Iterable<E>, comparator: Comparator<E>) = IndexedHeap<E>(elements) { a, b ->
+        fun <E> maxHeap(elements: Iterable<E>, comparator: Comparator<E>) = IndexedHeap(elements) { a, b ->
             comparator.compare(a, b) > 0
         }
 
@@ -226,9 +226,10 @@ class IndexedHeap<E> private constructor(
 
     fun isNotEmpty(): Boolean = elements.isNotEmpty()
 
-    fun dumpToList(): List<E> {
+    fun toList(): List<E> {
         val returnList = mutableListOf<E>()
-        while (peek() != null) poll()?.let { returnList.add(it) }
+        val heapClone = IndexedHeap(elements.toList(), compare)
+        while (heapClone.peek() != null) heapClone.poll()?.let { returnList.add(it) }
         return returnList
     }
 }
