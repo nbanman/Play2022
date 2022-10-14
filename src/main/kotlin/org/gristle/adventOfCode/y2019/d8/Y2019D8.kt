@@ -21,7 +21,7 @@ class Y2019D8(input: String) {
         // Takes the layers and an index value representing a specific pixel. For that index, it looks
         // through the layers sequentially and finds the first non-transparent pixel (i.e., it ignores '0's).
         // Then it returns true for white pixels ('1') and false for black pixels ('0').
-        fun List<Layer>.visiblePixel(index: Int) = '1' == first { it[index] != '2' }[index]
+        fun List<Layer>.visiblePixel(index: Int): Boolean = '1' == first { it[index] != '2' }[index]
 
         // Make a Grid representing the visible pixels of the image. Then run OCR to turn the grid into a
         // string of letters.
