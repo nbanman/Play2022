@@ -59,24 +59,20 @@ class Y2018D22(input: String) {
      * For a given proposed new location and current state, provides what tool will have to be used and the
      * time that it will take to change any tool, if necessary.
      */
-    private fun changeGear(neighborPos: Coord, state: State): Pair<Tool, Int> {
+    private fun changeGear(neighborTerrain: CavernType, state: State): Tool {
         val stateTerrain = cavern[state.pos]
-        val neighborTerrain = cavern[neighborPos]
         // if terrain is the same, no tool change needed and the weight is 1
         return if (stateTerrain == neighborTerrain) {
-            state.tool to 1
+            state.tool
         } else {
             // if terrain is different, provide the tool that works for those two terrains by adding the ordinal values of the terrain
             // together to obtain a unique value specific to that terrain combination.
-            val tool = when (stateTerrain.ordinal + neighborTerrain.ordinal) {
+            when (stateTerrain.ordinal + neighborTerrain.ordinal) {
                 1 -> Tool.GEAR
                 2 -> Tool.TORCH
                 3 -> Tool.NEITHER
                 else -> throw IllegalArgumentException("Terrain ordinals did not add up correctly")
             }
-            // return this tool. If the tool as the same as the one in the state, weight is 1, else 7 to accomodate
-            // gear change.
-            tool to if (state.tool == tool) 1 else 8
         }
     }
 
@@ -91,12 +87,16 @@ class Y2018D22(input: String) {
             heuristic = { state -> state.pos.manhattanDistance(target).toDouble() },
             defaultEdges = { state ->
                 cavern
-                    .getNeighborIndices(state.pos)
-                    .map { neighborIndex ->
-                        val neighborCoord = cavern.coordOf(neighborIndex)
-                        val (tool, weight) = changeGear(neighborCoord, state)
-                        val weightMod = if (neighborCoord == target && tool != Tool.TORCH) 7 else 0
-                        Graph.Edge(State(neighborCoord, tool), weight.toDouble() + weightMod)
+                    .getNeighborIndices(state.pos) // get four neighbors of the location as grid indices
+                    .map { neighborIndex -> // for each neighbor index...
+                        val neighborCoord = cavern.coordOf(neighborIndex) // ...get the coordinates
+                        val newTool = changeGear(cavern[neighborCoord], state) // ...get the new tool if necessary 
+                        val weight = if (state.tool != newTool) 8.0 else 1.0 // calculate weight incl tool change
+                        // add 7 weight if the neighbor is the target and the target is not Torch, to account for
+                        // ending up as torch
+                        val endMod = if (neighborCoord == target && newTool != Tool.TORCH) 7 else 0
+                        // wrap together in an Edge object
+                        Graph.Edge(State(neighborCoord, newTool), weight + endMod)
                     }
             }
         ).steps()
