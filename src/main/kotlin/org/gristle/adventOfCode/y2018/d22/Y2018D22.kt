@@ -24,7 +24,7 @@ class Y2018D22(input: String) {
      * efficient terrain to navigate. This version is theoretically limited only by the number of elements allowed
      * in a Map object.
      */
-    class Cavern(private val start: Coord, private val target: Coord, private val depth: Int) {
+    class Cavern(start: Coord, target: Coord, private val depth: Int) {
         // helper function used to convert geologic index to erosion level
         private fun Long.erosionLevel() = (this + depth) % 20183
 
