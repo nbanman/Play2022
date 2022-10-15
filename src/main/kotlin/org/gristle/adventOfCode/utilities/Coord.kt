@@ -19,6 +19,10 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
 
         inline fun forRectangle(minMaxRange: Pair<IntRange, IntRange>, action: (coord: Coord) -> Unit) =
             forRectangle(minMaxRange.first, minMaxRange.second, action)
+
+        fun rectangleFrom(tl: Coord, br: Coord): List<Coord> = buildList {
+            for (y in tl.y..br.y) for (x in tl.x..br.x) add(Coord(x, y))
+        }
     }
 
     fun asIndex(width: Int) = y * width + x
