@@ -27,28 +27,29 @@ class Y2019D14(private val input: String) {
     data class Reaction(val result: Chemical, val ingredients: List<Chemical>)
 
     fun solve(): Pair<Long, Long> {
-        val rules = input
-            .lines()
-            .map { line ->
-                line
-                    .groupValues(pattern)
-                    .let { gvs ->
-                        val result = Chemical(gvs.last()[1], gvs.last()[0].toLong())
-                        val ingredients = gvs.dropLast(1).map { gv ->
-                            Chemical(gv[1], gv[0].toLong())
-                        }
-                        val reaction = Reaction(result, ingredients)
-                        for (ingredient in reaction.ingredients) {
-                            if (lookup[ingredient.name] == null) {
-                                lookup[ingredient.name] = mutableSetOf()
+        val rules = buildMap {
+            input
+                .lines()
+                .map { line ->
+                    line
+                        .groupValues(pattern)
+                        .let { gvs ->
+                            val result = Chemical(gvs.last()[1], gvs.last()[0].toLong())
+                            val ingredients = gvs.dropLast(1).map { gv ->
+                                Chemical(gv[1], gv[0].toLong())
                             }
-                            lookup.getValue(ingredient.name).add(result)
+                            val reaction = Reaction(result, ingredients)
+                            for (ingredient in reaction.ingredients) {
+                                if (lookup[ingredient.name] == null) {
+                                    lookup[ingredient.name] = mutableSetOf()
+                                }
+                                lookup.getValue(ingredient.name).add(result)
+                            }
+                            put(result.name, reaction)
                         }
-                        result.name to reaction
-                    }
-            }.let {
-                mutableMapOf(*it.toTypedArray())
-            }
+                }
+        }
+
         fun calculateOre(fuel: Long): Long {
             val repository = mutableMapOf("FUEL" to fuel)
             var potentials = repository.entries.filter { it.value != 0L }

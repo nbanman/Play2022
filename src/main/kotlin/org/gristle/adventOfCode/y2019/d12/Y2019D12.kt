@@ -4,7 +4,7 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2019D12(input: String) {
 
-    data class Moon1912(val pos: MCoord, val vel: MCoord = MCoord(0, 0, 0)) {
+    data class Moon(val pos: MCoord, val vel: MCoord = MCoord(0, 0, 0)) {
         private val potentialEnergy = pos.manhattanDistance(MCoord(0, 0, 0))
         private val kineticEnergy = vel.manhattanDistance(MCoord(0, 0, 0))
         val totalEnergy = potentialEnergy * kineticEnergy
@@ -16,8 +16,8 @@ class Y2019D12(input: String) {
     private val pattern = """<x=(-?\d+), y=(-?\d+), z=(-?\d+)>""".toRegex()
 
     private val moons = input
-        .groupValues(pattern) { it.toInt() }
-        .map { Moon1912(Xyz(it[0], it[1], it[2])) }
+        .groupValues(pattern, String::toInt)
+        .map { Moon(Xyz(it[0], it[1], it[2])) }
 
     private fun applyForce(a: Int, b: Int) = (a - b).let { if (it < 0) 1 else if (it > 0) -1 else 0 }
     
@@ -34,12 +34,10 @@ class Y2019D12(input: String) {
                     )
                     acc + velDelta
                 }
-                Moon1912(moon.pos + moon.vel + newVel, moon.vel + newVel)
+                Moon(moon.pos + moon.vel + newVel, moon.vel + newVel)
             }
             newMoons
-        }.let { moons ->
-            moons.sumOf { it.totalEnergy } 
-        }
+        }.sumOf(Moon::totalEnergy)
     }
 
     fun part2(): Long {
