@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2018.d22
 
 import org.gristle.adventOfCode.utilities.*
 import org.gristle.adventOfCode.utilities.Graph.steps
-
 class Y2018D22(input: String) {
 
     private val pattern = Regex("""depth: (\d+)\r?\ntarget: (\d+),(\d+)""")
@@ -29,7 +28,7 @@ class Y2018D22(input: String) {
         private fun Long.erosionLevel() = (this + depth) % 20183
 
         // helper function used to convert geologic index to terrain 
-        private fun Long.terrain() = when (this.erosionLevel() % 3) {
+        private fun Long.terrain() = when (erosionLevel() % 3) {
             0L -> Terrain.ROCKY
             1L -> Terrain.WET
             else -> Terrain.NARROW
