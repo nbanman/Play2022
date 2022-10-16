@@ -73,7 +73,7 @@ class Y2018D22(input: String) {
      */
     private fun changeTool(neighborTerrain: Terrain, state: State): Tool {
         val stateTerrain = cavern[state.pos]
-        // if terrain is the same, no tool change needed and the weight is 1
+        // if terrain is the same, no tool change needed 
         return if (stateTerrain == neighborTerrain) {
             state.tool
         } else {
