@@ -24,37 +24,38 @@ class Y2018D22(input: String) {
      * in a Map object.
      */
     class Cavern(start: Coord, target: Coord, private val depth: Int) {
-        // helper function used to convert geologic index to erosion level
-        private fun Long.erosionLevel() = (this + depth) % 20183
+        // helper functions used to convert geologic index to erosion level
+        private fun Int.erosionLevel() = (this + depth) % 20183
+        private fun Long.erosionLevel() = ((this + depth) % 20183).toInt()
 
         // helper function used to convert geologic index to terrain 
-        private fun Long.terrain() = when (erosionLevel() % 3) {
-            0L -> Terrain.ROCKY
-            1L -> Terrain.WET
+        private fun Int.terrain() = when (this % 3) {
+            0 -> Terrain.ROCKY
+            1 -> Terrain.WET
             else -> Terrain.NARROW
         }
 
-        // map to hold the geologic index of the cavern. From this, the terrain for any location can be
-        // calculated. It remains mutable because the values are calculated lazily as needed using the geoIndex
-        // function. It starts with 0 at both start and target, per the instructions.
-        private val geoIndexMap = mutableMapOf<Coord, Long>().apply {
-            put(start, 0)
-            put(target, 0)
+        // map to hold the erosion level of the cavern. From this, the terrain for any location can be
+        // calculated. It remains mutable because the values are calculated lazily as needed using the getErosion
+        // function. It starts with start and target values provided in the instructions.
+        private val erosionMap = mutableMapOf<Coord, Int>().apply {
+            put(start, 0.erosionLevel())
+            put(target, 0.erosionLevel())
         }
 
-        private fun geoIndex(pos: Coord): Long {
-            return geoIndexMap[pos] ?: let { // if value stored in map, return value. Otherwise...
-                geoIndexMap[pos] = when { // ...calculate value and assign it to the map using provided rules
-                    pos.y == 0 -> pos.x * 16807L
-                    pos.x == 0 -> pos.y * 48271L
-                    else -> geoIndex(pos.west()).erosionLevel() * geoIndex(pos.north()).erosionLevel() // recursive!
+        private fun getErosion(pos: Coord): Int {
+            return erosionMap[pos] ?: let { // if value stored in map, return value. Otherwise...
+                erosionMap[pos] = when { // ...calculate value and assign it to the map using provided rules
+                    pos.y == 0 -> (pos.x * 16807L).erosionLevel()
+                    pos.x == 0 -> (pos.y * 48271L).erosionLevel()
+                    else -> (getErosion(pos.west()) * getErosion(pos.north())).erosionLevel() // recursive!
                 }
-                geoIndexMap.getValue(pos) // provide the newly assigned value
+                erosionMap.getValue(pos) // provide the newly assigned value
             }
         }
 
         // sole public getter provides the terrain for a given position
-        operator fun get(pos: Coord): Terrain = geoIndex(pos).terrain()
+        operator fun get(pos: Coord): Terrain = getErosion(pos).terrain()
     }
 
     // initialize the cavern
