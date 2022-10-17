@@ -1,9 +1,6 @@
 package org.gristle.adventOfCode.y2018.d2
 
-import org.gristle.adventOfCode.utilities.eachCount
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.*
 
 class Y2018D2(input: String) {
     private val boxIds = input.lines()
@@ -22,12 +19,6 @@ class Y2018D2(input: String) {
             .filter { (first, last) -> first == last }
             .map { (first, _) -> first }
             .joinToString("")
-
-        fun <E> List<E>.getPairs(): List<List<E>> {
-            val combos = mutableListOf<List<E>>()
-            for (i in 0 until lastIndex) for (j in i + 1..lastIndex) combos.add(listOf(this[i], this[j]))
-            return combos
-        }
 
         return boxIds.getPairs().first { it.countDifferences() == 1 }.shared()
     }
