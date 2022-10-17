@@ -25,8 +25,7 @@ class Y2020D5(input: String) {
     // The seatIds should all be contiguous. Yours is missing, so look for the first non-contiguous seatId in the
     // sorted list of seatIds. Yours would be the seatId immediately below that.
     fun part2() = seatIds
-        .asSequence() // Convert to sequence..
-        .zipWithNext() // then convert sequence to include both the previous seatId and the next seatId
+        .zipWithNext() // pair up previous seatId and the next seatId
         .first { (prev, next) -> prev + 1 != next } // find the first instance where the next seatId is not contiguous
         .second - 1 // return that, minus 1 (since your missing ticket is the contiguous seatId)
 }
