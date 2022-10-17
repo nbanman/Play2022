@@ -66,14 +66,13 @@ class Y2020D4(input: String) {
         .map { rawPassportData ->
             rawPassportData
                 .groupValues("""([a-z]{3}):([^ \r\n]+)""")
-                .map { gv ->
-                    PassportField.fromGv(gv)
-                }.filter { it !is PassportField.Cid }
+                .map(PassportField::fromGv)
+                .filter { it !is PassportField.Cid }
         }
 
     fun part1() = passports.count { it.size == 7 }
 
-    fun part2() = passports.count { it.size == 7 && it.all { field -> field.isValid() }}
+    fun part2() = passports.count { it.size == 7 && it.all(PassportField::isValid) }
 }
 
 fun main() {
