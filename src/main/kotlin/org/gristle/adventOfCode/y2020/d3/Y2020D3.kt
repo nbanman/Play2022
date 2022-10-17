@@ -20,7 +20,7 @@ class Y2020D3(input: String) {
         part1(5),
         part1(7),
         part1(1, 2)
-    ).fold(1L) { acc, i -> acc * i }
+    ).fold(1L, Long::times)
 }
 
 fun main() {
