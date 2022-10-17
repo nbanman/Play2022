@@ -41,23 +41,16 @@ class Y2019D24(input: String) {
         }
     }
 
-    private fun Grid<Boolean>.advance() = mapIndexed { index, b ->
+    private fun Grid<Boolean>.advance() = mapToGridIndexed { index, b ->
         val adjacentBugs = getNeighbors(index).count { it }
         adjacentBugs == 1 || (!b && adjacentBugs == 2)
-    }.toGrid(this.width)
+    }
 
     fun part1(): Int {
-        var eris = erisOriginal
-        val layouts = mutableSetOf(eris.toInt())
-        while (true) {
-            eris = eris.advance()
-            val intRep = eris.toInt()
-            if (layouts.contains(intRep)) {
-                return intRep
-            } else {
-                layouts.add(intRep)
-            }
-        }
+        val ratings = mutableSetOf<Int>() // tracks ratings so that sequence can stop when rating appears twice 
+        return generateSequence(erisOriginal) { it.advance() } // base GoL sequence 
+            .map { it.toInt() } // converted to biodiversity rating
+            .first { !ratings.add(it) } // add rating to ratings and return the first rating that is a repeat
     }
 
     fun part2(): Int {
@@ -126,8 +119,6 @@ class Y2019D24(input: String) {
                         val newBug = bugs == 1 || (!isBug && bugs == 2)
                         newDimension += if (newBug) 1.shl(bit) else 0
                     }
-//                    println("Iteration $i, dimension $d:")
-//                    newDimension.print()
                     newDimension
                 }
             }
