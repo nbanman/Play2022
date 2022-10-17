@@ -9,7 +9,7 @@ class Y2020D7(input: String) {
 
     class HeldBag(val color: String, private val amount: Int) {
         fun bagsInside(): Long {
-            return amount + amount * Rule.bagMap.getValue(color).heldBags.sumOf { it.bagsInside() }
+            return amount + amount * Rule.bagMap.getValue(color).heldBags.sumOf(HeldBag::bagsInside)
         }
     }
 
