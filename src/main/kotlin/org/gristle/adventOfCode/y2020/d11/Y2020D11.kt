@@ -55,9 +55,7 @@ class Y2020D11(input: String) {
         // take the sequence; pair them up with the next iteration; find the first time where the next iteration 
         // does not change (i.e., the pattern has stabilized); then count the number of occupied seats.
         return newStateSequence
-            .zipWithNext()
-            .first { (prev, next) -> prev == next }
-            .second
+            .stabilized()
             .count { seat -> seat.isOccupied() }
     }
 
