@@ -5,9 +5,9 @@ import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2021D1(input: String) {
 
-    private val measurements = input.lines().map { it.toInt() }
+    private val measurements = input.lines().map(String::toInt)
 
-    private fun List<Int>.countIncreased() = windowed(2).count { it.last() > it.first() }
+    private fun List<Int>.countIncreased() = windowed(2).count { (a, b) -> a < b }
 
     fun part1() = measurements.countIncreased()
 
