@@ -8,7 +8,12 @@ class Y2021D10(input: String) {
     private val lines = input.lines()
 
     // Functions and definitions to use with the "parse" function below.
-    private fun Char.toCharScore1(): Long = when (this) {
+
+    // pairs opening characters with corresponding closing characters
+    private val counterparts = mapOf('(' to ')', '[' to ']', '{' to '}', '<' to '>')
+
+    // character scoring provided for part1
+    private fun Char.syntaxErrorScore(): Long = when (this) {
         ')' -> 3
         ']' -> 57
         '}' -> 1197
@@ -16,7 +21,8 @@ class Y2021D10(input: String) {
         else -> throw IllegalArgumentException()
     }
 
-    private fun Char.toCharScore2() = when (this) {
+    // character scoring provided for part2
+    private fun Char.pointValue() = when (this) {
         ')' -> 1
         ']' -> 2
         '}' -> 3
@@ -24,42 +30,49 @@ class Y2021D10(input: String) {
         else -> throw IllegalArgumentException()
     }
 
-    private fun Iterable<Char>.toScore() = fold(0L) { acc, c -> acc * 5 + c.toCharScore2() }
+    // completion string scoring per part2
+    private fun Iterable<Char>.toScore() = fold(0L) { acc, c -> acc * 5 + c.pointValue() }
 
-    private val counterparts = mapOf('(' to ')', '[' to ']', '{' to '}', '<' to '>')
-
+    /**
+     * Parses each character in a string. If it's an opening character, add the corresponding closing character
+     * to a stack. If it's a closing character, pop from the stack and compare the two. If they are the same, they
+     * cancel out and continue. If they are different, then the string is corrupt.
+     *
+     * The function accepts two functions as parameters that return a nullable Long. onCorrupt gets called early
+     * if the string is corrupt. onFinish gets called after every character in the string has been parsed.
+     */
     private inline fun String.parse(
-        corruptReturn: (Char) -> Long?,
-        incompleteReturn: (Deque<Char>) -> Long?
+        onCorrupt: (Char) -> Long?,
+        onFinish: (Iterable<Char>) -> Long?
     ): Long? {
         val stack: Deque<Char> = ArrayDeque()
-        for (index in indices) {
-            val candidate = get(index)
+        forEach { candidate ->
             if (candidate !in counterparts.values) {
                 stack.push(counterparts[candidate])
             } else {
-                if (stack.isEmpty() || candidate != stack.pop()) return corruptReturn(candidate)
+                if (candidate != stack.pop()) return onCorrupt(candidate)
             }
         }
-        return incompleteReturn(stack)
+        return onFinish(stack)
     }
 
+    // sums the syntax error scores
     fun part1() = lines
         .sumOf { line ->
             line.parse(
-                corruptReturn = { it.toCharScore1() },
-                incompleteReturn = { null }
-            ) ?: 0
+                onCorrupt = { it.syntaxErrorScore() },
+                onFinish = { null }
+            ) ?: 0 // only corrupt strings have a syntax error score 
         }
 
     fun part2() = lines
         .mapNotNull { line ->
             line.parse(
-                corruptReturn = { null },
-                incompleteReturn = { it.toScore() }
+                onCorrupt = { null }, // combined with mapNotNull above, this discards corrupt strings
+                onFinish = { it.toScore() } // converts the closing characters in the stack to a score
             )
-        }.sorted()
-        .let { it[it.size / 2] }
+        }.sorted() // sorts the scores
+        .let { it[it.size / 2] } // returns the middle score
 }
 
 fun main() {
