@@ -7,7 +7,8 @@ import java.util.*
 class Y2021D10(input: String) {
     private val lines = input.lines()
 
-    private fun Char.toScore1(): Long = when (this) {
+    // Functions and definitions to use with the "parse" function below.
+    private fun Char.toCharScore1(): Long = when (this) {
         ')' -> 3
         ']' -> 57
         '}' -> 1197
@@ -15,7 +16,7 @@ class Y2021D10(input: String) {
         else -> throw IllegalArgumentException()
     }
 
-    private fun Char.toScore2() = when (this) {
+    private fun Char.toCharScore2() = when (this) {
         ')' -> 1
         ']' -> 2
         '}' -> 3
@@ -23,25 +24,19 @@ class Y2021D10(input: String) {
         else -> throw IllegalArgumentException()
     }
 
-    private val mapping = mapOf(
-        '(' to ')',
-        '[' to ']',
-        '{' to '}',
-        '<' to '>'
-    )
+    private fun Iterable<Char>.toScore() = fold(0L) { acc, c -> acc * 5 + c.toCharScore2() }
 
-    private val closures = setOf(')', ']', '}', '>')
+    private val counterparts = mapOf('(' to ')', '[' to ']', '{' to '}', '<' to '>')
 
-    private inline fun parse(
-        string: String,
+    private inline fun String.parse(
         corruptReturn: (Char) -> Long?,
-        incompleteReturn: (Deque<Char>) -> Long
+        incompleteReturn: (Deque<Char>) -> Long?
     ): Long? {
         val stack: Deque<Char> = ArrayDeque()
-        for (index in string.indices) {
-            val candidate = string[index]
-            if (candidate !in closures) {
-                stack.push(mapping[candidate])
+        for (index in indices) {
+            val candidate = get(index)
+            if (candidate !in counterparts.values) {
+                stack.push(counterparts[candidate])
             } else {
                 if (stack.isEmpty() || candidate != stack.pop()) return corruptReturn(candidate)
             }
@@ -51,19 +46,17 @@ class Y2021D10(input: String) {
 
     fun part1() = lines
         .sumOf { line ->
-            parse(
-                string = line,
-                corruptReturn = { c -> c.toScore1() },
-                incompleteReturn = { 0 }
+            line.parse(
+                corruptReturn = { it.toCharScore1() },
+                incompleteReturn = { null }
             ) ?: 0
         }
 
     fun part2() = lines
         .mapNotNull { line ->
-            parse(
-                string = line,
+            line.parse(
                 corruptReturn = { null },
-                incompleteReturn = { stack -> stack.fold(0L) { acc, c -> acc * 5 + c.toScore2() } }
+                incompleteReturn = { it.toScore() }
             )
         }.sorted()
         .let { it[it.size / 2] }
