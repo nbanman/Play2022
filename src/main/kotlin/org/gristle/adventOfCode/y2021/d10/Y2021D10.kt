@@ -7,7 +7,7 @@ import java.util.*
 class Y2021D10(input: String) {
     private val lines = input.lines()
 
-    private fun Char.toScore1() = when (this) {
+    private fun Char.toScore1(): Long = when (this) {
         ')' -> 3
         ']' -> 57
         '}' -> 1197
@@ -32,39 +32,41 @@ class Y2021D10(input: String) {
 
     private val closures = setOf(')', ']', '}', '>')
 
-    private fun String.parse1(): Int {
+    private fun parse(
+        s: String,
+        corruptReturn: (Char) -> Long?,
+        incompleteReturn: (Deque<Char>) -> Long
+    ): Long? {
         val stack: Deque<Char> = ArrayDeque()
-        for (index in indices) {
-            val candidate = this[index]
+        for (index in s.indices) {
+            val candidate = s[index]
             if (candidate !in closures) {
                 stack.push(mapping[candidate])
             } else {
-                if (stack.isEmpty() || candidate != stack.pop()) return candidate.toScore1()
+                if (stack.isEmpty() || candidate != stack.pop()) return corruptReturn(candidate)
             }
         }
-        return 0
+        return incompleteReturn(stack)
     }
 
-    private fun String.parse2(): Long? {
-        val stack: Deque<Char> = ArrayDeque()
-        for (index in indices) {
-            val candidate = this[index]
-            if (candidate !in closures) {
-                stack.push(mapping[candidate])
-            } else {
-                if (stack.isEmpty() || candidate != stack.pop()) return null
-            }
+    fun part1() = lines
+        .sumOf { line ->
+            parse(
+                line,
+                { c -> c.toScore1() },
+                { 0 }
+            ) ?: 0
         }
-        return stack.fold(0L) { acc, c -> acc * 5 + c.toScore2() }
-    }
-
-    fun part1() = lines.sumOf { it.parse1() }
 
     fun part2() = lines
-        .mapNotNull { line -> line.parse2() }
-        .sorted()
+        .mapNotNull { line ->
+            parse(
+                line,
+                { null },
+                { stack -> stack.fold(0L) { acc, c -> acc * 5 + c.toScore2() } }
+            )
+        }.sorted()
         .let { it[it.size / 2] }
-
 }
 
 fun main() {
