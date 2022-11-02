@@ -32,14 +32,14 @@ class Y2021D10(input: String) {
 
     private val closures = setOf(')', ']', '}', '>')
 
-    private fun parse(
-        s: String,
+    private inline fun parse(
+        string: String,
         corruptReturn: (Char) -> Long?,
         incompleteReturn: (Deque<Char>) -> Long
     ): Long? {
         val stack: Deque<Char> = ArrayDeque()
-        for (index in s.indices) {
-            val candidate = s[index]
+        for (index in string.indices) {
+            val candidate = string[index]
             if (candidate !in closures) {
                 stack.push(mapping[candidate])
             } else {
@@ -52,18 +52,18 @@ class Y2021D10(input: String) {
     fun part1() = lines
         .sumOf { line ->
             parse(
-                line,
-                { c -> c.toScore1() },
-                { 0 }
+                string = line,
+                corruptReturn = { c -> c.toScore1() },
+                incompleteReturn = { 0 }
             ) ?: 0
         }
 
     fun part2() = lines
         .mapNotNull { line ->
             parse(
-                line,
-                { null },
-                { stack -> stack.fold(0L) { acc, c -> acc * 5 + c.toScore2() } }
+                string = line,
+                corruptReturn = { null },
+                incompleteReturn = { stack -> stack.fold(0L) { acc, c -> acc * 5 + c.toScore2() } }
             )
         }.sorted()
         .let { it[it.size / 2] }
