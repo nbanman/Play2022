@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2016.d10
 
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.lesserToGreater
+import org.gristle.adventOfCode.utilities.minMax
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2016D10(input: String) {
@@ -17,7 +17,7 @@ class Y2016D10(input: String) {
                 storage = value
                 false
             } else {
-                val (lowValue, highValue) = lesserToGreater(storage, value)
+                val (lowValue, highValue) = minMax(storage, value)
                 val isResp = setOf(storage, value) == respTrack
                 storage = -1
                 if (low.isBot) {
