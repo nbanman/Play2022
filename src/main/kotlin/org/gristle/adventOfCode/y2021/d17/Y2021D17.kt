@@ -68,16 +68,15 @@ class Y2021D17(input: String) {
 
     fun part1() = box.maxY
 
-    fun part2(): Int {
-        return (box.minY..box.maxY)
-            .map { it to box.ySteps(Vector(Coord(0, 0), Coord(0, it))) }
-            .filter { it.second.isNotEmpty() }
-            .flatMap { pair -> pair.second.map { pair.first to it } }
-            .map { it.first to box.xValues(it.second) }
-            .flatMap { pair -> pair.second.map { Coord(pair.first, it) } }
-            .distinct()
-            .size
-    }
+    fun part2() = (box.minY..box.maxY)
+        .map { y -> y to box.ySteps(Vector(Coord(0, 0), Coord(0, y))) }
+        .filter { (_, ySteps) -> ySteps.isNotEmpty() }
+        .flatMap { (y, ySteps) ->
+            ySteps.flatMap { yStep ->
+                box.xValues(yStep).map { x -> Coord(x, y) }
+            }
+        }.distinct()
+        .size
 }
 
 fun main() {
