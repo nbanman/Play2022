@@ -1,4 +1,40 @@
-015.d20
+ermutationsKtShortcutsKt
+.
+!org.gristle.adventOfCode.y2015.d1	Y2015D1Kt
+0
+"org.gristle.adventOfCode.y2015.d10
+Y2015D10Kt
+0
+"org.gristle.adventOfCode.y2015.d11
+Y2015D11Kt
+0
+"org.gristle.adventOfCode.y2015.d12
+Y2015D12Kt
+0
+"org.gristle.adventOfCode.y2015.d13
+Y2015d13Kt
+0
+"org.gristle.adventOfCode.y2015.d14
+Y2015D14Kt
+0
+"org.gristle.adventOfCode.y2015.d15
+Y2015d15Kt
+0
+"org.gristle.adventOfCode.y2015.d16
+Y2015d16Kt
+0
+"org.gristle.adventOfCode.y2015.d17
+Y2015D17Kt
+0
+"org.gristle.adventOfCode.y2015.d18
+Y2015d18Kt
+0
+"org.gristle.adventOfCode.y2015.d19
+Y2015d19Kt
+.
+!org.gristle.adventOfCode.y2015.d2	Y2015d2Kt
+0
+"org.gristle.adventOfCode.y2015.d20
 Y2015d20Kt
 0
 "org.gristle.adventOfCode.y2015.d21
@@ -430,54 +466,7 @@ Y2021D25Kt
 .
 !org.gristle.adventOfCode.y2021.d8	Y2021D8Kt
 .
-!org.gristle.adventOfCode.y2021.d9	Y2021D9Kt" *     10
-Y2021D10Kt
-0
-"org.gristle.adventOfCode.y2021.d11
-Y2021D11Kt
-0
-"org.gristle.adventOfCode.y2021.d12
-Y2021D12Kt
-0
-"org.gristle.adventOfCode.y2021.d13
-Y2021D13Kt
-0
-"org.gristle.adventOfCode.y2021.d14
-Y2021D14Kt
-0
-"org.gristle.adventOfCode.y2021.d15
-Y2021D15Kt
-0
-"org.gristle.adventOfCode.y2021.d16
-Y2021D16Kt
-0
-"org.gristle.adventOfCode.y2021.d17
-Y2021D17Kt
-0
-"org.gristle.adventOfCode.y2021.d18
-Y2021D18Kt
-0
-"org.gristle.adventOfCode.y2021.d19
-Y2021D19Kt
-.
-!org.gristle.adventOfCode.y2021.d2	Y2021D2Kt
-0
-"org.gristle.adventOfCode.y2021.d20
-Y2021d20Kt
-0
-"org.gristle.adventOfCode.y2021.d21
-Y2021D21Kt
-0
-"org.gristle.adventOfCode.y2021.d22
-Y2021D22Kt
-0
-"org.gristle.adventOfCode.y2021.d23
-Y2021D23Kt
-0
-"org.gristle.adventOfCode.y2021.d24
-Y2021D24Kt
-0
-"org.gristle.adventOfCode.y2021.d25
+!org.gristle.adventOfCode.y2021.d9	Y2021D9Kt" *     de.y2021.d25
 Y2021D25Kt
 .
 !org.gristle.adventOfCode.y2021.d3	Y2021D3Kt
@@ -489,6 +478,10 @@ Y2021D25Kt
 !org.gristle.adventOfCode.y2021.d6	Y2021D6Kt
 .
 !org.gristle.adventOfCode.y2021.d7	Y2021D7Kt
+.
+!org.gristle.adventOfCode.y2021.d8	Y2021D8Kt
+.
+!org.gristle.adventOfCode.y2021.d9	Y2021D9Kt" *     dventOfCode.y2021.d7	Y2021D7Kt
 .
 !org.gristle.adventOfCode.y2021.d8	Y2021D8Kt
 .

@@ -76,10 +76,8 @@ class Y2021D19(input: String) {
                 .map { line ->
                     line
                         .split(',')
-                        .map { it.toInt() }
-                }.map {
-                    MCoord(it)
-                }
+                        .map(String::toInt)
+                }.map(::MCoord)
             Scanner(id, beacons)
         }
 
@@ -112,7 +110,8 @@ class Y2021D19(input: String) {
             } else {
                 match = bMorph
                     .withIndex()
-                    .find { it.value.second - it.value.first == mDiff }!!
+                    .find { it.value.second - it.value.first == mDiff }
+                    ?: throw Exception("mDiff not found among morphisms")
                 val offset = m1 - match.value.second
                 val rotatedOffsetBeacons = b.mightyMorphisms[match.index].map { it + offset }
                 return Scanner(
@@ -131,7 +130,6 @@ class Y2021D19(input: String) {
         val mScan = scanners.drop(1).toMutableList()
 
         while (mScan.isNotEmpty()) {
-
             val sharedSet = mScan
                 .map {
                     SharedSets(master, it, master.coordPairs.keys.intersect(it.coordPairs.keys))
