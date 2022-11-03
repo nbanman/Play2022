@@ -4,12 +4,13 @@ import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2021D23(private val input: String) {
+class Y2021D23(input: String) {
 
     companion object {
         fun <T> List<T>.swapElementAt(index: Int, newElement: T?): List<T> =
             newElement?.let { subList(0, index) + it + subList(index + 1, lastIndex + 1) } ?: this
     }
+
     enum class S(val energy: Double) {
         A(1.0),
         B(10.0),
@@ -213,24 +214,20 @@ class Y2021D23(private val input: String) {
         }.let { State.of(List(7) { S.E }, it) }
     }
 
-    private fun strings() = input
+    private val strings = input
         .filter { it in "ABCD\n" }
         .split('\n')
         .filter { it.isNotBlank() }
 
-    fun part1(): Long {
-        val state = getState(strings())
-        return totalEnergy(state)
-    }
+    fun part1() = totalEnergy(getState(strings))
 
     fun part2(): Long {
-        val strings = strings()
+        val expandedStrings = strings
             .let {
                 val last = it.last()
                 it.dropLast(1) + listOf("DCBA", "DBAC") + last
             }
-        val state = getState(strings)
-        return totalEnergy(state)
+        return totalEnergy(getState(expandedStrings))
     }
 }
 
