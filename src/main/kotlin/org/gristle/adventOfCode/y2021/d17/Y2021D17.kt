@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2021.d17
 
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.minMax
 import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
@@ -49,19 +50,19 @@ class Y2021D17(input: String) {
         private val stallSpeed = let {
             (5..br.x).first { (1..it).sum() in xRange }
         }
-
     }
 
     private val intermediate = """(-?\d+)\.\.(-?\d+), y=(-?\d+)\.\.(-?\d+)"""
         .toRegex()
-        .find(input)!!
-        .groupValues
-        .drop(1)
-        .map { it.toInt() }
+        .find(input)
+        ?.groupValues
+        ?.drop(1)
+        ?.map(String::toInt)
+        ?: throw IllegalArgumentException("Regex does not match input")
 
     private val box = intermediate.let {
-        val (x1, x2) = if (it[0] > it[1]) it[1] to it[0] else it[0] to it[1]
-        val (y1, y2) = if (it[2] > it[3]) it[3] to it[2] else it[2] to it[3]
+        val (x1, x2) = minMax(it[0], it[1])
+        val (y1, y2) = minMax(it[2], it[3])
         Box(Coord(x1, y2), Coord(x2, y1))
     }
 
