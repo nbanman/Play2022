@@ -7,7 +7,7 @@ class Y2021D6(input: String) {
 
     private val fish = input
         .split(',')
-        .map { it.toInt() }
+        .map(String::toInt)
         .groupBy { it }
 
     // initialize count of fish by day

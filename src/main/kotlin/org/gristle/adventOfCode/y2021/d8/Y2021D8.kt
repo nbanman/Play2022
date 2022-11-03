@@ -50,10 +50,10 @@ class Y2021D8(input: String) {
 
     // Calculates how many times digits 1, 4, 7, or 8 appear by looking at the sets of wires in the Display
     // and counting the sets that do not use 5 or 6 wires. All other sets will correspond to digits 1, 4, 7, or 8.
-    fun part1() = displays.flatMap { it.display }.count { it.size !in 5..6 }
+    fun part1() = displays.flatMap(Display::display).count { it.size !in 5..6 }
 
     // Sums the output values of all the displays
-    fun part2() = displays.sumOf { it.outputValue }
+    fun part2() = displays.sumOf(Display::outputValue)
 }
 
 fun main() {

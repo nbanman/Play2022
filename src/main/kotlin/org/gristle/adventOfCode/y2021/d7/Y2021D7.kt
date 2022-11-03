@@ -22,7 +22,7 @@ class Y2021D7(input: String) {
         val newRange = listOf(
             range.first..midPoint,
             midPoint..range.last
-        ).minByOrNull { alignmentCost(it.midPoint(), fuelCost) }!!
+        ).minBy { alignmentCost(it.midPoint(), fuelCost) }
 
         return optimalAlignmentCost(newRange, fuelCost)
     }
