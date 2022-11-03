@@ -73,23 +73,6 @@ fun Int.reversed(bits: Int): Int {
 fun <E> Iterable<E>.eachCount() = groupingBy { it }.eachCount()
 
 /**
- * Efficiently provides the minimum and maximum of a group of comparable objects
- */
-fun <E : Comparable<E>> Iterable<E>.minMax(): Pair<E, E> {
-    var min = first()
-    var max = first()
-    drop(1).forEach { if (it < min) min = it else if (it > max) max = it }
-    return min to max
-}
-
-fun <E : Comparable<E>> minMax(vararg items: E): Pair<E, E> {
-    var min = items.first()
-    var max = items.first()
-    items.drop(1).forEach { if (it < min) min = it else if (it > max) max = it }
-    return min to max
-}
-
-/**
  * Shifts the start index of the list by n. The skipped parts get wrapped to the end. Accepts
  * negative numbers to go in the reverse direction.
  */
