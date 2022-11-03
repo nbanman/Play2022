@@ -132,15 +132,13 @@ class Y2021D16(input: String) {
             )
 
             fun fromHex(hex: String): BitProvider {
-                return BitProvider(hex.map { conversion[it]!! }.joinToString(""))
+                return BitProvider(hex.map(conversion::getValue).joinToString(""))
             }
 
         }
     }
 
-    private val bp = BitProvider.fromHex(input)
-
-    private val packet = Packet.parse(bp, false)
+    private val packet = Packet.parse(BitProvider.fromHex(input))
 
     fun part1() = packet.versionSum()
 
