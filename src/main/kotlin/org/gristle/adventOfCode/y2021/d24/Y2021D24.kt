@@ -35,18 +35,18 @@ class Y2021D24(input: String) {
             val yInc = lines[15].substringAfterLast(" ").toInt() // Extract y
             Step(index, xInc, yInc) // Map to a step
         }.let { steps -> // Take those steps and pair them together.
-            val pairedSteps = mutableListOf<PairedSteps>() // This will be the end product
-            val orderStack = LinkedList<Step>() // We will use a stack to pair the steps.
-            steps.forEach { step ->
-                if (step.x >= 0) { // If x is positive, this is a "push" step.
-                    orderStack.push(step)
-                } else { // If x is negative, pull the last "pushed" step, and pair the two tegother.
-                    pairedSteps.add(PairedSteps(orderStack.pop(), step))
+            buildList<PairedSteps> {
+                val orderStack: Deque<Step> = ArrayDeque() // We will use a stack to pair the steps.
+                steps.forEach { step ->
+                    if (step.x >= 0) { // If x is positive, this is a "push" step.
+                        orderStack.push(step)
+                    } else { // If x is negative, pop the last "pushed" step, and pair the two together.
+                        add(PairedSteps(orderStack.pop(), step))
+                    }
                 }
+                sortBy { it.push.order } // Sort by the order of the "push" steps so that z is increased properly
             }
-            pairedSteps // Return the result
-        }.apply { sortBy { it.push.order } } // Sort by the order of the "push" steps so that z is increased properly
-            as List<PairedSteps>
+        }
 
     fun solve(findIntersection: (pushMax: Int, popMax: Int) -> Int): String {
         var z = 0L
