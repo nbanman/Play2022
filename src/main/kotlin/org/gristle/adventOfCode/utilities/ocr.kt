@@ -49,9 +49,9 @@ fun Grid<Char>.ocr() = rotate90() // rotation makes for easy separation of each 
     // Fixes bug where some 'Y' characters do not have a space between it and the next letter
     .replace("....##\n...#..\n###...\n...#..\n....##", "....##\n...#..\n###...\n...#..\n....##\n......\n")
     .split("""^(\.{6,}\n)+""".toRegex(RegexOption.MULTILINE)) // split each letter up into its own string
-    .filter { it.isNotBlank() } // remove blank strings (found at end)
+    .filter(String::isNotBlank) // remove blank strings (found at end)
     .map { it.replace("\n", "") } // newlines not needed at this point
-    .map { letterForms[it] ?: '?' } // map to Char
+    .map { letterForms[it] ?: '?' } // map to alphabetic character, or '?' if unrecognized
     .joinToString("") // put all Chars together into a String
 
 @JvmName("ocrBoolean")
