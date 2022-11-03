@@ -212,10 +212,10 @@ class ArrayGrid<E> private constructor(
     override fun getNeighbors(index: Int, includeDiagonals: Boolean, wrapAround: Boolean) =
         getNeighbors(coordOf(index), includeDiagonals, wrapAround)
 
-    private fun rotate(changeShape: Boolean, transform: (Int) -> Int): Grid<E> {
-        return List(size) { i->
+    private inline fun rotate(changeShape: Boolean, transform: (Int) -> Int): Grid<E> {
+        return List(size) { i ->
             get(transform(i))
-        }.toGrid(if(changeShape) height else width)
+        }.toGrid(if (changeShape) height else width)
     }
 
     override fun rotate270() = rotate(true) { (width - 1 - it / height) + it % height * width }
@@ -351,7 +351,7 @@ fun String.toGrid(): Grid<Char> {
     return replace("[\r\n]+".toRegex(), "").toGrid(width)
 }
 
-fun <R> String.toGrid(transform: (Char) -> R): Grid<R> {
+inline fun <R> String.toGrid(transform: (Char) -> R): Grid<R> {
     val width = indexOfAny(charArrayOf('\n', '\r'))
     return replace("[\r\n]+".toRegex(), "")
         .map { transform(it) }
@@ -371,7 +371,7 @@ fun String.toMutableGrid(): Grid<Char> {
     return replace("[\r\n]+".toRegex(), "").toMutableGrid(width)
 }
 
-fun <R> String.toMutableGrid(transform: (Char) -> R): Grid<R> {
+inline fun <R> String.toMutableGrid(transform: (Char) -> R): Grid<R> {
     val width = indexOfAny(charArrayOf('\n', '\r'))
     return replace("[\r\n]+".toRegex(), "")
         .map { transform(it) }
