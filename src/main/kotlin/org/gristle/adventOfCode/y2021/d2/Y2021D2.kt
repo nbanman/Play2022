@@ -42,7 +42,7 @@ class Y2021D2(input: String) {
         }
     }
 
-    val pattern = """(forward|down|up) (\d+)""".toRegex()
+    val pattern = """(forward|down|up) (\d+)"""
 
     val commands = input
         .groupValues(pattern)

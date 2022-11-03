@@ -12,9 +12,9 @@ class Y2021D4(input: String) {
         fun score(calledNumbers: List<Int>) = grid.sum() - calledNumbers.intersect(grid).sum()
     }
 
-    val data = input.stripCarriageReturns().split("\n\n")
+    private val data = input.stripCarriageReturns().split("\n\n")
 
-    private val drawPile = data[0].split(',').map { it.toInt() }
+    private val drawPile = data[0].split(',').map(String::toInt)
 
     private val bingoCards = data
         .drop(1)

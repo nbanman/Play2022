@@ -7,11 +7,11 @@ import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2021D5(input: String) {
 
-    private val pattern = """(\d+),(\d+) -> (\d+),(\d+)""".toRegex()
+    private val pattern = """(\d+),(\d+) -> (\d+),(\d+)"""
 
     data class Line(val start: Coord, val end: Coord) {
-        fun straightRange(includeDiagonals: Boolean = false): List<Coord> {
-            return if (start.x == end.x) {
+        fun straightRange(includeDiagonals: Boolean = false): List<Coord> =
+            if (start.x == end.x) {
                 val (small, large) = if (start.y < end.y) start.y to end.y else end.y to start.y
                 (small..large).fold(emptyList()) { acc, i ->
                     acc + Coord(start.x, i)
@@ -36,12 +36,10 @@ class Y2021D5(input: String) {
             } else {
                 emptyList()
             }
-        }
-
     }
 
     val lines = input
-        .groupValues(pattern) { it.toInt() }
+        .groupValues(pattern, String::toInt)
         .map { Line(Coord(it[0], it[1]), Coord(it[2], it[3])) }
 
     fun solve(includeDiagonals: Boolean): Int {
