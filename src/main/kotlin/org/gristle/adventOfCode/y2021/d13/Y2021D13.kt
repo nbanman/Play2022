@@ -16,7 +16,8 @@ class Y2021D13(input: String) {
                     val offset = larger.width - smaller.width
                     performFold(Coord(offset, 0), larger, smaller)
                 }
-                else -> {
+
+                'y' -> {
                     val up = paper.subGrid(Coord(0, 0), paper.width, amt)
                     val down = paper
                         .subGrid(Coord(0, amt + 1), paper.width, paper.height - 1 - amt)
@@ -25,6 +26,8 @@ class Y2021D13(input: String) {
                     val offset = smaller.height - larger.height
                     performFold(Coord(0, offset), larger, smaller)
                 }
+
+                else -> throw IllegalArgumentException("Regex returned illegal value")
             }
         }
 
@@ -46,7 +49,7 @@ class Y2021D13(input: String) {
         .map { FoldInstruction(it[0][0], it[1].toInt()) }
 
     private val dots = input
-        .groupValues("""(\d+),(\d+)""") { it.toInt() }
+        .groupValues("""(\d+),(\d+)""", String::toInt)
         .map { Coord(it[0], it[1]) }
 
     private val paperWidth = dots.maxOf { it.x } + 1
