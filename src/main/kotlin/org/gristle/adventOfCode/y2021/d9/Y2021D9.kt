@@ -6,7 +6,7 @@ import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2021D9(input: String) {
-    private val heightMap = input.toGrid { Character.getNumericValue(it) }
+    private val heightMap = input.toGrid(Character::getNumericValue)
 
     private val lowIndices = heightMap
         .indices
@@ -14,6 +14,7 @@ class Y2021D9(input: String) {
 
     fun part1() = lowIndices.sumOf { heightMap[it] + 1 }
 
+    // Edge finder for below BFS
     private val neighbors = { id: Int ->
         heightMap
             .getNeighborIndices(id)
@@ -24,7 +25,7 @@ class Y2021D9(input: String) {
         .map { Graph.bfs(startId = it, defaultEdges = neighbors).size } // for each low point get size of each basin
         .sortedDescending() // sort by largest first
         .take(3) // take top 3
-        .reduce { acc, i -> acc * i } // multiply them together
+        .reduce(Int::times) // multiply them together
 }
 
 fun main() {
