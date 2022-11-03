@@ -4,11 +4,11 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2021D11(input: String) {
 
-    private val grid = input.toGrid().mapToGrid { Character.getNumericValue(it) }
-    
+    private val grid = input.toGrid().mapToGrid(Character::getNumericValue)
+
     // returns a Sequence which keeps track of mutating state of the grid through any number of turns, emitting the
     // number of flashes that occurred each turn
-    private fun Grid<Int>.stepSequence(): Sequence<Int> = sequence {
+    private fun Grid<Int>.stepSequence() = sequence {
         // cave is mutable state internal to the sequence. The grid will keep updating each iteration.
         val cave = toMutableGrid()
         // outer loop runs forever. The yield turns this into a generator. Each time, it increases the energy
