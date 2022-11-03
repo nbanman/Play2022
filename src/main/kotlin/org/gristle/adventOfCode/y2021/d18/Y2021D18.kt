@@ -10,7 +10,7 @@ class Y2021D18(input: String) {
     data class Snailfish constructor(val expression: String) {
 
         companion object {
-            fun from(expression: String): Snailfish {
+            fun fromString(expression: String): Snailfish {
 
                 fun String.validated(): String {
 
@@ -77,7 +77,7 @@ class Y2021D18(input: String) {
                 append(other.expression)
                 append(']')
             }
-            return from(addedExpression)
+            return fromString(addedExpression)
         }
 
         fun magnitude(): Long {
@@ -106,18 +106,17 @@ class Y2021D18(input: String) {
         }
     }
 
-    private val snailfish = input.lines().map { Snailfish.from(it) }
+    private val snailfish = input.lines().map(Snailfish::fromString)
 
     fun part1(): Long {
-        val sum = snailfish.reduce { acc, snailfish -> acc + snailfish }
+        val sum = snailfish.reduce(Snailfish::plus)
         return sum.magnitude()
     }
 
-    fun part2(): Long {
-        return snailfish.flatMapIndexed { index: Int, sf: Snailfish ->
+    fun part2() = snailfish
+        .flatMapIndexed { index: Int, sf: Snailfish ->
             ((index + 1)..snailfish.lastIndex).map { sf2Index -> (sf + snailfish[sf2Index]).magnitude() }
-        }.maxOf { it }
-    }
+        }.max()
 }
 
 fun main() {
