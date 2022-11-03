@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2021.d21
 
 import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.max
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2021D21(input: String) {
@@ -77,8 +78,6 @@ class Y2021D21(input: String) {
         }
         return w1 to w2
     }
-
-    fun Pair<Long, Long>.max() = if (first >= second) first else second
 
     fun part2() = wins(p1Start - 1, 21, p2Start - 1, 21).max()
 }
