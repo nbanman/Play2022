@@ -51,7 +51,7 @@ class Y2021D14(input: String) {
             val modifier = listOf(template.first(), template.last()).count { it == protein }
             (count + modifier) / 2
         }
-        return proteinCount.maxOf { it } - proteinCount.minOf { it }
+        return proteinCount.max() - proteinCount.min()
     }
 
     fun part1() = solve(10)
