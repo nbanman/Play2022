@@ -1,9 +1,6 @@
 package org.gristle.adventOfCode.y2021.d5
 
-import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.*
 
 class Y2021D5(input: String) {
 
@@ -12,12 +9,12 @@ class Y2021D5(input: String) {
     data class Line(val start: Coord, val end: Coord) {
         fun straightRange(includeDiagonals: Boolean = false): List<Coord> =
             if (start.x == end.x) {
-                val (small, large) = if (start.y < end.y) start.y to end.y else end.y to start.y
+                val (small, large) = minMax(start.y, end.y)
                 (small..large).fold(emptyList()) { acc, i ->
                     acc + Coord(start.x, i)
                 }
             } else if (start.y == end.y) {
-                val (small, large) = if (start.x < end.x) start.x to end.x else end.x to start.x
+                val (small, large) = minMax(start.x, end.x)
                 (small..large).fold(emptyList()) { acc, i ->
                     acc + Coord(i, start.y)
                 }
