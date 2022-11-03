@@ -5,41 +5,39 @@ import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.stripCarriageReturns
 import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2021D3(private val input: String) {
+class Y2021D3(input: String) {
 
-    fun part1(): Long {
+    private val strippedInput = input.stripCarriageReturns()
+    fun part1(): Int {
 
-        fun List<Boolean>.toLong(): Long {
-            return foldIndexed(0L) { index, acc, i ->
-                if (i) {
-                    acc + 1L.shl(size - 1 - index)
-                } else {
-                    acc
+        fun List<List<Char>>.toInt(matchDigit: Int): Int {
+            return this
+                .map { freqDist ->
+                    freqDist.count { it == matchDigit.digitToChar() } * 2 >= freqDist.size
+                }.foldIndexed(0) { index, acc, i ->
+                    if (i) {
+                        acc + 1.shl(size - 1 - index)
+                    } else {
+                        acc
+                    }
                 }
-            }
         }
 
-        val cols = input
-            .stripCarriageReturns()
+        val cols = strippedInput
             .toGrid()
             .rotate90()
             .flipY()
             .rows()
 
-        val gamma = cols
-            .map { freqDist -> freqDist.count { it == '1' } * 2 >= freqDist.size }
-            .toLong()
+        val gamma = cols.toInt(1)
 
-        val epsilon = cols
-            .map { freqDist -> freqDist.count { it == '0' } * 2 >= freqDist.size }
-            .toLong()
-
+        val epsilon = cols.toInt(0)
 
         return gamma * epsilon
     }
 
     fun part2(): Int {
-        val rows = input.stripCarriageReturns().split('\n')
+        val rows = strippedInput.split('\n')
 
         var o2Gen = rows
         var pos = 0

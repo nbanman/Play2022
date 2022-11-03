@@ -16,7 +16,8 @@ class Y2021D2(input: String) {
                 return when (gv[0]) {
                     "forward" -> Forward(amt)
                     "up" -> Up(amt)
-                    else -> Down(amt)
+                    "down" -> Down(amt)
+                    else -> throw IllegalArgumentException("Regex captured invalid group.")
                 }
             }
         }
