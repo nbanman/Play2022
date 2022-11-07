@@ -5,8 +5,8 @@ fun <T> Iterable<T>.getPermutations(seed: List<T> = emptyList()): List<List<T>> 
         return if (combos.first().size == drawPile.size + seed.size) {
             combos
         } else {
-            val newCombos = combos.foldToList { combo ->
-                addAll((drawPile - combo.toSet()).map { combo + it })
+            val newCombos = buildList {
+                combos.forEach { combo -> addAll((drawPile - combo.toSet()).map { combo + it }) }
             }
             permute(newCombos, drawPile)
         }
@@ -20,8 +20,10 @@ fun <T> Iterable<T>.getPermutations(seed: List<T> = emptyList(), pruning: (List<
         return if (combos.first().size == drawPile.size + seed.size) {
             combos
         } else {
-            val newCombos = combos.foldToList { combo ->
-                addAll((drawPile - combo).mapNotNull { if (pruning(combo, it)) null else combo + it })
+            val newCombos = buildList {
+                combos.forEach { combo ->
+                    addAll((drawPile - combo.toSet()).mapNotNull { if (pruning(combo, it)) null else combo + it })
+                }
             }
             permute(newCombos, drawPile)
         }
