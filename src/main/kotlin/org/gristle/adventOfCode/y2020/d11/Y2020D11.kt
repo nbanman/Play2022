@@ -95,7 +95,8 @@ class Y2020D11(input: String) {
                     }
                     // count the # directions where traversing the sequence finds an occupied seat.
                 }
-                .count { lookSequence -> lookSequence.any { seat -> seat.isOccupied() } } // count number of thus occupied directions
+                // count number of thus occupied directions
+                .count { lookSequence -> lookSequence.any { seat -> seat.isOccupied() } }
         }
         return solve(5, getNeighbors)
     }
