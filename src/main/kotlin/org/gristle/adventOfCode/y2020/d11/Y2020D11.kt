@@ -26,7 +26,7 @@ class Y2020D11(input: String) {
     }
 
     // Parse initial seating layout
-    private val layout = input.toGrid().mapToGrid { Seat.of(it) }
+    private val layout = input.toGrid().mapToGrid(Seat::of)
 
     /**
      * Solves both parts using different tolerance levels and different algorithms to determine seat occupation
@@ -56,7 +56,7 @@ class Y2020D11(input: String) {
         // does not change (i.e., the pattern has stabilized); then count the number of occupied seats.
         return newStateSequence
             .stabilized()
-            .count { seat -> seat.isOccupied() }
+            .count(Seat::isOccupied)
     }
 
     fun part1(): Int {
