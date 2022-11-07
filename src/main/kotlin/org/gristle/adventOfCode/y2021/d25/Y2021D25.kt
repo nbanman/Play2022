@@ -1,15 +1,11 @@
 package org.gristle.adventOfCode.y2021.d25
 
-import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.*
 
 class Y2021D25(input: String) {
     private val lines = input.lines()
 
     data class Cucumbers(val east: Set<Coord>, val south: Set<Coord>, val size: Coord) {
-
         fun step(): Cucumbers {
             val newEast = east.map { p ->
                 p.east(1, size, true).let { n -> if (n in east || n in south) p else n }
@@ -22,7 +18,6 @@ class Y2021D25(input: String) {
     }
 
     private fun makeCucumbers(): Cucumbers {
-
         val seaFloor = lines.flatMapIndexed { y, line -> line.mapIndexed{ x, ch -> Coord(x, y) to ch }}
         val east = seaFloor.mapNotNull { (coord, char) -> if (char == '>') coord else null }.toSet()
         val south = seaFloor.mapNotNull { (coord, char) -> if (char == 'v') coord else null }.toSet()
@@ -35,6 +30,8 @@ class Y2021D25(input: String) {
         val next = prev.step()
         return if (prev == next) steps else part1(steps + 1, next)
     }
+
+    fun part1b() = generateSequence(makeCucumbers(), Cucumbers::step).withIndex().stabilized().index + 1
 }
 
 
@@ -43,5 +40,5 @@ fun main() {
     val c = Y2021D25(readRawInput("y2021/d25"))
     println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 528
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 528 (547ms)
 }
