@@ -10,15 +10,8 @@ class Y2020D5(input: String) {
     // 0 to 1016, and the FBLR code is just a binary number with 'F' and 'L' meaning '0' and 'B' and 'R' meaning 1.
     private val seatIds = input
         .lines()
-        .map { line ->
-            line.foldIndexed(0) { index, acc, c ->
-                acc + when(c) {
-                    'F' -> 0
-                    'L' -> 0
-                    else -> 1.shl(9 - index)
-                }
-            }
-        }.sorted() // Pt1 needs the largest, and Pt2 needs a full sort, so just go ahead and sort the seatIds
+        .map { it.foldIndexed(0) { index, acc, c -> acc + if (c in "BR") 1.shl(9 - index) else 0 } }
+        .sorted() // Pt1 needs the largest, and Pt2 needs a full sort, so just go ahead and sort the seatIds
 
     fun part1() = seatIds.last() // Since sorted, this is the highest seat ID on a boarding pass.
 
