@@ -7,19 +7,7 @@ class Y2020D13(input: String) {
 
     private val lines = input.lines()
     data class Bus(val id: Long, val offset: Long)
-
-    data class BusState(val time: Int, val busId: Int)
-    fun part1(): Int {
-        val start = lines.first().toInt()
-        val ids = lines.last().split(',').mapNotNull { it.toIntOrNull() }
-        val timeSequence = generateSequence(BusState(start, 0)) { (time, _) ->
-            BusState(time + 1, ids.find { (time + 1) % it == 0 } ?: 0)
-        }
-        return timeSequence
-            .first { (_, available) -> available != 0 }
-            .let { it.busId * (it.time - start) }
-    }
-
+    data class BusState(val time: Int, val busId: Long)
     private fun modularInverse(ni: Long, mod: Long) =
         generateSequence(1L) { it + 1 }
             .first { (ni % mod * it) % mod == 1L }
@@ -34,15 +22,24 @@ class Y2020D13(input: String) {
         return Bus(n, bigPhase % n)
     }
 
-    fun part2(): Long {
-        val buses = lines.last().split(',').mapIndexedNotNull { index, s ->
-            if (s == "x") null else {
-                Bus(s.toLong(), index.toLong())
-            }
+    private val buses = lines.last().split(',').mapIndexedNotNull { index, s ->
+        if (s == "x") null else {
+            Bus(s.toLong(), index.toLong())
         }
-        return crt(buses).let { it.id - it.offset }
     }
 
+    fun part1(): Long {
+        val start = lines.first().toInt()
+        val timeSequence = generateSequence(BusState(start, 0)) { (time, _) ->
+            val id = buses.find { bus -> (time + 1) % bus.id == 0L }?.id ?: 0L
+            BusState(time + 1, id)
+        }
+        return timeSequence
+            .first { (_, available) -> available != 0L }
+            .let { it.busId * (it.time - start) }
+    }
+
+    fun part2() = crt(buses).let { it.id - it.offset }
 }
 
 fun main() {
