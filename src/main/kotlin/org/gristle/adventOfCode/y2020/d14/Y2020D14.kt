@@ -69,7 +69,7 @@ class Y2020D14(input: String) {
 
     private val instructions = input
         .lines()
-        .map { Instruction.fromString(it) }
+        .map(Instruction::fromString)
 
     fun part1(): Long {
         val registers = mutableMapOf<Long, Long>()
