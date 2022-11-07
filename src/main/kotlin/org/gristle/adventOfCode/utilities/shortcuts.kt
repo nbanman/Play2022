@@ -76,13 +76,21 @@ fun <E> List<E>.shift(n: Int): List<E> {
     return drop(newIndex) + subList(0, newIndex)
 }
 
+inline fun <E> MutableList<E>.mapInPlace(transform: (E) -> E) = apply {
+    forEachIndexed { index, element -> this[index] = transform(element) }
+}
+
+inline fun <E> MutableList<E>.mapInPlaceIndexed(transform: (index: Int, E) -> E) = apply {
+    forEachIndexed { index, element -> this[index] = transform(index, element) }
+}
+
 /**
  * Transposes a list of lists to become a <I>list</I> of <I>lists</I>
  */
 fun <E> List<List<E>>.transpose(): List<List<E>> {
     val width = first().size
     val height = size
-    require (all { it.size == width }) { "The rows are not of equal size." }
+    require(all { it.size == width }) { "The rows are not of equal size." }
     return List(width) { w ->
         List(height) { h ->
             this[h][w]
