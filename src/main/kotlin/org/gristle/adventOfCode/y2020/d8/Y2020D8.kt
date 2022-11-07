@@ -45,14 +45,14 @@ class Y2020D8(input: String) {
             fCurrent.execute()
         }
 
-        return acc
+        return -acc // no infinite loop, so return negative number to denote that
     }
 
     fun part2(): Int {
         for (flippedInstruction in instructions.indices) {
             if (instructions[flippedInstruction].operation == "acc") continue
             reset()
-            val answer = part1(flippedInstruction)
+            val answer = -part1(flippedInstruction) // inverse means negative answer means infinite loop encountered
             if (answer >= 0) return answer
         }
         return -1
