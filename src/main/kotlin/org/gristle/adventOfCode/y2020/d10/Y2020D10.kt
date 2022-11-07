@@ -8,7 +8,7 @@ class Y2020D10(input: String) {
     // Finally convert to a list of the joltage differences between devices.
     private val joltageDifferences = input // raw String
         .lines() // to List of String broken up by line
-        .map { it.toInt() } // convert List<String> to List<Int> 
+        .map(String::toInt) // convert List<String> to List<Int> 
         .sorted() // sort List lowest to highest
         .let { adapters -> listOf(0) + adapters + (adapters.last() + 3) } // add charging outlet and end device to List
         .zipWithNext() // create List of previous/next pairs
@@ -32,18 +32,18 @@ class Y2020D10(input: String) {
         .map { // each string of 1s represents devices one away from each other.
             // the last '1' in string is required though b/c it's 3 away from the next device
             when (it.length) { // convert to number of permutations for the optional devices
-                4 -> 7 // 1111, 1101, 1011, 1001, 0111, 0101, 0011 (0001 not allowed b/c that's 4 apart)
+                4 -> 7L // 1111, 1101, 1011, 1001, 0111, 0101, 0011 (0001 not allowed b/c that's 4 apart)
                 3 -> 4 // 111, 101, 011, 001  
                 2 -> 2 // 11, 01
                 else -> 1 // 1
             }
-        }.fold(1L) { acc, i -> acc * i } // multiply them by each other to get answer to pt 2
+        }.reduce(Long::times) // multiply them by each other to get answer to pt 2
 }
 
 fun main() {
     var time = System.nanoTime()
     val c = Y2020D10(readRawInput("y2020/d10"))
-    println("Class creation: ${elapsedTime(time)}ms")
+    println("Class creation: ${elapsedTime(time)}ms") // (44ms)
     time = System.nanoTime()
     println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1890
     time = System.nanoTime()
