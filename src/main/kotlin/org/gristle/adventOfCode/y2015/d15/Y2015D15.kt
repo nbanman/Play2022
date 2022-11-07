@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2015.d15
 
 import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.foldToList
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
@@ -62,13 +61,15 @@ class Y2015D15(input: String) {
     private fun getCombos(): List<List<Int>> {
         tailrec fun gC(combos: List<List<Int>>): List<List<Int>> {
             return if (combos.first().size < ingredientNum) {
-                val newCombos = combos.foldToList { combo ->
-                    val currentSum = combo.sum()
-                    val remaining = total - currentSum
-                    if (combos.first().size == ingredientNum - 1) {
-                        addAll(listOf((combo + listOf(remaining))))
-                    } else {
-                        addAll((0..remaining).map { combo + listOf(it) })
+                val newCombos = buildList {
+                    combos.forEach { combo ->
+                        val currentSum = combo.sum()
+                        val remaining = total - currentSum
+                        if (combos.first().size == ingredientNum - 1) {
+                            addAll(listOf((combo + listOf(remaining))))
+                        } else {
+                            addAll((0..remaining).map { combo + listOf(it) })
+                        }
                     }
                 }
                 gC(newCombos)
