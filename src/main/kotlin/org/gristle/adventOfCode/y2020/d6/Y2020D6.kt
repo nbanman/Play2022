@@ -19,7 +19,8 @@ class Y2020D6(input: String) {
         .sumOf(Set<Char>::size)
 
     // For each group, count the number of questions to which *anyone* answered "yes."
-    fun part1() = solve { group -> group.toSet() - '\n' } // Simply converting to set removes duplicates, providing p1 answer
+    // Simply converting to set removes duplicates, providing p1 answer
+    fun part1() = solve { group -> group.toSet() - '\n' }
 
     // For each group, count the number of questions to which *everyone* answered "yes."
     fun part2() = solve { group ->
