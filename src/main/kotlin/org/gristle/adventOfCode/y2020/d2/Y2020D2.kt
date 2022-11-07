@@ -19,8 +19,8 @@ class Y2020D2(input: String) {
             PassPolicy(gv[2].first(), range, gv[3])
         }
 
-    fun part1() = policies.count { it.isValidUnderOldJobPolicy }
-    fun part2() = policies.count { it.isValidUnderCurrentPolicy }
+    fun part1() = policies.count(PassPolicy::isValidUnderOldJobPolicy)
+    fun part2() = policies.count(PassPolicy::isValidUnderCurrentPolicy)
 }
 
 fun main() {
