@@ -41,7 +41,7 @@ class Y2020D21(input: String) {
             Food(ingredients, allergens)
         }
 
-    fun part1() = foods.flatMap { it.ingredients }.filter { !Food.allergenMap.values.contains(it) }.size
+    fun part1() = foods.flatMap(Food::ingredients).filterNot(Food.allergenMap.values::contains).size
 
     fun part2() = Food.allergenMap.entries.sortedBy { it.key }.joinToString(",") { it.value }
 }
