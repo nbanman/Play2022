@@ -11,13 +11,13 @@ data class Hexagon(val q: Int = 0, val r: Int = 0): Comparable<Hexagon> {
 
     fun hexAt(step: String): Hexagon {
         return when (step) {
-            "n" -> Hexagon(q, r - 1)
-            "s" -> Hexagon(q, r + 1)
-            "nw" -> Hexagon(q - 1, r)
-            "ne" -> Hexagon(q + 1, r - 1)
-            "sw" -> Hexagon(q - 1, r + 1)
-            "se" -> Hexagon(q + 1, r)
-            else -> Hexagon(q, r)
+            "n" -> copy(r = r - 1)
+            "s" -> copy(r = r + 1)
+            "nw" -> copy(q = q - 1)
+            "ne" -> copy(q = q + 1, r = r - 1)
+            "sw" -> copy(q = q - 1, r = r + 1)
+            "se" -> copy(q = q + 1)
+            else -> throw IllegalArgumentException("$step not a valid movement")
         }
     }
 
