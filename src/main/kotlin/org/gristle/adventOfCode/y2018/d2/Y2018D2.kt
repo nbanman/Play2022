@@ -4,10 +4,10 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2018D2(input: String) {
     private val boxIds = input.lines()
-
-    private fun String.has(n: Int) = eachCount().values.any { it == n }
-
-    fun part1() = boxIds.count { it.has(2) } * boxIds.count { it.has(3) }
+    fun part1(): Int {
+        val frequencies = boxIds.map { it.eachCount().values }
+        return frequencies.count { it.contains(2) } * frequencies.count { it.contains(3) }
+    }
 
     fun part2(): String {
         fun List<String>.countDifferences() = first()
