@@ -17,7 +17,7 @@ class Y2020D23(private val input: String) {
                 while (nextValue in cutValues) {
                     nextValue = (nextValue - 1).let { if (it > 0) it else largest }
                 }
-                index[nextValue]!!
+                index.getValue(nextValue)
             }
             pastePos.add(cut)
             current = current.next!!

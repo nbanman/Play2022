@@ -13,7 +13,7 @@ class Y2020D22(input: String) {
         .map { half ->
             half
                 .split('\n')
-                .mapNotNull { it.toIntOrNull() }
+                .mapNotNull(String::toIntOrNull)
         }
 
     val p1 = cardNos.first()
@@ -28,9 +28,7 @@ class Y2020D22(input: String) {
                 p2.isEmpty() -> p1
                 else -> {
                     val short = min(p1.size, p2.size)
-                    val (p1Wins, p2Wins) = p1
-                        .zip(p2)
-                        .partition { ab -> ab.first > ab.second }
+                    val (p1Wins, p2Wins) = (p1 zip p2).partition { ab -> ab.first > ab.second }
                     play(
                         p1.drop(short) + p1Wins.flatMap { it.toList().sortedDescending() },
                         p2.drop(short) + p2Wins.flatMap { it.toList().sortedDescending() }
