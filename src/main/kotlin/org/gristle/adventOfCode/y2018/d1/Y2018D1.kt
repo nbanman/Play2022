@@ -12,17 +12,16 @@ class Y2018D1(input: String) {
 
     fun part2(): Int {
         val states = mutableSetOf(0)
-        tailrec fun change(freq: Int, changeList: List<Int>): Int {
-            val newState = freq + changeList.first()
+        tailrec fun change(freq: Int, index: Int): Int {
+            val newState = freq + changes[index]
             return if (states.contains(newState)) {
                 newState
             } else {
                 states.add(newState)
-                val newChanges = if (changeList.size == 1) changes else changeList.drop(1)
-                change(newState, newChanges)
+                change(newState, (index + 1) % changes.size)
             }
         }
-        return change(0, changes)
+        return change(0, 0)
     }
 }
 
