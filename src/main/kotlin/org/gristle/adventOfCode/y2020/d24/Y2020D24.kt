@@ -25,7 +25,7 @@ class Y2020D24(input: String) {
                     }
                 }
         }
-    private val home = Hexagon()
+    private val home = Hexagon.ORIGIN
     private val flipped: Map<Hexagon, Boolean> = buildMap {
         rules.forEach { rule ->
             val tile = rule.fold(home, Hexagon::hexAt)
@@ -33,9 +33,7 @@ class Y2020D24(input: String) {
         }
     }
 
-    fun part1(): Int {
-        return flipped.count { it.value }
-    }
+    fun part1() = flipped.count { it.value }
 
     fun part2(): Int {
         fun hexRing(n: Int): List<Hexagon> = buildList {
@@ -52,8 +50,9 @@ class Y2020D24(input: String) {
         for (day in 1..100) {
             val newMap = flipMap.toMutableMap()
             radius++
-            val hexen = (1..radius).fold(listOf(home)) { acc, ring ->
-                acc + hexRing(ring)
+            val hexen: List<Hexagon> = buildList {
+                add(home)
+                (1..radius).forEach { addAll(hexRing(it)) }
             }
             hexen.forEach { hexagon ->
                 val blackNeighbors = hexagon.neighbors().count { flipMap[it] ?: false }
