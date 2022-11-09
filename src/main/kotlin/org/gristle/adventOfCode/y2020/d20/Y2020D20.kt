@@ -93,27 +93,33 @@ class Y2020D20(input: String) {
         }
 
     fun part1(): Long {
-        return tiles.filter { it.matchingTiles.size == 4 }.map { it.id }.fold(1L) { acc, i -> acc * i }
+        return tiles
+            .filter { it.matchingTiles.size == 4 }
+            .fold(1L) { acc, tile -> acc * tile.id }
     }
 
     fun part2(): Int {
         // form grid
         val width = sqrt(tiles.size.toFloat()).toInt()
-        var firstTile = TileOrient(tiles.find { it.matchingTiles.size == 4 }!!, Nsew.NORTH, false)
+        val matchFour = tiles
+            .find { it.matchingTiles.size == 4 }
+            ?: throw IllegalStateException("No tiles matching four others exist")
+        var firstTile = TileOrient(matchFour, Nsew.NORTH, false)
         while (Tile.lookup[firstTile.matchValue(Nsew.SOUTH).reversed(10)]?.size != 2 ||
-            Tile.lookup[firstTile.matchValue(Nsew.EAST).reversed(10)]?.size != 2) {
+            Tile.lookup[firstTile.matchValue(Nsew.EAST).reversed(10)]?.size != 2
+        ) {
             firstTile = firstTile.copy(nsew = firstTile.nsew.right())
         }
         val stitched = mutableListOf(firstTile)
         for (index in 1..tiles.lastIndex) {
             val nextTile = if (index % width == 0) {
                 val referenceTile = stitched[index - width]
-                Tile.lookup[referenceTile.matchValue(Nsew.SOUTH).reversed(10)]!!
+                Tile.lookup.getValue(referenceTile.matchValue(Nsew.SOUTH).reversed(10))
                     .first { it.tile != referenceTile.tile }
                     .reorient(Nsew.NORTH)
             } else {
                 val referenceTile = stitched[index - 1]
-                Tile.lookup[referenceTile.matchValue(Nsew.EAST).reversed(10)]!!
+                Tile.lookup.getValue(referenceTile.matchValue(Nsew.EAST).reversed(10))
                     .first { it.tile != referenceTile.tile }
                     .reorient(Nsew.WEST)
             }
