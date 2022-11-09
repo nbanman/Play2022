@@ -383,7 +383,7 @@ fun <E> Grid<E>.addRight(addGrid: Grid<E>): Grid<E> {
         "New grid must have the same height (${addGrid.height}) as the one added to (${height})."
     }
     return List(size + addGrid.size) { index ->
-        val coord = index.asCoord(width + addGrid.width)
+        val coord = index.toCoord(width + addGrid.width)
         if (coord.x in xIndices) {
             get(coord)
         } else {
@@ -397,7 +397,7 @@ fun <E> Grid<E>.addDown(addGrid: Grid<E>): Grid<E> {
         "New grid must have the same width (${addGrid.width}) as the one added to (${width})."
     }
     return List(size + addGrid.size) { index ->
-        val coord = index.asCoord(width)
+        val coord = index.toCoord(width)
         if (coord.y in yIndices) {
             get(coord)
         } else {
