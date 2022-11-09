@@ -46,10 +46,10 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
 
     override fun toString() = "($x, $y)"
 
-    fun move(distance: Int, size: Coord, wrapAround: Boolean, operation: () -> Coord): Coord {
+    inline fun move(distance: Int, size: Coord, wrapAround: Boolean, operation: () -> Coord): Coord {
         return (this + (Coord(distance, distance) * operation()))
             .let {
-                if (size == Coord(0,0)) it else {
+                if (size == Coord(0, 0)) it else {
                     if (wrapAround) it fmod size else Coord(
                         it.x.coerceIn(0 until size.x),
                         it.y.coerceIn(0 until size.y)
@@ -103,7 +103,7 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
     override fun compareTo(other: Coord) = manhattanDistance() - other.manhattanDistance()
 }
 
-fun Int.asCoord(width: Int) = Coord(this % width, this / width)
+fun Int.toCoord(width: Int) = Coord(this % width, this / width)
 
 fun Iterable<Coord>.minMaxRanges(): Pair<IntRange, IntRange> {
     var minX = Integer.MAX_VALUE
