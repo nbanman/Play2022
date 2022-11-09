@@ -7,7 +7,7 @@ class Y2020D25(input: String) {
 
     private val divisor = 20201227
 
-    private val keys = input.lines().map { it.toLong() }
+    private val keys = input.lines().map(String::toLong)
     private val cardKey = keys[0]
     private val doorKey = keys[1]
 
