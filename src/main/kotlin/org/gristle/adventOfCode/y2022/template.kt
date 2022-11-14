@@ -1,10 +1,10 @@
 package org.gristle.adventOfCode.y2022
 
 import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readInput
+import org.gristle.adventOfCode.utilities.readStrippedInput
 
-object Template {
-    private val input = readInput("y2022/d")
+class Template(input: String) {
+
 
     fun part1() = "To be implemented"
 
@@ -13,7 +13,10 @@ object Template {
 
 fun main() {
     var time = System.nanoTime()
-    println("Part 1: ${Template.part1()} (${elapsedTime(time)}ms)") // 
+    val c = Template(readStrippedInput("y2022/d"))
+    println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
-    println("Part 2: ${Template.part2()} (${elapsedTime(time)}ms)") // 
+    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 
+    time = System.nanoTime()
+    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 
 }
