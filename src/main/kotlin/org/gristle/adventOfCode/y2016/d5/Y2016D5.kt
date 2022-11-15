@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2016.d5
 
 import org.gristle.adventOfCode.utilities.Md5
 import org.gristle.adventOfCode.utilities.Md5.toHex
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toDigit
 
@@ -36,11 +36,9 @@ class Y2016D5(input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(start = true)
     val c = Y2016D5(readRawInput("y2016/d5"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 4543c154
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1050cbbd
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 4543c154
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 1050cbbd
 }
