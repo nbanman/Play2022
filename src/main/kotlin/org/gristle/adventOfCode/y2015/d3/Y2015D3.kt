@@ -1,7 +1,7 @@
 package org.gristle.adventOfCode.y2015.d3
 
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2015D3(private val input: String) {
@@ -31,11 +31,9 @@ class Y2015D3(private val input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2015D3(readRawInput("y2015/d3"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2081
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2341
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 2081
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 2341
 }
