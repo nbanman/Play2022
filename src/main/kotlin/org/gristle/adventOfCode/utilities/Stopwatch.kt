@@ -41,4 +41,6 @@ class Stopwatch(start: Boolean = false) {
         isRunning = false
     }
 
+    fun elapsed() = elapsed / 1_000_000
+
 }
