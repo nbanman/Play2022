@@ -4,11 +4,13 @@ import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2015D1(input: String) {
-    private val floorChanges = input.map {
-        when (it) {
-            '(' -> 1
-            ')' -> -1
-            else -> throw IllegalArgumentException("Invalid input: non-parenthesis encountered")
+    private val floorChanges: List<Int> by lazy {
+        input.map {
+            when (it) {
+                '(' -> 1
+                ')' -> -1
+                else -> throw IllegalArgumentException("Invalid input: non-parenthesis encountered")
+            }
         }
     }
 
@@ -29,4 +31,5 @@ fun main() {
     println("Class creation: ${timer.lap()}ms")
     println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 280
     println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 1797
+    println("Total time: ${timer.elapsed()}ms")
 }
