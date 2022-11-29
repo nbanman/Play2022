@@ -27,7 +27,6 @@ class Y2015D5(input: String) {
     fun part1() = strings.count { it.isNicePart1() }
 
     fun part2() = strings.count { it.isNicePart2() }
-
 }
 
 fun main() {
