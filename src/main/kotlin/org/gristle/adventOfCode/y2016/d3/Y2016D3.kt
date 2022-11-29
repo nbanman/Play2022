@@ -1,28 +1,28 @@
 package org.gristle.adventOfCode.y2016.d3
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.utilities.getInts
+import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.transpose
 
-class Y2016D3(private val input: String) {
+class Y2016D3(input: String) {
     data class Triangle(val a: Int, val b: Int, val c: Int) {
         private val asList = listOf(a, b, c).sorted()
         val isValid = asList[0] + asList[1] > asList[2]
     }
 
-    fun part1(): Int {
-        val pattern = """(\d+) +(\d+) +(\d+)"""
-        return input
-            .groupValues(pattern, String::toInt)
-            .map { Triangle(it[0], it[1], it[2]) }
-            .count(Triangle::isValid)
-    }
+    private val trios = input.getInts().chunked(3)
 
-    fun part2() = input
-        .lines()
-        .map { line -> line.split(Regex(" +")).mapNotNull(String::toIntOrNull) }
-        .transpose()
-        .map { lengths -> lengths.chunked(3) { Triangle(it[0], it[1], it[2]) } }
-        .flatten()
-        .count(Triangle::isValid)
+    private inline fun solve(makeTriangles: (List<List<Int>>) -> List<Triangle>) =
+        makeTriangles(trios).count(Triangle::isValid)
+
+    fun part1() = solve { trios -> trios.map { Triangle(it[0], it[1], it[2]) } }
+
+    fun part2() = solve { trios ->
+        trios
+            .transpose()
+            .flatMap { lengths -> lengths.chunked(3) { Triangle(it[0], it[1], it[2]) } }
+    }
 }
 
 fun main() {

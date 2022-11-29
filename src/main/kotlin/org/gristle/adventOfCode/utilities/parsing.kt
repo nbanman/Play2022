@@ -38,3 +38,7 @@ inline fun <R> String.groupValues(pattern: Regex, transform: (String) -> R): Lis
  */
 fun String.lines() = split("\n", "\r\n")
 
+/**
+ * Splits file by newline and applies transform
+ */
+inline fun <E> String.lines(transform: (String) -> E) = split("\n", "\r\n").map(transform)
