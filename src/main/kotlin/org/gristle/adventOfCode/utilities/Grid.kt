@@ -76,12 +76,12 @@ class ArrayGrid<E> private constructor(
     }
 
 
-    override fun validCoord(coord: Coord) = coord.x in 0 until width && coord.y in 0 until height
+    override fun validCoord(coord: Coord) = coord.x in xIndices && coord.y in yIndices
 
     override fun representation(display: (E) -> Char): String {
         return buildString {
-            for (row in 0 until height) {
-                for (col in 0 until width) {
+            for (row in yIndices) {
+                for (col in xIndices) {
                     append(display(get(col, row)))
                 }
                 append('\n')
@@ -121,7 +121,7 @@ class ArrayGrid<E> private constructor(
     }
 
     override fun rows(): List<List<E>> {
-        return (0 until height).fold(emptyList()) { acc, i ->
+        return yIndices.fold(emptyList()) { acc, i ->
             acc + listOf(subList(i * width, i * width + width))
         }
     }
@@ -129,7 +129,7 @@ class ArrayGrid<E> private constructor(
     override fun row(row: Int) = subList(row * width, row * width + width)
 
     override fun columns(): List<List<E>> {
-        return (0 until width).fold(emptyList()) { acc, i ->
+        return xIndices.fold(emptyList()) { acc, i ->
             acc + listOf(List(height) { index -> get(i + index * width) })
         }
     }
@@ -183,7 +183,7 @@ class ArrayGrid<E> private constructor(
                 }
             } else coordinates.second
 
-            if (wrapAround || (neighborX in 0 until width && neighborY in 0 until height)) {
+            if (wrapAround || (neighborX in xIndices && neighborY in yIndices)) {
                 indexOf(neighborX, neighborY)
             } else {
                 null
