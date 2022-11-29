@@ -1,6 +1,6 @@
 package org.gristle.adventOfCode.y2020.d10
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2020D10(input: String) {
@@ -11,8 +11,7 @@ class Y2020D10(input: String) {
         .map(String::toInt) // convert List<String> to List<Int> 
         .sorted() // sort List lowest to highest
         .let { adapters -> listOf(0) + adapters + (adapters.last() + 3) } // add charging outlet and end device to List
-        .zipWithNext() // create List of previous/next pairs
-        .map { (prev, next) -> next - prev } // map to List of delta from prev device
+        .zipWithNext { a, b -> b - a } // map to List of delta from previous device
 
     fun part1() = joltageDifferences
         .count { it == 3 } // count number of 3-jolt differences
@@ -32,20 +31,18 @@ class Y2020D10(input: String) {
         .map { // each string of 1s represents devices one away from each other.
             // the last '1' in string is required though b/c it's 3 away from the next device
             when (it.length) { // convert to number of permutations for the optional devices
-                4 -> 7L // 1111, 1101, 1011, 1001, 0111, 0101, 0011 (0001 not allowed b/c that's 4 apart)
+                4 -> 7 // 1111, 1101, 1011, 1001, 0111, 0101, 0011 (0001 not allowed b/c that's 4 apart)
                 3 -> 4 // 111, 101, 011, 001  
                 2 -> 2 // 11, 01
                 else -> 1 // 1
             }
-        }.reduce(Long::times) // multiply them by each other to get answer to pt 2
+        }.fold(1L, Long::times) // multiply them by each other to get answer to pt 2
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2020D10(readRawInput("y2020/d10"))
-    println("Class creation: ${elapsedTime(time)}ms") // (44ms)
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1890
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 49607173328384
+    println("Class creation: ${timer.lap()}ms") // (44ms)
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 1890
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 49607173328384
 }
