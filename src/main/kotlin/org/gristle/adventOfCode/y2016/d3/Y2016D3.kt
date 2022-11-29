@@ -7,8 +7,10 @@ import org.gristle.adventOfCode.utilities.transpose
 
 class Y2016D3(input: String) {
     data class Triangle(val a: Int, val b: Int, val c: Int) {
-        private val asList = listOf(a, b, c).sorted()
-        val isValid = asList[0] + asList[1] > asList[2]
+        val isValid = let {
+            val max = maxOf(a, b, c)
+            a + b + c - max > max
+        }
     }
 
     private val trios = input.getInts().chunked(3)
