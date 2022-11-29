@@ -92,7 +92,7 @@ class Y2018D12(input: String) {
 }
 
 fun main() {
-    var timer = Stopwatch()
+    val timer = Stopwatch()
     val c = Y2018D12(readRawInput("y2018/d12"))
     println("Class creation: ${timer.lap()}ms")
     println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 4110
