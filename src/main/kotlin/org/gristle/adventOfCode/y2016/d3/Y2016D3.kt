@@ -11,26 +11,25 @@ class Y2016D3(private val input: String) {
     fun part1(): Int {
         val pattern = """(\d+) +(\d+) +(\d+)"""
         return input
-            .groupValues(pattern) { it.toInt() }
+            .groupValues(pattern, String::toInt)
             .map { Triangle(it[0], it[1], it[2]) }
-            .count { it.isValid }
+            .count(Triangle::isValid)
     }
 
     fun part2() = input
         .lines()
-        .map { line -> line.split(Regex(""" +""")).mapNotNull { it.toIntOrNull() } }
+        .map { line -> line.split(Regex(" +")).mapNotNull(String::toIntOrNull) }
         .transpose()
-        .map { lengths -> lengths.chunked(3).map { Triangle(it[0], it[1], it[2]) } }
+        .map { lengths -> lengths.chunked(3) { Triangle(it[0], it[1], it[2]) } }
         .flatten()
-        .count { it.isValid }
+        .count(Triangle::isValid)
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2016D3(readRawInput("y2016/d3"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1032
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1838
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 1032
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 1838
+    println("Total time: ${timer.elapsed()}ms")
 }
