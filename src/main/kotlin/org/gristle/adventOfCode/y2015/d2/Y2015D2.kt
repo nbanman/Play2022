@@ -1,18 +1,18 @@
 package org.gristle.adventOfCode.y2015.d2
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2015D2(input: String) {
 
     data class Box(val l: Int, val w: Int, val h: Int) {
-        private val max = max(l, w, h)
-
-        private val cubicVolume = l * w * h
+        private fun cubicVolume() = l * w * h
         private fun surfaceArea() = 2 * l * w + 2 * w * h + 2 * h * l
-        private fun smallestSideArea() = cubicVolume / max
+        private fun smallestSideArea() = cubicVolume() / maxOf(l, w, h)
         fun paperNeeded() = surfaceArea() + smallestSideArea()
-        private fun ribbonToWrap() = (l + w + h - max) * 2
-        fun ribbonNeeded() = cubicVolume + ribbonToWrap()
+        private fun ribbonToWrap() = (l + w + h - maxOf(l, w, h)) * 2
+        fun ribbonNeeded() = cubicVolume() + ribbonToWrap()
     }
 
     private val boxes = input
