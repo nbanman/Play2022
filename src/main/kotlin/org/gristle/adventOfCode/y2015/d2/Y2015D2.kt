@@ -1,19 +1,18 @@
 package org.gristle.adventOfCode.y2015.d2
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.*
 
 class Y2015D2(input: String) {
 
     data class Box(val l: Int, val w: Int, val h: Int) {
-        private val asList = listOf(l, w, h).sorted()
-        private val surfaceArea = 2 * l * w + 2 * w * h + 2 * h * l
-        private val smallestSideArea = asList.dropLast(1).reduce(Int::times)
-        val paperNeeded = surfaceArea + smallestSideArea
-        private val cubicVolume = asList.reduce(Int::times)
-        private val ribbonToWrap = asList.dropLast(1).sum() * 2
-        val ribbonNeeded = cubicVolume + ribbonToWrap
+        private val max = max(l, w, h)
+
+        private val cubicVolume = l * w * h
+        private fun surfaceArea() = 2 * l * w + 2 * w * h + 2 * h * l
+        private fun smallestSideArea() = cubicVolume / max
+        fun paperNeeded() = surfaceArea() + smallestSideArea()
+        private fun ribbonToWrap() = (l + w + h - max) * 2
+        fun ribbonNeeded() = cubicVolume + ribbonToWrap()
     }
 
     private val boxes = input
@@ -27,11 +26,9 @@ class Y2015D2(input: String) {
 
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2015D2(readRawInput("y2015/d2"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1588178
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 3783758
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 1588178
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 3783758
 }
