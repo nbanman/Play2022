@@ -1,23 +1,32 @@
 package org.gristle.adventOfCode.y2015.d1
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2015D1(private val input: String) {
+class Y2015D1(input: String) {
+    private val floorChanges = input.map {
+        when (it) {
+            '(' -> 1
+            ')' -> -1
+            else -> throw IllegalArgumentException("Invalid input: non-parenthesis encountered")
+        }
+    }
 
-    private fun moveFloor(floor: Int, paren: Char) = floor + if (paren == '(') 1 else -1
-    fun part1() = input.fold(0, this::moveFloor)
+    fun part1() = floorChanges.sum()
 
-    tailrec fun part2(floor: Int = 0, index: Int = 0): Int =
-        if (floor == -1) index else part2(moveFloor(floor, input[index]), index + 1)
+    fun part2(): Int {
+        val floor = sequence {
+            // sum the changes, yielding the running total at each step
+            floorChanges.fold(0) { acc, i -> (acc + i).also { yield(it) } }
+        }
+        return floor.indexOfFirst { it == -1 } + 1
+    }
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2015D1(readRawInput("y2015/d1"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 280
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1797
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 280
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 1797
 }
