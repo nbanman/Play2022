@@ -1,7 +1,7 @@
 package org.gristle.adventOfCode.y2018.d12
 
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.eachCount
-import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.lines
 import org.gristle.adventOfCode.utilities.readRawInput
 
@@ -73,8 +73,8 @@ class Y2018D12(input: String) {
             // the same
             .first { group ->
                 group
-                    .zipWithNext() // compare each value with the next one
-                    .map { (prev, next) -> next.value - prev.value } // get the difference in value between the two
+                    // compare each value with the next one, map to the difference in value between the two
+                    .zipWithNext { a, b -> b.value - a.value }
                     .eachCount() // separate into groups based on the difference
                     .size == 1 // return true if there is only one group; i.e., they all have the same difference
             }
@@ -92,11 +92,9 @@ class Y2018D12(input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
+    var timer = Stopwatch()
     val c = Y2018D12(readRawInput("y2018/d12"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 4110
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2650000000466
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 4110
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 2650000000466
 }
