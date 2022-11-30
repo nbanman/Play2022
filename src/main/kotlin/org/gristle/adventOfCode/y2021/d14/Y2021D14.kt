@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2021.d14
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.stripCarriageReturns
+import org.gristle.adventOfCode.utilities.minMax
+import org.gristle.adventOfCode.utilities.readStrippedInput
 
 class Y2021D14(input: String) {
-    private val data = input.stripCarriageReturns()
 
     data class InsertionRule(val a: Char, val b: Char, val c: Char) {
 
@@ -19,16 +18,16 @@ class Y2021D14(input: String) {
         }
     }
 
-    private val template = data.takeWhile { it != '\n' }
+    private val template = input.takeWhile { it != '\n' }
 
-    private val rules = data
+    private val rules = input
         .groupValues("""([A-Z])([A-Z]) -> ([A-Z])""")
         .map { InsertionRule(it[0][0], it[1][0], it[2][0]) }
 
     fun Map<String, Long>.step(): Map<String, Long> {
         val newPairs = mutableMapOf<String, Long>()
         forEach { (polyPair, amt) ->
-            val (a, b) = InsertionRule.propagate[polyPair]!!
+            val (a, b) = InsertionRule.propagate.getValue(polyPair)
             newPairs[a] = (newPairs[a] ?: 0L) + amt
             newPairs[b] = (newPairs[b] ?: 0L) + amt
         }
@@ -37,11 +36,11 @@ class Y2021D14(input: String) {
 
     fun solve(steps: Int): Long {
         val proteins = rules.flatMap { listOf(it.a, it.b, it.c) }.toSet()
-        val proteinPairs = mutableMapOf<String, Long>().apply {
+        val proteinPairs = buildMap<String, Long> {
             template.windowed(2).forEach { key ->
                 this[key] = this[key]?.let { it + 1L } ?: 1L
             }
-        }.toMap()
+        }
         val steppedPairs = (1..steps).fold(proteinPairs) { acc, _ -> acc.step() }
         val proteinCount = proteins.map { protein ->
             val count = steppedPairs
@@ -51,7 +50,7 @@ class Y2021D14(input: String) {
             val modifier = listOf(template.first(), template.last()).count { it == protein }
             (count + modifier) / 2
         }
-        return proteinCount.max() - proteinCount.min()
+        return proteinCount.minMax().let { (min, max) -> max - min }
     }
 
     fun part1() = solve(10)
@@ -60,11 +59,10 @@ class Y2021D14(input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D14(readRawInput("y2021/d14"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3555
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 4439442043739
+    val timer = Stopwatch(start = true)
+    val c = Y2021D14(readStrippedInput("y2021/d14"))
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 3555
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 4439442043739
+    println("Total time: ${timer.elapsed()}ms")
 }
