@@ -1,6 +1,6 @@
 package org.gristle.adventOfCode.y2021.d10
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 
@@ -13,25 +13,13 @@ class Y2021D10(input: String) {
     private val counterparts = mapOf('(' to ')', '[' to ']', '{' to '}', '<' to '>')
 
     // character scoring provided for part1
-    private fun Char.syntaxErrorScore(): Long = when (this) {
-        ')' -> 3
-        ']' -> 57
-        '}' -> 1197
-        '>' -> 25137
-        else -> throw IllegalArgumentException()
-    }
+    private val syntaxErrorScore = mapOf<Char, Long>(')' to 3, ']' to 57, '}' to 1197, '>' to 25137)
 
     // character scoring provided for part2
-    private fun Char.pointValue() = when (this) {
-        ')' -> 1
-        ']' -> 2
-        '}' -> 3
-        '>' -> 4
-        else -> throw IllegalArgumentException()
-    }
+    private val pointValue = mapOf(')' to 1, ']' to 2, '}' to 3, '>' to 4)
 
     // completion string scoring per part2
-    private fun Iterable<Char>.toScore() = fold(0L) { acc, c -> acc * 5 + c.pointValue() }
+    private fun Iterable<Char>.toScore() = fold(0L) { acc, c -> acc * 5 + pointValue.getValue(c) }
 
     /**
      * Parses each character in a string. If it's an opening character, add the corresponding closing character
@@ -60,7 +48,7 @@ class Y2021D10(input: String) {
     fun part1() = lines
         .sumOf { line ->
             line.parse(
-                onCorrupt = { it.syntaxErrorScore() },
+                onCorrupt = { syntaxErrorScore[it] },
                 onFinish = { null }
             ) ?: 0 // only corrupt strings have a syntax error score 
         }
@@ -76,11 +64,10 @@ class Y2021D10(input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2021D10(readRawInput("y2021/d10"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 167379
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2776842859
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 167379
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 2776842859
+    println("Total time: ${timer.elapsed()}ms")
 }
