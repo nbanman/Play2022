@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2021.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readStrippedInput
+import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2021D4(input: String) {
 
@@ -12,7 +15,7 @@ class Y2021D4(input: String) {
         fun score(calledNumbers: List<Int>) = grid.sum() - calledNumbers.intersect(grid).sum()
     }
 
-    private val data = input.stripCarriageReturns().split("\n\n")
+    private val data = input.split("\n\n")
 
     private val drawPile = data[0].split(',').map(String::toInt)
 
@@ -26,8 +29,9 @@ class Y2021D4(input: String) {
     
     fun part1(): Int {
         val calledNumbers = drawPile.take(4).toMutableList()
-        return drawPile.drop(4)
+        return drawPile
             .asSequence()
+            .drop(4)
             .mapNotNull { number ->
                 calledNumbers.add(number)
                 bingoCards.find { it.bingo(calledNumbers) }
@@ -56,7 +60,7 @@ class Y2021D4(input: String) {
 
 fun main() {
     var time = System.nanoTime()
-    val c = Y2021D4(readRawInput("y2021/d4"))
+    val c = Y2021D4(readStrippedInput("y2021/d4"))
     println("Class creation: ${elapsedTime(time)}ms")
     time = System.nanoTime()
     println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 39902

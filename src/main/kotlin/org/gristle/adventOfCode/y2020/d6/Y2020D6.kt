@@ -1,13 +1,10 @@
 package org.gristle.adventOfCode.y2020.d6
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.stripCarriageReturns
+import org.gristle.adventOfCode.utilities.*
 
 class Y2020D6(input: String) {
     // Read input and split into separate groups.
     private val groups = input
-        .stripCarriageReturns()
         .split("\n\n")
 
     // Both parts involve looking at each group separately, counting the answers in a particular way, then 
@@ -32,11 +29,10 @@ class Y2020D6(input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D6(readRawInput("y2020/d6"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 6297
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 3158
+    val timer = Stopwatch(true)
+    val c = Y2020D6(readStrippedInput("y2020/d6"))
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 6297
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 3158
+    println("Total time: ${timer.elapsed()}ms")
 }
