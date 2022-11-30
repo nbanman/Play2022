@@ -41,4 +41,5 @@ fun main() {
     println("Class creation: ${timer.lap()}ms")
     println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 4543c154
     println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 1050cbbd
+    println("Total time: ${timer.elapsed()}ms")
 }
