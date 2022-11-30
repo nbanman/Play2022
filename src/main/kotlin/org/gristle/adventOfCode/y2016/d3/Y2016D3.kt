@@ -5,6 +5,7 @@ import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.transpose
 
+private typealias MakeTriangles = (List<List<Int>>) -> List<Y2016D3.Triangle>
 class Y2016D3(input: String) {
     data class Triangle(val a: Int, val b: Int, val c: Int) {
         val isValid = let {
@@ -15,15 +16,21 @@ class Y2016D3(input: String) {
 
     private val trios = input.getInts().chunked(3)
 
-    private inline fun solve(makeTriangles: (List<List<Int>>) -> List<Triangle>) =
+    private inline fun solve(makeTriangles: MakeTriangles) =
         makeTriangles(trios).count(Triangle::isValid)
 
-    fun part1() = solve { trios -> trios.map { Triangle(it[0], it[1], it[2]) } }
+    fun part1(): Int {
+        val makeTriangles: MakeTriangles = { trios -> trios.map { Triangle(it[0], it[1], it[2]) } }
+        return solve(makeTriangles)
+    }
 
-    fun part2() = solve { trios ->
-        trios
-            .transpose()
-            .flatMap { lengths -> lengths.chunked(3) { Triangle(it[0], it[1], it[2]) } }
+    fun part2(): Int {
+        val makeTriangles: MakeTriangles = { trios ->
+            trios
+                .transpose()
+                .flatMap { lengths -> lengths.chunked(3) { Triangle(it[0], it[1], it[2]) } }
+        }
+        return solve(makeTriangles)
     }
 }
 
