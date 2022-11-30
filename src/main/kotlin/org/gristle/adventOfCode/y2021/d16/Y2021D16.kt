@@ -1,6 +1,6 @@
 package org.gristle.adventOfCode.y2021.d16
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.print
 import org.gristle.adventOfCode.utilities.readRawInput
 
@@ -36,7 +36,7 @@ class Y2021D16(input: String) {
                 else -> 0L
             }
 
-            override fun versionSum() = version + subPackets.sumOf { it.versionSum() }
+            override fun versionSum() = version + subPackets.sumOf(Packet::versionSum)
 
             override fun toString(): String {
                 return "Operator(version=$version, typeId=$typeId, value=${value()}, subPackets=$subPackets)"
@@ -67,7 +67,7 @@ class Y2021D16(input: String) {
                     0 -> {
                         val subBp = BitProvider(bp.getBitString(length))
                         verbose.print("Creating subBitProvider of size ${subBp.size}")
-                        mutableListOf<Packet>().apply {
+                        buildList {
                             while (subBp.isNotEmpty()) {
                                 verbose.print("Creating sub-packet with subBitProvider size ${subBp.size}")
                                 add(parse(subBp, verbose))
@@ -146,11 +146,10 @@ class Y2021D16(input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(start = true)
     val c = Y2021D16(readRawInput("y2021/d16"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 979
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 277110354175
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 979
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 277110354175
+    println("Total time: ${timer.elapsed()}ms")
 }
