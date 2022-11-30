@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2016.d4
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.utilities.eachCount
 import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.utilities.readRawInput
 
@@ -10,8 +11,7 @@ class Y2016D4(input: String) {
         val isReal = let {
             val mostCommon = encryptedName
                 .replace("-", "") // don't count dashes
-                .groupingBy { it } // group the chars
-                .eachCount() // deliver size of each group
+                .eachCount() // deliver size of each group of characters
                 .entries // grab both key (the char) and the value (the size)
                 // sort the entries by size then alphabetical
                 .sortedWith(compareByDescending<Map.Entry<Char, Int>> { it.value }.thenBy { it.key })
@@ -23,7 +23,7 @@ class Y2016D4(input: String) {
 
         private fun Char.shift() = if (this == '-') ' ' else ((code - 97 + id) % 26 + 97).toChar()
 
-        val name = encryptedName.map { it.shift() }.joinToString("")
+        val name: String by lazy { encryptedName.map { it.shift() }.joinToString("") }
     }
 
     private val rooms = input
@@ -37,11 +37,10 @@ class Y2016D4(input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2016D4(readRawInput("y2016/d4"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 158835
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 993
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 158835
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 993
+    println("Total time: ${timer.elapsed()}ms")
 }
