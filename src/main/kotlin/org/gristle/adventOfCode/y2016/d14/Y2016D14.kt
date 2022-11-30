@@ -5,7 +5,6 @@ import org.gristle.adventOfCode.utilities.md5
 import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 
-// Refactored!
 class Y2016D14(private val input: String) {
 
     private fun String.stretchedMd5() = (1..2017).fold(this) { acc, _ -> acc.md5() }
