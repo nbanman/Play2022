@@ -3,25 +3,25 @@ package org.gristle.adventOfCode.y2016.d6
 import org.gristle.adventOfCode.utilities.*
 
 class Y2016D6(input: String) {
-    private val lines = input.lines()
-        .map { it.toList() }
+    private val columns = input
+        .lines(String::toList)
         .transpose()
-
-    fun part1() = lines
-        .map { line -> line.eachCount().maxByOrNull { it.value }?.key ?: '?' }
+        .map { it.eachCount() }
+    
+    fun part1() = columns
+        .map { column -> column.maxBy { it.value }.key }
         .joinToString("")
 
-    fun part2() = lines
-        .map { line -> line.eachCount().minByOrNull { it.value }?.key ?: '?' }
+    fun part2() = columns
+        .map { column -> column.minBy { it.value }.key }
         .joinToString("")
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2016D6(readRawInput("y2016/d6"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // asvcbhvg
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // odqnikqv
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // asvcbhvg
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // odqnikqv
+    println("Total time: ${timer.elapsed()}ms")
 }
