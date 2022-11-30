@@ -1,6 +1,6 @@
 package org.gristle.adventOfCode.y2016.d14
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.md5
 import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
@@ -54,17 +54,16 @@ class Y2016D14(private val input: String) {
         return counted.sortedBy { it.index }[63].index
     }
 
-    fun part1() = solve { it.md5() }
+    fun part1() = solve(String::md5)
 
     fun part2() = solve { it.stretchedMd5() }
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(true)
     val c = Y2016D14(readRawInput("y2016/d14"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 18626 (124ms)
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 20092 (11571ms)
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 18626 (124ms)
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 20092 (11571ms)
+    println("Total time: ${timer.elapsed()}ms")
 }
