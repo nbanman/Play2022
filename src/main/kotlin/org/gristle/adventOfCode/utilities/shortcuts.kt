@@ -76,6 +76,19 @@ fun <E : Comparable<E>> Iterable<E>.toPriorityQueue(): PriorityQueue<E> {
     return pq.also { it.addAll(this) }
 }
 
+inline fun <E, R : Comparable<R>> Iterable<E>.toPriorityQueue(transform: (E) -> R): PriorityQueue<R> {
+    val pq = if (this is Collection<E>) {
+        PriorityQueue<R>(size)
+    } else {
+        PriorityQueue<R>()
+    }
+    return pq.also {
+        forEach { e ->
+            pq.add(transform(e))
+        }
+    }
+}
+
 fun <E : Comparable<E>> Iterable<E>.toPriorityQueueDescending(): PriorityQueue<E> {
     val pq = if (this is Collection<E>) {
         PriorityQueue(size, compareByDescending { e: E -> e })
@@ -83,6 +96,19 @@ fun <E : Comparable<E>> Iterable<E>.toPriorityQueueDescending(): PriorityQueue<E
         PriorityQueue(compareByDescending { e: E -> e })
     }
     return pq.also { it.addAll(this) }
+}
+
+inline fun <E, R : Comparable<R>> Iterable<E>.toPriorityQueueDescending(transform: (E) -> R): PriorityQueue<R> {
+    val pq = if (this is Collection<E>) {
+        PriorityQueue(size, compareByDescending { r: R -> r })
+    } else {
+        PriorityQueue(compareByDescending { r: R -> r })
+    }
+    return pq.also {
+        forEach { e ->
+            pq.add(transform(e))
+        }
+    }
 }
 
 /**
