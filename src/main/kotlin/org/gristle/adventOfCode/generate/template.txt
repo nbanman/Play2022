@@ -13,9 +13,8 @@ class Y[[YEAR]]D[[DAY]](input: String) {
 }
 
 fun main() {
-    getInput([[DAY]], [[YEAR]])
     val timer = Stopwatch(start = true)
-    val solver = Y[[YEAR]]D[[DAY]](readStrippedInput("y[[YEAR]]/d[[DAY]]"))
+    val solver = Y[[YEAR]]D[[DAY]](getInput([[DAY]], [[YEAR]]))
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 
