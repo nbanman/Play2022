@@ -67,6 +67,24 @@ fun Int.reversed(bits: Int): Int {
  */
 fun <E> Iterable<E>.eachCount() = groupingBy { it }.eachCount()
 
+fun <E : Comparable<E>> Iterable<E>.toPriorityQueue(): PriorityQueue<E> {
+    val pq = if (this is Collection<E>) {
+        PriorityQueue<E>(size)
+    } else {
+        PriorityQueue<E>()
+    }
+    return pq.also { it.addAll(this) }
+}
+
+fun <E : Comparable<E>> Iterable<E>.toPriorityQueueDescending(): PriorityQueue<E> {
+    val pq = if (this is Collection<E>) {
+        PriorityQueue<E>(size, compareByDescending { e: E -> e })
+    } else {
+        PriorityQueue<E>(compareByDescending { e: E -> e })
+    }
+    return pq.also { it.addAll(this) }
+}
+
 /**
  * Shifts the start index of the list by n. The skipped parts get wrapped to the end. Accepts
  * negative numbers to go in the reverse direction.
@@ -110,6 +128,7 @@ inline fun <E> PriorityQueue<E>.pollUntil(predicate: (E) -> Boolean): E? {
     }
     return null
 }
+
 
 /**
  * Finds all numbers in a string and returns them as a List of Int.
