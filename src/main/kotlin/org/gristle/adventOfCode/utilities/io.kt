@@ -64,5 +64,5 @@ fun getInput(day: Int, year: Int = LocalDate.now().year): String {
             connection.disconnect()
         }
     }
-    return inputFile.readText().stripCarriageReturns()
+    return inputFile.readText().stripCarriageReturns().trimEnd()
 }
