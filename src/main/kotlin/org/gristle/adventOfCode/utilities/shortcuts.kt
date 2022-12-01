@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.utilities
 
 import java.util.*
+import kotlin.math.min
 
 /**
  * Returns elapsed time in ms.
@@ -158,7 +159,10 @@ inline fun <E> PriorityQueue<E>.pollUntil(predicate: (E) -> Boolean): E? {
 /**
  * Calls poll specified number of times, returns results as a list.
  */
-fun <E> PriorityQueue<E>.poll(n: Int): List<E> = MutableList(n) { poll() }
+fun <E> PriorityQueue<E>.poll(n: Int): List<E> {
+    require(n > 0) { "n must be a positive Integer" }
+    return MutableList(min(n, size)) { poll() }
+}
 
 /**
  * Finds all numbers in a string and returns them as a List of Int.
