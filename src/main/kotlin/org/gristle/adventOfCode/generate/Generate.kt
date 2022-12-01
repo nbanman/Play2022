@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
             }
         }
     }
-
+    makeDay(day, year)
 }
 
 
