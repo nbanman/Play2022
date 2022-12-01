@@ -48,13 +48,13 @@ inline fun <E> String.lines(transform: (String) -> E) = split("\n", "\r\n").map(
  */
 inline fun <T> Iterable<T>.splitOn(predicate: (T) -> Boolean): List<List<T>> {
     val d = mutableListOf<List<T>>()
-    val u = mutableListOf<T>()
-    for (i in this) {
-        if (predicate(i)) {
+    var u = mutableListOf<T>()
+    forEach { t ->
+        if (predicate(t)) {
             d += u
-            u.clear()
+            u = mutableListOf()
         } else {
-            u.add(i)
+            u.add(t)
         }
     }
     d += u
