@@ -17,7 +17,7 @@ class Y2022D1(input: String) {
 }
 
 fun main() {
-    val timer = Stopwatch(true)
+    val timer = Stopwatch(start = true)
     val solver = Y2022D1(readStrippedInput("y2022/d1"))
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 71300
