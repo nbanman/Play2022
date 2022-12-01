@@ -41,7 +41,7 @@ fun String.writeToFile(path: String) {
         }.writeText(this)
 }
 
-fun getInput(day: Int, year: Int = LocalDate.now().year) {
+fun getInput(day: Int, year: Int = LocalDate.now().year): String {
     val inputFile = File("src/main/kotlin/org/gristle/adventOfCode/y$year/d$day/input.txt")
     if (!inputFile.exists()) {
         inputFile.parentFile.mkdirs()
@@ -64,4 +64,5 @@ fun getInput(day: Int, year: Int = LocalDate.now().year) {
             connection.disconnect()
         }
     }
+    return inputFile.readText().stripCarriageReturns()
 }
