@@ -6,8 +6,7 @@ class Y2022D1(input: String) {
 
     private val calories = input
         .split("\n\n")
-        .map { it.getInts().sum() }
-        .toPriorityQueueDescending()
+        .toPriorityQueueDescending { it.getInts().sum() }
 
     fun part1(): Int = calories.peek()
 
