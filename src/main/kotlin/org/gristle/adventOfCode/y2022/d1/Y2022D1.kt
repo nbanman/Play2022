@@ -1,11 +1,11 @@
 package org.gristle.adventOfCode.y2022.d1
 
 import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.readStrippedInput
 
 class Y2022D1(input: String) {
-
     private val calories = input
         .split("\n\n")
         .map { it.getInts().sum() }
@@ -17,6 +17,7 @@ class Y2022D1(input: String) {
 }
 
 fun main() {
+    getInput(1, 2022)
     val timer = Stopwatch(start = true)
     val solver = Y2022D1(readStrippedInput("y2022/d1"))
     println("Class creation: ${timer.lap()}ms")
