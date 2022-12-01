@@ -14,7 +14,7 @@ class Y2016D3(input: String) {
         }
     }
 
-    private val trios = input.getInts().chunked(3)
+    private val trios = input.getInts().toList().chunked(3)
 
     private inline fun solve(makeTriangles: MakeTriangles) =
         makeTriangles(trios).count(Triangle::isValid)

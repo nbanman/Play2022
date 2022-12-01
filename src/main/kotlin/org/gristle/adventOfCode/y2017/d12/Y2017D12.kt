@@ -29,7 +29,7 @@ class Y2017D12(input: String) {
 
     private val links = input
         .groupValues(pattern)
-        .associate { it[0].toInt() to it[1].getInts() }
+        .associate { it[0].toInt() to it[1].getInts().toList() }
 
     fun part1() = allLinks(links, 0).size
 
