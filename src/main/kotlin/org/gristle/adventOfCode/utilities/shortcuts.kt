@@ -78,9 +78,9 @@ fun <E : Comparable<E>> Iterable<E>.toPriorityQueue(): PriorityQueue<E> {
 
 fun <E : Comparable<E>> Iterable<E>.toPriorityQueueDescending(): PriorityQueue<E> {
     val pq = if (this is Collection<E>) {
-        PriorityQueue<E>(size, compareByDescending { e: E -> e })
+        PriorityQueue(size, compareByDescending { e: E -> e })
     } else {
-        PriorityQueue<E>(compareByDescending { e: E -> e })
+        PriorityQueue(compareByDescending { e: E -> e })
     }
     return pq.also { it.addAll(this) }
 }
@@ -129,6 +129,10 @@ inline fun <E> PriorityQueue<E>.pollUntil(predicate: (E) -> Boolean): E? {
     return null
 }
 
+/**
+ * Calls poll specified number of times, returns results as a list.
+ */
+fun <E> PriorityQueue<E>.poll(n: Int): List<E> = MutableList(n) { poll() }
 
 /**
  * Finds all numbers in a string and returns them as a List of Int.
