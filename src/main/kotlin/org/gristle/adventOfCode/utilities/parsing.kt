@@ -42,3 +42,21 @@ fun String.lines() = split("\n", "\r\n")
  * Splits file by newline and applies transform
  */
 inline fun <E> String.lines(transform: (String) -> E) = split("\n", "\r\n").map(transform)
+
+/**
+ * Split on predicate
+ */
+inline fun <T> Iterable<T>.splitOn(predicate: (T) -> Boolean): List<List<T>> {
+    val d = mutableListOf<List<T>>()
+    val u = mutableListOf<T>()
+    for (i in this) {
+        if (predicate(i)) {
+            d += u
+            u.clear()
+        } else {
+            u.add(i)
+        }
+    }
+    d += u
+    return d;
+}
