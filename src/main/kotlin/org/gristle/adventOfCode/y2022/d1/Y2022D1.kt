@@ -6,11 +6,14 @@ import org.gristle.adventOfCode.utilities.readStrippedInput
 
 class Y2022D1(input: String) {
 
-    private val calories = input.split("\n\n").map { it.getInts().sum() }
+    private val calories = input
+        .split("\n\n")
+        .map { it.getInts().sum() }
+        .sortedDescending()
 
-    fun part1() = calories.max()
+    fun part1() = calories.first()
 
-    fun part2() = calories.sortedDescending().take(3).sum()
+    fun part2() = calories.take(3).sum()
 }
 
 fun main() {
