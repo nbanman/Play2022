@@ -6,6 +6,8 @@ import org.gristle.adventOfCode.utilities.readStrippedInput
 
 class Y2022D25(input: String) {
 
+    private val parsed = input
+
 
     fun part1() = "To be implemented"
 

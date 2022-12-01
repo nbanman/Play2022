@@ -4,6 +4,8 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y[[YEAR]]D[[DAY]](input: String) {
 
+    private val parsed = input
+        
 
     fun part1() = "To be implemented"
 

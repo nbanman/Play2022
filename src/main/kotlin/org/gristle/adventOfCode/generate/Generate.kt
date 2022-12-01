@@ -12,10 +12,10 @@ fun makeDay(day: Int, year: Int = LocalDate.now().year) {
 }
 
 fun main(args: Array<String>) {
-//    for (day in 1..25) {
-//        makeDay(day)
-//    }
-//    return
+    for (day in 3..25) {
+        makeDay(day)
+    }
+    return
     val day: Int
     val year: Int
     val thisYear = LocalDate.now().year
