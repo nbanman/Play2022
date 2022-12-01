@@ -116,5 +116,5 @@ inline fun <E> PriorityQueue<E>.pollUntil(predicate: (E) -> Boolean): E? {
  */
 fun String.getInts(): List<Int> = Regex("""([+\-])?\d+""")
     .findAll(this)
-    .toList()
     .mapNotNull { it.value.toIntOrNull() }
+    .toList()
