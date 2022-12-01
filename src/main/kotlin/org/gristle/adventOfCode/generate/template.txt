@@ -1,9 +1,8 @@
-package org.gristle.adventOfCode.y2022
+package org.gristle.adventOfCode.y[[YEAR]].d[[DAY]]
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.readStrippedInput
+import org.gristle.adventOfCode.utilities.*
 
-class Template(input: String) {
+class Y[[YEAR]]D[[DAY]](input: String) {
 
 
     fun part1() = "To be implemented"
@@ -12,8 +11,9 @@ class Template(input: String) {
 }
 
 fun main() {
+    getInput([[DAY]], [[YEAR]])
     val timer = Stopwatch(start = true)
-    val solver = Template(readStrippedInput("y2022/d"))
+    val solver = Y[[YEAR]]D[[DAY]](readStrippedInput("y[[YEAR]]/d[[DAY]]"))
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 
