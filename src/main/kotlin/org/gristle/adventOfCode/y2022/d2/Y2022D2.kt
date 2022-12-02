@@ -9,15 +9,15 @@ private typealias Round = Pair<Int, Int>
 
 class Y2022D2(input: String) {
 
+    // it[0] is the first char in the line representing opponent; convert to int between 0 and 2
+    // it[2] is the last char in the line representing me; convert to int between 0 and 2
+    private val rounds: List<Round> = input.lines().map { it[0] - 'A' to it[2] - 'X' }
+
     // Lose = 0 -> 0; Draw = 1 -> 3; Win = 2 -> 6
     private fun outcomeScore(n: Int) = (n fmod 3) * 3
 
     // Rock = 0 -> 1; Paper = 1 -> 2; Scissors = 2 -> 3 
     private fun throwScore(n: Int) = (n fmod 3) + 1
-
-    // it[0] is the first char in the line representing opponent; convert to int between 0 and 2
-    // it[2] is the last char in the line representing me; convert to int between 0 and 2
-    private val rounds: List<Round> = input.lines().map { it[0] - 'A' to it[2] - 'X' }
 
     fun part1() = rounds.sumOf { (opponentThrow, myThrow) ->
         // the outcomeScore argument subtracts one throw from the other and adds one. Along with the floormod in
