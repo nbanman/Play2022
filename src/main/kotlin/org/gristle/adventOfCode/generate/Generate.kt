@@ -4,8 +4,8 @@ import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.writeToFile
 import java.time.LocalDate
 
-fun makeDay(day: Int, year: Int = LocalDate.now().year) {
-    readRawInput("generate", "template")
+fun makeDay(day: Int, year: Int = LocalDate.now().year, template: String = "template") {
+    readRawInput("generate", template)
         .replace("[[YEAR]]", year.toString())
         .replace("[[DAY]]", day.toString())
         .writeToFile("src/main/kotlin/org/gristle/adventOfCode/y${year}/d$day/Y${year}D$day.kt")
