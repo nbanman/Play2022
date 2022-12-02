@@ -4,6 +4,10 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2022D2(input: String) {
 
+    data class Item(val name: String) {
+
+    }
+
     private val lines = input.lines().map { line ->
         line
     }
