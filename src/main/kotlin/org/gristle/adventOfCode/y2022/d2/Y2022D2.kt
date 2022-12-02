@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2022.d2
 
 import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.fmod
 import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.lines
 
@@ -13,10 +12,10 @@ class Y2022D2(input: String) {
     private val rounds = input.lines().map { it[0] - 'A' to it[2] - 'X' }
 
     // Lose = 0 -> 0; Draw = 1 -> 3; Win = 2 -> 6
-    private fun outcomeScore(n: Int) = (n fmod 3) * 3
+    private fun outcomeScore(n: Int) = n.mod(3) * 3
 
     // Rock = 0 -> 1; Paper = 1 -> 2; Scissors = 2 -> 3 
-    private fun throwScore(n: Int) = (n fmod 3) + 1
+    private fun throwScore(n: Int) = n.mod(3) + 1
 
     fun part1() = rounds.sumOf { (opponentThrow, myThrow) ->
         // The outcomeScore argument subtracts one throw from the other and adds one. Along with the floormod in
