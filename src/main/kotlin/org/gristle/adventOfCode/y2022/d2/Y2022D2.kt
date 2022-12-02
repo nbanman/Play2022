@@ -1,116 +1,62 @@
 package org.gristle.adventOfCode.y2022.d2
 
 import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.utilities.fmod
 import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.lines
 
 class Y2022D2(input: String) {
 
-    enum class Hand {
-        Rock {
-            override val beats: Hand
-                get() = Scissors
-            override val loses: Hand
-                get() = Paper
-            override val ties: Hand
-                get() = Rock
-        },
-        Paper {
-            override val beats: Hand
-                get() = Rock
-            override val loses: Hand
-                get() = Scissors
-            override val ties: Hand
-                get() = Paper
-        },
-        Scissors {
-            override val beats: Hand
-                get() = Paper
-            override val loses: Hand
-                get() = Rock
-            override val ties: Hand
-                get() = Scissors
-        };
+    enum class Throw {
+        ROCK, PAPER, SCISSORS;
 
-        abstract val beats: Hand
-        abstract val loses: Hand
-        abstract val ties: Hand
+        val score: Int get() = ordinal + 1
     }
 
-    val code = mapOf(
-        'A' to Hand.Rock,
-        'B' to Hand.Paper,
-        'C' to Hand.Scissors,
-        'X' to Hand.Rock,
-        'Y' to Hand.Paper,
-        'Z' to Hand.Scissors
+    enum class Outcome {
+        LOSE, DRAW, WIN;
+
+        val score: Int get() = ordinal * 3
+    }
+
+    private val codeThrow = mapOf(
+        'A' to Throw.ROCK,
+        'B' to Throw.PAPER,
+        'C' to Throw.SCISSORS,
+        'X' to Throw.ROCK,
+        'Y' to Throw.PAPER,
+        'Z' to Throw.SCISSORS,
     )
 
-    data class Round(val opponent: Hand, val xyz: Char, val code: Map<Char, Hand>) {
+    private val codeOutcome = mapOf(
+        'X' to Outcome.LOSE,
+        'Y' to Outcome.DRAW,
+        'Z' to Outcome.WIN,
+    )
 
-        private fun shapeScore(shape: Hand) = when (shape) {
-            Hand.Rock -> 1
-            Hand.Paper -> 2
-            Hand.Scissors -> 3
+    data class Round(val opponentThrow: Throw, val myThrow: Throw, val myOutcome: Outcome) {
+        fun part1Score(): Int {
+            val newOutcome = Outcome.values()[(myThrow.ordinal + 1 - opponentThrow.ordinal) fmod 3]
+            return newOutcome.score + myThrow.score
         }
 
-        private val outcomeScore = when (opponent) {
-            Hand.Rock -> {
-                when (xyz) {
-                    'X' -> 3
-                    'Y' -> 6
-                    else -> 0
-                }
-            }
-
-            Hand.Paper -> {
-                when (xyz) {
-                    'X' -> 0
-                    'Y' -> 3
-                    else -> 6
-                }
-            }
-
-            Hand.Scissors -> {
-                when (xyz) {
-                    'X' -> 6
-                    'Y' -> 0
-                    else -> 3
-                }
-            }
+        fun part2Score(): Int {
+            val newThrow = Throw.values()[(opponentThrow.ordinal + myOutcome.ordinal - 1) fmod 3]
+            return newThrow.score + myOutcome.score
         }
-
-        private val newOutcomeScore = when (xyz) {
-            'X' -> 0
-            'Y' -> 3
-            else -> 6
-        }
-
-        private val newShapeScore = let {
-            val shape = when (xyz) {
-                'X' -> opponent.beats
-                'Y' -> opponent.ties
-                else -> opponent.loses
-            }
-            when (shape) {
-                Hand.Rock -> 1
-                Hand.Paper -> 2
-                Hand.Scissors -> 3
-            }
-        }
-
-        val score = shapeScore(code.getValue(xyz)) + outcomeScore
-
-        val newScore = newOutcomeScore + newShapeScore
     }
 
-    private val lines = input.lines().map { line ->
-        Round(code.getValue(line[0]), line[2], code)
+    private val rounds = input.lines().map {
+        Round(
+            codeThrow.getValue(it[0]),
+            codeThrow.getValue(it[2]),
+            codeOutcome.getValue(it[2])
+        )
     }
 
-    fun part1() = lines.sumOf(Round::score)
+    fun part1() = rounds.sumOf(Round::part1Score)
 
-    fun part2() = lines.sumOf(Round::newScore)
+    fun part2() = rounds.sumOf(Round::part2Score)
 }
 
 fun main() {
