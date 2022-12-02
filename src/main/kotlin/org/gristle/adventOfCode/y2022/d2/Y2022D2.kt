@@ -7,8 +7,9 @@ import org.gristle.adventOfCode.utilities.lines
 
 class Y2022D2(input: String) {
 
-    // it[0] is the first char in the line representing opponent; convert to int between 0 and 2
-    // it[2] is the last char in the line representing me; convert to int between 0 and 2
+    // it[0] is the first char in the line representing opponent's throw; convert to int between 0 and 2
+    // it[2] is the last char in the line representing me (throw for part1, outcome for part2; convert to int 
+    // between 0 and 2
     private val rounds = input.lines().map { it[0] - 'A' to it[2] - 'X' }
 
     // Lose = 0 -> 0; Draw = 1 -> 3; Win = 2 -> 6
@@ -18,9 +19,9 @@ class Y2022D2(input: String) {
     private fun throwScore(n: Int) = (n fmod 3) + 1
 
     fun part1() = rounds.sumOf { (opponentThrow, myThrow) ->
-        // the outcomeScore argument subtracts one throw from the other and adds one. Along with the floormod in
+        // The outcomeScore argument subtracts one throw from the other and adds one. Along with the floormod in
         // the function, this finds the outcome of the two throws and scores accordingly.
-        // the throwScore argument just takes my throw and scores it accordingly
+        // The throwScore argument just takes my throw and scores it accordingly
         outcomeScore(myThrow - opponentThrow + 1) + throwScore(myThrow)
     }
 
