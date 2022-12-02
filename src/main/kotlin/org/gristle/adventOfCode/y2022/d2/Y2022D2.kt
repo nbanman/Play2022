@@ -9,34 +9,28 @@ private typealias Round = Pair<Int, Int>
 
 class Y2022D2(input: String) {
 
-    enum class Throw {
-        ROCK, PAPER, SCISSORS;
+    // Lose = 0 -> 0; Draw = 1 -> 3; Win = 2 -> 6
+    private fun outcomeScore(n: Int) = (n fmod 3) * 3
 
-        val score = ordinal + 1
+    // Rock = 0 -> 1; Paper = 1 -> 2; Scissors = 2 -> 3 
+    private fun throwScore(n: Int) = (n fmod 3) + 1
 
-        companion object {
-            fun from(n: Int) = values()[n fmod values().size]
-        }
-    }
-
-    enum class Outcome {
-        LOSE, DRAW, WIN;
-
-        val score = ordinal * 3
-
-        companion object {
-            fun from(n: Int) = values()[n fmod values().size]
-        }
-    }
-
+    // it[0] is the first char in the line representing opponent; convert to int between 0 and 2
+    // it[2] is the last char in the line representing me; convert to int between 0 and 2
     private val rounds: List<Round> = input.lines().map { it[0] - 'A' to it[2] - 'X' }
 
-    fun part1() = rounds.sumOf { (opponent, me) ->
-        Outcome.from(me + 1 - opponent).score + Throw.from(me).score
+    fun part1() = rounds.sumOf { (opponentThrow, myThrow) ->
+        // the outcomeScore argument subtracts one throw from the other and adds one. Along with the floormod in
+        // the function, this finds the outcome of the two throws and scores accordingly.
+        // the throwScore argument just takes my throw and scores it accordingly
+        outcomeScore(myThrow - opponentThrow + 1) + throwScore(myThrow)
     }
 
-    fun part2() = rounds.sumOf { (opponent, me) ->
-        Outcome.from(me).score + Throw.from(opponent + me - 1).score
+    fun part2() = rounds.sumOf { (opponentThrow, myOutcome) ->
+        // The outcomeScore argument just takes my outcome and scores it accordingly.
+        // The throwScore argument adds my opponents score to my outcome. Along with the floormod in
+        // the function, this finds what my throw is and scores it accordingly.
+        outcomeScore(myOutcome) + throwScore(opponentThrow + myOutcome - 1)
     }
 }
 
