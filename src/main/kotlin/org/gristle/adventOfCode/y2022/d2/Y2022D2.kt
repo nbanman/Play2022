@@ -5,13 +5,11 @@ import org.gristle.adventOfCode.utilities.fmod
 import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.lines
 
-private typealias Round = Pair<Int, Int>
-
 class Y2022D2(input: String) {
 
     // it[0] is the first char in the line representing opponent; convert to int between 0 and 2
     // it[2] is the last char in the line representing me; convert to int between 0 and 2
-    private val rounds: List<Round> = input.lines().map { it[0] - 'A' to it[2] - 'X' }
+    private val rounds = input.lines().map { it[0] - 'A' to it[2] - 'X' }
 
     // Lose = 0 -> 0; Draw = 1 -> 3; Win = 2 -> 6
     private fun outcomeScore(n: Int) = (n fmod 3) * 3
