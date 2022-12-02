@@ -5,58 +5,39 @@ import org.gristle.adventOfCode.utilities.fmod
 import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.lines
 
+private typealias Round = Pair<Int, Int>
+
 class Y2022D2(input: String) {
 
     enum class Throw {
         ROCK, PAPER, SCISSORS;
 
-        val score: Int get() = ordinal + 1
+        val score = ordinal + 1
+
+        companion object {
+            fun from(n: Int) = values()[n fmod values().size]
+        }
     }
 
     enum class Outcome {
         LOSE, DRAW, WIN;
 
-        val score: Int get() = ordinal * 3
-    }
+        val score = ordinal * 3
 
-    private val codeThrow = mapOf(
-        'A' to Throw.ROCK,
-        'B' to Throw.PAPER,
-        'C' to Throw.SCISSORS,
-        'X' to Throw.ROCK,
-        'Y' to Throw.PAPER,
-        'Z' to Throw.SCISSORS,
-    )
-
-    private val codeOutcome = mapOf(
-        'X' to Outcome.LOSE,
-        'Y' to Outcome.DRAW,
-        'Z' to Outcome.WIN,
-    )
-
-    data class Round(val opponentThrow: Throw, val myThrow: Throw, val myOutcome: Outcome) {
-        fun part1Score(): Int {
-            val newOutcome = Outcome.values()[(myThrow.ordinal + 1 - opponentThrow.ordinal) fmod 3]
-            return newOutcome.score + myThrow.score
-        }
-
-        fun part2Score(): Int {
-            val newThrow = Throw.values()[(opponentThrow.ordinal + myOutcome.ordinal - 1) fmod 3]
-            return newThrow.score + myOutcome.score
+        companion object {
+            fun from(n: Int) = values()[n fmod values().size]
         }
     }
 
-    private val rounds = input.lines().map {
-        Round(
-            codeThrow.getValue(it[0]),
-            codeThrow.getValue(it[2]),
-            codeOutcome.getValue(it[2])
-        )
+    private val rounds: List<Round> = input.lines().map { it[0] - 'A' to it[2] - 'X' }
+
+    fun part1() = rounds.sumOf { (opponent, me) ->
+        Outcome.from(me + 1 - opponent).score + Throw.from(me).score
     }
 
-    fun part1() = rounds.sumOf(Round::part1Score)
-
-    fun part2() = rounds.sumOf(Round::part2Score)
+    fun part2() = rounds.sumOf { (opponent, me) ->
+        Outcome.from(me).score + Throw.from(opponent + me - 1).score
+    }
 }
 
 fun main() {
