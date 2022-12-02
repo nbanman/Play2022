@@ -5,12 +5,15 @@ import org.gristle.adventOfCode.utilities.*
 class Y2022D1(input: String) {
 
     private val calories = input
-        .split("\n\n")
+        .split("\n\n") // split on blank lines, so each elf's snacks are grouped
+        // sum all the ints found in each elf's string, then put them all in a descending priority queue
         .toPriorityQueueDescending { it.getInts().sum() }
 
-    fun part1(): Int = calories.peek()
+    fun part1(): Int = calories.peek() // peek at the top of the priority queue, which holds the highest sum
 
-    fun part2() = calories.poll(3).sum()
+    fun part2() = calories
+        .poll(3) // poll the priority queue three times, returning top three elf calorie sums
+        .sum() // sum those three
 }
 
 fun main() {
