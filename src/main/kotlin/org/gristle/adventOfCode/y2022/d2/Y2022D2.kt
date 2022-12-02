@@ -16,8 +16,8 @@ class Y2022D2(input: String) {
 
     // These assigned Integers are also coincidentally very good for the scoring system, as throw scores are simply
     // ordinal value + 1, and outcome scores are ordinal value * 3. Like so:
-    private fun Int.throwScore() = this + 1
-    private fun Int.outcomeScore() = this * 3
+    private fun throwScore(myThrow: Int) = myThrow + 1
+    private fun outcomeScore(myOutcome: Int) = myOutcome * 3
 
     // Now to establish the relationship between throws and scores. The equation to solve for outcome is:
     //     myOutcome = (myThrow - opponentThrow + 1).mod(3)
@@ -29,7 +29,8 @@ class Y2022D2(input: String) {
     private fun myOutcome(myThrow: Int, opponentThrow: Int) = (myThrow - opponentThrow + 1).mod(3)
 
     // Part 2 says that my ordinal represents my outcome rather than my throw. So we need to solve for
-    // my throw. We rearrange the equation with simple algebra:
+    // my throw. We rearrange the above equation with simple algebra, again wrapping it in a floor mod function to keep
+    // the values between 0 and 2:
     //     myThrow = (myOutcome + opponentThrow - 1).mod(3)
     private fun myThrow(myOutcome: Int, opponentThrow: Int) = (myOutcome + opponentThrow - 1).mod(3)
 
@@ -42,13 +43,13 @@ class Y2022D2(input: String) {
     // Part 1 tells us to interpret my number as my throw. So the task is to derive the outcome, then score accordingly.
     fun part1() = rounds.sumOf { (opponentThrow, myThrow) ->
         val myOutcome = myOutcome(myThrow, opponentThrow)
-        myOutcome.outcomeScore() + myThrow.throwScore()
+        outcomeScore(myOutcome) + throwScore(myThrow)
     }
 
     // Part 2 tells us to interpret my number as my outcome. So the task is to derive my throw, then score accordingly.
     fun part2() = rounds.sumOf { (opponentThrow, myOutcome) ->
         val myThrow = myThrow(myOutcome, opponentThrow)
-        myOutcome.outcomeScore() + myThrow.throwScore()
+        outcomeScore(myOutcome) + throwScore(myThrow)
     }
 }
 
