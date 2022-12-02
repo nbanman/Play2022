@@ -7,8 +7,8 @@ class Y2022D2(input: String) {
     private val lines = input.lines().map { line ->
         line
     }
-    private val nestedLines = input.blankSplit().map {
-        it.lines().map { line ->
+    private val nestedLines = input.blankSplit().map { chunk ->
+        chunk.lines().map { line ->
             line
         }
     }
