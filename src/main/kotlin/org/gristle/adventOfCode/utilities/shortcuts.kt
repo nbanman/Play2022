@@ -170,4 +170,3 @@ fun <E> PriorityQueue<E>.poll(n: Int): List<E> {
 fun String.getInts(): Sequence<Int> = Regex("""([+\-])?\d+""")
     .findAll(this)
     .mapNotNull { it.value.toIntOrNull() }
-// .toList()
