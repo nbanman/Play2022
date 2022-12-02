@@ -36,7 +36,7 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
 
     operator fun rem(other: Coord) = Coord(x % other.x, y % other.y)
 
-    infix fun fmod(other: Coord) = Coord(x fmod other.x, y fmod other.y)
+    fun mod(other: Coord) = Coord(x.mod(other.x), y.mod(other.y))
 
     fun max(other: Coord) = Coord(max(x, other.x), max(y, other.y))
 
@@ -50,7 +50,7 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
         return (this + (Coord(distance, distance) * operation()))
             .let {
                 if (size == Coord(0, 0)) it else {
-                    if (wrapAround) it fmod size else Coord(
+                    if (wrapAround) it.mod(size) else Coord(
                         it.x.coerceIn(0 until size.x),
                         it.y.coerceIn(0 until size.y)
                     )

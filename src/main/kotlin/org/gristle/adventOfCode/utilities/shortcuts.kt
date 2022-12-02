@@ -32,11 +32,6 @@ fun <E> Collection<E>.testPrint(transform: (E) -> String = { e -> e.toString() }
     if (isEmpty()) println("Empty collection.") else forEach { println(transform(it)) }
 
 /**
- * Proper mod function.
- */
-infix fun Int.fmod(other: Int) = Math.floorMod(this, other)
-
-/**
  * Returns status of whether Int is even
  */
 fun Int.isEven(): Boolean = this % 2 == 0
@@ -117,7 +112,7 @@ inline fun <E, R : Comparable<R>> Iterable<E>.toPriorityQueueDescending(transfor
  * negative numbers to go in the reverse direction.
  */
 fun <E> List<E>.shift(n: Int): List<E> {
-    val newIndex = n fmod size
+    val newIndex = n.mod(size)
     return drop(newIndex) + subList(0, newIndex)
 }
 
