@@ -33,11 +33,6 @@ inline fun <R> String.groupValues(pattern: Regex, transform: (String) -> R): Lis
         .map { it.groupValues.drop(1).map(transform) }
 }
 
-/**
- * Splits file by newline
- */
-fun String.lines() = split("\n", "\r\n")
-
 fun String.blankSplit(): List<String> = split("\n\n")
 
 /**
