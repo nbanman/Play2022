@@ -7,12 +7,13 @@ class Y2022D3(input: String) {
 
     private val rucksacks = input.lines()
     
-    private fun Set<Char>.priority() = if (first().isLowerCase()) first() - 'a' + 1 else first() - 'A' + 27
+    private fun Char.priority() = if (isLowerCase()) this - 'a' + 1 else this - 'A' + 27
 
     fun part1() = rucksacks.sumOf { sack ->
         sack.chunked(sack.length / 2) // splits each sack into two halves
             .map(String::toSet) // turn each half into a set
             .reduce(Set<Char>::intersect) // get the Char that's in both sets
+            .first()
             .priority() // get the priority of that char
     }
 
@@ -21,6 +22,7 @@ class Y2022D3(input: String) {
         .chunked(3) // chunk in groups of three
         .sumOf { chunk ->  // sum each chunk by the priority of the char shared by all three
             chunk.reduce(Set<Char>::intersect) // get char shared by all three
+                .first()
                 .priority() // get priority of that char
         }
 }
