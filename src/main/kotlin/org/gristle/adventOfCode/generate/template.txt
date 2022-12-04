@@ -4,8 +4,7 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y[[YEAR]]D[[DAY]](input: String) {
 
-    private val parsed = input
-        
+    private val parsed = input.lines()
 
     fun part1() = "To be implemented"
 
@@ -13,6 +12,10 @@ class Y[[YEAR]]D[[DAY]](input: String) {
 }
 
 fun main() {
+    val input = listOf(
+            getInput([[DAY]], [[YEAR]]),
+            """""",
+        )
     val timer = Stopwatch(start = true)
     val solver = Y[[YEAR]]D[[DAY]](getInput([[DAY]], [[YEAR]]))
     println("Class creation: ${timer.lap()}ms")
