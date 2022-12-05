@@ -21,23 +21,18 @@ class Y2022D5(input: String) {
     private val crates = parsed[0]
         .lines()
         .dropLast(1)
-        .map { line ->
-            line
-                .chunked(4)
-                .map { chunk -> chunk.firstOrNull { it.isUpperCase() } }
-        }
 
-    private val stacks = List(crates.first().size) { ArrayDeque<Char>() }
-
-    init {
-        // note that for building the stacks up we use the add command, instead of push. That puts the element at
-        // the bottom, not the top.
-        crates.forEach { line ->
-            line.forEachIndexed { index, c ->
-                if (c != null) stacks[index].add(c)
+    private val stacks = List((crates.first().length + 1) / 4) { ArrayDeque<Char>() }
+        .apply {
+            // note that for building the stacks up we use the add command, instead of push. That puts the element at
+            // the bottom, not the top.
+            crates.forEach { line ->
+                for (index in 1..line.length step 4) {
+                    val crateValue = line[index]
+                    if (crateValue != ' ') get(index / 4).add(crateValue)
+                }
             }
         }
-    }
 
     fun part1(): String {
         // stacks are mutable, so clone the stacks so that they can be reused from starting position in part 2
