@@ -47,9 +47,7 @@ class Y2022D5(input: String) {
     fun solve(rearrange: (stacks: Stacks, instruction: Instruction) -> Unit): String {
         // stacks are mutable, so clone the stacks so that they can be reused 
         val localStacks = stacks.clone()
-        instructions.forEach { instruction -> // for each instruction
-            rearrange(localStacks, instruction)
-        }
+        instructions.forEach { instruction -> rearrange(localStacks, instruction) }
         return buildString { localStacks.forEach { stack -> append(stack.first) } }
     }
 
@@ -57,9 +55,7 @@ class Y2022D5(input: String) {
      * Building block for the 'rearrange' function, moving crates from one stack to another.
      */
     fun move(amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) {
-        repeat(amount) {
-            toStack.push(fromStack.pop())
-        }
+        repeat(amount) { toStack.push(fromStack.pop()) }
     }
     
     fun part1() = solve { stacks, inst -> move(inst.amount, stacks[inst.fromStack], stacks[inst.toStack]) }
