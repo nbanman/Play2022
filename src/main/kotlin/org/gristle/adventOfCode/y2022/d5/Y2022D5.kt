@@ -6,6 +6,8 @@ import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.groupValues
 import java.util.*
 
+private typealias Stacks = List<ArrayDeque<Char>>
+
 class Y2022D5(input: String) {
 
     private val parsed = input.blankSplit()
@@ -22,49 +24,53 @@ class Y2022D5(input: String) {
         .lines()
         .dropLast(1)
 
-    private val stacks = List((crates.first().length + 1) / 4) { ArrayDeque<Char>() }
+    private val stacks: Stacks = List((crates.first().length + 1) / 4) { ArrayDeque<Char>() }
         .apply {
-            // note that for building the stacks up we use the add command, instead of push. That puts the element at
-            // the bottom, not the top.
             crates.forEach { line ->
                 for (index in 1..line.length step 4) {
                     val crateValue = line[index]
+                    // note that for building the stacks up we use the add command, instead of push. That puts the 
+                    // element at the bottom, not the top.
                     if (crateValue != ' ') get(index / 4).add(crateValue)
                 }
             }
         }
 
-    fun part1(): String {
-        // stacks are mutable, so clone the stacks so that they can be reused from starting position in part 2
-        val stacks1 = List(stacks.size) {
-            stacks[it].clone()
+    private fun Stacks.clone(): Stacks = List(size) { get(it).clone() }
+
+    /**
+     * Solve by cloning the stacks, following the instructions to rearrange the crates, then outputting the top
+     * crate in each stack.
+     *
+     * Takes a 'rearrange' function to delegate the rearrangement to each part.
+     */
+    fun solve(rearrange: (stacks: Stacks, instruction: Instruction) -> Unit): String {
+        // stacks are mutable, so clone the stacks so that they can be reused 
+        val localStacks = stacks.clone()
+        instructions.forEach { instruction -> // for each instruction
+            rearrange(localStacks, instruction)
         }
-        instructions.forEach { (amount, fromStack, toStack) -> // for each instruction
-            repeat(amount) { // do the following n number of times
-                stacks1[toStack].push(stacks1[fromStack].pop()) // make the move from one stack to another
-            }
-        }
-        return buildString {
-            stacks1.forEach { stack -> append(stack.first) }
-        }
+        return buildString { localStacks.forEach { stack -> append(stack.first) } }
     }
 
-    fun part2(): String {
-        // Same as part1 except instead of moving directly from one stack to another, we put them in a separate
-        // stack to reverse the order that they are moved twice (thus canceling each other out and maintaining the 
-        // original order).
-        instructions.forEach { (amount, fromStack, toStack) ->
-            val holdingBay: Deque<Char> = ArrayDeque()
-            repeat(amount) {// move to holding stack
-                holdingBay.push(stacks[fromStack].pop())
-            }
-            repeat(amount) {// move from holding stack to new stack
-                stacks[toStack].push(holdingBay.pop())
-            }
+    /**
+     * Building block for the 'rearrange' function, moving crates from one stack to another.
+     */
+    fun move(amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) {
+        repeat(amount) {
+            toStack.push(fromStack.pop())
         }
-        return buildString {
-            stacks.forEach { stack -> append(stack.first) }
-        }
+    }
+    
+    fun part1() = solve { stacks, inst -> move(inst.amount, stacks[inst.fromStack], stacks[inst.toStack]) }
+
+    // Same as part1 except instead of moving directly from one stack to another, we put them in a separate
+    // stack to reverse the order that they are moved twice (thus canceling each other out and maintaining the 
+    // original order).
+    fun part2() = solve { stacks, inst ->
+        val holdingBay = ArrayDeque<Char>()
+        move(inst.amount, stacks[inst.fromStack], holdingBay) // move to holding stack
+        move(inst.amount, holdingBay, stacks[inst.toStack]) // move from holding stack to new stack
     }
 }
 
