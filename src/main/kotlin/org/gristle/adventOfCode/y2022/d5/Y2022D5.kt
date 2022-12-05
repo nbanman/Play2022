@@ -9,20 +9,19 @@ private typealias Instruction = Triple<Int, Int, Int>
 class Y2022D5(input: String) {
     // Split the input into two strings, the first describing the crate arrangement, and the second giving
     // rearrangement instructions.
-    private val parsed = input.blankSplit()
+    private val splitInputLines = input.lines().splitOnBlank()
 
     // Build crate stacks
-    private val crateStacks = parsed[0]
-        .lines()
-        .dropLast(1)
-        .transpose()
-        .filter { it.last().isLetter() }
-        .map { ArrayDeque(it.trimStart().toList()) }
+    private val crateStacks = splitInputLines[0]
+        .dropLast(1) // gets rid of line labeling the stack numbers
+        .transpose() // flip the strings vertically
+        .filter { it.last().isLetter() } // get rid of strings that don't have crate information
+        .map { ArrayDeque(it.trimStart().toList()) } // create and load up stacks
 
     // Get instructions
-    val instructions = parsed[1]
-        .groupValues("""move (\d+) from (\d+) to (\d+)""", String::toInt)
-        .map { gv -> Instruction(gv[0], gv[1] - 1, gv[2] - 1) }
+    val instructions = splitInputLines[1].map {
+        it.getIntList().let { intList -> Instruction(intList[0], intList[1] - 1, intList[2] - 1) }
+    }
 
     /**
      * Solve by cloning the stacks, following the instructions to rearrange the crates, then outputting the top
