@@ -1,14 +1,4 @@
-d12
-Y2016D12Kt
-0
-"org.gristle.adventOfCode.y2016.d13
-Y2016D13Kt
-0
-"org.gristle.adventOfCode.y2016.d14
-Y2016D14Kt
-0
-"org.gristle.adventOfCode.y2016.d15
-Y2016D15Kt
+Kt
 0
 "org.gristle.adventOfCode.y2016.d16
 Y2016D16Kt
@@ -455,6 +445,10 @@ Y2022D25Kt
 !org.gristle.adventOfCode.y2022.d7	Y2022D7Kt
 .
 !org.gristle.adventOfCode.y2022.d8	Y2022D8Kt
+.
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     .adventOfCode.y2022.d8	Y2022D8Kt
+.
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     2022.d8	Y2022D8Kt
 .
 !org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     ¢
  	R

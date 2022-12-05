@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2022.d5
 import org.gristle.adventOfCode.utilities.*
 import java.util.*
 
-private typealias Stacks = List<ArrayDeque<Char>>
 private typealias Instruction = Triple<Int, Int, Int>
 
 class Y2022D5(input: String) {
@@ -29,10 +28,10 @@ class Y2022D5(input: String) {
      *
      * Takes a 'rearrange' function to delegate the rearrangement to each part.
      */
-    fun solve(rearrange: (stacks: Stacks, instruction: Instruction) -> Unit): String {
+    fun solve(rearrange: (amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) -> Unit): String {
         // stacks are mutable, so clone the stacks so that they can be reused 
         val stacks = crateStacks.map { it.clone() }
-        instructions.forEach { instruction -> rearrange(stacks, instruction) }
+        instructions.forEach { (amount, fromIndex, toIndex) -> rearrange(amount, stacks[fromIndex], stacks[toIndex]) }
         return buildString { stacks.forEach { stack -> append(stack.first) } }
     }
 
@@ -43,17 +42,17 @@ class Y2022D5(input: String) {
         repeat(amount) { toStack.push(fromStack.pop()) }
     }
 
-    fun part1() = solve { stacks, (amount, fromStack, toStack) ->
-        move(amount, stacks[fromStack], stacks[toStack])
+    fun part1() = solve { amount, fromStack, toStack ->
+        move(amount, fromStack, toStack)
     }
 
     // Same as part1 except instead of moving directly from one stack to another, we put them in a separate
     // stack to reverse the order that they are moved twice (thus canceling each other out and maintaining the 
     // original order).
-    fun part2() = solve { stacks, (amount, fromStack, toStack) ->
+    fun part2() = solve { amount, fromStack, toStack ->
         val holdingBay = ArrayDeque<Char>()
-        move(amount, stacks[fromStack], holdingBay) // move to holding stack
-        move(amount, holdingBay, stacks[toStack]) // move from holding stack to new stack
+        move(amount, fromStack, holdingBay) // move to holding stack
+        move(amount, holdingBay, toStack) // move from holding stack to new stack
     }
 }
 
