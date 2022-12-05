@@ -36,8 +36,6 @@ class Y2022D5(input: String) {
             }
         }
 
-    private fun Stacks.clone(): Stacks = List(size) { get(it).clone() }
-
     /**
      * Solve by cloning the stacks, following the instructions to rearrange the crates, then outputting the top
      * crate in each stack.
@@ -46,7 +44,7 @@ class Y2022D5(input: String) {
      */
     fun solve(rearrange: (stacks: Stacks, instruction: Instruction) -> Unit): String {
         // stacks are mutable, so clone the stacks so that they can be reused 
-        val localStacks = stacks.clone()
+        val localStacks = stacks.map { it.clone() }
         instructions.forEach { instruction -> rearrange(localStacks, instruction) }
         return buildString { localStacks.forEach { stack -> append(stack.first) } }
     }
