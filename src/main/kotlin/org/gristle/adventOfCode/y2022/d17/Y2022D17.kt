@@ -5,8 +5,7 @@ import org.gristle.adventOfCode.utilities.getInput
 
 class Y2022D17(input: String) {
 
-    private val parsed = input
-
+    private val parsed = input.lines()
 
     fun part1() = "To be implemented"
 
@@ -14,6 +13,10 @@ class Y2022D17(input: String) {
 }
 
 fun main() {
+    val input = listOf(
+        getInput(17, 2022),
+        """""",
+    )
     val timer = Stopwatch(start = true)
     val solver = Y2022D17(getInput(17, 2022))
     println("Class creation: ${timer.lap()}ms")
