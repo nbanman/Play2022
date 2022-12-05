@@ -1,6 +1,30 @@
 package org.gristle.adventOfCode.utilities
 
 /**
+ * Finds all numbers in a string and returns them as a List of Int.
+ */
+fun String.getIntList(omitDashes: Boolean = false): List<Int> {
+    val pattern = if (omitDashes) """\d+""" else """([+\-])?\d+"""
+    return pattern
+        .toRegex()
+        .findAll(this)
+        .mapNotNull { it.value.toIntOrNull() }
+        .toList()
+}
+
+
+/**
+ * Finds all numbers in a string and returns them as a Sequence of Int.
+ */
+fun String.getInts(omitDashes: Boolean = false): Sequence<Int> {
+    val pattern = if (omitDashes) """\d+""" else """([+\-])?\d+"""
+    return pattern
+        .toRegex()
+        .findAll(this)
+        .mapNotNull { it.value.toIntOrNull() }
+}
+
+/**
  * Convenience method to obtain the group values of a findall regex search of a string.
  */
 fun String.groupValues(pattern: String): List<List<String>> = groupValues(pattern.toRegex())
@@ -57,3 +81,4 @@ inline fun <T> Iterable<T>.splitOn(predicate: (T) -> Boolean): List<List<T>> {
     d += u
     return d;
 }
+

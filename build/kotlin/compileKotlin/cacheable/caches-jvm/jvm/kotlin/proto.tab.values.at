@@ -1,12 +1,4 @@
-25Kt
-.
-!org.gristle.adventOfCode.y2015.d3	Y2015D3Kt
-.
-!org.gristle.adventOfCode.y2015.d4	Y2015D4Kt
-.
-!org.gristle.adventOfCode.y2015.d5	Y2015D5Kt
-.
-!org.gristle.adventOfCode.y2015.d6	Y2015D6Kt
+15D6Kt
 .
 !org.gristle.adventOfCode.y2015.d7	Y2015D7Kt
 .
@@ -480,119 +472,79 @@ Y2022D25Kt
 .
 !org.gristle.adventOfCode.y2022.d8	Y2022D8Kt
 .
-!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     rg.gristle.adventOfCode.y2022.d6	Y2022D6Kt
-.
-!org.gristle.adventOfCode.y2022.d7	Y2022D7Kt
-.
-!org.gristle.adventOfCode.y2022.d8	Y2022D8Kt
-.
-!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     ð    œ<
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     00R0X‚¢
+ R0	0X‚¢
+ ¨    -Lorg/gristle/adventOfCode/y2021/d19/Y2021D19;   input   (Ljava/lang/String;)V pattern Lkotlin/text/Regex; scanners   5Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner; solve Lkotlin/Pair;   	Companion Scanner 
+SharedSets Play2022ð     ^
 
  
 
+
+
+ 
+ 
+ † 20B¢J*HH00" *H0H¨   	 7Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Companion;   ()V elementPairs Lkotlin/sequences/Sequence; Lkotlin/Pair; T   Play2022ò    Í8
+
+ 
+ 
+
+ 
  
 
-
-
-
- 
-
- 
+
 $
-
-
+"
 
-Æ 20:B¢J›
-H00" 2H2H0
-0	2H00	2 H
-H0002 H
-H000	H†ø ¢Jy
-H00" 2H2H00	2H
-H002H
-H00	H†ø ¢Jy
-H00" 2H2H00	2H
-H002H
-H00	H†ø ¢J…
-H00" 2H2H00	2 H
-H0002 H
-H000	H†ø ¢J0" *
-H00‚
-™20¨    *Lorg/gristle/adventOfCode/utilities/Graph;   ()V aStar   1Lorg/gristle/adventOfCode/utilities/Graph$Vertex; E startId 	heuristic Lkotlin/Function1;   endCondition   edges   /Lorg/gristle/adventOfCode/utilities/Graph$Edge; defaultEdges “(Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/List; bfs s(Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/List; dfs dijkstra steps   AStarVertex Edge 	StdVertex Vertex Play2022Ú     Â,
 
- 
-
-
-
-
-
-
- 
+
+
+† 20B+00000¢J	0HÆJ00HÆJ00HÆJ30 20200200HÆJ0 2!0HÖJ	"0HÖJ#0HJ$00*0R00¢
+ 	
+R/ 
+000000¢
+ R0¢
+ R&
+000X†¢
+ 
+"R
+000¢
+ 
+R00¢
+ 
+¨%   & 5Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner;   id   beacons   +Lorg/gristle/adventOfCode/utilities/MCoord; scannerLocations 5(Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V 
+getBeacons ()Ljava/util/List; 
+coordPairs       Lkotlin/Pair; getCoordPairs ()Ljava/util/Map; getId ()Ljava/lang/String; mightyMorphisms getMightyMorphisms setMightyMorphisms (Ljava/util/List;)V 	morphisms getMorphisms getScannerLocations 
+component1 
+component2 
+component3 copy equals   other hashCode toString toSet Play2022Ú    =,
 
-
- v * 2
-H0 0J028 0 H–J
-8 0 0HR8 X¦¢R
-8 0 X¦¢R	0
-X¦¢‚¨    1Lorg/gristle/adventOfCode/utilities/Graph$Vertex; E   id getId ()Ljava/lang/Object; parent 	getParent 3()Lorg/gristle/adventOfCode/utilities/Graph$Vertex; weight   	getWeight ()D 	compareTo   other path   6Lorg/gristle/adventOfCode/utilities/Graph$AStarVertex; 4Lorg/gristle/adventOfCode/utilities/Graph$StdVertex; Play2022Þ     ³
-
- 
-
-
-
-
-
-
-  * 2H0B)8 0
-8 0¢J0HR8 X–¢
-
-
-	R
-8 0X–¢
- R0X–¢
- ¨    4Lorg/gristle/adventOfCode/utilities/Graph$StdVertex; E 1Lorg/gristle/adventOfCode/utilities/Graph$Vertex; id weight   parent G(Ljava/lang/Object;DLorg/gristle/adventOfCode/utilities/Graph$Vertex;)V getId ()Ljava/lang/Object; Ljava/lang/Object; 	getParent 3()Lorg/gristle/adventOfCode/utilities/Graph$Vertex; 	getWeight ()D toString   Play2022ì
-    (
-
- 
-
-
-
-
-
-
-
-
-  * 2H02
-H00B18 00
-8 0¢	J028 0H–J0HR
-08F¢R0¢
- R8 X–¢
-
-R
-8 0X–¢
- R0X–¢
- ¨    6Lorg/gristle/adventOfCode/utilities/Graph$AStarVertex; E 1Lorg/gristle/adventOfCode/utilities/Graph$Vertex;   id weight   h parent H(Ljava/lang/Object;DDLorg/gristle/adventOfCode/utilities/Graph$Vertex;)V f getF ()D getH getId ()Ljava/lang/Object; Ljava/lang/Object; 	getParent 3()Lorg/gristle/adventOfCode/utilities/Graph$Vertex; 	getWeight 	compareTo   other toString   Play2022á    *8
-
- 
  
+ 
+
 
-
+"
+
 
 
-
-
- 
-
-
-
- 
+
 
- † * 20B8 0¢J8 HÆ¢J	0HÆJ(8 0 28 20HÆ¢J020HÖJ	0HÖJ.8 028 028 00J	0HÖR8 ¢
-
-	R0¢
- 
-¨    /Lorg/gristle/adventOfCode/utilities/Graph$Edge; E   vertexId weight   (Ljava/lang/Object;D)V getVertexId ()Ljava/lang/Object; Ljava/lang/Object; 	getWeight ()D 
+ † 20B)00
+000¢J	0HÆJ	0HÆJ
+000HÆJ30 20202
+000HÆJ020HÖJ	0HÖJ0J0HR0¢
+ 	
+R0¢
+ 
+R
+000¢
+ ¨    8Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$SharedSets;   master 5Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner; b matches     |(Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner;Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner;Ljava/util/Set;)V getB 7()Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner; 	getMaster 
+getMatches ()Ljava/util/Set; 
 component1 
-component2 copy D(Ljava/lang/Object;D)Lorg/gristle/adventOfCode/utilities/Graph$Edge; equals   other hashCode   toAStarVertex 6Lorg/gristle/adventOfCode/utilities/Graph$AStarVertex; parent 	heuristic Lkotlin/Function1; toString   Play2022á     }*
+component2 
+component3 copy equals   other hashCode merge toString   Play2022/    
+ 
+
+  0¨    main   Play2022É     &
 
  
  
@@ -600,51 +552,185 @@ component2 copy D(Ljava/lang/Object;D)Lorg/gristle/adventOfCode/utilities/Graph
 
  
 
- 
-
- 
+
 
- 20:B0¢J
-0J0R00X‚¢
- R0	X‚¢
- ¨    -Lorg/gristle/adventOfCode/y2018/d23/Y2018D23;   input   (Ljava/lang/String;)V nanobots   5Lorg/gristle/adventOfCode/y2018/d23/Y2018D23$Nanobot; pattern Lkotlin/text/Regex; part1   part2 Cube Nanobot Play2022É
-    ,
+ 20:B0¢J0J0R00¢
+ 	R
+0X†D¢
+ ¨    +Lorg/gristle/adventOfCode/y2021/d2/Y2021D2;   input   (Ljava/lang/String;)V commands   3Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command; getCommands ()Ljava/util/List; pattern 
+getPattern ()Ljava/lang/String; part1   part2 Command Play2022ú     ª0
 
  
  
-
- 
 
-	
-
 
 
- 
-
- † 20B00¢J	0HÆJ	0HÆJ0 2020HÆJ020HÖJ	0HÖJ020HJ020J020 J	0HÖR0¢
- R0¢
- 	
-¨    5Lorg/gristle/adventOfCode/y2018/d23/Y2018D23$Nanobot;   pos (Lorg/gristle/adventOfCode/utilities/Xyz; radius   ,(Lorg/gristle/adventOfCode/utilities/Xyz;I)V getPos *()Lorg/gristle/adventOfCode/utilities/Xyz; 	getRadius ()I 
-component1 
-component2 copy equals   other hashCode 	inRangeOf cube 2Lorg/gristle/adventOfCode/y2018/d23/Y2018D23$Cube; toString   Play2022ö     ®(
+
+
+
+
+
+
+ 6  20:B0¢J02	0H&J(
+0002000H&R0¢
+ ‚¨    3Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command;   amt   (I)V getAmt ()I execute1 *Lorg/gristle/adventOfCode/utilities/Coord; coord execute2 Lkotlin/Pair; heading 	Companion Down Forward Up 8Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command$Down; ;Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command$Forward; 6Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command$Up; Play2022æ     H
 
  
+
+
+ 
+ 
+
+ † 20B¢J0200¨   	 =Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command$Companion;   ()V fromGv 3Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command; gv     Play2022è     w"
+
+
+ 
+
+
+
+
+
+ 20B0¢J020HJ(000	2
+000	H¨    ;Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command$Forward; 3Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command; amt   (I)V execute1 *Lorg/gristle/adventOfCode/utilities/Coord; coord execute2 Lkotlin/Pair; heading Play2022ã     w"
+
+
+ 
+
+
+
+
+
+ 20B0¢J020HJ(000	2
+000	H¨    6Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command$Up; 3Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command; amt   (I)V execute1 *Lorg/gristle/adventOfCode/utilities/Coord; coord execute2 Lkotlin/Pair; heading Play2022å     w"
+
+
+ 
+
+
+
+
+
+ 20B0¢J020HJ(000	2
+000	H¨    8Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command$Down; 3Lorg/gristle/adventOfCode/y2021/d2/Y2021D2$Command; amt   (I)V execute1 *Lorg/gristle/adventOfCode/utilities/Coord; coord execute2 Lkotlin/Pair; heading Play2022/    
+ 
+
+  0¨    main   Play2022â     ™,
+
+ 
+ 
+
+
+ 
+
+ 
+
+
+	
+ 20:B0¢J0200HJ0J0R00X‚¢
+ R0	¢
+ 
+¨    -Lorg/gristle/adventOfCode/y2021/d22/Y2021D22;   input   (Ljava/lang/String;)V cuboids   4Lorg/gristle/adventOfCode/y2021/d22/Y2021D22$Cuboid; pattern Lkotlin/text/Regex; 
+getPattern ()Lkotlin/text/Regex; 	findCubes   part1 part2 Cuboid Play2022÷    ô8
+
+ 
+ 
+
+ 
+
+
+ 
+
+
+
+	
+
+
+† 20B%0000¢J	0HÆJ	0HÆJ	0HÆJ	0HÆJ10 20202020HÆJ0 0
+20 J020HÖJ	0HÖJ020J0 20 HJ020 H†J 020 H†J	!0"HÖJ#0J$00
+*020HJ%0*020HR	00
+X‚¢
+ R0¢
+ R0¢
+ R0¢
+ R0¢
+ ¨&   ' 4Lorg/gristle/adventOfCode/y2021/d22/Y2021D22$Cuboid;   turnOn   x Lkotlin/ranges/IntRange; y z L(ZLkotlin/ranges/IntRange;Lkotlin/ranges/IntRange;Lkotlin/ranges/IntRange;)V ranges   	getTurnOn ()Z getX ()Lkotlin/ranges/IntRange; getY getZ 
+component1 
+component2 
+component3 
+component4 copy disjointCubes other equals hashCode   inRange range 	intersect minus   plus toString   volume disjointRanges union Play2022/    
+ 
+
+  0¨    main   Play2022ç     ‰&
+
+ 
+ 
+
+
+ 
  
 
  
 
+ 20:B0¢J0HJ	0
+20
+20H†J0
+R00X‚¢
+ ¨    -Lorg/gristle/adventOfCode/y2021/d25/Y2021D25;   input   (Ljava/lang/String;)V lines   makeCucumbers 7Lorg/gristle/adventOfCode/y2021/d25/Y2021D25$Cucumbers; part1   steps prev part1b 	Cucumbers Play2022Ð    >,
+
+ 
  
- 
+"
 
 
-
+
+
+
+
 
-  20B#0000¢	J0 0J0HR0¢
+ † 20B)00000¢J00HÆJ00HÆJ	0HÆJ30 20020020HÆJ020HÖJ	0HÖJ0 J	0HÖR00¢
+ 	R0¢
  
-R00¢
- R0¢
- ¨    2Lorg/gristle/adventOfCode/y2018/d23/Y2018D23$Cube;   pos (Lorg/gristle/adventOfCode/utilities/Xyz; length   
-parentBots   5Lorg/gristle/adventOfCode/y2018/d23/Y2018D23$Nanobot; <(Lorg/gristle/adventOfCode/utilities/Xyz;ILjava/util/List;)V 	getLength ()I nanobots getNanobots ()Ljava/util/List; getPos *()Lorg/gristle/adventOfCode/utilities/Xyz; cubify toString   Play2022/    
+R00¢
+ 	¨    7Lorg/gristle/adventOfCode/y2021/d25/Y2021D25$Cucumbers;   east   *Lorg/gristle/adventOfCode/utilities/Coord; south size K(Ljava/util/Set;Ljava/util/Set;Lorg/gristle/adventOfCode/utilities/Coord;)V getEast ()Ljava/util/Set; getSize ,()Lorg/gristle/adventOfCode/utilities/Coord; getSouth 
+component1 
+component2 
+component3 copy equals   other hashCode   step toString   Play2022/    
+ 
+
+  0¨    main   Play2022È     “.
+
+ 
+ 
+
+
+ 
+
+
+
+
+
+ 20:B0¢J0J0J020R00¢
+ 	R
+0X‚D¢
+ ¨    +Lorg/gristle/adventOfCode/y2021/d5/Y2021D5;   input   (Ljava/lang/String;)V lines   0Lorg/gristle/adventOfCode/y2021/d5/Y2021D5$Line; getLines ()Ljava/util/List; pattern part1   part2 solve includeDiagonals   Line Play2022ò	     ð.
+
+ 
+ 
+
+	
+
+
+
+ 
+ 
+
+
+ † 20B00¢J		0HÆJ	
+0HÆJ0 2020HÆJ020HÖJ	0HÖJ0020J	0HÖR0¢
+ R0¢
+ ¨    0Lorg/gristle/adventOfCode/y2021/d5/Y2021D5$Line;   start *Lorg/gristle/adventOfCode/utilities/Coord; end W(Lorg/gristle/adventOfCode/utilities/Coord;Lorg/gristle/adventOfCode/utilities/Coord;)V getEnd ,()Lorg/gristle/adventOfCode/utilities/Coord; getStart 
+component1 
+component2 copy equals   other hashCode   straightRange   includeDiagonals toString   Play2022/    
  
 
   0¨    main   Play2022ô     ]
@@ -658,6 +744,40 @@ parentBots   5Lorg/gristle/adventOfCode/y2018/d23/Y2018D23$Nanobot; <(Lorg/grist
  20B0¢J0J	0R00X‚¢
  ¨
     +Lorg/gristle/adventOfCode/y2022/d1/Y2022D1;   input   (Ljava/lang/String;)V calories Ljava/util/PriorityQueue;   part1 part2 Play2022/    
+ 
+
+  0¨    main   Play2022Í     Å"
+
+ 
+ 
+
+
+ 
+
+
+ 20B0¢J	02
+020HJ
+02	020HJ02	0HJ0J0J02
+0HR 0000X‚¢
+ ¨    +Lorg/gristle/adventOfCode/y2022/d2/Y2022D2;   input   (Ljava/lang/String;)V rounds   Lkotlin/Pair;   	myOutcome myThrow opponentThrow outcomeScore part1 part2 
+throwScore Play2022/    
+ 
+
+  0¨    main   Play2022Ø     s(
+
+ 
+ 
+
+
+ 
+
+
+ 
+
+ 20B0¢J	0
+J0
+R 0000X‚¢
+ ¨    +Lorg/gristle/adventOfCode/y2022/d4/Y2022D4;   input   (Ljava/lang/String;)V ranges   Lkotlin/Pair; Lkotlin/ranges/IntRange; part1   part2 Play2022/    
  
 
   0¨    main   Play2022ÕŸ    'Ì                
@@ -1199,191 +1319,7 @@ Y2022D25Kt
 .
 !org.gristle.adventOfCode.y2022.d8	Y2022D8Kt
 .
-!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     de.y2019.d11
-Y2019D11Kt
-0
-"org.gristle.adventOfCode.y2019.d12
-Y2019D12Kt
-0
-"org.gristle.adventOfCode.y2019.d13
-Y2019D13Kt
-0
-"org.gristle.adventOfCode.y2019.d14
-Y2019D14Kt
-0
-"org.gristle.adventOfCode.y2019.d15
-Y2019D15Kt
-0
-"org.gristle.adventOfCode.y2019.d16
-Y2019D16Kt
-0
-"org.gristle.adventOfCode.y2019.d17
-Y2019D17Kt
-0
-"org.gristle.adventOfCode.y2019.d18
-Y2019D18Kt
-0
-"org.gristle.adventOfCode.y2019.d19
-Y2019D19Kt
-.
-!org.gristle.adventOfCode.y2019.d2	Y2019D2Kt
-0
-"org.gristle.adventOfCode.y2019.d20
-Y2019D20Kt
-0
-"org.gristle.adventOfCode.y2019.d21
-Y2019D21Kt
-0
-"org.gristle.adventOfCode.y2019.d22
-Y2019D22Kt
-0
-"org.gristle.adventOfCode.y2019.d23
-Y2019D23Kt
-0
-"org.gristle.adventOfCode.y2019.d24
-Y2019D24Kt
-0
-"org.gristle.adventOfCode.y2019.d25
-Y2019D25Kt
-.
-!org.gristle.adventOfCode.y2019.d3	Y2019D3Kt
-.
-!org.gristle.adventOfCode.y2019.d4	Y2019D4Kt
-.
-!org.gristle.adventOfCode.y2019.d5	Y2019D5Kt
-.
-!org.gristle.adventOfCode.y2019.d6	Y2019D6Kt
-.
-!org.gristle.adventOfCode.y2019.d7	Y2019D7Kt
-.
-!org.gristle.adventOfCode.y2019.d8	Y2019D8Kt
-.
-!org.gristle.adventOfCode.y2019.d9	Y2019D9Kt
-.
-!org.gristle.adventOfCode.y2020.d1	Y2020D1Kt
-0
-"org.gristle.adventOfCode.y2020.d10
-Y2020D10Kt
-0
-"org.gristle.adventOfCode.y2020.d11
-Y2020D11Kt
-0
-"org.gristle.adventOfCode.y2020.d12
-Y2020D12Kt
-0
-"org.gristle.adventOfCode.y2020.d13
-Y2020D13Kt
-0
-"org.gristle.adventOfCode.y2020.d14
-Y2020D14Kt
-0
-"org.gristle.adventOfCode.y2020.d15
-Y2020D15Kt
-0
-"org.gristle.adventOfCode.y2020.d16
-Y2020D16Kt
-0
-"org.gristle.adventOfCode.y2020.d17
-Y2020D17Kt
-0
-"org.gristle.adventOfCode.y2020.d18
-Y2020D18Kt
-0
-"org.gristle.adventOfCode.y2020.d19
-Y2020D19Kt
-.
-!org.gristle.adventOfCode.y2020.d2	Y2020D2Kt
-0
-"org.gristle.adventOfCode.y2020.d20
-Y2020D20Kt
-0
-"org.gristle.adventOfCode.y2020.d21
-Y2020D21Kt
-0
-"org.gristle.adventOfCode.y2020.d22
-Y2020D22Kt
-0
-"org.gristle.adventOfCode.y2020.d23
-Y2020D23Kt
-0
-"org.gristle.adventOfCode.y2020.d24
-Y2020D24Kt
-0
-"org.gristle.adventOfCode.y2020.d25
-Y2020D25Kt
-.
-!org.gristle.adventOfCode.y2020.d3	Y2020D3Kt
-.
-!org.gristle.adventOfCode.y2020.d4	Y2020D4Kt
-.
-!org.gristle.adventOfCode.y2020.d5	Y2020D5Kt
-.
-!org.gristle.adventOfCode.y2020.d6	Y2020D6Kt
-.
-!org.gristle.adventOfCode.y2020.d7	Y2020D7Kt
-.
-!org.gristle.adventOfCode.y2020.d8	Y2020D8Kt
-.
-!org.gristle.adventOfCode.y2020.d9	Y2020D9Kt
-,
-org.gristle.adventOfCode.y2021
-TemplateKt
-.
-!org.gristle.adventOfCode.y2021.d1	Y2021D1Kt
-0
-"org.gristle.adventOfCode.y2021.d10
-Y2021D10Kt
-0
-"org.gristle.adventOfCode.y2021.d11
-Y2021D11Kt
-0
-"org.gristle.adventOfCode.y2021.d12
-Y2021D12Kt
-0
-"org.gristle.adventOfCode.y2021.d13
-Y2021D13Kt
-0
-"org.gristle.adventOfCode.y2021.d14
-Y2021D14Kt
-0
-"org.gristle.adventOfCode.y2021.d15
-Y2021D15Kt
-0
-"org.gristle.adventOfCode.y2021.d16
-Y2021D16Kt
-0
-"org.gristle.adventOfCode.y2021.d17
-Y2021D17Kt
-0
-"org.gristle.adventOfCode.y2021.d18
-Y2021D18Kt
-0
-"org.gristle.adventOfCode.y2021.d19
-Y2021D19Kt
-.
-!org.gristle.adventOfCode.y2021.d2	Y2021D2Kt
-0
-"org.gristle.adventOfCode.y2021.d20
-Y2021D20Kt
-0
-"org.gristle.adventOfCode.y2021.d21
-Y2021D21Kt
-0
-"org.gristle.adventOfCode.y2021.d22
-Y2021D22Kt
-0
-"org.gristle.adventOfCode.y2021.d23
-Y2021D23Kt
-0
-"org.gristle.adventOfCode.y2021.d24
-Y2021D24Kt
-0
-"org.gristle.adventOfCode.y2021.d25
-Y2021D25Kt
-.
-!org.gristle.adventOfCode.y2021.d3	Y2021D3Kt
-.
-!org.gristle.adventOfCode.y2021.d4	Y2021D4Kt
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     fCode.y2021.d4	Y2021D4Kt
 .
 !org.gristle.adventOfCode.y2021.d5	Y2021D5Kt
 .

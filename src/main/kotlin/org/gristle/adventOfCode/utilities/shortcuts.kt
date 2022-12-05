@@ -174,9 +174,4 @@ fun <E> PriorityQueue<E>.poll(n: Int): List<E> {
     return MutableList(min(n, size)) { poll() }
 }
 
-/**
- * Finds all numbers in a string and returns them as a List of Int.
- */
-fun String.getInts(): Sequence<Int> = Regex("""([+\-])?\d+""")
-    .findAll(this)
-    .mapNotNull { it.value.toIntOrNull() }
+
