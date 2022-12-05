@@ -64,6 +64,19 @@ fun String.blankSplit(): List<String> = split("\n\n")
  */
 inline fun <E> String.lines(transform: (String) -> E) = split("\n", "\r\n").map(transform)
 
+fun List<String>.transpose(): List<String> {
+    val width = first().length
+    require(all { it.length == width }) { "The rows are not of equal size." }
+    val height = size
+    return List(width) { x ->
+        buildString {
+            for (y in 0 until height) {
+                append(this@transpose[y][x])
+            }
+        }
+    }
+}
+
 /**
  * Split on predicate
  */
