@@ -4,7 +4,25 @@ import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
 
 class Y2022D6(private val input: String) {
-    fun solve(n: Int) = input.windowed(n).indexOfFirst { it.toSet().size == n } + n
+    fun solve(n: Int): Int {
+        var distinct = 0
+        val counts = IntArray(26)
+
+        return 1 + input.indices.first { index ->
+            if (index >= n) {
+                when (--counts[input[index - n] - 'a']) {
+                    0 -> distinct--
+                    1 -> distinct++
+                }
+            }
+            when (++counts[input[index] - 'a']) {
+                1 -> distinct++
+                2 -> distinct--
+            }
+            distinct == n
+        }
+    }
+
     fun part1() = solve(4)
     fun part2() = solve(14)
 }
