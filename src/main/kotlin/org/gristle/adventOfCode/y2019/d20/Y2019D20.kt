@@ -140,9 +140,8 @@ class Y2019D20(input: String) {
                 mutableMapOf(*it.toTypedArray())
             }
 
-        val test = Graph.dijkstra(start.locator, { u -> u == end.locator }, p1Nodes)
-        val endLength = test.find { nodes[it.id].name == "end" }!!.weight
-        return endLength.toInt()
+        val distance = Graph.dijkstra(start.locator, { u -> u == end.locator }, p1Nodes)
+        return distance.steps()
     }
     
     fun part2(): Int {
