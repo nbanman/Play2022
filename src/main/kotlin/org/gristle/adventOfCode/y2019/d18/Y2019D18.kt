@@ -92,7 +92,7 @@ class Y2019D18(input: String) {
         // two edges along the way to points of interest.
         val nodes = getNodes(tunnels)
         // Create a map of edges with this shrunken graph.
-        @Suppress("RemoveExplicitTypeArguments") val edges = buildMap<String, List<Graph.Edge<String>>> {
+        val edges: Map<String, List<Graph.Edge<String>>> = buildMap {
             nodes.forEach { node ->
                 put(
                     tunnels.id(node.locator),

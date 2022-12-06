@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2019.d20
 
 import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Graph.steps
 
 class Y2019D20(input: String) {
 
@@ -122,7 +123,7 @@ class Y2019D20(input: String) {
     private val maze = input.toGrid()
     private val nodes = maze.mapIndexed { index, c -> N1920(c, index, maze) }.toGrid(maze.width).apply {
         forEach { it.getEdges(this) }
-        forEach { it.safeDelete() }
+        forEach(N1920::safeDelete)
     }
     private val start = nodes.find { it.name == "start" }!!
     private val end = nodes.find { it.name == "end" }!!
@@ -178,10 +179,8 @@ class Y2019D20(input: String) {
                 }
             }
         }
-        val endLength2 = distance.find { it.id.name == "end" && it.id.level == 0 }!!.weight
-        return endLength2.toInt()
+        return distance.steps()
     }
-
 }
 
 fun main() {
