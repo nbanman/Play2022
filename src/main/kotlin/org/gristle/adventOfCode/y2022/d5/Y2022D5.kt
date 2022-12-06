@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2022.d5
 
 import org.gristle.adventOfCode.utilities.*
-import java.util.*
 
 private typealias Instruction = Triple<Int, Int, Int>
 
@@ -30,16 +29,16 @@ class Y2022D5(input: String) {
      */
     fun solve(rearrange: (amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) -> Unit): String {
         // stacks are mutable, so clone the stacks so that they can be reused 
-        val stacks = crateStacks.map { it.clone() }
+        val stacks = crateStacks.map { ArrayDeque(it) }
         instructions.forEach { (amount, fromIndex, toIndex) -> rearrange(amount, stacks[fromIndex], stacks[toIndex]) }
-        return buildString { stacks.forEach { stack -> append(stack.first) } }
+        return buildString { stacks.forEach { stack -> append(stack.first()) } }
     }
 
     /**
      * Building block for the 'rearrange' function, moving crates from one stack to another.
      */
     fun move(amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) {
-        repeat(amount) { toStack.push(fromStack.pop()) }
+        repeat(amount) { toStack.addFirst(fromStack.removeFirst()) }
     }
 
     fun part1() = solve { amount, fromStack, toStack ->
