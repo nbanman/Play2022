@@ -358,6 +358,13 @@ inline fun <R> String.toGrid(transform: (Char) -> R): Grid<R> {
         .toGrid(width)
 }
 
+inline fun <R> String.toGridIndexed(transform: (index: Int, Char) -> R): Grid<R> {
+    val width = indexOfAny(charArrayOf('\n', '\r'))
+    return replace("[\r\n]+".toRegex(), "")
+        .mapIndexed { index, c -> transform(index, c) }
+        .toGrid(width)
+}
+
 fun <E> Array<E>.toMutableGrid(width: Int): MutableGrid<E> = ArrayGrid(this.toList(), width)
 
 fun <E> List<E>.toMutableGrid(width: Int): MutableGrid<E> = ArrayGrid(this, width)
@@ -366,15 +373,22 @@ fun <E> Grid<E>.toMutableGrid(): MutableGrid<E> = ArrayGrid(this, this.width)
 
 fun String.toMutableGrid(width: Int): MutableGrid<Char> = ArrayGrid(this.toList(), width)
 
-fun String.toMutableGrid(): Grid<Char> {
+fun String.toMutableGrid(): MutableGrid<Char> {
     val width = indexOfAny(charArrayOf('\n', '\r'))
     return replace("[\r\n]+".toRegex(), "").toMutableGrid(width)
 }
 
-inline fun <R> String.toMutableGrid(transform: (Char) -> R): Grid<R> {
+inline fun <R> String.toMutableGrid(transform: (Char) -> R): MutableGrid<R> {
     val width = indexOfAny(charArrayOf('\n', '\r'))
     return replace("[\r\n]+".toRegex(), "")
         .map { transform(it) }
+        .toMutableGrid(width)
+}
+
+inline fun <R> String.toMutableGridIndexed(transform: (index: Int, Char) -> R): MutableGrid<R> {
+    val width = indexOfAny(charArrayOf('\n', '\r'))
+    return replace("[\r\n]+".toRegex(), "")
+        .mapIndexed { index, c -> transform(index, c) }
         .toMutableGrid(width)
 }
 
