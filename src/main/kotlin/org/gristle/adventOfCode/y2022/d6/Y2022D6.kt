@@ -3,20 +3,13 @@ package org.gristle.adventOfCode.y2022.d6
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
 
-class Y2022D6(input: String) {
-
-    private val parsed = input.lines()
-
-    fun part1() = "To be implemented"
-
-    fun part2() = "To be implemented"
+class Y2022D6(private val input: String) {
+    fun solve(n: Int) = input.windowed(n).indexOfFirst { it.toSet().size == n } + n
+    fun part1() = solve(4)
+    fun part2() = solve(14)
 }
 
 fun main() {
-    val input = listOf(
-        getInput(6, 2022),
-        """""",
-    )
     val timer = Stopwatch(start = true)
     val solver = Y2022D6(getInput(6, 2022))
     println("Class creation: ${timer.lap()}ms")
