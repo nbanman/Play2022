@@ -4,6 +4,9 @@ import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
 
 class Y2022D6(private val input: String) {
+    // Pretty one-liner is 4x slower
+    // fun solve(n: Int) = n + input.windowed(4).indexOfFirst { it.toSet().size == n }
+    
     fun solve(n: Int): Int {
         var distinct = 0
         val counts = IntArray(26)
