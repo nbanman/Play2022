@@ -3,21 +3,13 @@ package org.gristle.adventOfCode.utilities
 /**
  * Finds all numbers in a string and returns them as a List of Int.
  */
-fun String.getIntList(omitDashes: Boolean = false): List<Int> {
-    val pattern = if (omitDashes) """\d+""" else """([+\-])?\d+"""
-    return pattern
-        .toRegex()
-        .findAll(this)
-        .mapNotNull { it.value.toIntOrNull() }
-        .toList()
-}
-
+fun String.getIntList(omitDashes: Boolean = false) = getInts(omitDashes).toList()
 
 /**
  * Finds all numbers in a string and returns them as a Sequence of Int.
  */
 fun String.getInts(omitDashes: Boolean = false): Sequence<Int> {
-    val pattern = if (omitDashes) """\d+""" else """([+\-])?\d+"""
+    val pattern = if (omitDashes) """\d+""" else """-?\d+"""
     return pattern
         .toRegex()
         .findAll(this)
