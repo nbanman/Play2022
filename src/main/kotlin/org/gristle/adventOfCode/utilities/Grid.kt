@@ -392,6 +392,15 @@ inline fun <R> String.toMutableGridIndexed(transform: (index: Int, Char) -> R): 
         .toMutableGrid(width)
 }
 
+inline fun <R> String.toMutableGridPos(transform: (pos: Coord, Char) -> R): MutableGrid<R> {
+    val width = indexOfAny(charArrayOf('\n', '\r'))
+    return replace("[\r\n]+".toRegex(), "")
+        .mapIndexed { index, c ->
+            val pos = Coord.fromIndex(index, width)
+            transform(pos, c)
+        }.toMutableGrid(width)
+}
+
 fun <E> Grid<E>.addRight(addGrid: Grid<E>): Grid<E> {
     require(height == addGrid.height) {
         "New grid must have the same height (${addGrid.height}) as the one added to (${height})."

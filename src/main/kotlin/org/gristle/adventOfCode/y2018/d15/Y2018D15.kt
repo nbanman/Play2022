@@ -171,14 +171,12 @@ class Y2018D15(val input: String) {
     fun solve(elfDamage: Int): Pair<String, Int> {
 
         // Initialize world
-        val width = input.indexOfFirst { it in "\r\n" }
-        val world = input.toMutableGridIndexed { index, c ->
-            val pos = Coord.fromIndex(index, width)
+        val world = input.toMutableGridPos { coord, c ->
             when (c) {
-                '#' -> Wall(pos)
-                'E' -> Elf(pos, elfDamage)
-                'G' -> Goblin(pos)
-                else -> OpenSpace(pos)
+                '#' -> Wall(coord)
+                'E' -> Elf(coord, elfDamage)
+                'G' -> Goblin(coord)
+                else -> OpenSpace(coord)
             }
         }
 
