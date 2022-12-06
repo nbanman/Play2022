@@ -4,33 +4,24 @@ import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
 
 class Y2022D6(private val input: String) {
-    // Pretty one-liner is 4x slower
-    // fun solve(n: Int) = n + input.windowed(4).indexOfFirst { it.toSet().size == n }
-    
-    fun solve(n: Byte): Int {
-        // counts number of distinct values
-        var distinct: Byte = 0
+    // Pretty one-liner (that I came up with) is 4x slower
+    fun slowSolve(n: Int) = n + input.windowed(4).indexOfFirst { it.toSet().size == n }
 
-        // tracks the number of times a specific value exists in the n-sized window
-        val counts = ByteArray(26)
-
-        // returns 1 plus the first index where the resulting window has all distinct values
-        return 1 + input.indices.first { index ->
-            // Only runs once the window reaches 'n' size. Removes the left-most value to make room for the next one.
-            if (index >= n) {
-                // Subtracts the left-most value from 'counts' and adjusts the 'distinct' count downward as necessary.
-                when (--counts[input[index - n] - 'a']) {
-                    0.toByte() -> distinct--
-                    1.toByte() -> distinct++
-                }
-            }
-            // Adds the next value from 'counts' and adjusts the 'distinct' count upward as necessary.
-            when (++counts[input[index] - 'a']) {
-                1.toByte() -> distinct++
-                2.toByte() -> distinct--
-            }
-            distinct == n // Predicate
-        }
+    // Alexander af Trolle's brilliant solution, modified to use an IntArray for kicks.
+    fun solve(n: Int): Int {
+        // tracks the index of the last time the character was encountered
+        val duplicateIndexes = IntArray(26)
+        // tracks the index of the last time a first character of a duplicate was encountered
+        var duplicateIndex = 0
+        var index = 0
+        return input.indexOfFirst { c ->
+            // update the index in the map and grab the previous index for that character 
+            val lastSeen = duplicateIndexes[c - 'a']
+            duplicateIndexes[c - 'a'] = index
+            duplicateIndex = duplicateIndex.coerceAtLeast(lastSeen) // update duplicateIndex
+            // if the last duplicate's first character index is further than n characters away, predicate matched 
+            index++ - duplicateIndex >= n
+        } + 1
     }
 
     fun part1() = solve(4)
@@ -38,10 +29,16 @@ class Y2022D6(private val input: String) {
 }
 
 fun main() {
+    val input = listOf(
+        getInput(6, 2022),
+        """bvwbjplbgvbhsrlpgdmjqwftvncz""",
+        """nppdvjthqldpwncqszvftbrmjlhg""",
+        """nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg""",
+    )
     val timer = Stopwatch(start = true)
-    val solver = Y2022D6(getInput(6, 2022))
+    val solver = Y2022D6(input[0])
     println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 
-    println("Total time: ${timer.elapsed()}ms")
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1361
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 3263
+    println("Total time: ${timer.elapsed()}ms") // 20ms
 }
