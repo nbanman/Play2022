@@ -7,12 +7,12 @@ class Y2022D6(private val input: String) {
     // Pretty one-liner is 4x slower
     // fun solve(n: Int) = n + input.windowed(4).indexOfFirst { it.toSet().size == n }
     
-    fun solve(n: Int): Int {
+    fun solve(n: Byte): Int {
         // counts number of distinct values
-        var distinct = 0
+        var distinct: Byte = 0
 
         // tracks the number of times a specific value exists in the n-sized window
-        val counts = IntArray(26)
+        val counts = ByteArray(26)
 
         // returns 1 plus the first index where the resulting window has all distinct values
         return 1 + input.indices.first { index ->
@@ -20,14 +20,14 @@ class Y2022D6(private val input: String) {
             if (index >= n) {
                 // Subtracts the left-most value from 'counts' and adjusts the 'distinct' count downward as necessary.
                 when (--counts[input[index - n] - 'a']) {
-                    0 -> distinct--
-                    1 -> distinct++
+                    0.toByte() -> distinct--
+                    1.toByte() -> distinct++
                 }
             }
             // Adds the next value from 'counts' and adjusts the 'distinct' count upward as necessary.
             when (++counts[input[index] - 'a']) {
-                1 -> distinct++
-                2 -> distinct--
+                1.toByte() -> distinct++
+                2.toByte() -> distinct--
             }
             distinct == n // Predicate
         }
