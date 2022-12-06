@@ -18,7 +18,7 @@ fun main() {
         """""",
     )
     val timer = Stopwatch(start = true)
-    val solver = Y2022D10(getInput(10, 2022))
+    val solver = Y2022D10(input[1])
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 
