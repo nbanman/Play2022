@@ -172,7 +172,7 @@ class Y2018D15(val input: String) {
 
         // Initialize world
         val width = input.indexOfFirst { it in "\r\n" }
-        val world = input.toGrid().mapToMutableGridIndexed { index, c ->
+        val world = input.toMutableGridIndexed { index, c ->
             val pos = Coord.fromIndex(index, width)
             when (c) {
                 '#' -> Wall(pos)
