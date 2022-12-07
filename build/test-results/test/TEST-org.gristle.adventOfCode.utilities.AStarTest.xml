@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.gristle.adventOfCode.utilities.AStarTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-12-07T18:13:35" hostname="GLORIOUSALLRED" time="1.61">
+<testsuite name="org.gristle.adventOfCode.utilities.AStarTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-12-07T20:07:08" hostname="GLORIOUSALLRED" time="1.029">
   <properties/>
-  <testcase name="aStarWorksMultidimensinally$Play2022()" classname="org.gristle.adventOfCode.utilities.AStarTest" time="1.61"/>
+  <testcase name="aStarWorksMultidimensinally$Play2022()" classname="org.gristle.adventOfCode.utilities.AStarTest" time="1.029"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

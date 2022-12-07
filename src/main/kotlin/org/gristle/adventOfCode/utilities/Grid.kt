@@ -49,6 +49,18 @@ interface Grid<out E> : List<E> {
 
     fun getNeighbors(index: Int, includeDiagonals: Boolean = false, wrapAround: Boolean = false): List<E>
 
+    fun getNeighborsIndexedValue(
+        coord: Coord, includeDiagonals: Boolean = false, wrapAround: Boolean = false
+    ): List<IndexedValue<E>>
+
+    fun getNeighborsIndexedValue(
+        x: Int, y: Int, includeDiagonals: Boolean = false, wrapAround: Boolean = false
+    ): List<IndexedValue<E>>
+
+    fun getNeighborsIndexedValue(
+        index: Int, includeDiagonals: Boolean = false, wrapAround: Boolean = false
+    ): List<IndexedValue<E>>
+
     fun rotate270(): Grid<E>
     fun rotate180(): Grid<E>
     fun rotate90(): Grid<E>
@@ -147,7 +159,36 @@ class ArrayGrid<E> private constructor(
         y: Int,
         includeDiagonals: Boolean,
         wrapAround: Boolean
-    ): List<Int> {
+    ): List<Int> = getNeighborsIndexedValue(x, y, includeDiagonals, wrapAround).map { it.index }
+
+    override fun getNeighborIndices(coord: Coord, includeDiagonals: Boolean, wrapAround: Boolean) =
+        getNeighborIndices(coord.x, coord.y, includeDiagonals, wrapAround)
+
+    override fun getNeighbors(
+        coord: Coord,
+        includeDiagonals: Boolean,
+        wrapAround: Boolean
+    ) = getNeighbors(coord.x, coord.y, includeDiagonals, wrapAround)
+
+    override fun getNeighbors(
+        x: Int,
+        y: Int,
+        includeDiagonals: Boolean,
+        wrapAround: Boolean
+    ): List<E> {
+        return getNeighborsIndexedValue(x, y, includeDiagonals, wrapAround).map { it.value }
+    }
+
+    override fun getNeighbors(index: Int, includeDiagonals: Boolean, wrapAround: Boolean) =
+        getNeighbors(coordOf(index), includeDiagonals, wrapAround)
+
+    override fun getNeighborsIndexedValue(
+        coord: Coord, includeDiagonals: Boolean, wrapAround: Boolean
+    ): List<IndexedValue<E>> = getNeighborsIndexedValue(coord.x, coord.y, includeDiagonals, wrapAround)
+
+    override fun getNeighborsIndexedValue(
+        x: Int, y: Int, includeDiagonals: Boolean, wrapAround: Boolean
+    ): List<IndexedValue<E>> {
         return if (includeDiagonals) {
             listOf(
                 x - 1 to y - 1,
@@ -184,33 +225,16 @@ class ArrayGrid<E> private constructor(
             } else coordinates.second
 
             if (wrapAround || (neighborX in xIndices && neighborY in yIndices)) {
-                indexOf(neighborX, neighborY)
+                IndexedValue(indexOf(neighborX, neighborY), this[neighborX, neighborY])
             } else {
                 null
             }
         }
     }
 
-    override fun getNeighborIndices(coord: Coord, includeDiagonals: Boolean, wrapAround: Boolean) =
-        getNeighborIndices(coord.x, coord.y, includeDiagonals, wrapAround)
-
-    override fun getNeighbors(
-        coord: Coord,
-        includeDiagonals: Boolean,
-        wrapAround: Boolean
-    ) = getNeighbors(coord.x, coord.y, includeDiagonals, wrapAround)
-
-    override fun getNeighbors(
-        x: Int,
-        y: Int,
-        includeDiagonals: Boolean,
-        wrapAround: Boolean
-    ): List<E> {
-        return getNeighborIndices(x, y, includeDiagonals, wrapAround).map { this[it] }
-    }
-
-    override fun getNeighbors(index: Int, includeDiagonals: Boolean, wrapAround: Boolean) =
-        getNeighbors(coordOf(index), includeDiagonals, wrapAround)
+    override fun getNeighborsIndexedValue(
+        index: Int, includeDiagonals: Boolean, wrapAround: Boolean
+    ): List<IndexedValue<E>> = getNeighborsIndexedValue(coordOf(index), includeDiagonals, wrapAround)
 
     private inline fun rotate(changeShape: Boolean, transform: (Int) -> Int): Grid<E> {
         return List(size) { i ->
@@ -449,3 +473,25 @@ fun Grid<Boolean>.representation() = representation { if (it) '#' else '.' }
 
 fun Grid<Char>.rep() = representation { it }
 
+fun Grid<Char>.getEdgeMap(): Map<IndexedValue<Char>, List<Graph.Edge<IndexedValue<Char>>>> {
+    val ignore = "#. "
+    val edgeMap = mutableMapOf<IndexedValue<Char>, List<Graph.Edge<IndexedValue<Char>>>>()
+    fun neighborEdges(node: IndexedValue<Char>) = getNeighborsIndexedValue(node.index)
+        .filter { it.value != '#' }
+        .map { Graph.Edge(it, 1.0) }
+
+    val getEdges: (IndexedValue<Char>) -> List<Graph.Edge<IndexedValue<Char>>> = { node ->
+        if (node.value !in ignore && edgeMap[node] != null) {
+            edgeMap[node] ?: neighborEdges(node)
+        } else {
+            neighborEdges(node)
+        }
+    }
+    withIndex().filter { it.value !in ignore }.forEach { node ->
+        edgeMap[node] = Graph.dijkstra(node, defaultEdges = getEdges)
+            .filter { it.id.value !in ignore }
+            .drop(1)
+            .map { Graph.Edge(it.id, it.weight) }
+    }
+    return edgeMap
+}
