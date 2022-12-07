@@ -33,7 +33,6 @@ class Y2022D7(input: String) {
                     directories[dirName] = newDir
                     allDirectories.add(newDir)
                 }
-
                 line[0].isDigit() -> current.apply { totalFileSize += line.takeWhile { it != ' ' }.toInt() }
                 else -> current
             }
@@ -47,7 +46,7 @@ class Y2022D7(input: String) {
             val spaceAvailable = 70000000L - homeDirectory.size
             val minDirSize = 30000000L - spaceAvailable
             it.size >= minDirSize // predicate
-        }.minOf { it.size }
+        }.minOf(Directory::size)
 }
 
 fun main() {
