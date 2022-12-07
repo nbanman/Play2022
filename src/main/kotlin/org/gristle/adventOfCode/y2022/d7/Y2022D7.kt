@@ -32,7 +32,6 @@ class Y2022D7(input: String) {
                     val fileSize = line.takeWhile { it != ' ' }.toInt()
                     path.forEach { dir -> dir.fileSize += fileSize }
                 }
-
                 line.startsWith("dir") -> { // add a new directory
                     val newDir = Directory(line.lastWord())
                     path.last().directories[newDir.name] = newDir
