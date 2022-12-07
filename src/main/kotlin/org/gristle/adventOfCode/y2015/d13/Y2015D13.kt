@@ -13,7 +13,7 @@ class Y2015D13(input: String) {
             .groupValues(pattern)
             .forEach { gv ->
                 val happinessUnits = gv[2].toInt().let { if (gv[1] == "gain") it else -it }
-                computeIfAbsent(gv[0]) { mutableMapOf() }[gv[3]] = happinessUnits
+                getOrPut(gv[0]) { mutableMapOf() }[gv[3]] = happinessUnits
             }
     } as Map<String, Map<String, Int>>
 
