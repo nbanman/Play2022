@@ -473,8 +473,7 @@ fun Grid<Boolean>.representation() = representation { if (it) '#' else '.' }
 
 fun Grid<Char>.rep() = representation { it }
 
-fun Grid<Char>.getEdgeMap(): Map<IndexedValue<Char>, List<Graph.Edge<IndexedValue<Char>>>> {
-    val ignore = "#. "
+fun Grid<Char>.getEdgeMap(ignore: String = "#. "): Map<IndexedValue<Char>, List<Graph.Edge<IndexedValue<Char>>>> {
     val edgeMap = mutableMapOf<IndexedValue<Char>, List<Graph.Edge<IndexedValue<Char>>>>()
     fun neighborEdges(node: IndexedValue<Char>) = getNeighborsIndexedValue(node.index)
         .filter { it.value != '#' }
