@@ -30,15 +30,13 @@ class Y2016D24(input: String) {
     // Naive edge map providing distance from any given number to all the other numbers. Naive in the sense that
     // the Dijkstra algo does not use it directly because we need to generate the edges on the fly in order to 
     // track the numbers already visited.    
-    private val edgeMap = layout.getEdgeMap().entries.associate { entry ->
-        entry.key.value to entry.value.map { Graph.Edge(it.vertexId.value, it.weight) }
-    }
+    private val edgeMap = layout.getEdgeMap()
 
     // "State" tracks where the search is currently at and what numbers have been visited.
-    data class State(val location: Char, val numbersVisited: Set<Char>)
+    data class State(val location: IndexedValue<Char>, val numbersVisited: Set<IndexedValue<Char>>)
 
     // Both parts have the same start: at '0', thus having already visited '0'
-    private val start = State('0', setOf('0'))
+    private val start = IndexedValue(layout.indexOf('0'), '0').let { State(it, setOf(it)) }
 
     // Function to plug into Dijkstra that takes the edges from the edgemap and massages them to include all
     // the State data.
@@ -56,7 +54,7 @@ class Y2016D24(input: String) {
     fun part1() = solve { it.numbersVisited.size == numbers.size }
 
     // Part two ends when all numbers have been visited AND the robot has gone back to '0'
-    fun part2() = solve { it.location == '0' && it.numbersVisited.size == numbers.size }
+    fun part2() = solve { it.location.value == '0' && it.numbersVisited.size == numbers.size }
 }
 
 fun main() {
