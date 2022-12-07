@@ -21,7 +21,6 @@ import org.gristle.adventOfCode.utilities.Graph.steps
  * weighted edge map for all important locations. It is the same speed, but it is hopefully useful in the future.
  */
 
-private typealias Location = IndexedValue<Char>
 class Y2016D24(input: String) {
     // Read map
     private val layout = input.toGrid()
@@ -35,10 +34,10 @@ class Y2016D24(input: String) {
     private val edgeMap = layout.getEdgeMap()
 
     // "State" tracks where the search is currently at and what numbers have been visited.
-    data class State(val location: Location, val numbersVisited: Set<Location>)
+    data class State(val location: Char, val numbersVisited: Set<Char>)
 
     // Both parts have the same start: at '0', thus having already visited '0'
-    private val start = Location(layout.indexOf('0'), '0').let { State(it, setOf(it)) }
+    private val start = State('0', setOf('0'))
 
     // Function to plug into Dijkstra that takes the edges from the edgemap and massages them to include all
     // the State data.
@@ -56,7 +55,7 @@ class Y2016D24(input: String) {
     fun part1() = solve { it.numbersVisited.size == numbers.size }
 
     // Part two ends when all numbers have been visited AND the robot has gone back to '0'
-    fun part2() = solve { it.location.value == '0' && it.numbersVisited.size == numbers.size }
+    fun part2() = solve { it.location == '0' && it.numbersVisited.size == numbers.size }
 }
 
 fun main() {
