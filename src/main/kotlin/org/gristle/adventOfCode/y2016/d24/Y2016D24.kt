@@ -17,9 +17,11 @@ import org.gristle.adventOfCode.utilities.Graph.steps
  * that into a Dijkstra search. The "location" tracked not only the current position, but all numbers visited.
  * This was enough information to provide appropriate end conditions for both parts 1 and 2.
  *
- * My latest solution uses the Grid<Char>getEdgeMap function, which uses Dijkstra to generate the weighted edge map.
- * It is the same speed, but it is hopefully useful in the future.
+ * My latest solution uses the Grid<Char>getEdgeMap function, which uses a bootstrapping Dijkstra to generate the
+ * weighted edge map for all important locations. It is the same speed, but it is hopefully useful in the future.
  */
+
+private typealias Location = IndexedValue<Char>
 class Y2016D24(input: String) {
     // Read map
     private val layout = input.toGrid()
@@ -33,10 +35,10 @@ class Y2016D24(input: String) {
     private val edgeMap = layout.getEdgeMap()
 
     // "State" tracks where the search is currently at and what numbers have been visited.
-    data class State(val location: IndexedValue<Char>, val numbersVisited: Set<IndexedValue<Char>>)
+    data class State(val location: Location, val numbersVisited: Set<Location>)
 
     // Both parts have the same start: at '0', thus having already visited '0'
-    private val start = IndexedValue(layout.indexOf('0'), '0').let { State(it, setOf(it)) }
+    private val start = Location(layout.indexOf('0'), '0').let { State(it, setOf(it)) }
 
     // Function to plug into Dijkstra that takes the edges from the edgemap and massages them to include all
     // the State data.
