@@ -1,10 +1,7 @@
 package org.gristle.adventOfCode.y2016.d24
 
-import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.*
 import org.gristle.adventOfCode.utilities.Graph.steps
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.toGrid
 
 /**
  * Refactored; faster and cleaner!
@@ -16,9 +13,12 @@ import org.gristle.adventOfCode.utilities.toGrid
  * I had an intermediary solution that just used BFS in one stage. It was very clean, but ran almost one second
  * slower than the OG version.
  *
- * My final version calculates naive weighted edges between all numbers using DFS, then feeds that into a Dijkstra
- * search. The "location" tracks not only the current position, but all numbers visited. This is enough information
- * to provide appropriate end conditions for both parts 1 and 2.
+ * I had another intermediary solution that calculated naive weighted edges between all numbers using DFS, then fed
+ * that into a Dijkstra search. The "location" tracked not only the current position, but all numbers visited.
+ * This was enough information to provide appropriate end conditions for both parts 1 and 2.
+ *
+ * My latest solution uses the Grid<Char>getEdgeMap function, which uses Dijkstra to generate the weighted edge map.
+ * It is the same speed, but it is hopefully useful in the future.
  */
 class Y2016D24(input: String) {
     // Read map
@@ -27,23 +27,11 @@ class Y2016D24(input: String) {
     // Find the numbers in the map and associate it with their location
     private val numbers = layout.withIndex().filter { it.value.isDigit() }
 
-    // Function to find neighbors for the upcoming DFS function.
-    private val getNeighbors = { location: Int ->
-        layout
-            .getNeighborIndices(location)
-            .filter { layout[it] != '#' }
-    }
-
     // Naive edge map providing distance from any given number to all the other numbers. Naive in the sense that
     // the Dijkstra algo does not use it directly because we need to generate the edges on the fly in order to 
-    // track the numbers already visited.
-    private val edgeMap: Map<Char, List<Graph.Edge<Char>>> = numbers.associate { (location, number) ->
-        // Obtain list of all distances from the number to every other number in the map
-        val distances = Graph
-            .dfs(location, defaultEdges = getNeighbors)
-            .filter { layout[it.id].isDigit() }
-        // Create map associating the number to a list of Edges with the other number and the distance.
-        number to distances.drop(1).map { Graph.Edge(layout[it.id], it.weight) }
+    // track the numbers already visited.    
+    private val edgeMap = layout.getEdgeMap().entries.associate { entry ->
+        entry.key.value to entry.value.map { Graph.Edge(it.vertexId.value, it.weight) }
     }
 
     // "State" tracks where the search is currently at and what numbers have been visited.
@@ -72,11 +60,15 @@ class Y2016D24(input: String) {
 }
 
 fun main() {
-    var time = System.nanoTime()
+    val timer = Stopwatch(start = true)
     val c = Y2016D24(readRawInput("y2016/d24"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 470 (218ms OG) (370ms BFS) (133ms 2-stage DFS-Dijk)
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 720 (36ms OG) (638ms BFS) (10ms 2-stage DFS-Dijk)
+//    val c = Y2016D24("""###########
+//#0.1.....2#
+//#.#######.#
+//#4.......3#
+//###########""")
+    println("Class creation: ${timer.lap()}ms")
+    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 470 (218ms OG) (370ms BFS) (133ms 2-stage DFS-Dijk)
+    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 720 (36ms OG) (638ms BFS) (10ms 2-stage DFS-Dijk)
+    println("Total time: ${timer.elapsed()}ms") // 148ms
 }
