@@ -7,11 +7,12 @@ class Y2022D7(input: String) {
 
     // Directory node tracks child Directories in a map, and tracks the total file size of any files assigned to it 
     // or any child directory.
-    class Directory(
-        val name: String,
-        val directories: MutableMap<String, Directory> = mutableMapOf(),
+    class Directory(val name: String) {
+        val directories: MutableMap<String, Directory> = mutableMapOf()
         var fileSize: Int = 0 // not just size of files in this directory, but files in child directories as well
-    ) {
+
+        fun cd(dir: String): Directory = directories.getOrPut(dir) { Directory(dir) }
+
         // Provides a list of all directories in and under this directory.
         fun inclusiveDirectories(): List<Directory> =
             directories.values.toList() + directories.values.flatMap(Directory::inclusiveDirectories)
@@ -27,14 +28,10 @@ class Y2022D7(input: String) {
             when {
                 line.startsWith("\$ cd /") -> repeat(path.size - 1) { path.removeLast() } // $ cd / 
                 line.startsWith("\$ cd ..") -> if (path.size > 1) path.removeLast() // $ cd ..
-                line.startsWith("\$ cd") -> path.last().directories[line.lastWord()]?.let { path.add(it) } // $ cd
+                line.startsWith("\$ cd") -> path.add(path.last().cd(line.lastWord())) // cd [directory]
                 line[0].isDigit() -> { // increase fileSize of all Directories in the path
                     val fileSize = line.takeWhile { it != ' ' }.toInt()
                     path.forEach { dir -> dir.fileSize += fileSize }
-                }
-                line.startsWith("dir") -> { // add a new directory
-                    val newDir = Directory(line.lastWord())
-                    path.last().directories[newDir.name] = newDir
                 }
             }
         }

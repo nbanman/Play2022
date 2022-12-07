@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.gristle.adventOfCode.utilities.DfsTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-11-03T21:28:19" hostname="GLORIOUSALLRED" time="0.118">
+<testsuite name="org.gristle.adventOfCode.utilities.DfsTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-12-07T18:13:37" hostname="GLORIOUSALLRED" time="0.099">
   <properties/>
-  <testcase name="doesntBreakAocs$Play2022()" classname="org.gristle.adventOfCode.utilities.DfsTest" time="0.118"/>
+  <testcase name="doesntBreakAocs$Play2022()" classname="org.gristle.adventOfCode.utilities.DfsTest" time="0.099"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
