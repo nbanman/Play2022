@@ -5,56 +5,58 @@ import org.gristle.adventOfCode.utilities.getInput
 
 class Y2022D7(input: String) {
 
+    // Directory node tracks child Directories in a map, and tracks the total file size of any files assigned to it 
+    // or any child directory.
     class Directory(
         val name: String,
-        val parent: Directory? = null,
         val directories: MutableMap<String, Directory> = mutableMapOf(),
-        var totalFileSize: Int = 0
+        var fileSize: Int = 0 // not just size of files in this directory, but files in child directories as well
     ) {
-        val size: Int by lazy {
-            totalFileSize + directories.values.sumOf { it.size }
-        }
+        // Provides a list of all directories in and under this directory.
+        fun inclusiveDirectories(): List<Directory> =
+            directories.values.toList() + directories.values.flatMap(Directory::inclusiveDirectories)
     }
 
-    private val changeDir = Regex("""\$ cd [A-z]""")
-    private val upDir = Regex("""\$ cd \.\.""")
-    private val homeDirectory = Directory("/")
-    private val allDirectories = mutableListOf(homeDirectory)
-    private fun String.lastWord() = split(" ").last()
+    private val root = Directory("/")
+    private val path = mutableListOf(root) // tracks the full path to current dir, starting with root.
 
+    // Parsing input to create file structure
     init {
-        input.lines().fold(homeDirectory) { current, line ->
+        fun String.lastWord() = takeLastWhile { it != ' ' } // utility function grabs last word in a String
+        input.lines().forEach { line ->
             when {
-                changeDir.containsMatchIn(line) -> current.directories[line.lastWord()] ?: current
-                upDir.containsMatchIn(line) -> current.parent ?: current
-                line[0] == 'd' -> current.apply {
-                    val dirName = line.lastWord()
-                    val newDir = Directory(dirName, this)
-                    directories[dirName] = newDir
-                    allDirectories.add(newDir)
+                line.startsWith("\$ cd /") -> repeat(path.size - 1) { path.removeLast() } // $ cd / 
+                line.startsWith("\$ cd ..") -> if (path.size > 1) path.removeLast() // $ cd ..
+                line.startsWith("\$ cd") -> path.last().directories[line.lastWord()]?.let { path.add(it) } // $ cd
+                line[0].isDigit() -> { // increase fileSize of all Directories in the path
+                    val fileSize = line.takeWhile { it != ' ' }.toInt()
+                    path.forEach { dir -> dir.fileSize += fileSize }
                 }
-                line[0].isDigit() -> current.apply { totalFileSize += line.takeWhile { it != ' ' }.toInt() }
-                else -> current
+
+                line.startsWith("dir") -> { // add a new directory
+                    val newDir = Directory(line.lastWord())
+                    path.last().directories[newDir.name] = newDir
+                }
             }
         }
     }
 
-    fun part1() = allDirectories.filter { it.size <= 100000 }.sumOf(Directory::size)
+    private val allDirectories = root.inclusiveDirectories()
+
+    fun part1() = allDirectories.filter { it.fileSize <= 100000 }.sumOf(Directory::fileSize)
 
     fun part2() = allDirectories
         .filter {
-            val spaceAvailable = 70000000L - homeDirectory.size
+            val spaceAvailable = 70000000L - root.fileSize
             val minDirSize = 30000000L - spaceAvailable
-            it.size >= minDirSize // predicate
-        }.minOf(Directory::size)
+            it.fileSize >= minDirSize // predicate
+        }.minOf(Directory::fileSize)
 }
 
 fun main() {
-    val input = listOf(
-        getInput(7, 2022),
-    )
+    val input = getInput(7, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D7(input[0])
+    val solver = Y2022D7(input)
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1477771
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 3579501
