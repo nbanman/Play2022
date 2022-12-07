@@ -9,73 +9,45 @@ class Y2022D7(input: String) {
         val name: String,
         val parent: Directory? = null,
         val directories: MutableMap<String, Directory> = mutableMapOf(),
-        val files: MutableMap<String, Int> = mutableMapOf()
+        var totalFileSize: Int = 0
     ) {
         val size: Int by lazy {
-            files.values.sum() + directories.values.sumOf { it.size }
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Directory
-
-            if (name != other.name) return false
-            if (parent != other.parent) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = name.hashCode()
-            result = 31 * result + (parent?.hashCode() ?: 0)
-            return result
+            totalFileSize + directories.values.sumOf { it.size }
         }
     }
 
     private val changeDir = Regex("""\$ cd [A-z]""")
     private val upDir = Regex("""\$ cd \.\.""")
     private val homeDirectory = Directory("/")
-    var currentDirectory = homeDirectory
-    private val allDirectories = mutableSetOf(homeDirectory)
+    private val allDirectories = mutableListOf(homeDirectory)
     private fun String.lastWord() = split(" ").last()
 
     init {
-        input.lines().forEach { line ->
+        input.lines().fold(homeDirectory) { current, line ->
             when {
-                changeDir.containsMatchIn(line) -> {
-                    currentDirectory = currentDirectory.directories[line.lastWord()]
-                        ?: throw IllegalArgumentException("$line refers to directory that hasn't been created!")
-                }
-
-                upDir.containsMatchIn(line) -> {
-                    currentDirectory = currentDirectory.parent ?: homeDirectory
-                }
-
-                line[0] == 'd' -> {
+                changeDir.containsMatchIn(line) -> current.directories[line.lastWord()] ?: current
+                upDir.containsMatchIn(line) -> current.parent ?: current
+                line[0] == 'd' -> current.apply {
                     val dirName = line.lastWord()
-                    val newDir = Directory(dirName, currentDirectory)
-                    currentDirectory.directories[dirName] = newDir
+                    val newDir = Directory(dirName, this)
+                    directories[dirName] = newDir
                     allDirectories.add(newDir)
                 }
 
-                line[0].isDigit() -> {
-                    val (fileSize, fileName) = line.split(" ")
-                    currentDirectory.files[fileName] = fileSize.toInt()
-                }
+                line[0].isDigit() -> current.apply { totalFileSize += line.takeWhile { it != ' ' }.toInt() }
+                else -> current
             }
         }
     }
 
-
     fun part1() = allDirectories.filter { it.size <= 100000 }.sumOf(Directory::size)
 
-    fun part2() = allDirectories.filter {
-        val spaceAvailable = 70000000L - homeDirectory.size
-        val minDirSize = 30000000L - spaceAvailable
-        it.size >= minDirSize // predicate
-    }.minOf { it.size }
+    fun part2() = allDirectories
+        .filter {
+            val spaceAvailable = 70000000L - homeDirectory.size
+            val minDirSize = 30000000L - spaceAvailable
+            it.size >= minDirSize // predicate
+        }.minOf { it.size }
 }
 
 fun main() {
