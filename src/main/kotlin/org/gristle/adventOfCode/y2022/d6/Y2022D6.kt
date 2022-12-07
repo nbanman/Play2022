@@ -10,14 +10,14 @@ class Y2022D6(private val input: String) {
     // Alexander af Trolle's brilliant solution, modified to use an IntArray for kicks.
     fun solve(n: Int): Int {
         // tracks the index of the last time the character was encountered
-        val duplicateIndexes = IntArray(26)
+        val indexMap = IntArray(26)
         // tracks the index of the last time a first character of a duplicate was encountered
         var duplicateIndex = 0
         var index = 0
         return input.indexOfFirst { c ->
             // update the index in the map and grab the previous index for that character 
-            val lastSeen = duplicateIndexes[c - 'a']
-            duplicateIndexes[c - 'a'] = index
+            val lastSeen = indexMap[c - 'a']
+            indexMap[c - 'a'] = index
             duplicateIndex = duplicateIndex.coerceAtLeast(lastSeen) // update duplicateIndex
             // if the last duplicate's first character index is further than n characters away, predicate matched 
             index++ - duplicateIndex >= n
@@ -29,14 +29,9 @@ class Y2022D6(private val input: String) {
 }
 
 fun main() {
-    val input = listOf(
-        getInput(6, 2022),
-        """bvwbjplbgvbhsrlpgdmjqwftvncz""",
-        """nppdvjthqldpwncqszvftbrmjlhg""",
-        """nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg""",
-    )
+    val input = getInput(6, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D6(input[0])
+    val solver = Y2022D6(input)
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1361
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 3263
