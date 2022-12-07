@@ -273,7 +273,7 @@ object Graph {
             if (endCondition(current.id)) return visited.values.toList()
             (edgeMap[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
                 val alternateWeight = current.weight + neighborEdge.weight
-                val vertex = vertices.computeIfAbsent(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
+                val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
                 if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
             }
         }

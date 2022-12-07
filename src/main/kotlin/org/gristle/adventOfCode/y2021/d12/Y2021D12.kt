@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2021.d12
 
 import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
 import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 
@@ -13,8 +12,8 @@ class Y2021D12(private val input: String) {
             .lines()
             .map { it.split('-') }
             .forEach { (a, b) ->
-                computeIfAbsent(a) { mutableListOf() }.add(b)
-                if (a != "start" && b != "end") computeIfAbsent(b) { mutableListOf() }.add(a)
+                getOrPut(a) { mutableListOf() }.add(b)
+                if (a != "start" && b != "end") getOrPut(b) { mutableListOf() }.add(a)
             }
     } as Map<String, List<String>>
 

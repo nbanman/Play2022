@@ -46,7 +46,7 @@ class Y2018D4(input: String) {
                 "wakes up" -> minutes.wake(log.minute)
                 "falls asleep" -> minutes.sleep(log.minute)
                 else -> {
-                    val guard = computeIfAbsent(log.event) { mutableListOf() }
+                    val guard = getOrPut(log.event) { mutableListOf() }
                     guard.add(MutableList(60) { false })
                     minutes = guard.last()
                 }

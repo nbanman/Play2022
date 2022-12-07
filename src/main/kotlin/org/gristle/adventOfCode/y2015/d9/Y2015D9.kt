@@ -10,8 +10,8 @@ class Y2015D9(private val input: String) {
 
     private val edgeMap = buildMap<String, MutableList<Graph.Edge<String>>> {
         input.groupValues("""(\w+) to (\w+) = (\d+)""").forEach { gv ->
-            computeIfAbsent(gv[0]) { mutableListOf() }.add(Graph.Edge(gv[1], gv[2].toDouble()))
-            computeIfAbsent(gv[1]) { mutableListOf() }.add(Graph.Edge(gv[0], gv[2].toDouble()))
+            getOrPut(gv[0]) { mutableListOf() }.add(Graph.Edge(gv[1], gv[2].toDouble()))
+            getOrPut(gv[1]) { mutableListOf() }.add(Graph.Edge(gv[0], gv[2].toDouble()))
         }
     } as Map<String, List<Graph.Edge<String>>>
 

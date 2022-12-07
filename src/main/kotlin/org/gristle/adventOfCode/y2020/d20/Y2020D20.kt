@@ -67,7 +67,7 @@ class Y2020D20(input: String) {
 
         init {
             values.forEachIndexed { index, tileValue ->
-                val pot = lookup.computeIfAbsent(tileValue) { mutableListOf() }
+                val pot = lookup.getOrPut(tileValue) { mutableListOf() }
                 val to = TileOrient(
                     this,
                     (0 until index).fold(Nsew.NORTH) { acc, _ -> acc.right() },

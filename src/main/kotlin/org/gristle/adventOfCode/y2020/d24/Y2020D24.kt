@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2020.d24
 
 import org.gristle.adventOfCode.utilities.Hexagon
 import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
 import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2020D24(input: String) {
@@ -29,7 +28,7 @@ class Y2020D24(input: String) {
     private val flipped: Map<Hexagon, Boolean> = buildMap {
         rules.forEach { rule ->
             val tile = rule.fold(home, Hexagon::hexAt)
-            this[tile] = !computeIfAbsent(tile) { false }
+            this[tile] = !getOrPut(tile) { false }
         }
     }
 

@@ -12,13 +12,13 @@ class Y2018D7(input: String) {
 
     private val steps = buildMap<Char, MutableList<Char>> {
         instructions.forEach { instruction ->
-            computeIfAbsent(instruction[0]) { mutableListOf() }.add(instruction[1])
+            getOrPut(instruction[0]) { mutableListOf() }.add(instruction[1])
         }
     } as Map<Char, List<Char>>
 
     private val reverseSteps = buildMap<Char, MutableList<Char>> {
         instructions.forEach { instruction ->
-            computeIfAbsent(instruction[1]) { mutableListOf() }.add(instruction[0])
+            getOrPut(instruction[1]) { mutableListOf() }.add(instruction[0])
         }
     } as Map<Char, List<Char>>
 

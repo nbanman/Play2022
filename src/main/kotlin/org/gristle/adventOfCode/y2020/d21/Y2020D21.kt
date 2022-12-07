@@ -27,7 +27,7 @@ class Y2020D21(input: String) {
 
         init {
             allergens.forEach { allergen ->
-                lookup.computeIfAbsent(allergen) { mutableSetOf(*ingredients.toTypedArray()) }
+                lookup.getOrPut(allergen) { mutableSetOf(*ingredients.toTypedArray()) }
                 lookup[allergen] = lookup[allergen]!!.intersect(ingredients).toMutableSet()
             }
         }
