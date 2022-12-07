@@ -18,12 +18,11 @@ class Y2022D7(input: String) {
             directories.values.toList() + directories.values.flatMap(Directory::inclusiveDirectories)
     }
 
-    private val root = Directory("/")
-    private val path = mutableListOf(root) // tracks the full path to current dir, starting with root.
-
     // Parsing input to create file structure
-    init {
+    private fun createFileStructure(input: String): Directory {
         fun String.lastWord() = takeLastWhile { it != ' ' } // utility function grabs last word in a String
+        val path: MutableList<Directory> =
+            mutableListOf(Directory("/")) // tracks the full path to current dir, starting with root.
         input.lines().forEach { line ->
             when {
                 line.startsWith("\$ cd /") -> repeat(path.size - 1) { path.removeLast() } // $ cd / 
@@ -35,8 +34,10 @@ class Y2022D7(input: String) {
                 }
             }
         }
+        return path.first()
     }
 
+    private val root = createFileStructure(input)
     private val allDirectories = root.inclusiveDirectories()
 
     fun part1() = allDirectories.filter { it.fileSize <= 100000 }.sumOf(Directory::fileSize)
