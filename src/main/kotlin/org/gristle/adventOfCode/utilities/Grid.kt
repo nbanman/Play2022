@@ -21,6 +21,8 @@ interface Grid<out E> : List<E> {
 
     fun lastCoord(): Coord
 
+    fun coords(): List<Coord>
+
     fun indexOf(x: Int, y: Int): Int
 
     fun indexOf(coord: Coord): Int
@@ -112,6 +114,8 @@ class ArrayGrid<E> private constructor(
     override fun lastCoordOfElement(e: @UnsafeVariance E): Coord = coordOf(lastIndexOf(e))
 
     override fun lastCoord(): Coord = coordOf(lastIndex)
+
+    override fun coords(): List<Coord> = indices.map(::coordOf)
 
     override fun indexOf(x: Int, y: Int): Int = y * width + x
 
