@@ -21,12 +21,15 @@ class Y2022D8(input: String) {
     private fun terminating(pos: Coord, tree: Coord): Boolean =
         pos.outOfForest || pos.treeHeight >= tree.treeHeight
 
-    // for a given position, checks all directions and returns true if any allow LOS out of the forest
-    private fun isVisible(tree: Coord) = Nsew.values().any { slope ->
-        slopeSequence(tree, slope)
-            // keep delivering coordinates until out of forest or LOS blocked
-            .first { pos -> terminating(pos, tree) }
-            .outOfForest // true if made it out of forest before LOS blocked
+    // for a given position, checks all directions and returns true if *any* allow LOS out of the forest
+    private fun Coord.isVisible(): Boolean {
+        val tree = this // unnecessary but provides semantic value
+        return Nsew.values().any { slope ->
+            slopeSequence(tree, slope)
+                // keep delivering coordinates until out of forest or LOS blocked
+                .first { pos -> terminating(pos, tree) }
+                .outOfForest // true if made it out of forest before LOS blocked
+        }
     }
 
     // for a given position, counts number of visible trees in each direction, then multiplies them together
@@ -41,7 +44,7 @@ class Y2022D8(input: String) {
                 .let { (index, pos) -> index + if (pos.outOfForest) 0 else 1 }
         }.reduce(Int::times)
 
-    fun part1(): Int = trees.count { tree -> isVisible(tree) }
+    fun part1(): Int = trees.count { tree -> tree.isVisible() }
 
     fun part2(): Int = trees.maxOf { treehouse -> scenicScore(treehouse) }
 }
