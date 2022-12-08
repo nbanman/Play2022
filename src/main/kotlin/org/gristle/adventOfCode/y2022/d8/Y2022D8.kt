@@ -18,9 +18,8 @@ class Y2022D8(input: String) {
                 ?: true
         }
 
-        return slopes
-            .map { slope -> directionVisible(slope) }
-            .any { it }
+        return slopes.any { slope -> directionVisible(slope) }
+
     }
 
     private fun scenicScore(pos: Coord) = slopes
