@@ -11,8 +11,6 @@ class Y2022D7(input: String) {
         val directories: MutableMap<String, Directory> = mutableMapOf()
         var fileSize: Int = 0 // not just size of files in this directory, but files in child directories as well
 
-        fun cd(dir: String): Directory = directories.getOrPut(dir) { Directory(dir) }
-
         // Provides a list of all directories in and under this directory.
         fun inclusiveDirectories(): List<Directory> =
             directories.values.toList() + directories.values.flatMap(Directory::inclusiveDirectories)
@@ -27,7 +25,11 @@ class Y2022D7(input: String) {
             when {
                 line.startsWith("\$ cd /") -> repeat(path.size - 1) { path.removeLast() } // $ cd / 
                 line.startsWith("\$ cd ..") -> if (path.size > 1) path.removeLast() // $ cd ..
-                line.startsWith("\$ cd") -> path.add(path.last().cd(line.lastWord())) // cd [directory]
+                line.startsWith("\$ cd") -> { // cd [directory]
+                    val dir = line.lastWord()
+                    path.add(path.last().directories.getOrPut(dir) { Directory(dir) })
+                }
+
                 line[0].isDigit() -> { // increase fileSize of all Directories in the path
                     val fileSize = line.takeWhile { it != ' ' }.toInt()
                     path.forEach { dir -> dir.fileSize += fileSize }
