@@ -4,44 +4,27 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2022D8(input: String) {
 
-    private val forest = input.toGrid(Char::toDigit)
+    private val forest = input.toGrid()
 
-    private val slopes = listOf(Coord(-1, 0), Coord(0, -1), Coord(1, 0), Coord(0, 1))
-
-    private fun isVisible(pos: Coord): Boolean {
-
-        fun directionVisible(slope: Coord): Boolean {
-            return generateSequence(pos + slope) { it + slope }
-                .takeWhile { forest.validCoord(it) }
-                .firstOrNull { forest[it] >= forest[pos] }
-                ?.let { false }
-                ?: true
-        }
-
-        return slopes.any { slope -> directionVisible(slope) }
-
+    private fun isVisible(pos: Coord) = Nsew.values().any { slope ->
+        generateSequence(pos.move(slope)) { it.move(slope) }
+            .takeWhile { forest.validCoord(it) }
+            .firstOrNull { forest[it] >= forest[pos] }
+            ?.let { false }
+            ?: true
     }
 
-    private fun scenicScore(pos: Coord) = slopes
-        .map { slope ->
-            var newCoord = pos + slope
-            var trees = 0
-            while (forest.validCoord(newCoord)) {
-                trees++
-                if (forest[newCoord] >= forest[pos]) break
-                newCoord += slope
-            }
-            trees
-        }.reduce(Int::times)
+    private fun scenicScore(pos: Coord) = Nsew.values().map { slope ->
+        generateSequence(pos.move(slope)) { it.move(slope) }
+            .zipWithNext()
+            .takeWhile { (prev, next) -> forest.validCoord(next) && forest[pos] > forest[prev] }
+            .count() + 1
+    }.reduce(Int::times)
 
-    fun part1(): Int = forest.coords().count { pos ->
-        pos.x == 0 || pos.y == 0 || pos.x == forest.xIndices.last
-                || pos.y == forest.yIndices.last || isVisible(pos)
-    }
+    fun part1(): Int = forest.coords().count { pos -> isVisible(pos) }
 
     fun part2(): Int = forest.coords().maxOf { pos -> scenicScore(pos) }
 }
-
 
 fun main() {
     val input = listOf(
