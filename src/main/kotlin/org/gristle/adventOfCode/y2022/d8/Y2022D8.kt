@@ -6,18 +6,23 @@ class Y2022D8(input: String) {
 
     private val forest = input.toGrid()
 
+    private val Coord.treeHeight: Char get() = forest[this]
+
     private fun isVisible(pos: Coord) = Nsew.values().any { slope ->
         generateSequence(pos.move(slope)) { it.move(slope) }
             .takeWhile { forest.validCoord(it) }
-            .firstOrNull { forest[it] >= forest[pos] }
+            .firstOrNull { it.treeHeight >= pos.treeHeight }
             ?.let { false }
             ?: true
     }
 
     private fun scenicScore(pos: Coord) = Nsew.values().map { slope ->
         generateSequence(pos.move(slope)) { it.move(slope) }
+            // zipWithNext needed because moving outside the forest stops the sequence immediately without counting
+            // but meeting a tree as tall or taller than the treehouse height stops the sequence with counting.
+            // Thus, takeWhile stops the sequence for height in the "prev" position.     
             .zipWithNext()
-            .takeWhile { (prev, next) -> forest.validCoord(next) && forest[pos] > forest[prev] }
+            .takeWhile { (prev, next) -> forest.validCoord(next) && pos.treeHeight > prev.treeHeight }
             .count() + 1
     }.reduce(Int::times)
 
