@@ -11,12 +11,11 @@ class Y2022D8(input: String) {
     private fun isVisible(pos: Coord): Boolean {
 
         fun directionVisible(slope: Coord): Boolean {
-            var newCoord = pos + slope
-            while (forest.validCoord(newCoord)) {
-                if (forest[newCoord] >= forest[pos]) return false
-                newCoord += slope
-            }
-            return true
+            return generateSequence(pos + slope) { it + slope }
+                .takeWhile { forest.validCoord(it) }
+                .firstOrNull { forest[it] >= forest[pos] }
+                ?.let { false }
+                ?: true
         }
 
         return slopes
