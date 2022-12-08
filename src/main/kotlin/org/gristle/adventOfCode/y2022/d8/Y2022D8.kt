@@ -3,8 +3,9 @@ package org.gristle.adventOfCode.y2022.d8
 import org.gristle.adventOfCode.utilities.*
 
 class Y2022D8(input: String) {
-
-    // representation of the heights of all the trees in the forest. Don't mistake these two variables for each other!
+    
+    // Representations of the positions and heights of all the trees in the forest. 
+    // Don't mistake these two variables for each other!
     private val forest = input.toGrid()
     private val trees = forest.coords()
 
@@ -17,7 +18,7 @@ class Y2022D8(input: String) {
         generateSequence(tree.move(slope)) { it.move(slope) }
 
     // determines whether a sequence should be terminated, returning true if the position is out of the forest 
-    // or if the tree at the position blocks the treehouse line of sight (LOS).
+    // or if the tree at the position blocks the starting tree's line of sight (LOS).
     private fun terminating(pos: Coord, tree: Coord): Boolean =
         pos.outOfForest || pos.treeHeight >= tree.treeHeight
 
