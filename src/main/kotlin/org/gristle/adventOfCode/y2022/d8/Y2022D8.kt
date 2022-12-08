@@ -3,7 +3,7 @@ package org.gristle.adventOfCode.y2022.d8
 import org.gristle.adventOfCode.utilities.*
 
 class Y2022D8(input: String) {
-    
+
     // Representations of the positions and heights of all the trees in the forest. 
     // Don't mistake these two variables for each other!
     private val forest = input.toGrid()
@@ -13,9 +13,11 @@ class Y2022D8(input: String) {
     private val Coord.treeHeight: Char get() = forest[this]
     private val Coord.outOfForest: Boolean get() = !forest.validCoord(this)
 
-    // for a given position and Nsew direction, generate coordinates radiating away from the position 
-    private fun slopeSequence(tree: Coord, slope: Nsew) =
-        generateSequence(tree.move(slope)) { it.move(slope) }
+    // for a given position, provide a list of sequences that generate coordinates radiating away from the position
+    // in each of the four directions
+    private fun rays(tree: Coord): List<Sequence<Coord>> = Nsew.values().map { direction ->
+        generateSequence(tree.move(direction)) { it.move(direction) }
+    }
 
     // determines whether a sequence should be terminated, returning true if the position is out of the forest 
     // or if the tree at the position blocks the starting tree's line of sight (LOS).
@@ -25,8 +27,8 @@ class Y2022D8(input: String) {
     // for a given position, checks all directions and returns true if *any* allow LOS out of the forest
     private fun Coord.isVisible(): Boolean {
         val tree = this // unnecessary but provides semantic value
-        return Nsew.values().any { slope ->
-            slopeSequence(tree, slope)
+        return rays(tree).any { ray ->
+            ray
                 // keep delivering coordinates until out of forest or LOS blocked
                 .first { pos -> terminating(pos, tree) }
                 .outOfForest // true if made it out of forest before LOS blocked
@@ -34,9 +36,9 @@ class Y2022D8(input: String) {
     }
 
     // for a given position, counts number of visible trees in each direction, then multiplies them together
-    private fun scenicScore(treehouse: Coord) = Nsew.values()
-        .map { slope ->
-            slopeSequence(treehouse, slope)
+    private fun scenicScore(treehouse: Coord) = rays(treehouse)
+        .map { ray ->
+            ray
                 // need to track both the position and the index because the index will be used to count the trees
                 // and the position will be used to add 1 if LOS is blocked (since a blocking tree 
                 // should be counted).    
