@@ -8,9 +8,11 @@ class Y2022D8(input: String) {
 
     private val Coord.treeHeight: Char get() = forest[this]
 
+    private val Coord.isInForest: Boolean get() = forest.validCoord(this)
+
     private fun isVisible(pos: Coord) = Nsew.values().any { slope ->
         generateSequence(pos.move(slope)) { it.move(slope) }
-            .takeWhile { forest.validCoord(it) }
+            .takeWhile { it.isInForest }
             .firstOrNull { it.treeHeight >= pos.treeHeight }
             ?.let { false }
             ?: true
@@ -18,12 +20,9 @@ class Y2022D8(input: String) {
 
     private fun scenicScore(pos: Coord) = Nsew.values().map { slope ->
         generateSequence(pos.move(slope)) { it.move(slope) }
-            // zipWithNext needed because moving outside the forest stops the sequence immediately without counting
-            // but meeting a tree as tall or taller than the treehouse height stops the sequence with counting.
-            // Thus, takeWhile stops the sequence for height in the "prev" position.     
-            .zipWithNext()
-            .takeWhile { (prev, next) -> forest.validCoord(next) && pos.treeHeight > prev.treeHeight }
-            .count() + 1
+            .withIndex()
+            .first { (_, newPos) -> !newPos.isInForest || newPos.treeHeight >= pos.treeHeight }
+            .let { (index, newPos) -> index + if (newPos.isInForest) 1 else 0 }
     }.reduce(Int::times)
 
     fun part1(): Int = forest.coords().count { pos -> isVisible(pos) }
