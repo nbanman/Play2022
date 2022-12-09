@@ -41,9 +41,10 @@ fun String.writeToFile(path: String) {
         }.writeText(this)
 }
 
-fun getInput(day: Int, year: Int = LocalDate.now().year): String {
-    val inputFile = File("src/main/kotlin/org/gristle/adventOfCode/y$year/d$day/input.txt")
+fun getInput(day: Int, year: Int = LocalDate.now().year, alternate: String = ""): String {
+    val inputFile = File("src/main/kotlin/org/gristle/adventOfCode/y$year/d$day/input$alternate.txt")
     if (!inputFile.exists()) {
+        if (alternate != "") throw IllegalArgumentException("Sample input specified but not provided!")
         inputFile.parentFile.mkdirs()
         val url = URL("https://adventofcode.com/$year/day/$day/input")
         val connection = url.openConnection() as HttpURLConnection
