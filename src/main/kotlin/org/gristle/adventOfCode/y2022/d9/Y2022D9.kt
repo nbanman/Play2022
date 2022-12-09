@@ -44,13 +44,14 @@ class Y2022D9(input: String) {
             }
         }
 
-    fun part1() = followPath(headPositions).distinct().size
-
-    fun part2(): Int = generateSequence(headPositions) { followPath(it) }
-        .take(10)
+    fun solve(links: Int): Int = generateSequence(headPositions) { followPath(it) }
+        .take(links)
         .last()
         .distinct()
         .size
+
+    fun part1() = solve(2)
+    fun part2() = solve(10)
 }
 
 fun main() {
