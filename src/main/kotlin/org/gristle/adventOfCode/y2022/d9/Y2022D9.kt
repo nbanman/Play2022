@@ -44,7 +44,7 @@ class Y2022D9(input: String) {
         }
     }
 
-    fun solve(links: Int): Int = generateSequence(headPositions) { followPath(it) }
+    fun solve(links: Int): Int = generateSequence(headPositions, ::followPath)
         .take(links)
         .last()
         .toSet()
