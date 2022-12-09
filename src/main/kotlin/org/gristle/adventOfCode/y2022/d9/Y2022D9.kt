@@ -18,37 +18,31 @@ class Y2022D9(input: String) {
         else -> throw IllegalArgumentException("Invalid input")
     }
 
-    // take input and turn it into a list of directions to move
-    private fun String.toMotions() = lines().flatMap { line ->
-        val (dir, times) = line.split(" ")
-        List(times.toInt()) { dir[0].toDirection() }
-    }
-
     // list of positions that the head occupies, including any repeats
-    private val headPositions: List<Coord> = buildList {
-        add(Coord.ORIGIN)
-        for (direction in input.toMotions()) {
-            add(last().move(direction))
+    private val headPositions: List<Coord> = input
+        .lines() // split into lines
+        .flatMap { line -> // parse into a List of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
+            val (dir, times) = line.split(" ")
+            List(times.toInt()) { dir[0].toDirection() }
         }
-    }
+        // take directions and turn them into a List of positions that the head visits
+        .runningFold(Coord.ORIGIN) { pos, direction -> pos.move(direction) }
 
-    // from a list of positions, provide a list of positions that a following link takes
-    private fun followPath(front: List<Coord>): List<Coord> = buildList {
-        for (head in front.drop(1)) {
-            val previous = lastOrNull() ?: Coord.ORIGIN
-            add(previous.follow(head))
+    // from a list of positions from the link ahead, provide a list of positions that a following link takes
+    private fun followPath(frontPositions: List<Coord>): List<Coord> = frontPositions
+        // first position is always Origin and the runningFold is seeded with an Origin, so dropping keeps the lists
+        // synced
+        .drop(1)
+        .runningFold(Coord.ORIGIN) { pos, frontPos ->
+            val diff = frontPos - pos
+            // only move if the link in front is at least 2 away on either the x or the y axis
+            if (abs(diff.x) == 2 || abs(diff.y) == 2) {
+                // move one toward the link in front, on both axes
+                Coord(pos.x + diff.x.sign, pos.y + diff.y.sign)
+            } else {
+                pos // no change 
+            }
         }
-    }
-
-    // used in followPath() to have a link calculate its next position depending on where the leading link is
-    private fun Coord.follow(head: Coord): Coord {
-        val diff = head - this
-        return if (abs(diff.x) == 2 || abs(diff.y) == 2) {
-            Coord(x + diff.x.sign, y + diff.y.sign)
-        } else {
-            this // no change
-        }
-    }
 
     fun part1() = followPath(headPositions).distinct().size
 
