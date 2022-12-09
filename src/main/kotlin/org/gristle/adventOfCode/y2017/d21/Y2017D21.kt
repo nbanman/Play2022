@@ -15,9 +15,7 @@ class Y2017D21(private val input: String) {
             Grid<Char>::rotate90
         )
         private val permutations = flips.flatMap {
-            rotateFunctions.fold(mutableListOf(it)) { acc, function ->
-                acc.apply { add(function(acc.last())) }
-            }
+            rotateFunctions.runningFold(it) { acc, rotation -> rotation(acc) }
         }
 
         fun matches(g: Grid<Char>) = g in permutations
