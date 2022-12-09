@@ -47,7 +47,7 @@ class Y2022D9(input: String) {
 
     fun solve(links: Int): Int = generateSequence(headPositions, ::followPath)
         .take(links)
-        .last()
+        .last() // the only terminal operation in the whole program!
         .toSet()
         .size
 
