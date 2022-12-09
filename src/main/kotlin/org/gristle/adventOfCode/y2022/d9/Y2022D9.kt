@@ -55,27 +55,9 @@ class Y2022D9(input: String) {
 }
 
 fun main() {
-    val input = listOf(
-        getInput(9, 2022),
-        """R 4
-U 4
-L 3
-D 1
-R 4
-D 1
-L 5
-R 2""",
-        """R 5
-U 8
-L 8
-D 3
-R 17
-D 10
-L 25
-U 20"""
-    )
+    val input = getInput(9, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D9(input[0])
+    val solver = Y2022D9(input)
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 6175
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 2578
