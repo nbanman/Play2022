@@ -19,8 +19,10 @@ class Y2022D7(input: String) {
     // Parsing input to create file structure
     private fun createFileStructure(input: String): Directory {
         fun String.lastWord() = takeLastWhile { it != ' ' } // utility function grabs last word in a String
-        val path: MutableList<Directory> =
-            mutableListOf(Directory("/")) // tracks the full path to current dir, starting with root.
+
+        // tracks the full path to current dir, starting with root.
+        val path: MutableList<Directory> = mutableListOf(Directory("/"))
+
         input.lines().forEach { line ->
             when {
                 line.startsWith("\$ cd /") -> repeat(path.size - 1) { path.removeLast() } // $ cd / 
