@@ -7,6 +7,7 @@ import org.gristle.adventOfCode.utilities.getInput
 
 class Y2022D9(input: String) {
 
+    // parse directional Char to a direction object that can move a Coord in that direction
     private fun Char.toDirection() = when (this) {
         'R' -> Nsew.EAST
         'U' -> Nsew.NORTH
@@ -15,11 +16,13 @@ class Y2022D9(input: String) {
         else -> throw IllegalArgumentException("Invalid input")
     }
 
+    // take input and turn it into a list of directions to move
     private fun String.toMotions() = lines().flatMap { line ->
         val (dir, times) = line.split(" ")
         List(times.toInt()) { dir[0].toDirection() }
     }
 
+    // list of positions that the head occupies, including any repeats
     private val headPositions: List<Coord> = buildList {
         add(Coord.ORIGIN)
         for (direction in input.toMotions()) {
@@ -27,6 +30,15 @@ class Y2022D9(input: String) {
         }
     }
 
+    // from a list of positions, provide a list of positions that a following link takes
+    private fun followPath(front: List<Coord>): List<Coord> = buildList {
+        add(Coord.ORIGIN)
+        for (head in front.drop(1)) {
+            add(last().follow(head))
+        }
+    }
+
+    // used in followPath() to have a link calculate its next position depending on where the leading link is
     private fun Coord.follow(head: Coord): Coord {
         val adjacentRange = -1..1
         val diff = head - this
@@ -34,13 +46,6 @@ class Y2022D9(input: String) {
             this
         } else {
             Coord(x + diff.x.coerceIn(adjacentRange), y + diff.y.coerceIn(adjacentRange))
-        }
-    }
-
-    private fun followPath(front: List<Coord>): List<Coord> = buildList {
-        add(Coord.ORIGIN)
-        for (head in front.drop(1)) {
-            add(last().follow(head))
         }
     }
 
@@ -52,8 +57,6 @@ class Y2022D9(input: String) {
         .distinct()
         .size
 }
-
-
 
 fun main() {
     val input = listOf(
