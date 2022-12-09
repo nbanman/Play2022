@@ -19,15 +19,13 @@ class Y2022D9(input: String) {
     }
 
     // Sequence of positions that the head occupies, including any repeats
-    private val headPositions: Sequence<Coord> = input
-        .lines() // split into lines
-        .flatMap { line -> // parse into a List of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
-            val (dir, times) = line.split(" ")
-            List(times.toInt()) { dir[0].toDirection() }
+    private val headPositions: Sequence<Coord> = Regex("""([UDLR]) (\d+)""")
+        .findAll(input)
+        .flatMap { match -> // parse into a List of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
+            List(match.groupValues[2].toInt()) { match.groupValues[1][0].toDirection() }
         }
         // take directions and turn them into a List of positions that the head visits
         .runningFold(Coord.ORIGIN) { pos, direction -> pos.move(direction) }
-        .asSequence()
 
     // from a Sequence of positions from the link ahead, provide a Sequence of positions that a following link takes
     private fun followPath(frontPositions: Sequence<Coord>): Sequence<Coord> = sequence {
