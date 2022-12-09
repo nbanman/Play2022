@@ -14,9 +14,8 @@ class Y2015D3(private val input: String) {
     }
 
     fun part1() = input
-        .fold(mutableListOf(Coord(0, 0))) { acc, c ->
-            acc.apply { add(acc.last().move(c)) }
-        }.toSet()
+        .runningFold(Coord.ORIGIN) { acc, c -> acc.move(c) }
+        .toSet()
         .size
 
     fun part2() = input
