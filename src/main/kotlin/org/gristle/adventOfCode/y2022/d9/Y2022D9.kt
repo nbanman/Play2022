@@ -4,7 +4,6 @@ import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
-import kotlin.math.abs
 import kotlin.math.sign
 
 // Sequence-palooza!!
@@ -35,10 +34,10 @@ class Y2022D9(input: String) {
         var pos = Coord.ORIGIN
         yield(pos)
         frontPositions.forEach { frontPos ->
-            val diff = frontPos - pos
             // only move if the link in front is at least 2 away on either the x- or the y-axis
-            if (abs(diff.x) == 2 || abs(diff.y) == 2) {
+            if (pos.chebyshevDistance(frontPos) > 1) {
                 // move one toward the link in front, on both axes
+                val diff = frontPos - pos
                 pos = Coord(pos.x + diff.x.sign, pos.y + diff.y.sign)
                 yield(pos)
             }
