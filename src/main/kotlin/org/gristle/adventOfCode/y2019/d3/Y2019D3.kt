@@ -1,10 +1,13 @@
 package org.gristle.adventOfCode.y2019.d3
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2019D3(input: String) {
 
-    private fun List<String>.wireUp(): List<Coord> = fold(mutableListOf<Coord>()) { acc, instruction ->
+    private fun List<String>.wireUp(): List<Coord> = fold(mutableListOf()) { acc, instruction ->
         val last = if (acc.isNotEmpty()) acc.last() else Coord.ORIGIN
         val dir = when (instruction[0]) {
             'R' -> Nsew.EAST
