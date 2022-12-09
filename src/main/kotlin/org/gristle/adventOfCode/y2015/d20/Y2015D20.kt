@@ -33,8 +33,7 @@ class Y2015D20(input: String) {
             val latest = primeFactors
                 .dropLastWhile { it != primeFactors.first() }
                 .drop(1)
-                .fold(mutableListOf(primeFactors.first())) { acc, i -> acc.apply { add(acc.last() * i) } }
-                    as List<Int>
+                .runningFold(primeFactors.first(), Int::times)
             val newFactors = factors.fold(listOf<Int>()) { acc, i ->
                 acc + listOf(i) + latest.map { it * i }
             }
