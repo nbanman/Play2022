@@ -18,8 +18,8 @@ class Y2022D9(input: String) {
         else -> throw IllegalArgumentException("Invalid input")
     }
 
-    // list of positions that the head occupies, including any repeats
-    private val headPositions: List<Coord> = input
+    // Sequence of positions that the head occupies, including any repeats
+    private val headPositions: Sequence<Coord> = input
         .lines() // split into lines
         .flatMap { line -> // parse into a List of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
             val (dir, times) = line.split(" ")
@@ -27,27 +27,27 @@ class Y2022D9(input: String) {
         }
         // take directions and turn them into a List of positions that the head visits
         .runningFold(Coord.ORIGIN) { pos, direction -> pos.move(direction) }
+        .asSequence()
 
-    // from a list of positions from the link ahead, provide a list of positions that a following link takes
-    private fun followPath(frontPositions: List<Coord>): List<Coord> = frontPositions
-        // first position is always Origin and the runningFold is seeded with an Origin, so dropping keeps the lists
-        // synced
-        .drop(1)
-        .runningFold(Coord.ORIGIN) { pos, frontPos ->
+    // from a Sequence of positions from the link ahead, provide a Sequence of positions that a following link takes
+    private fun followPath(frontPositions: Sequence<Coord>): Sequence<Coord> = sequence {
+        var pos = Coord.ORIGIN
+        yield(pos)
+        frontPositions.forEach { frontPos ->
             val diff = frontPos - pos
             // only move if the link in front is at least 2 away on either the x- or the y-axis
             if (abs(diff.x) == 2 || abs(diff.y) == 2) {
                 // move one toward the link in front, on both axes
-                Coord(pos.x + diff.x.sign, pos.y + diff.y.sign)
-            } else {
-                pos // no change 
+                pos = Coord(pos.x + diff.x.sign, pos.y + diff.y.sign)
+                yield(pos)
             }
         }
+    }
 
     fun solve(links: Int): Int = generateSequence(headPositions) { followPath(it) }
         .take(links)
         .last()
-        .distinct()
+        .toSet()
         .size
 
     fun part1() = solve(2)
