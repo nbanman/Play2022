@@ -7,6 +7,7 @@ import org.gristle.adventOfCode.utilities.getInput
 import kotlin.math.abs
 import kotlin.math.sign
 
+// Sequence-palooza!!
 class Y2022D9(input: String) {
 
     // parse directional Char to a direction object that can move a Coord in that direction
@@ -22,7 +23,9 @@ class Y2022D9(input: String) {
     private val headPositions: Sequence<Coord> = Regex("""([UDLR]) (\d+)""")
         .findAll(input)
         .flatMap { match -> // parse into a Sequence of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
-            generateSequence(match.groupValues[1][0].toDirection()) { it }.take(match.groupValues[2].toInt())
+            val direction = match.groupValues[1][0].toDirection()
+            val times = match.groupValues[2].toInt()
+            generateSequence { direction }.take(times)
         }
         // take directions and turn them into a Sequence of positions that the head visits
         .runningFold(Coord.ORIGIN) { pos, direction -> pos.move(direction) }
