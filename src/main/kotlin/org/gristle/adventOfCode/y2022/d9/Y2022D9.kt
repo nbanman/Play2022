@@ -35,7 +35,7 @@ class Y2022D9(input: String) {
         .drop(1)
         .runningFold(Coord.ORIGIN) { pos, frontPos ->
             val diff = frontPos - pos
-            // only move if the link in front is at least 2 away on either the x or the y axis
+            // only move if the link in front is at least 2 away on either the x- or the y-axis
             if (abs(diff.x) == 2 || abs(diff.y) == 2) {
                 // move one toward the link in front, on both axes
                 Coord(pos.x + diff.x.sign, pos.y + diff.y.sign)
