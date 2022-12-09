@@ -24,7 +24,7 @@ class Y2019D3(input: String) {
 
     private val intersections = wiresInstructions[0].intersect(wiresInstructions[1].toSet())
 
-    fun part1() = intersections.minOf { it.manhattanDistance() }
+    fun part1() = intersections.minOf(Coord::manhattanDistance)
 
     fun part2(): Int {
         return intersections.minOf { coord ->
