@@ -27,8 +27,8 @@ fun String.groupValues(pattern: String): List<List<String>> = groupValues(patter
 fun String.groupValues(pattern: Regex): List<List<String>> {
     return pattern
         .findAll(this)
-        .toList()
         .map { it.groupValues.drop(1) }
+        .toList()
 }
 
 /**
@@ -48,6 +48,22 @@ inline fun <R> String.groupValues(pattern: Regex, transform: (String) -> R): Lis
         .toList()
         .map { it.groupValues.drop(1).map(transform) }
 }
+
+fun String.gvs(regex: Regex): Sequence<List<String>> = regex
+    .findAll(this)
+    .map { it.groupValues.drop(1) }
+
+fun String.gvs(pattern: String): Sequence<List<String>> = Regex(pattern)
+    .findAll(this)
+    .map { it.groupValues.drop(1) }
+
+fun <R> String.gvs(regex: Regex, transform: (String) -> R): Sequence<List<R>> = regex
+    .findAll(this)
+    .map { it.groupValues.drop(1).map(transform) }
+
+fun <R> String.gvs(pattern: String, transform: (String) -> R): Sequence<List<R>> = Regex(pattern)
+    .findAll(this)
+    .map { it.groupValues.drop(1).map(transform) }
 
 fun String.blankSplit(): List<String> = split("\n\n")
 
