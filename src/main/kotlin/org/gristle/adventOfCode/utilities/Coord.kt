@@ -93,6 +93,8 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
 
     fun manhattanDistance(coord: Coord = ORIGIN): Int = abs(x - coord.x) + abs(y - coord.y)
 
+    fun chebyshevDistance(coord: Coord = ORIGIN): Int = max(abs(x - coord.x), abs(y - coord.y))
+
     fun move(dir: Nsew, distance: Int = 1) = when (dir) {
         Nsew.NORTH -> north(distance)
         Nsew.SOUTH -> south(distance)
