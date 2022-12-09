@@ -4,6 +4,8 @@ import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
+import kotlin.math.abs
+import kotlin.math.sign
 
 class Y2022D9(input: String) {
 
@@ -32,20 +34,19 @@ class Y2022D9(input: String) {
 
     // from a list of positions, provide a list of positions that a following link takes
     private fun followPath(front: List<Coord>): List<Coord> = buildList {
-        add(Coord.ORIGIN)
         for (head in front.drop(1)) {
-            add(last().follow(head))
+            val previous = lastOrNull() ?: Coord.ORIGIN
+            add(previous.follow(head))
         }
     }
 
     // used in followPath() to have a link calculate its next position depending on where the leading link is
     private fun Coord.follow(head: Coord): Coord {
-        val adjacentRange = -1..1
         val diff = head - this
-        return if (diff.x in adjacentRange && diff.y in adjacentRange) {
-            this
+        return if (abs(diff.x) == 2 || abs(diff.y) == 2) {
+            Coord(x + diff.x.sign, y + diff.y.sign)
         } else {
-            Coord(x + diff.x.coerceIn(adjacentRange), y + diff.y.coerceIn(adjacentRange))
+            this // no change
         }
     }
 
