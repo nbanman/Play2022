@@ -21,10 +21,10 @@ class Y2022D9(input: String) {
     // Sequence of positions that the head occupies, including any repeats
     private val headPositions: Sequence<Coord> = Regex("""([UDLR]) (\d+)""")
         .findAll(input)
-        .flatMap { match -> // parse into a List of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
-            List(match.groupValues[2].toInt()) { match.groupValues[1][0].toDirection() }
+        .flatMap { match -> // parse into a Sequence of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
+            generateSequence(match.groupValues[1][0].toDirection()) { it }.take(match.groupValues[2].toInt())
         }
-        // take directions and turn them into a List of positions that the head visits
+        // take directions and turn them into a Sequence of positions that the head visits
         .runningFold(Coord.ORIGIN) { pos, direction -> pos.move(direction) }
 
     // from a Sequence of positions from the link ahead, provide a Sequence of positions that a following link takes
