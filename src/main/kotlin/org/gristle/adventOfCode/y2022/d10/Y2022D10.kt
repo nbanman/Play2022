@@ -37,7 +37,7 @@ class Y2022D10(input: String) {
         .take(240) // The OCR grid needs 240 exact
         .map { (cycle, register) -> ((cycle) % 40) in (register - 1)..(register + 1) }
         .toMutableGrid(40)
-        // .apply { println("\n${representation { if (it) '⚪' else '⚫' }}") }
+        // .apply { println("\n${rep()}") }
         .ocr()
 }
 
