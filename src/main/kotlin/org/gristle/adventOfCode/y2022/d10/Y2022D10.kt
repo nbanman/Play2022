@@ -14,6 +14,9 @@ class Y2022D10(input: String) {
         .withIndex()
         .take(240)
 
+    // It's important to note that cpu provides a running map of what the register is at the *end* of the cycle.
+    // Since both parts make their evaluations *during* the cycle, we actually look at what the registry indicates
+    // during the previous cycle.
     fun part1() = cpu
         .filter { (cycle, _) -> (cycle + 21) % 40 == 0 }
         .sumOf { (cycle, register) -> (cycle + 1) * register }
