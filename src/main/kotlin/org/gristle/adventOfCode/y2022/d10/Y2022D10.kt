@@ -17,17 +17,14 @@ class Y2022D10(input: String) {
     // values at the end of each cycle. We add the cycle information with .withIndex(), which allows us to filter
     // unused registry values without losing track of what cycle we are in.
     private val cpu = input
-        .split('\n', ' ')
-        .map { it.toIntOrNull() ?: 0 }
-        // keeps a running tally of where the register is, starting from 1.
+        .split('\n', ' ') // split into "words"
+        .map { it.toIntOrNull() ?: 0 } // map each word to an Int, or if that fails to 0
         .runningFold(1, Int::plus) // register state per cycle
-        // keeps track of which cycle the cpu is in. Useful because the functions drop and filter, but we want to keep
-        // the register paired with the cycle.
-        .withIndex()
+        .withIndex() // keeps track of which cycle the cpu is in.
 
-    // Note for both part 1 and part 2, our list gives the registry value after a particular cycle is completed.
+    // Note that for both part 1 and part 2, our List gives the registry value *after* a particular cycle is completed.
     // The registry value is updated at the *end* of the cycle, which means we want to use the registry value of the
-    // previous cycle rather than the cycle mentioned in the instructions. So both evaluations start at cycle 0 
+    // *previous* cycle rather than the cycle mentioned in the instructions. So both evaluations start at cycle 0 
     // (initial state) rather than cycle 1, and perform each evaluation one cycle early.
     fun part1() = cpu
         .filter { (cycle, _) -> (cycle + 19) % 40 == 0 }
