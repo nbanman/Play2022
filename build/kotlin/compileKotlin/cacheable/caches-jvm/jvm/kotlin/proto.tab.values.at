@@ -1,13 +1,4 @@
-tOfCode.y2015.d19
-Y2015D19Kt
-.
-!org.gristle.adventOfCode.y2015.d2	Y2015D2Kt
-0
-"org.gristle.adventOfCode.y2015.d20
-Y2015D20Kt
-0
-"org.gristle.adventOfCode.y2015.d21
-Y2015D21Kt
+
 0
 "org.gristle.adventOfCode.y2015.d22
 Y2015D22Kt
@@ -501,12 +492,13 @@ Y2022D25Kt
 .
 !org.gristle.adventOfCode.y2022.d8	Y2022D8Kt
 .
-!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     
-0
-"org.gristle.adventOfCode.y2022.d25
-Y2022D25Kt
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     t
 .
-!org.gristle.adventOfCode.y2022.d3	Y2022D3Kt
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     9	Y2022D9Kt" *     dventOfCode.y2022.d7	Y2022D7Kt
+.
+!org.gristle.adventOfCode.y2022.d8	Y2022D8Kt
+.
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     org.gristle.adventOfCode.y2022.d3	Y2022D3Kt
 .
 !org.gristle.adventOfCode.y2022.d4	Y2022D4Kt
 .
@@ -518,7 +510,7 @@ Y2022D25Kt
 .
 !org.gristle.adventOfCode.y2022.d8	Y2022D8Kt
 .
-!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     Code.y2022.d8	Y2022D8Kt
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     	Y2022D9Kt" *     Code.y2022.d8	Y2022D8Kt
 .
 !org.gristle.adventOfCode.y2022.d9	Y2022D9Kt" *     2.d3	Y2022D3Kt
 .

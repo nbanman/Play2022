@@ -370,9 +370,13 @@ fun <E> Array<E>.toGrid(width: Int): Grid<E> = ArrayGrid(this.toList(), width)
 
 fun <E> List<E>.toGrid(width: Int): Grid<E> = ArrayGrid(this, width)
 
+fun <E> Sequence<E>.toGrid(width: Int): Grid<E> = toMutableGrid(width)
+
+fun <E> Sequence<E>.toMutableGrid(width: Int): Grid<E> = toMutableList().toMutableGrid(width)
+
 fun <E> Grid<E>.toGrid(): Grid<E> = ArrayGrid(this, this.width)
 
-fun String.toGrid(width: Int): Grid<Char>  = ArrayGrid(this.toList(), width)
+fun String.toGrid(width: Int): Grid<Char> = ArrayGrid(this.toList(), width)
 
 fun String.toGrid(): Grid<Char> {
     val width = indexOfAny(charArrayOf('\n', '\r'))
