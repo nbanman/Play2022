@@ -7,13 +7,16 @@ import org.gristle.adventOfCode.utilities.toMutableGrid
 
 class Y2022D10(input: String) {
 
-    // add an extra "a " in front of input because that will add an extra 0 to the eventual List<Int> we are making
-    // parts 1 and 2 both care about what the register is mid-cycle, before the register is updated. Thus, an extra
-    // 0 needs to be put in so that the relevant register value is paired with the cycle.
-
-    // The split/map does not look at commands. It grabs all non-whitespace "words," converts numbers into numbers,
-    // and non-numbers into zeros. By doing this, we map the number of cycles where the register does not change.
-    private val cpu = "a $input"
+    // Parsing is a little unconventional. Rather than reading each line as a command and figuring out what each 
+    // command does, we simply want to arrive at a list of cycles paired to their respective registry value. We can
+    // start by splitting the string into "words" of non-whitespace characters, attempting to convert them all to
+    // Ints, and substituting a 0 when conversion fails because the word is "addx" or "noop." This returns a list of
+    // adjustments to the registry that occur at the end of a particular cycle.
+    // 
+    // The next step is to do a runningFold with a plus function on the list, which returns the list of registry 
+    // values at the end of each cycle. We add the cycle information with .withIndex(), which allows us to filter
+    // unused registry values without losing track of what cycle we are in.
+    private val cpu = input
         .split('\n', ' ')
         .map { it.toIntOrNull() ?: 0 }
         // keeps a running tally of where the register is, starting from 1.
@@ -21,16 +24,20 @@ class Y2022D10(input: String) {
         // keeps track of which cycle the cpu is in. Useful because the functions drop and filter, but we want to keep
         // the register paired with the cycle.
         .withIndex()
-        .take(241) // The OCR grid needs 240 exact, and we'll be dropping the first value.
-        .drop(1) // Having used the extra entry to move the registers back by one, we can now drop that dummy entry
 
+    // Note for both part 1 and part 2, our list gives the registry value after a particular cycle is completed.
+    // The registry value is updated at the *end* of the cycle, which means we want to use the registry value of the
+    // previous cycle rather than the cycle mentioned in the instructions. So both evaluations start at cycle 0 
+    // (initial state) rather than cycle 1, and perform each evaluation one cycle early.
     fun part1() = cpu
-        .filter { (cycle, _) -> (cycle + 20) % 40 == 0 }
-        .sumOf { (cycle, register) -> cycle * register }
+        .filter { (cycle, _) -> (cycle + 19) % 40 == 0 }
+        .sumOf { (cycle, register) -> (cycle + 1) * register }
 
     fun part2() = cpu
-        .map { (cycle, register) -> ((cycle - 1) % 40) in (register - 1)..(register + 1) }
+        .take(240) // The OCR grid needs 240 exact
+        .map { (cycle, register) -> ((cycle) % 40) in (register - 1)..(register + 1) }
         .toMutableGrid(40)
+        // .apply { println("\n${representation { if (it) '⚪' else '⚫' }}") }
         .ocr()
 }
 
