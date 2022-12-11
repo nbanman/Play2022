@@ -4,13 +4,13 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2022D11(val input: String) {
 
-    data class Monkey(
+    class Monkey(
         val name: Int,
-        val items: MutableList<Long>,
-        val op: String,
+        private val items: MutableList<Long>,
+        private val op: String,
         val test: Int,
-        val ifTrue: Int,
-        val ifFalse: Int
+        private val ifTrue: Int,
+        private val ifFalse: Int
     ) {
         companion object {
             val monkeys = mutableMapOf<Int, Monkey>()
@@ -22,7 +22,7 @@ class Y2022D11(val input: String) {
             monkeys[name] = this
         }
 
-        fun Long.op(): Long {
+        private fun Long.op(): Long {
             val opValue = op.takeLastWhile { it != ' ' }.toLongOrNull() ?: this
             return when (op[0]) {
                 '+' -> this + opValue
@@ -39,20 +39,16 @@ class Y2022D11(val input: String) {
             }
             items.clear()
         }
-
-        override fun toString(): String {
-            return "Monkey(name=$name, items=$items, op='$op', test=$test, ifTrue=$ifTrue, ifFalse=$ifFalse, inspections=$inspections)"
-        }
     }
 
-    private val pattern = Regex(
-        """Monkey (\d+):
-  Starting items: (\d+(?:, \d+)*)
-  Operation: new = old ([+*] \w+)
-  Test: divisible by (\d+)
-    If true: throw to monkey (\d+)
-    If false: throw to monkey (\d+)"""
-    )
+    private val pattern = """
+        Monkey (\d+):
+         +Starting items: (\d+(?:, \d+)*)
+         +Operation: new = old ([+*] \w+)
+         +Test: divisible by (\d+)
+         +If true: throw to monkey (\d+)
+         +If false: throw to monkey (\d+)
+    """.trimIndent()
 
     fun solve(rounds: Int, worryFactor: Int): Long {
         val monkeys = input
@@ -77,38 +73,9 @@ class Y2022D11(val input: String) {
 }
 
 fun main() {
-    val input = listOf(
-        getInput(11, 2022),
-        """Monkey 0:
-  Starting items: 79, 98
-  Operation: new = old * 19
-  Test: divisible by 23
-    If true: throw to monkey 2
-    If false: throw to monkey 3
-
-Monkey 1:
-  Starting items: 54, 65, 75, 74
-  Operation: new = old + 6
-  Test: divisible by 19
-    If true: throw to monkey 2
-    If false: throw to monkey 0
-
-Monkey 2:
-  Starting items: 79, 60, 97
-  Operation: new = old * old
-  Test: divisible by 13
-    If true: throw to monkey 1
-    If false: throw to monkey 3
-
-Monkey 3:
-  Starting items: 74
-  Operation: new = old + 3
-  Test: divisible by 17
-    If true: throw to monkey 0
-    If false: throw to monkey 1""",
-    )
+    val input = getInput(11, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D11(input[0])
+    val solver = Y2022D11(input)
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 88208
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 21115867968
