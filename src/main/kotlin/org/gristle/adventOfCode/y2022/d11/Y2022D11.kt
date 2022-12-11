@@ -2,6 +2,16 @@ package org.gristle.adventOfCode.y2022.d11
 
 import org.gristle.adventOfCode.utilities.*
 
+/*
+ * This works but is unsatisfactory. The Monkey class uses mutable data, has to be reset for every 
+ * solve, uses a companion object to get the Monkeys to see each other, etc.
+ * 
+ * For a more satisfactory version, check out
+ * https://github.com/ephemient/aoc2022/blob/main/kt/src/commonMain/kotlin/com/github/ephemient/aoc2022/Day11.kt
+ * 
+ * I started to refactor to get it in line with that, but his code is so to-the-point that it ended up being a 
+ * straight copy. So I may as well just link to it and move on.
+ */
 class Y2022D11(val input: String) {
 
     class Monkey(
@@ -30,10 +40,10 @@ class Y2022D11(val input: String) {
             }
         }
 
-        fun inspect(worryFactor: Int, lcm: Long) {
+        fun inspect(worryReduction: Long.() -> Long) {
             inspections += items.size
             items.forEach { item ->
-                val worryLevel = if (worryFactor == 3) item.op() / worryFactor else item.op() % lcm
+                val worryLevel = item.op().worryReduction()
                 val receivingMonkey = if (worryLevel % test == 0L) ifTrue else ifFalse
                 monkeys.getValue(receivingMonkey).items.add(worryLevel)
             }
@@ -54,16 +64,25 @@ class Y2022D11(val input: String) {
         val monkeys = input
             .groupValues(pattern)
             .map { gv ->
-                val name = gv[0].toInt()
-                val starting = gv[1].getIntList().map(Int::toLong).toMutableList()
-                val op = gv[2]
-                val test = gv[3].toInt()
-                val ifTrue = gv[4].toInt()
-                val ifFalse = gv[5].toInt()
-                Monkey(name, starting, op, test, ifTrue, ifFalse)
+                Monkey(
+                    name = gv[0].toInt(),
+                    items = gv[1].getIntList().map(Int::toLong).toMutableList(),
+                    op = gv[2],
+                    test = gv[3].toInt(),
+                    ifTrue = gv[4].toInt(),
+                    ifFalse = gv[5].toInt()
+                )
             }
-        val lcm = lcm(monkeys.map { it.test.toLong() })
-        repeat(rounds) { monkeys.forEach { monkey -> monkey.inspect(worryFactor, lcm) } }
+
+        val lcm = if (worryFactor == 1) lcm(monkeys.map { it.test.toLong() }) else 0
+
+        val worryReduction: (Long) -> Long = if (worryFactor == 1) {
+            { worry: Long -> worry % lcm }
+        } else {
+            { worry: Long -> worry / 3 }
+        }
+
+        repeat(rounds) { monkeys.forEach { monkey -> monkey.inspect(worryReduction) } }
         return monkeys.map(Monkey::inspections).sortedDescending().take(2).fold(1L, Long::times)
     }
 
