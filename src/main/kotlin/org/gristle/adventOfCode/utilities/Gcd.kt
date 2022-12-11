@@ -7,6 +7,11 @@ fun gcd(unsortedInts: List<Int>): Int {
     return gcd(unsortedInts[0], unsortedInts[1], *unsortedInts.drop(2).toIntArray())
 }
 
+fun gcd(unsortedLongs: List<Long>): Long {
+    require(unsortedLongs.size >= 2) { "There must be at least two numbers" }
+    return gcd(unsortedLongs[0], unsortedLongs[1], *unsortedLongs.drop(2).toLongArray())
+}
+
 fun gcd(a: Int, b: Int, vararg n: Int): Int {
     val numbers: List<Int> = ArrayList<Int>(n.size + 2).apply {
         add(abs(a))
