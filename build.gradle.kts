@@ -37,9 +37,10 @@ allOpen {
 benchmark {
     configurations {
         named("main") {
-            iterationTime = 5
-            iterationTimeUnit = "sec"
-
+            mode = "avgt"
+            warmups = 1
+            iterationTime = 1
+            outputTimeUnit = "MICROSECONDS"
         }
     }
     targets {
