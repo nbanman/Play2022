@@ -24,7 +24,7 @@ class Y2022D12(input: String) {
 
     private val vertices = Graph
         .bfsSequence(
-            startIds = listOf(startId),
+            startId = startId,
             defaultEdges = getEdges
         ).takeUntil { area[it.id] == 'S' }
         .toList()
