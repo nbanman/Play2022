@@ -1,58 +1,46 @@
 package org.gristle.adventOfCode.y2022.d11
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.utilities.getIntList
+import org.gristle.adventOfCode.utilities.groupValues
 
 /*
- * This works but is unsatisfactory. The Monkey class uses mutable data, has to be reset for every 
- * solve, uses a companion object to get the Monkeys to see each other, etc.
- * 
- * For a more satisfactory version, check out
+ * I couldn't help myself. Ephemient's solution was too good to let pass. I gave myself a several hour break and
+ * coded from memory. There are some differences but they are minor.
  * https://github.com/ephemient/aoc2022/blob/main/kt/src/commonMain/kotlin/com/github/ephemient/aoc2022/Day11.kt
  * 
- * I started to refactor to get it in line with that, but his code is so to-the-point that it ended up being a 
- * straight copy. So I may as well just link to it and move on.
+ * Look at previous version for what I'm apparently capable of myself.
  */
 class Y2022D11(val input: String) {
 
-    class Monkey(
-        val name: Int,
-        private val items: MutableList<Long>,
-        private val op: String,
-        val test: Int,
-        private val ifTrue: Int,
-        private val ifFalse: Int
-    ) {
-        companion object {
-            val monkeys = mutableMapOf<Int, Monkey>()
-        }
-
-        var inspections = 0
-
-        init {
-            monkeys[name] = this
-        }
-
-        private fun Long.op(): Long {
-            val opValue = op.takeLastWhile { it != ' ' }.toLongOrNull() ?: this
-            return when (op[0]) {
-                '+' -> this + opValue
-                else -> this * opValue
+    fun solve(rounds: Int, worryReduction: (Long) -> Long): Long {
+        val items = monkeys.associate { (index, monkey) -> index to monkey.startingItems.toMutableList() }
+        val inspections = IntArray(items.size) { 0 }
+        repeat(rounds) {
+            monkeys.forEach { (index, monkey) ->
+                val monkeyItems = items.getValue(index)
+                inspections[index] += monkeyItems.size
+                monkeyItems.forEach { item ->
+                    val worryLevel = worryReduction(monkey.operation(item))
+                    val receivingMonkey = if (worryLevel % monkey.test == 0L) monkey.ifTrue else monkey.ifFalse
+                    items.getValue(receivingMonkey).add(worryLevel)
+                }
+                monkeyItems.clear()
             }
         }
+        return inspections.sortedDescending().take(2).fold(1L, Long::times)
+    }
 
-        fun inspect(worryReduction: Long.() -> Long) {
-            inspections += items.size
-            items.forEach { item ->
-                val worryLevel = item.op().worryReduction()
-                val receivingMonkey = if (worryLevel % test == 0L) ifTrue else ifFalse
-                monkeys.getValue(receivingMonkey).items.add(worryLevel)
-            }
-            items.clear()
-        }
+    fun part1() = solve(20) { it / 3 }
+
+    fun part2(): Long {
+        val lcm = monkeys.map { (_, monkey) -> monkey.test }.reduce(Int::times)
+        return solve(10000) { it % lcm }
     }
 
     private val pattern = """
-        Monkey (\d+):
+        Monkey \d+:
          +Starting items: (\d+(?:, \d+)*)
          +Operation: new = old ([+*] \w+)
          +Test: divisible by (\d+)
@@ -60,35 +48,53 @@ class Y2022D11(val input: String) {
          +If false: throw to monkey (\d+)
     """.trimIndent()
 
-    fun solve(rounds: Int, worryFactor: Int): Long {
-        val monkeys = input
-            .groupValues(pattern)
-            .map { gv ->
-                Monkey(
-                    name = gv[0].toInt(),
-                    items = gv[1].getIntList().map(Int::toLong).toMutableList(),
-                    op = gv[2],
-                    test = gv[3].toInt(),
-                    ifTrue = gv[4].toInt(),
-                    ifFalse = gv[5].toInt()
-                )
-            }
+    private val monkeys = input
+        .groupValues(pattern)
+        .map { gv ->
+            Monkey(
+                startingItems = gv[0].getIntList().map(Int::toLong).toMutableList(),
+                operation = Operation.from(gv[1]),
+                test = gv[2].toInt(),
+                ifTrue = gv[3].toInt(),
+                ifFalse = gv[4].toInt()
+            )
+        }.withIndex()
 
-        val lcm = if (worryFactor == 1) lcm(monkeys.map { it.test.toLong() }) else 0
+    class Monkey(
+        val startingItems: List<Long>,
+        val operation: Operation,
+        val test: Int,
+        val ifTrue: Int,
+        val ifFalse: Int
+    )
 
-        val worryReduction: (Long) -> Long = if (worryFactor == 1) {
-            { worry: Long -> worry % lcm }
-        } else {
-            { worry: Long -> worry / 3 }
+    sealed class Operation {
+        abstract operator fun invoke(value: Long): Long
+
+        object Square : Operation() {
+            override fun invoke(value: Long) = value * value
         }
 
-        repeat(rounds) { monkeys.forEach { monkey -> monkey.inspect(worryReduction) } }
-        return monkeys.map(Monkey::inspections).sortedDescending().take(2).fold(1L, Long::times)
+        class Plus(val other: Int) : Operation() {
+            override fun invoke(value: Long): Long = value + other
+        }
+
+        class Times(val other: Int) : Operation() {
+            override fun invoke(value: Long): Long = value * other
+        }
+
+        companion object {
+            fun from(opString: String): Operation {
+                val (opName, opValue) = opString.split(' ')
+                return when (opName) {
+                    "+" -> Plus(opValue.toInt())
+                    else -> {
+                        if (opValue[0].isLetter()) Square else Times(opValue.toInt())
+                    }
+                }
+            }
+        }
     }
-
-    fun part1() = solve(20, 3)
-
-    fun part2() = solve(10000, 1)
 }
 
 fun main() {
