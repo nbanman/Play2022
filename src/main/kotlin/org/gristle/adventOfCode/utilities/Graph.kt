@@ -159,33 +159,6 @@ object Graph {
     }
 
     /**
-     * Works but slower nad really don't see the need.
-     */
-    inline fun <E> aStarSequence(
-        startId: E,
-        noinline heuristic: (E) -> Double,
-        edges: Map<E, List<Edge<E>>> = mapOf(),
-        crossinline defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
-    ): Sequence<Vertex<E>> = sequence {
-        val startVertex = AStarVertex(startId, 0.0, heuristic(startId))
-
-        val edgeMap = edges.toMutableMap()
-
-        val open = PriorityQueue<AStarVertex<E>>()
-        open.add(startVertex)
-        val closed = mutableSetOf<E>()
-        while (open.isNotEmpty()) {
-            val current = open.pollUntil { !closed.contains(it.id) } ?: break
-            yield(current)
-            closed.add(current.id)
-            val neighbors = edgeMap[current.id] ?: defaultEdges(current.id)
-            for (neighbor in neighbors) {
-                if (!closed.contains(neighbor.vertexId)) open.add(neighbor.toAStarVertex(current, heuristic))
-            }
-        }
-    }
-
-    /**
      * Finds the shortest path in a directed, unweighted graph from a starting point to all vertices traversed
      * until all reachable vertices have been traversed or the end condition is met. Faster than Dijkstra, but
      * does not work for weighted graphs.
@@ -227,86 +200,6 @@ object Graph {
                 }
         }
         return if (endCondition(startId) == null) visited.values.toList() else emptyList()
-    }
-
-    fun <E> bfsSequence(
-        startIds: Iterable<E>,
-        edges: Map<E, Iterable<E>> = mapOf(),
-        defaultEdges: (E) -> Iterable<E> = { emptyList() }
-    ): Sequence<Vertex<E>> = sequence {
-        val start = startIds.map { startId -> StdVertex(startId, 0.0) }
-        val edgeMap = edges.toMutableMap()
-        val q = ArrayDeque<Vertex<E>>()
-        q.addAll(start)
-        val visited: MutableMap<E, StdVertex<E>> = mutableMapOf()
-        start.forEach { startId ->
-            visited[startId.id] = startId
-        }
-        while (q.isNotEmpty()) {
-            val current = q.poll()
-            yield(current)
-            edgeMap[current.id] ?: defaultEdges(current.id)
-                .filter { it !in visited }
-                .map { StdVertex(id = it, weight = current.weight + 1.0, parent = current) }
-                .forEach { neighbor ->
-                    visited[neighbor.id] = neighbor
-                    q.add(neighbor)
-                }
-        }
-    }
-
-    fun <E> dfsSequence(
-        startIds: Iterable<E>,
-        edges: Map<E, Iterable<E>> = mapOf(),
-        defaultEdges: (E) -> Iterable<E> = { emptyList() }
-    ): Sequence<Vertex<E>> = sequence {
-        val start = startIds.map { startId -> StdVertex(startId, 0.0) }
-        val edgeMap = edges.toMutableMap()
-        val q = ArrayDeque<StdVertex<E>>()
-        q.addAll(start)
-        // "visited" serves double duty here. If it were just to ensure that already determined vertices were
-        // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
-        // which gets returned as part of the function return.
-        val visited = mutableMapOf<E, Vertex<E>>()
-        while (q.isNotEmpty()) {
-            val current = q.pop()
-            if (current.id !in visited) {
-                visited[current.id] = current
-                yield(current)
-                edgeMap[current.id] ?: defaultEdges(current.id)
-                    .map { StdVertex(it, current.weight + 1.0, current) }
-                    .forEach { q.add(it) }
-            }
-        }
-    }
-
-    fun <E> dijkstraSequence(
-        startIds: Iterable<E>,
-        edges: Map<E, List<Edge<E>>> = mapOf(),
-        defaultEdges: (E) -> Iterable<Edge<E>> = { emptyList() }
-    ): Sequence<Vertex<E>> = sequence {
-        val start = startIds.map { startId -> StdVertex(startId, 0.0) }
-        val vertices: MutableMap<E, StdVertex<E>> = mutableMapOf()
-        start.forEach { startVertex ->
-            vertices[startVertex.id] = startVertex
-        }
-        val q = PriorityQueue<Vertex<E>>()
-        val edgeMap = edges.toMutableMap()
-        q.addAll(start)
-        // "visited" serves double duty here. If it were just to ensure that already determined vertices were
-        // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
-        // which gets returned as part of the function return.
-        val visited = mutableMapOf<E, Vertex<E>>()
-        while (true) {
-            val current = q.pollUntil { visited[it.id] == null } ?: break
-            yield(current)
-            visited[current.id] = current
-            (edgeMap[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
-                val alternateWeight = current.weight + neighborEdge.weight
-                val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
-                if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
-            }
-        }
     }
 
     /**
@@ -392,5 +285,106 @@ object Graph {
             }
         }
         return if (endCondition(startId) == null) visited.values.toList() else emptyList()
+    }
+
+    fun <E> bfsSequence(
+        startId: E,
+        edges: Map<E, Iterable<E>> = mapOf(),
+        defaultEdges: (E) -> Iterable<E> = { emptyList() }
+    ): Sequence<Vertex<E>> = sequence {
+        val start = StdVertex(startId, 0.0)
+        val edgeMap = edges.toMutableMap()
+        val q = ArrayDeque<Vertex<E>>()
+        q.add(start)
+        val visited = mutableMapOf(startId to start)
+        while (q.isNotEmpty()) {
+            val current = q.poll()
+            yield(current)
+            edgeMap[current.id] ?: defaultEdges(current.id)
+                .filter { it !in visited }
+                .map { StdVertex(id = it, weight = current.weight + 1.0, parent = current) }
+                .forEach { neighbor ->
+                    visited[neighbor.id] = neighbor
+                    q.add(neighbor)
+                }
+        }
+    }
+
+    fun <E> dfsSequence(
+        startId: E,
+        edges: Map<E, Iterable<E>> = mapOf(),
+        defaultEdges: (E) -> Iterable<E> = { emptyList() }
+    ): Sequence<Vertex<E>> = sequence {
+        val start = StdVertex(startId, 0.0)
+        val edgeMap = edges.toMutableMap()
+        val q = ArrayDeque<StdVertex<E>>()
+        q.add(start)
+        // "visited" serves double duty here. If it were just to ensure that already determined vertices were
+        // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
+        // which gets returned as part of the function return.
+        val visited = mutableMapOf<E, Vertex<E>>()
+        while (q.isNotEmpty()) {
+            val current = q.pop()
+            if (current.id !in visited) {
+                visited[current.id] = current
+                yield(current)
+                edgeMap[current.id] ?: defaultEdges(current.id)
+                    .map { StdVertex(it, current.weight + 1.0, current) }
+                    .forEach { q.add(it) }
+            }
+        }
+    }
+
+    fun <E> dijkstraSequence(
+        startId: E,
+        edges: Map<E, List<Edge<E>>> = mapOf(),
+        defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
+    ): Sequence<Vertex<E>> = sequence {
+        val start = StdVertex(startId, 0.0)
+        val vertices = mutableMapOf(startId to start)
+        val q = PriorityQueue<Vertex<E>>()
+        val edgeMap = edges.toMutableMap()
+        q.add(start)
+        // "visited" serves double duty here. If it were just to ensure that already determined vertices were
+        // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
+        // which gets returned as part of the function return.
+        val visited = mutableMapOf<E, Vertex<E>>()
+        while (true) {
+            val current = q.pollUntil { visited[it.id] == null } ?: break
+            yield(current)
+            visited[current.id] = current
+            (edgeMap[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
+                val alternateWeight = current.weight + neighborEdge.weight
+                val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
+                if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
+            }
+        }
+    }
+
+    /**
+     * Works but slower nad really don't see the need.
+     */
+    inline fun <E> aStarSequence(
+        startId: E,
+        noinline heuristic: (E) -> Double,
+        edges: Map<E, List<Edge<E>>> = mapOf(),
+        crossinline defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
+    ): Sequence<Vertex<E>> = sequence {
+        val startVertex = AStarVertex(startId, 0.0, heuristic(startId))
+
+        val edgeMap = edges.toMutableMap()
+
+        val open = PriorityQueue<AStarVertex<E>>()
+        open.add(startVertex)
+        val closed = mutableSetOf<E>()
+        while (open.isNotEmpty()) {
+            val current = open.pollUntil { !closed.contains(it.id) } ?: break
+            yield(current)
+            closed.add(current.id)
+            val neighbors = edgeMap[current.id] ?: defaultEdges(current.id)
+            for (neighbor in neighbors) {
+                if (!closed.contains(neighbor.vertexId)) open.add(neighbor.toAStarVertex(current, heuristic))
+            }
+        }
     }
 }
