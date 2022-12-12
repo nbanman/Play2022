@@ -94,8 +94,9 @@ object Graph {
 
     /**
      * Utility function to provide the weight from the beginning to the end of the traversal as an Integer.
+     * Returns -1 if the traversal did not complete.
      */
-    fun <E> List<Vertex<E>>.steps() = last().weight.toInt()
+    fun <E> List<Vertex<E>>.steps() = lastOrNull()?.weight?.toInt() ?: -1
 
     /**
      * Contains id of a neighboring vertex and the weight to travel there. Used in constructing
@@ -169,7 +170,7 @@ object Graph {
      */
     inline fun <E> bfs(
         startId: E,
-        endCondition: (E) -> Boolean = { false },
+        endCondition: (E) -> Boolean? = { null },
         edges: Map<E, List<E>> = mapOf(),
         defaultEdges: (E) -> List<E> = { emptyList() }
     ): List<Vertex<E>> {
@@ -188,11 +189,11 @@ object Graph {
                 .map { StdVertex(it, current.weight + 1.0, current) }
                 .forEach { neighbor ->
                     visited[neighbor.id] = neighbor
-                    if (endCondition(neighbor.id)) return visited.values.toList()
+                    if (endCondition(neighbor.id) == true) return visited.values.toList()
                     q.add(neighbor)
                 }
         }
-        return visited.values.toList()
+        return if (endCondition(startId) == null) visited.values.toList() else emptyList()
     }
 
     /**
@@ -212,7 +213,7 @@ object Graph {
      */
     inline fun <E> dfs(
         startId: E,
-        endCondition: (E) -> Boolean = { false },
+        endCondition: (E) -> Boolean? = { null },
         edges: Map<E, List<E>> = mapOf(),
         defaultEdges: (E) -> List<E> = { emptyList() }
     ): List<Vertex<E>> {
@@ -228,13 +229,13 @@ object Graph {
             val current = q.pop() ?: break
             if (current.id !in visited) {
                 visited[current.id] = current
-                if (endCondition(current.id)) return visited.values.toList()
+                if (endCondition(current.id) == true) return visited.values.toList()
                 edgeMap[current.id] ?: defaultEdges(current.id)
                     .map { StdVertex(it, current.weight + 1.0, current) }
                     .forEach { q.add(it) }
             }
         }
-        return visited.values.toList()
+        return if (endCondition(startId) == null) visited.values.toList() else emptyList()
     }
 
     /**
@@ -254,7 +255,7 @@ object Graph {
      */
     inline fun <E> dijkstra(
         startId: E,
-        endCondition: (E) -> Boolean = { false },
+        endCondition: (E) -> Boolean? = { null },
         edges: Map<E, List<Edge<E>>> = mapOf(),
         defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
     ): List<Vertex<E>> {
@@ -270,13 +271,13 @@ object Graph {
         while (true) {
             val current = q.pollUntil { visited[it.id] == null } ?: break
             visited[current.id] = current
-            if (endCondition(current.id)) return visited.values.toList()
+            if (endCondition(current.id) == true) return visited.values.toList()
             (edgeMap[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
                 val alternateWeight = current.weight + neighborEdge.weight
                 val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
                 if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
             }
         }
-        return visited.values.toList()
+        return if (endCondition(startId) == null) visited.values.toList() else emptyList()
     }
 }
