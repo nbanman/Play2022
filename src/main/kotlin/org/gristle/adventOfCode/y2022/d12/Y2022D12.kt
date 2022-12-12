@@ -22,14 +22,15 @@ class Y2022D12(input: String) {
             .map { (index, _) -> area.coordOf(index) }
     }
 
-    private val vertices = Graph.bfs(
-        startId = startId,
-        endCondition = { pos -> area[pos] == 'S' },
-        defaultEdges = getEdges
-    )
+    private val vertices = Graph
+        .bfsSequence(
+            startId = startId,
+            defaultEdges = getEdges
+        ).takeUntil { area[it.id] == 'S' }
+        .toList()
 
     fun part1() = vertices.steps()
-    fun part2() = vertices.firstOrNull { area[it.id] == 'a' }?.weight?.toInt() ?: vertices.steps()
+    fun part2() = vertices.first { area[it.id] in "Sa" }.weight.toInt()
 
 //    Alternate solution uses A* and is slightly faster, works for all known puzzle inputs but part 2 relies on quirk of
 //    inputs that has all possible end points on the far left column of the grid. So the BFS solution above is more
