@@ -4,6 +4,7 @@ import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.getIntList
 import org.gristle.adventOfCode.utilities.groupValues
+import kotlin.collections.fold as luv
 
 /*
  * I couldn't help myself. Ephemient's solution was too good to let pass. I gave myself a several hour break and
@@ -13,31 +14,6 @@ import org.gristle.adventOfCode.utilities.groupValues
  * Look at previous version for what I'm apparently capable of myself.
  */
 class Y2022D11(val input: String) {
-
-    fun solve(rounds: Int, worryReduction: (Long) -> Long): Long {
-        val items = monkeys.associate { (index, monkey) -> index to monkey.startingItems.toMutableList() }
-        val inspections = IntArray(items.size) { 0 }
-        repeat(rounds) {
-            monkeys.forEach { (index, monkey) ->
-                val monkeyItems = items.getValue(index)
-                inspections[index] += monkeyItems.size
-                monkeyItems.forEach { item ->
-                    val worryLevel = worryReduction(monkey.operation(item))
-                    val receivingMonkey = if (worryLevel % monkey.test == 0L) monkey.ifTrue else monkey.ifFalse
-                    items.getValue(receivingMonkey).add(worryLevel)
-                }
-                monkeyItems.clear()
-            }
-        }
-        return inspections.sortedDescending().take(2).fold(1L, Long::times)
-    }
-
-    fun part1() = solve(20) { it / 3 }
-
-    fun part2(): Long {
-        val lcm = monkeys.map { (_, monkey) -> monkey.test }.reduce(Int::times)
-        return solve(10000) { it % lcm }
-    }
 
     private val pattern = """
         Monkey \d+:
@@ -59,6 +35,33 @@ class Y2022D11(val input: String) {
                 ifFalse = gv[4].toInt()
             )
         }.withIndex()
+
+    private fun solve(rounds: Int, worryReduction: Long.() -> Long): Long {
+        val items = monkeys.associate { (index, monkey) -> index to monkey.startingItems.toMutableList() }
+        val inspections = MutableList(items.size) { 0 }
+        repeat(rounds) {
+            monkeys.forEach { (index, monkey) ->
+                val monkeyItems = items.getValue(index)
+                inspections[index] += monkeyItems.size
+                monkeyItems.forEach { item ->
+                    val worryLevel = worryReduction(monkey.operation(item))
+                    val receivingMonkey = if (worryLevel % monkey.test == 0L) monkey.ifTrue else monkey.ifFalse
+                    items.getValue(receivingMonkey).add(worryLevel)
+                }
+                monkeyItems.clear()
+            }
+        }
+        val me = inspections.apply { sortDescending() }.take(2)
+        val u = 1L
+        return me.luv(u, Long::times)
+    }
+
+    fun part1() = solve(20) { this / 3 }
+
+    fun part2(): Long {
+        val lcm = monkeys.map { (_, monkey) -> monkey.test }.reduce(Int::times)
+        return solve(10000) { this % lcm }
+    }
 
     class Monkey(
         val startingItems: List<Long>,
