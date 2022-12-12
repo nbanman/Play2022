@@ -9,19 +9,21 @@ class Y2022D12(input: String) {
 
     private val area = input.toGrid()
 
-    private val vertices = Graph
-        .bfs(area.indexOf('E')) { pos ->
-            area
-                .getNeighborsIndexedValue(pos)
-                .filter { (_, c) -> c.height() >= area[pos].height() - 1 }
-                .map { (index, _) -> index }
-        }.filter { area[it.id] in "Sa" }
-
     private fun Char.height() = when (this) {
         'S' -> 'a'
         'E' -> 'z'
         else -> this
     }.code
+
+    private val getEdges = { pos: Int ->
+        area
+            .getNeighborsIndexedValue(pos)
+            .filter { (_, c) -> c.height() >= area[pos].height() - 1 }
+            .map { (index, _) -> index }
+    }
+
+    private val vertices = Graph.bfs(startId = area.indexOf('E'), defaultEdges = getEdges)
+        .filter { area[it.id] in "Sa" }
 
     fun solve(starts: String) = vertices
         .filter { area[it.id] in starts }
