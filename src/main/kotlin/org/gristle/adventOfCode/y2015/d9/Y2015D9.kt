@@ -1,10 +1,7 @@
 package org.gristle.adventOfCode.y2015.d9
 
-import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.*
 import org.gristle.adventOfCode.utilities.Graph.steps
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2015D9(private val input: String) {
 
@@ -62,11 +59,12 @@ class Y2015D9(private val input: String) {
     }
 
     fun part1() = cities.minOf { city ->
-        Graph.dijkstra(
-            startId = listOf(city),
-            endCondition = { visited -> cities.size == visited.size },
-            defaultEdges = defaultEdges
-        ).steps()
+        Graph
+            .dijkstraSequence(
+                startId = listOf(city),
+                defaultEdges = defaultEdges
+            ).takeUntil { it.id.size == cities.size }
+            .steps()
     }
 
     fun part2() = longestDistance(emptyList(), legs, cities.toList())
