@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.gristle.adventOfCode.utilities.PermutationsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2022-12-07T20:07:10" hostname="GLORIOUSALLRED" time="0.008">
+<testsuite name="org.gristle.adventOfCode.utilities.PermutationsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2022-12-12T06:41:54" hostname="GLORIOUSALLRED" time="0.009">
   <properties/>
-  <testcase name="findsValidPermutationWithSeed$Play2022()" classname="org.gristle.adventOfCode.utilities.PermutationsTest" time="0.004"/>
-  <testcase name="findsValidPermutation$Play2022()" classname="org.gristle.adventOfCode.utilities.PermutationsTest" time="0.004"/>
+  <testcase name="findsValidPermutationWithSeed$Play2022()" classname="org.gristle.adventOfCode.utilities.PermutationsTest" time="0.006"/>
+  <testcase name="findsValidPermutation$Play2022()" classname="org.gristle.adventOfCode.utilities.PermutationsTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

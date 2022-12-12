@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.gristle.adventOfCode.utilities.IoTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2022-12-07T20:07:10" hostname="GLORIOUSALLRED" time="0.005">
+<testsuite name="org.gristle.adventOfCode.utilities.IoTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2022-12-12T06:41:54" hostname="GLORIOUSALLRED" time="0.012">
   <properties/>
-  <testcase name="testReadInput$Play2022()" classname="org.gristle.adventOfCode.utilities.IoTest" time="0.003"/>
-  <testcase name="testReadRawInput$Play2022()" classname="org.gristle.adventOfCode.utilities.IoTest" time="0.001"/>
+  <testcase name="testReadInput$Play2022()" classname="org.gristle.adventOfCode.utilities.IoTest" time="0.009"/>
+  <testcase name="testReadRawInput$Play2022()" classname="org.gristle.adventOfCode.utilities.IoTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
