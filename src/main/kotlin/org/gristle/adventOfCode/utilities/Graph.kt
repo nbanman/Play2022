@@ -230,15 +230,18 @@ object Graph {
     }
 
     fun <E> bfsSequence(
-        startId: E,
+        startIds: Iterable<E>,
         edges: Map<E, Iterable<E>> = mapOf(),
         defaultEdges: (E) -> Iterable<E> = { emptyList() }
     ): Sequence<Vertex<E>> = sequence {
-        val start = StdVertex(startId, 0.0)
+        val start = startIds.map { startId -> StdVertex(startId, 0.0) }
         val edgeMap = edges.toMutableMap()
         val q = ArrayDeque<Vertex<E>>()
-        q.add(start)
-        val visited = mutableMapOf(startId to start)
+        q.addAll(start)
+        val visited: MutableMap<E, StdVertex<E>> = mutableMapOf()
+        start.forEach { startId ->
+            visited[startId.id] = startId
+        }
         while (q.isNotEmpty()) {
             val current = q.poll()
             yield(current)
@@ -253,14 +256,14 @@ object Graph {
     }
 
     fun <E> dfsSequence(
-        startId: E,
+        startIds: Iterable<E>,
         edges: Map<E, Iterable<E>> = mapOf(),
         defaultEdges: (E) -> Iterable<E> = { emptyList() }
     ): Sequence<Vertex<E>> = sequence {
-        val start = StdVertex(startId, 0.0)
+        val start = startIds.map { startId -> StdVertex(startId, 0.0) }
         val edgeMap = edges.toMutableMap()
         val q = ArrayDeque<StdVertex<E>>()
-        q.add(start)
+        q.addAll(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
         // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
         // which gets returned as part of the function return.
@@ -273,6 +276,35 @@ object Graph {
                 edgeMap[current.id] ?: defaultEdges(current.id)
                     .map { StdVertex(it, current.weight + 1.0, current) }
                     .forEach { q.add(it) }
+            }
+        }
+    }
+
+    fun <E> dijkstraSequence(
+        startIds: Iterable<E>,
+        edges: Map<E, List<Edge<E>>> = mapOf(),
+        defaultEdges: (E) -> Iterable<Edge<E>> = { emptyList() }
+    ): Sequence<Vertex<E>> = sequence {
+        val start = startIds.map { startId -> StdVertex(startId, 0.0) }
+        val vertices: MutableMap<E, StdVertex<E>> = mutableMapOf()
+        start.forEach { startVertex ->
+            vertices[startVertex.id] = startVertex
+        }
+        val q = PriorityQueue<Vertex<E>>()
+        val edgeMap = edges.toMutableMap()
+        q.addAll(start)
+        // "visited" serves double duty here. If it were just to ensure that already determined vertices were
+        // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
+        // which gets returned as part of the function return.
+        val visited = mutableMapOf<E, Vertex<E>>()
+        while (true) {
+            val current = q.pollUntil { visited[it.id] == null } ?: break
+            yield(current)
+            visited[current.id] = current
+            (edgeMap[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
+                val alternateWeight = current.weight + neighborEdge.weight
+                val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
+                if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
             }
         }
     }
@@ -360,31 +392,5 @@ object Graph {
             }
         }
         return if (endCondition(startId) == null) visited.values.toList() else emptyList()
-    }
-
-    fun <E> dijkstraSequence(
-        startId: E,
-        edges: Map<E, List<Edge<E>>> = mapOf(),
-        defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
-    ): Sequence<Vertex<E>> = sequence {
-        val start = StdVertex(startId, 0.0)
-        val vertices = mutableMapOf(startId to start)
-        val q = PriorityQueue<Vertex<E>>()
-        val edgeMap = edges.toMutableMap()
-        q.add(start)
-        // "visited" serves double duty here. If it were just to ensure that already determined vertices were
-        // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
-        // which gets returned as part of the function return.
-        val visited = mutableMapOf<E, Vertex<E>>()
-        while (true) {
-            val current = q.pollUntil { visited[it.id] == null } ?: break
-            yield(current)
-            visited[current.id] = current
-            (edgeMap[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
-                val alternateWeight = current.weight + neighborEdge.weight
-                val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
-                if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
-            }
-        }
     }
 }
