@@ -1,9 +1,7 @@
 package org.gristle.adventOfCode.y2022.d12
 
-import org.gristle.adventOfCode.utilities.Graph
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
-import org.gristle.adventOfCode.utilities.toGrid
+import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Graph.steps
 
 class Y2022D12(input: String) {
 
@@ -15,29 +13,29 @@ class Y2022D12(input: String) {
         else -> this
     }.code
 
-    private val getEdges = { pos: Int ->
+    private val startId = area.coordOf(area.indexOf('E'))
+
+    private val getEdges = { pos: Coord ->
         area
             .getNeighborsIndexedValue(pos)
             .filter { (_, c) -> c.height() >= area[pos].height() - 1 }
-            .map { (index, _) -> index }
+            .map { (index, _) -> area.coordOf(index) }
     }
 
-    private val vertices = Graph.bfs(startId = area.indexOf('E'), defaultEdges = getEdges)
-        .filter { area[it.id] in "Sa" }
+    private val vertices = Graph.bfs(
+        startId = startId,
+        endCondition = { pos -> area[pos] == 'S' },
+        defaultEdges = getEdges
+    )
 
-    fun solve(starts: String) = vertices
-        .filter { area[it.id] in starts }
-        .minOf { it.weight.toInt() }
-
-    fun part1() = solve("S")
-    fun part2() = solve("Sa")
+    fun part1() = vertices.steps()
+    fun part2() = vertices.firstOrNull { area[it.id] == 'a' }?.weight?.toInt() ?: vertices.steps()
 
 //    Alternate solution uses A* and is slightly faster, works for all known puzzle inputs but part 2 relies on quirk of
 //    inputs that has all possible end points on the far left column of the grid. So the BFS solution above is more
 //    general, though less fun.
 
 //        fun solve(heuristic: (Coord) -> Double): Int {
-//            val startId = area.coordOf(area.indexOf('E'))
 //            val getEdges = { pos: Coord ->
 //                area
 //                    .getNeighborsIndexedValue(pos)
