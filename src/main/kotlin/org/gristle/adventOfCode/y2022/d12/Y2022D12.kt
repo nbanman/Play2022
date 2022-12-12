@@ -25,7 +25,7 @@ class Y2022D12(input: String) {
 
     fun solve(starts: String) = vertices
         .filter { area[it.id] in starts }
-        .minOfOrNull { it.weight.toInt() }
+        .minOf { it.weight.toInt() }
 
     fun part1() = solve("S")
     fun part2() = solve("Sa")
@@ -36,7 +36,7 @@ fun main() {
     val timer = Stopwatch(start = true)
     val solver = Y2022D12(input)
     println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 361
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 354
     println("Total time: ${timer.elapsed()}ms")
 }
