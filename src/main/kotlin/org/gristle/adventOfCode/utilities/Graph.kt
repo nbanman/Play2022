@@ -99,6 +99,12 @@ object Graph {
     fun <E> List<Vertex<E>>.steps() = lastOrNull()?.weight?.toInt() ?: -1
 
     /**
+     * Utility function to provide the weight from the beginning to the end of the traversal as an Integer.
+     * Returns -1 if the traversal did not complete.
+     */
+    fun <E> Sequence<Vertex<E>>.steps() = lastOrNull()?.weight?.toInt() ?: -1
+
+    /**
      * Contains id of a neighboring vertex and the weight to travel there. Used in constructing
      * a map of edges and/or a default edge function for the Dijkstra and AStar functions.
      */
