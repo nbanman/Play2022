@@ -159,6 +159,33 @@ object Graph {
     }
 
     /**
+     * Works but slower nad really don't see the need.
+     */
+    inline fun <E> aStarSequence(
+        startId: E,
+        noinline heuristic: (E) -> Double,
+        edges: Map<E, List<Edge<E>>> = mapOf(),
+        crossinline defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
+    ): Sequence<Vertex<E>> = sequence {
+        val startVertex = AStarVertex(startId, 0.0, heuristic(startId))
+
+        val edgeMap = edges.toMutableMap()
+
+        val open = PriorityQueue<AStarVertex<E>>()
+        open.add(startVertex)
+        val closed = mutableSetOf<E>()
+        while (open.isNotEmpty()) {
+            val current = open.pollUntil { !closed.contains(it.id) } ?: break
+            yield(current)
+            closed.add(current.id)
+            val neighbors = edgeMap[current.id] ?: defaultEdges(current.id)
+            for (neighbor in neighbors) {
+                if (!closed.contains(neighbor.vertexId)) open.add(neighbor.toAStarVertex(current, heuristic))
+            }
+        }
+    }
+
+    /**
      * Finds the shortest path in a directed, unweighted graph from a starting point to all vertices traversed
      * until all reachable vertices have been traversed or the end condition is met. Faster than Dijkstra, but
      * does not work for weighted graphs.
