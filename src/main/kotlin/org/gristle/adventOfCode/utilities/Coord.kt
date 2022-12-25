@@ -1,8 +1,6 @@
 package org.gristle.adventOfCode.utilities
 
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.*
 
 data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
     companion object {
@@ -43,6 +41,13 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
     fun min(other: Coord) = Coord(min(x, other.x), min(y, other.y))
 
     fun area() = x * y
+
+    fun lineTo(other: Coord): List<Coord> {
+        val xDelta = (other.x - x).sign
+        val yDelta = (other.y - y).sign
+        val steps = maxOf((other.x - x).absoluteValue, (other.y - y).absoluteValue)
+        return (1..steps).scan(this) { last, _ -> Coord(last.x + xDelta, last.y + yDelta) }
+    }
 
     override fun toString() = "($x, $y)"
 
