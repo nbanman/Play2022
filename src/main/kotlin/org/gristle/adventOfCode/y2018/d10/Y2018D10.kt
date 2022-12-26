@@ -21,7 +21,7 @@ class Y2018D10(input: String) {
             yRange.last - yRange.first == 9
         }
     
-    fun part1() = answer.value.map(MovingPoint::pos).toString('.').ocr()
+    fun part1() = answer.value.map(MovingPoint::pos).toGraphicString('.').ocr()
     fun part2() = answer.index
 }
 
