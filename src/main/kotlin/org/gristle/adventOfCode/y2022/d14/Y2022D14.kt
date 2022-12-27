@@ -12,13 +12,21 @@ class Y2022D14(input: String) {
             line.getInts()
                 .chunked(2) { (x, y) -> Coord(x, y) }
                 .zipWithNext()
-                .forEach { (prev, next) ->
-                    addAll(prev.lineTo(next))
-                }
+                .forEach { (prev, next) -> addAll(prev.lineTo(next)) }
         }
     }
 
     private val depth = cavern.maxOf(Coord::y)
+
+    private fun Coord.fall(cavern: MutableSet<Coord>): Coord? {
+        return when {
+            !cavern.contains(south()) -> south()
+            !cavern.contains(southwest()) -> southwest()
+            !cavern.contains(southeast()) -> southeast()
+            else -> null
+        }
+    }
+
     private fun settle(cavern: MutableSet<Coord>) = generateSequence(Coord(500, 0)) { it.fall(cavern) }
         .takeWhile { it.y <= depth + 1 }
         .last()
@@ -26,28 +34,17 @@ class Y2022D14(input: String) {
 
     fun part1(): Int {
         val cave = cavern.toMutableSet()
-        return generateSequence { settle(cave) }.indexOfFirst { it.y > depth } // .also { cave.printToConsole() }
+        return generateSequence { settle(cave) }
+            .indexOfFirst { it.y > depth }
     }
 
     fun part2(): Int {
         val cave = cavern.toMutableSet()
-        return generateSequence { settle(cave) }.indexOfFirst {
-            it == Coord(
-                500,
-                0
-            )
-        } + 1 // .also { cave.printToConsole() }
+        return 1 + generateSequence { settle(cave) }
+            .indexOfFirst { it == Coord(500, 0) }
     }
 }
 
-private fun Coord.fall(cavern: MutableSet<Coord>): Coord? {
-    return when {
-        !cavern.contains(south()) -> south()
-        !cavern.contains(southwest()) -> southwest()
-        !cavern.contains(southeast()) -> southeast()
-        else -> null
-    }
-}
 
 fun main() {
     val input = listOf(
