@@ -74,7 +74,7 @@ fun main() {
     val timer = Stopwatch(start = true)
     val solver = Y2022D15(input)
     println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 5073496 (33ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 13081194638237 (3700ms)
-    println("Total time: ${timer.elapsed()}ms") // (3838ms)
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 5073496 (16ms)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 13081194638237 (2411ms)
+    println("Total time: ${timer.elapsed()}ms") // (2462ms)
 }
