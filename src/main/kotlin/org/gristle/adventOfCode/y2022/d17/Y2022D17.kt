@@ -180,6 +180,6 @@ fun main() {
     val solver = Y2022D17(input[0])
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 3055
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 3011834321273 (too high) (1507692307690)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 1507692307690
     println("Total time: ${timer.elapsed()}ms")
 }
