@@ -38,10 +38,7 @@ class Y2022D16(input: String) {
             return true
         }
 
-        override fun hashCode(): Int {
-            var result = pos.hashCode()
-            return result
-        }
+        override fun hashCode() = pos.hashCode()
     }
 
     fun bfs(
@@ -134,6 +131,6 @@ Valve JJ has flow rate=21; tunnel leads to valve II""",
     val solver = Y2022D16(input[1])
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 2059 (344ms) (1651 example 104ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // (1707 example)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // (1707 example) 
     println("Total time: ${timer.elapsed()}ms")
 }
