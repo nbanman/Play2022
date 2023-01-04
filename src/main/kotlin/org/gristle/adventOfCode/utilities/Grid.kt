@@ -379,19 +379,19 @@ fun <E> Grid<E>.toGrid(): Grid<E> = ArrayGrid(this, this.width)
 fun String.toGrid(width: Int): Grid<Char> = ArrayGrid(this.toList(), width)
 
 fun String.toGrid(): Grid<Char> {
-    val width = indexOfAny(charArrayOf('\n', '\r'))
+    val width = indexOfAny(charArrayOf('\n', '\r')).let { if (it == -1) 1 else it }
     return replace("[\r\n]+".toRegex(), "").toGrid(width)
 }
 
 inline fun <R> String.toGrid(transform: (Char) -> R): Grid<R> {
-    val width = indexOfAny(charArrayOf('\n', '\r'))
+    val width = indexOfAny(charArrayOf('\n', '\r')).let { if (it == -1) 1 else it }
     return replace("[\r\n]+".toRegex(), "")
         .map { transform(it) }
         .toGrid(width)
 }
 
 inline fun <R> String.toGridIndexed(transform: (index: Int, Char) -> R): Grid<R> {
-    val width = indexOfAny(charArrayOf('\n', '\r'))
+    val width = indexOfAny(charArrayOf('\n', '\r')).let { if (it == -1) 1 else it }
     return replace("[\r\n]+".toRegex(), "")
         .mapIndexed { index, c -> transform(index, c) }
         .toGrid(width)
@@ -406,26 +406,26 @@ fun <E> Grid<E>.toMutableGrid(): MutableGrid<E> = ArrayGrid(this, this.width)
 fun String.toMutableGrid(width: Int): MutableGrid<Char> = ArrayGrid(this.toList(), width)
 
 fun String.toMutableGrid(): MutableGrid<Char> {
-    val width = indexOfAny(charArrayOf('\n', '\r'))
+    val width = indexOfAny(charArrayOf('\n', '\r')).let { if (it == -1) 1 else it }
     return replace("[\r\n]+".toRegex(), "").toMutableGrid(width)
 }
 
 inline fun <R> String.toMutableGrid(transform: (Char) -> R): MutableGrid<R> {
-    val width = indexOfAny(charArrayOf('\n', '\r'))
+    val width = indexOfAny(charArrayOf('\n', '\r')).let { if (it == -1) 1 else it }
     return replace("[\r\n]+".toRegex(), "")
         .map { transform(it) }
         .toMutableGrid(width)
 }
 
 inline fun <R> String.toMutableGridIndexed(transform: (index: Int, Char) -> R): MutableGrid<R> {
-    val width = indexOfAny(charArrayOf('\n', '\r'))
+    val width = indexOfAny(charArrayOf('\n', '\r')).let { if (it == -1) 1 else it }
     return replace("[\r\n]+".toRegex(), "")
         .mapIndexed { index, c -> transform(index, c) }
         .toMutableGrid(width)
 }
 
 inline fun <R> String.toMutableGridPos(transform: (pos: Coord, Char) -> R): MutableGrid<R> {
-    val width = indexOfAny(charArrayOf('\n', '\r'))
+    val width = indexOfAny(charArrayOf('\n', '\r')).let { if (it == -1) 1 else it }
     return replace("[\r\n]+".toRegex(), "")
         .mapIndexed { index, c ->
             val pos = Coord.fromIndex(index, width)
