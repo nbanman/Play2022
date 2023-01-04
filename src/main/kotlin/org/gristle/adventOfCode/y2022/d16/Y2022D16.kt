@@ -36,6 +36,10 @@ class Y2022D16(input: String) {
             .associate { it }
     }
 
+    /**
+     * Tracks everything. Note that total can be negative to avoid double-counting things that do not happen until
+     * the other agent moves.
+     */
     data class State(
         val pos: List<Pair<String, Int>>,
         val valves: Set<String>,
