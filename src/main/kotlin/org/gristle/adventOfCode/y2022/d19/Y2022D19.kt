@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2022.d19
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
@@ -207,7 +208,7 @@ class Y2022D19(input: String) {
     }
 }
 
-suspend fun main() {
+fun main() = runBlocking {
     val input = listOf(
         getInput(19, 2022),
         """Blueprint 1:
@@ -225,7 +226,7 @@ Blueprint 2:
     val timer = Stopwatch(start = true)
     val solver = Y2022D19(input[0])
     println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1427 (226ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 4400 (219ms)
-    println("Total time: ${timer.elapsed()}ms") // 458ms
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1427 (146ms)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 4400 (238ms)
+    println("Total time: ${timer.elapsed()}ms") // 408ms
 }
