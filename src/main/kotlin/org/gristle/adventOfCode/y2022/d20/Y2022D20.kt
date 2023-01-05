@@ -2,15 +2,14 @@ package org.gristle.adventOfCode.y2022.d20
 
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
-import org.gristle.adventOfCode.utilities.getInts
+import org.gristle.adventOfCode.utilities.getLongs
 import kotlin.math.abs
 import kotlin.math.sign
 
-class Y2022D20(input: String) {
+class Y2022D20(private val input: String) {
 
-    private val numbers = input.getInts().map { it.toLong() }.withIndex().toList()
-
-    fun <E> MutableList<E>.swap(index: Int, amount: Long) {
+    // Swapping operation. Experimented with holding on to final swap until last operation, but it was slower.
+    private fun <E> MutableList<E>.swap(index: Int, amount: Long) {
         tailrec fun <E> swap(mList: MutableList<E>, index: Int, times: Long, direction: Int) {
             if (times == 0L) return
             val temp = mList[index]
@@ -19,36 +18,33 @@ class Y2022D20(input: String) {
             mList[nextIndex] = temp
             swap(mList, nextIndex, times - 1, direction)
         }
+        // Optimization: after swapping listSize - 1, the list order is the same. We don't care about list order
+        // since we are constantly doing indexOf searches.
         swap(this, index, abs(amount) % (size - 1), amount.sign)
     }
 
-    fun part1() = run {
-        val move = numbers.toMutableList()
-        var zeroIndex: IndexedValue<Long>? = null
-        numbers.forEach { number ->
-            if (number.value == 0L) zeroIndex = number
-            move.swap(move.indexOf(number), number.value)
-        }
-        (1..3).fold(0L) { acc, l ->
-            acc + move[(move.indexOf(zeroIndex) + l * 1000).mod(move.size)].value
-        }
-    }
+    fun solve(factor: Int, times: Int): Long {
+        // Pair numbers with their original index to ensure numbers are unique. I don't know a better way of getting
+        // the numbers in order other than doing an indexOf function.
+        val numbers = input.getLongs().map { it * factor }.withIndex()
 
-    fun part2() = run {
-        val numbers = numbers.map { (index, value) -> IndexedValue(index, value * 811589153L) }
+        // Create the list to swap numbers with
         val move = numbers.toMutableList()
-        var zeroIndex: IndexedValue<Long>? = null
-        repeat(10) {
-            numbers.forEach { number ->
-                if (number.value == 0L) zeroIndex = number
-                move.swap(move.indexOf(number), number.value)
+
+        repeat(times) { // repeat swapping process n times
+            numbers.forEach { number -> // swap for each number in the original order
+                move.swap(move.indexOf(number), number.value) // indexOf call is slow, but c'est la vie
             }
         }
-        (1..3).fold(0L) { acc, l ->
-            acc + move[(move.indexOf(zeroIndex) + l * 1000).mod(move.size)].value
+        val zeroIndex = numbers.find { it.value == 0L }
+        return (1..3).fold(0L) { acc, thousand ->
+            acc + move[(move.indexOf(zeroIndex) + thousand * 1000).mod(move.size)].value
         }
-
     }
+
+    fun part1() = solve(1, 1)
+
+    fun part2() = solve(811589153, 10)
 }
 
 fun main() {
