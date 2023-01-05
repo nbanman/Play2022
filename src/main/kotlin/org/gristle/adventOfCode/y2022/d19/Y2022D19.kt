@@ -94,7 +94,8 @@ class Y2022D19(input: String) {
         fun nextStates(minutes: Int): List<State> {
             val nextStates = mutableListOf<State>()
             var buildTime: Int
-            // Ore
+            // Don't build if you already have the production capacity to build one of anything (ie, highest
+            // ore cost of a robot.
             if (oreRobots < blueprint.maxOreRobots) {
                 buildTime = blueprint.oreRobot.timeUntilBuild(this)
                 if (minutes - minute - buildTime >= 0) {
@@ -111,7 +112,8 @@ class Y2022D19(input: String) {
                     )
                 }
             }
-            // Clay
+            // Clay. Don't build more if you already have enough to build an obsidian robot (the only clay consumer) 
+            // in one turn.
             if (clayRobots < blueprint.obsidianRobot.clayCost) {
                 buildTime = blueprint.clayRobot.timeUntilBuild(this)
                 if (minutes - minute - buildTime >= 0) {
@@ -128,7 +130,7 @@ class Y2022D19(input: String) {
                     )
                 }
             }
-            // Obsidian
+            // Obsidian.
             if (clayRobots > 0 && obsidianRobots < blueprint.geodeRobot.obsidianCost) {
                 buildTime = blueprint.obsidianRobot.timeUntilBuild(this)
                 if (minutes - minute - buildTime >= 0) {
@@ -167,6 +169,7 @@ class Y2022D19(input: String) {
             return nextStates
         }
 
+        // Prune those states that could not conceivably catch up to the leader.
         fun maxBound(minutes: Int) = geodes + (0 until (minutes - minute)).sumOf { it + geodeRobots }
 
         fun minBound(minutes: Int) = geodes + (minutes - minute) * geodeRobots

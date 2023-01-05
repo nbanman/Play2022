@@ -15,6 +15,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
     implementation(kotlin("script-runtime"))
     implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 }
 
 tasks.test {
