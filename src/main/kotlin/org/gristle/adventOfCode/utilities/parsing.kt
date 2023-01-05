@@ -17,6 +17,23 @@ fun String.getInts(omitDashes: Boolean = false): Sequence<Int> {
 }
 
 /**
+ * Finds all numbers in a string and returns them as a List of Long.
+ */
+fun String.getLongList(omitDashes: Boolean = false) = getLongs(omitDashes).toList()
+
+/**
+ * Finds all numbers in a string and returns them as a Sequence of Long.
+ */
+fun String.getLongs(omitDashes: Boolean = false): Sequence<Long> {
+    val pattern = if (omitDashes) """\d+""" else """-?\d+"""
+    return pattern
+        .toRegex()
+        .findAll(this)
+        .mapNotNull { it.value.toLongOrNull() }
+}
+
+
+/**
  * Convenience method to obtain the group values of a findall regex search of a string.
  */
 fun String.groupValues(pattern: String): List<List<String>> = groupValues(pattern.toRegex())
