@@ -88,14 +88,13 @@ class Y2022D19(input: String) {
         val clayRobots: Int = 0,
         val obsidianRobots: Int = 0,
         val geodeRobots: Int = 0,
-        val parent: State? = null,
     ) : Comparable<State> {
 
         fun nextStates(minutes: Int): List<State> {
             val nextStates = mutableListOf<State>()
             var buildTime: Int
-            // Don't build if you already have the production capacity to build one of anything (ie, highest
-            // ore cost of a robot.
+            // Don't build if you already have the production capacity to build one of anything (ie, the highest
+            // ore cost of a robot).
             if (oreRobots < blueprint.maxOreRobots) {
                 buildTime = blueprint.oreRobot.timeUntilBuild(this)
                 if (minutes - minute - buildTime >= 0) {
@@ -107,7 +106,6 @@ class Y2022D19(input: String) {
                             obsidian = obsidian + buildTime * obsidianRobots,
                             geodes = geodes + buildTime * geodeRobots,
                             oreRobots = oreRobots + 1,
-                            parent = this,
                         )
                     )
                 }
@@ -125,7 +123,6 @@ class Y2022D19(input: String) {
                             obsidian = obsidian + buildTime * obsidianRobots,
                             geodes = geodes + buildTime * geodeRobots,
                             clayRobots = clayRobots + 1,
-                            parent = this,
                         )
                     )
                 }
@@ -142,7 +139,6 @@ class Y2022D19(input: String) {
                             obsidian = obsidian + buildTime * obsidianRobots,
                             geodes = geodes + buildTime * geodeRobots,
                             obsidianRobots = obsidianRobots + 1,
-                            parent = this,
                         )
                     )
                 }
@@ -160,7 +156,6 @@ class Y2022D19(input: String) {
                             obsidian = obsidian - blueprint.geodeRobot.obsidianCost + buildTime * obsidianRobots,
                             geodes = geodes + buildTime * geodeRobots,
                             geodeRobots = geodeRobots + 1,
-                            parent = this,
                         )
                     )
                 }
