@@ -1,6 +1,9 @@
 package org.gristle.adventOfCode.y2020.d12
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.utilities.readRawInput
 
 class Y2020D12(input: String) {
 
@@ -23,8 +26,8 @@ class Y2020D12(input: String) {
             'S' -> copy(pos = pos.south(instruction.amount))
             'E' -> copy(pos = pos.east(instruction.amount))
             'W' -> copy(pos = pos.west(instruction.amount))
-            'L' -> copy(dir = dir.left(instruction.amount / 90))
-            'R' -> copy(dir = dir.right(instruction.amount / 90))
+            'L' -> copy(dir = dir.multiLeft(instruction.amount / 90))
+            'R' -> copy(dir = dir.multiRight(instruction.amount / 90))
             'F' -> copy(pos = pos.move(dir, instruction.amount))
             else -> throw IllegalArgumentException("Invalid Instruction: $instruction")
         }
