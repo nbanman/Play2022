@@ -12,14 +12,15 @@ class Y[[YEAR]]D[[DAY]](input: String) {
 }
 
 fun main() {
-    val input = listOf(
-            getInput([[DAY]], [[YEAR]]),
-            """""",
-        )
+    val input = getInput([[DAY]], [[YEAR]])
     val timer = Stopwatch(start = true)
-    val solver = Y[[YEAR]]D[[DAY]](input[1])
+    val solver = Y[[YEAR]]D[[DAY]](sinput[0])
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 
     println("Total time: ${timer.elapsed()}ms")
 }
+
+private val sinput = listOf(
+    """""",
+)
