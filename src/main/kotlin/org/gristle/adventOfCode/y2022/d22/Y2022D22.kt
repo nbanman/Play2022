@@ -9,18 +9,14 @@ private typealias CoordDirection = Pair<Coord, Nsew>
 class Y2022D22(input: String) {
 
     companion object {
-        fun Nsew.facing() = when (this) {
+        private fun Nsew.facing() = when (this) {
             Nsew.NORTH -> 3
             Nsew.SOUTH -> 1
             Nsew.EAST -> 0
             Nsew.WEST -> 2
         }
 
-        fun IntRange.span() = last - first + 1
-
-        fun List<IntRange>.maxSpan() = maxOf { it.span() }
-
-        fun List<List<Char>>.getBounds() = map { line ->
+        private fun List<List<Char>>.getBounds() = map { line ->
             line.indexOfFirst { it != ' ' }..line.indexOfLast { it != ' ' }
         }
     }
@@ -29,30 +25,18 @@ class Y2022D22(input: String) {
 
     private val lines = input.lines()
 
-    private var grove = lines.dropLast(2).let { groveLines ->
+    private val grove = lines.dropLast(2).let { groveLines ->
         val width = groveLines.maxOf(String::length)
         val height = groveLines.size
         val rows = groveLines.map { it.padEnd(width) } // it will all come to a padEnd
-        List(height * width) { i ->
+        Grid(width, height) { i ->
             val y = i / width
             val x = i % width
             rows[y][x]
-        }.toMutableGrid(width) // todo make nonmutable once debugging over
-    }
-
-    private var rowBounds = grove.rows().getBounds()
-    private var colBounds = grove.columns().getBounds()
-
-    init {
-        if (rowBounds.maxSpan() > colBounds.maxSpan()) {
-            grove = grove.rotate90().toMutableGrid() // todo unMut
-            rowBounds = grove.rows().getBounds()
-            colBounds = grove.columns().getBounds()
         }
     }
 
     private val path = buildList {
-        var dir = Nsew.EAST
         Regex("""\d+|[LR]""")
             .findAll(lines.last())
             .map(MatchResult::value)
@@ -65,22 +49,20 @@ class Y2022D22(input: String) {
             }
     }
 
-    fun solve(move: (Coord, Nsew) -> Pair<Coord, Nsew>): Int {
-        val start = Coord(rowBounds[0].first, 0)
+    /**
+     * Main loop is a fold that traverses the path. It delegates the translation of commands to a "move" function
+     * which is supplied by the two parts of the puzzle. Return is the scoring for the final position.
+     */
+    fun solve(move: (CoordDirection) -> CoordDirection): Int {
+        val start = Coord.fromIndex(grove.indexOfFirst { it == '.' }, grove.width)
         var dir = Nsew.EAST
-        val end = path.foldIndexed(start) { index, pos, command ->
+        val end = path.fold(start) { pos, command ->
             if (command == Command.FORWARD) {
-                val (prospect, prospectiveDir) = move(pos, dir)
+                val (prospect, prospectiveDir) = move(CoordDirection(pos, dir))
                 if (grove[prospect] == '#') {
                     pos
                 } else {
                     dir = prospectiveDir
-                    if (grove[prospect] == '.') grove[prospect] = when (dir) { // todo erase once debugged
-                        Nsew.NORTH -> '^'
-                        Nsew.SOUTH -> 'v'
-                        Nsew.EAST -> '>'
-                        Nsew.WEST -> '<'
-                    }
                     prospect
                 }
             } else {
@@ -95,8 +77,15 @@ class Y2022D22(input: String) {
         return 1000 * (end.y + 1) + 4 * (end.x + 1) + dir.facing()
     }
 
+    /**
+     * Part 1 traversal wraps the area. It does this by tracking the bounds of each row and column and makes any value
+     * higher than the upper bound become the lower bound and vice-versa.
+     */
     fun part1(): Int {
-        val move = { pos: Coord, dir: Nsew ->
+        val rowBounds = grove.rows().getBounds()
+        val colBounds = grove.columns().getBounds()
+
+        val move = { (pos, dir): CoordDirection ->
             val prospect = pos.move(dir)
             if (!grove.validCoord(prospect) || grove[prospect] == ' ') {
                 if (dir == Nsew.NORTH || dir == Nsew.SOUTH) { // north or south
@@ -113,6 +102,14 @@ class Y2022D22(input: String) {
         return solve(move)
     }
 
+    /**
+     * Part 2 traversal uses cube geometry. It makes a "miniGrove" which just has one pixel per side. Then it runs
+     * BFS from every point to every point on the miniGrove. The path of each resulting destination point is a shape.
+     * Shapes get folded the same way every time. I keep a list of sets of points along with their corresponding
+     * direction changes. To avoid duplication these shapes all start at 0,0 and continue to 0,1. So the shapes found
+     * by BFS need to be rotated and flipped to match that orientation, with corresponding changes to the direction
+     * changes.
+     */
     fun part2(): Int {
         // get the length of each side
         val sideLength = sqrt((grove.size - grove.count { it == ' ' }) / 6.0).toInt()
@@ -126,9 +123,7 @@ class Y2022D22(input: String) {
         }.toGrid(miniWidth)
 
         // map of various shapes
-
         val shapes = listOf(
-//            listOf(0 to 0, 0 to 1) to DirectionChange(Nsew.SOUTH, Nsew.SOUTH),
             listOf(0 to 0, 0 to 1, 1 to 1) to DirectionChange(Nsew.EAST, Nsew.SOUTH),
             listOf(0 to 0, 0 to 1, 0 to 2, 1 to 2) to DirectionChange(Nsew.EAST, Nsew.WEST),
             listOf(0 to 0, 0 to 1, 1 to 1, 2 to 1) to DirectionChange(Nsew.NORTH, Nsew.SOUTH),
@@ -144,6 +139,10 @@ class Y2022D22(input: String) {
             listOf(0 to 0, 0 to 1, 0 to 2, 1 to 2, 1 to 3, 1 to 4) to DirectionChange(Nsew.EAST, Nsew.EAST),
         ).associate { (shape, directions) -> shape.map { it.toCoord() }.toSet() to directions }
 
+        // map representing the sides of the cube and how the sides of the cube line up with each other.
+        // the key is the position in the miniGrove, the value is another map
+        // this second map takes the current direction and provides the destination coordinate in the miniGrove
+        // and the new direction.
         val sides: Map<Coord, Map<Nsew, CoordDirection>> = buildMap {
             miniGrove
                 .indices
@@ -157,7 +156,7 @@ class Y2022D22(input: String) {
                             .map { Coord.fromIndex(it.index, miniWidth) }
                     }.drop(1)
 
-                    val huh: Map<Nsew, CoordDirection> = buildMap {
+                    val end: Map<Nsew, CoordDirection> = buildMap {
                         for (vertex in vertices) {
                             val coords = vertex.path().map { it.id - start }
                             val rotate: (List<Coord>) -> List<Coord> = when (coords[1]) {
@@ -169,8 +168,7 @@ class Y2022D22(input: String) {
                             var rotated = rotate(coords).toSet()
                             val flipped = rotated.last().x < 0
                             if (flipped) rotated = rotated.flipY().toSet()
-                            val directions = shapes[rotated]
-                            if (directions == null) continue
+                            val directions = shapes[rotated] ?: continue
                             val reverse = when (coords[1]) {
                                 Coord(0, 1) -> { dir: Nsew -> dir }
                                 Coord(0, -1) -> { dir: Nsew -> dir.flip() }
@@ -189,11 +187,12 @@ class Y2022D22(input: String) {
                             }
                         }
                     }
-                    put(start, huh)
+                    put(start, end)
                 }
         }
 
-        val move = { pos: Coord, dir: Nsew ->
+        // the function passed to the solve function.
+        val move = { (pos, dir): CoordDirection ->
             val prospect = pos.move(dir)
             if (!grove.validCoord(prospect) || grove[prospect] == ' ') {
                 val side = Coord(pos.x / sideLength, pos.y / sideLength)
@@ -209,14 +208,6 @@ class Y2022D22(input: String) {
                             Nsew.WEST -> bigNewSide.x + sideLength - relativeCoord.y - 1
                             else -> bigNewSide.x + relativeCoord.x
                         }
-                        println(
-                            "$pos [$side] moved $dir, to $prospect , becomes ${
-                                Coord(
-                                    x,
-                                    y
-                                )
-                            } [$newSide] going $newDir"
-                        )
                         Coord(x, y) to newDir
                     }
 
@@ -228,14 +219,6 @@ class Y2022D22(input: String) {
                             Nsew.EAST -> bigNewSide.x + sideLength - relativeCoord.y - 1
                             Nsew.SOUTH -> bigNewSide.x + relativeCoord.x
                         }
-                        println(
-                            "$pos [$side] moved $dir, to $prospect , becomes ${
-                                Coord(
-                                    x,
-                                    y
-                                )
-                            } [$newSide] going $newDir"
-                        )
                         Coord(x, y) to newDir
                     }
 
@@ -247,14 +230,7 @@ class Y2022D22(input: String) {
                             Nsew.WEST -> bigNewSide.y + sideLength - relativeCoord.y - 1
                             Nsew.EAST -> bigNewSide.y + relativeCoord.y
                         }
-                        println(
-                            "$pos [$side] moved $dir, to $prospect , becomes ${
-                                Coord(
-                                    x,
-                                    y
-                                )
-                            } [$newSide] going $newDir"
-                        )
+
                         Coord(x, y) to newDir
                     }
 
@@ -266,19 +242,9 @@ class Y2022D22(input: String) {
                             Nsew.EAST -> bigNewSide.y + sideLength - relativeCoord.y - 1
                             Nsew.WEST -> bigNewSide.y + relativeCoord.y
                         }
-                        println(
-                            "$pos [$side] moved $dir, to $prospect , becomes ${
-                                Coord(
-                                    x,
-                                    y
-                                )
-                            } [$newSide] going $newDir"
-                        )
                         Coord(x, y) to newDir
                     }
                 }
-
-
             } else prospect to dir
         }
         return solve(move)
@@ -286,47 +252,11 @@ class Y2022D22(input: String) {
 }
 
 fun main() {
-    val input = listOf(
-        getInput(22, 2022),
-        """        ...#
-        .#..
-        #...
-        ....
-...#.......#
-........#...
-..#....#....
-..........#.
-        ...#....
-        .....#..
-        .#......
-        ......#.
-
-10R5L5R10L4R5L5""",
-        """        ...#
-        .#..
-        #...
-        ....
-...#.......#
-........#...
-..#....#....
-..........#.
-        ...#....
-        .....#..
-        .#......
-        ......#.
-
-10L5L5L10R4L5R5""",
-        """..
-          | ...
-          |   .
-          |    
-            |    10L5L5L10R4L5R5
-        """.trimMargin()
-    )
+    val input = getInput(22, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D22(input[0])
+    val solver = Y2022D22(input)
     println("Class creation: ${timer.lap()}ms")
-//    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 133174 (30ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 190131 (too high!)
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 133174 (30ms)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 15410 (27ms)
     println("Total time: ${timer.elapsed()}ms")
 }
