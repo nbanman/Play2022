@@ -88,7 +88,7 @@ fun main() {
     val solver = Y2022D23(input)
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 3812 (10228ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 1003 (374635ms)!!!
     println("Total time: ${timer.elapsed()}ms")
 }
 
