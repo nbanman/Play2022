@@ -2,10 +2,11 @@ package org.gristle.adventOfCode.y2022.d24
 
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2022D24(input: String) {
 
-    private val parsed = input.lines()
+    private val valley = input.toGrid()
 
     fun part1() = "To be implemented"
 
@@ -15,7 +16,13 @@ class Y2022D24(input: String) {
 fun main() {
     val input = listOf(
         getInput(24, 2022),
-        """""",
+        """#.#####
+#.....#
+#>....#
+#.....#
+#...v.#
+#.....#
+#####.#""",
     )
     val timer = Stopwatch(start = true)
     val solver = Y2022D24(input[1])

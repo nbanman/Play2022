@@ -152,10 +152,10 @@ fun Iterable<Coord>.rotate90(): List<Coord> = map { Coord(-it.y, it.x) }
 fun Iterable<Coord>.rotate180(): List<Coord> = map { Coord(-it.x, -it.y) }
 fun Iterable<Coord>.rotate270(): List<Coord> = map { Coord(it.y, -it.x) }
 
-// flip along the y axis (ie, x changes)
+// flip along the y-axis (ie, x changes)
 fun Iterable<Coord>.flipY(): List<Coord> = map { Coord(-it.x, it.y) }
 
-// flip along the x axis (ie, y changes)
+// flip along the x-axis (ie, y changes)
 fun Iterable<Coord>.flipX(): List<Coord> = map { Coord(it.x, -it.y) }
 
 
