@@ -32,6 +32,8 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
 
     operator fun times(other: Coord) = Coord(x * other.x, y * other.y)
 
+    operator fun div(other: Coord) = Coord(x / other.x, y / other.y)
+
     operator fun rem(other: Coord) = Coord(x % other.x, y % other.y)
 
     fun mod(other: Coord) = Coord(x.mod(other.x), y.mod(other.y))
@@ -145,3 +147,16 @@ fun Iterable<Coord>.toGraphicString(blankSpace: Char = '.'): String {
         append('\n')
     }
 }
+
+fun Iterable<Coord>.rotate90(): List<Coord> = map { Coord(-it.y, it.x) }
+fun Iterable<Coord>.rotate180(): List<Coord> = map { Coord(-it.x, -it.y) }
+fun Iterable<Coord>.rotate270(): List<Coord> = map { Coord(it.y, -it.x) }
+
+// flip along the y axis (ie, x changes)
+fun Iterable<Coord>.flipY(): List<Coord> = map { Coord(-it.x, it.y) }
+
+// flip along the x axis (ie, y changes)
+fun Iterable<Coord>.flipX(): List<Coord> = map { Coord(it.x, -it.y) }
+
+
+fun Pair<Int, Int>.toCoord() = Coord(first, second)
