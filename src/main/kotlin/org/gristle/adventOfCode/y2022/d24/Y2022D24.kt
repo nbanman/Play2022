@@ -7,12 +7,19 @@ class Y2022D24(input: String) {
 
     private val valley = input.toGrid()
 
-    data class Blizzard(val initial: Int, val sign: Int, val valleySize: Int) {
-        fun locationAt(n: Int) = (initial - 1 + (sign * n)).mod(valleySize) + 1
+    // Rather than calculate specific coordinates, Blizzards are stored in a map that looks up by one coordinate
+    // so the object only needs to supply the other coordinate. Locations for time are calculated on the fly as this
+    // is very cheap to do.
+    data class Blizzard(val initial: Int, val direction: Int, val valleySize: Int) {
+        fun locationAt(n: Int) = (initial - 1 + (direction * n)).mod(valleySize) + 1
     }
 
+    // The grid is larger than the valley, so this is used to calculate Blizzard behavior.
     private val valleySize = Coord(valley.width - 2, valley.height - 2)
 
+    // Parse Blizzards into a map with one coordinate as the key and a list of Blizzards moving along that coordinate
+    // on the other. The north/south blizzards use an offset the size of the valley's width so that one map can be
+    // used for both coordinates.
     private val blizzards = buildMap<Int, MutableList<Blizzard>> {
         valley.forEachIndexed { index, c ->
             val pos = Coord.fromIndex(index, valley.width)
@@ -33,105 +40,59 @@ class Y2022D24(input: String) {
         }
     } as Map<Int, List<Blizzard>>
 
-
+    // State is custom rather than just the position because we have to do logic related to the minute as well to
+    // calculate Blizzard locations. A custom A* could just use the edgeweight but alas...
     data class State(val pos: Coord, val minute: Int)
 
+    // Used to generate all possible moves from a given position.
     private val cross = listOf(
         Coord(0, -1), Coord(-1, 0), Coord(0, 0), Coord(1, 0), Coord(0, 1),
     )
 
-    fun valleyString(pos: Coord, minute: Int, blizzards: Map<Int, List<Blizzard>>): String = buildString {
-        val bList = blizzards.flatMap { (key, value) ->
-            value.map { blizzard ->
-                if (key >= valley.width) {
-                    Triple(Coord(key - valley.width, blizzard.locationAt(minute)), blizzard, false)
-                } else {
-                    Triple(Coord(blizzard.locationAt(minute), key), blizzard, true)
-                }
-            }
-        }
-        val bMap = bList.associate { it.first to (it.second to it.third) }
-        val blizzardCoords = bList.map { it.first }.eachCount()
-        for (y in 0 until valley.height) {
-            for (x in 0 until valley.width) {
-                val c = when {
-                    Coord(x, y) == pos -> 'E'
-                    valley[x, y] == '#' -> '#'
-                    else -> {
-                        blizzardCoords[Coord(x, y)]
-                            ?.let {
-                                if (it > 1) it.digitToChar() else {
-                                    val (bpos, eastWest) = bMap.getValue(Coord(x, y))
-                                    if (eastWest) {
-                                        if (bpos.sign == -1) '<' else '>'
-                                    } else if (bpos.sign == -1) '^' else 'v'
-                                }
-                            }
-                            ?: '.'
-                    }
-                }
-                append(c)
-            }
-            append('\n')
-        }
-    }
+    // Beginning and goal positions are the only wall openings.
+    private val beginning = Coord.fromIndex(valley.indexOfFirst { it == '.' }, valley.width)
+    private val goal = Coord.fromIndex(valley.indexOfLast { it == '.' }, valley.width)
 
-    fun part1(): Int {
-
-        val start = State(Coord.fromIndex(valley.indexOfFirst { it == '.' }, valley.width), 1)
-        val end = Coord.fromIndex(valley.indexOfLast { it == '.' }, valley.width)
+    // A* algorithm
+    private fun traverse(startPos: Coord, endPos: Coord, minute: Int): Int {
+        val beginning = State(startPos, minute + 1)
         val defaultEdges = { (pos, minute): State ->
             cross.map { it + pos }
                 .filter { candidate ->
-                    val predicate = valley.validCoord(candidate)
+                    // Checks that the candidate is 1) in the valley; 2) not a wall; and 3) no blizzards are moving 
+                    // into the candidate space. 
+                    valley.validCoord(candidate)
                             && valley[candidate] != '#'
-                            && blizzards[candidate.y]?.find { it.locationAt(minute) == candidate.x } == null
-                            && blizzards[candidate.x + valley.width]?.find { it.locationAt(minute) == candidate.y } == null
-                    predicate
-                }.map {
-                    Graph.Edge(State(it, minute + 1), 1.0)
-                }
+                            && blizzards[candidate.y]
+                        ?.find { it.locationAt(minute) == candidate.x } == null
+                            && blizzards[candidate.x + valley.width]
+                        ?.find { it.locationAt(minute) == candidate.y } == null
+                }.map { Graph.Edge(State(it, minute + 1), 1.0) }
         }
+
         val distances = Graph.aStar(
-            startId = start,
-            heuristic = { state -> state.pos.manhattanDistance(end).toDouble() },
+            startId = beginning,
+            heuristic = { state -> state.pos.manhattanDistance(endPos).toDouble() },
             defaultEdges = defaultEdges
         )
-        distances.forEach { currentVertex ->
-            val action = currentVertex.parent
-                ?.let { parentVertex ->
-                    val narr = when (currentVertex.id.pos - parentVertex.id.pos) {
-                        Coord.ORIGIN -> "wait"
-                        Coord(0, -1) -> "move up"
-                        Coord(0, 1) -> "move down"
-                        Coord(1, 0) -> "move right"
-                        else -> "move left"
-                    }
-                    "Minute ${currentVertex.weight.toInt()}, $narr:"
-                } ?: "Initial state:"
-            println(action)
-            println(valleyString(currentVertex.id.pos, currentVertex.id.minute - 1, blizzards))
-        }
         return distances.steps()
     }
 
-    fun part2() = "To be implemented"
+    fun part1(): Int = traverse(beginning, goal, 0)
+
+    fun part2(): Int {
+        val firstTrip = traverse(beginning, goal, 0)
+        val secondTrip = traverse(goal, beginning, firstTrip)
+        return firstTrip + secondTrip + traverse(beginning, goal, firstTrip + secondTrip)
+    }
 }
 
 fun main() {
-    val input = listOf(
-        getInput(24, 2022),
-        """#.######
-#>>.<^<#
-#.<..<<#
-#>v.><>#
-#<^v^^>#
-######.#"""
-    )
+    val input = getInput(24, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D24(input[1])
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // (59) (277 solver)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // (877 solver)
-    println("Total time: ${timer.elapsed()}ms")
+    val solver = Y2022D24(input)
+    println("Class creation: ${timer.lap()}ms") // 34ms
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 277 (251ms) (410ms BFS)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 877 (469) (929ms BFS)
+    println("Total time: ${timer.elapsed()}ms") // 755ms (1375ms BFS)
 }
