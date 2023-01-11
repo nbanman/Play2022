@@ -20,6 +20,6 @@ fun main() {
     val timer = Stopwatch(start = true)
     val solver = Y2022D25(input[1])
     println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") //
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 2-=2-0=-0-=0200=--21 (solver)
     println("Total time: ${timer.elapsed()}ms")
 }
