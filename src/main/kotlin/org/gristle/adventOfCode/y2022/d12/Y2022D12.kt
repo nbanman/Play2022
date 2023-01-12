@@ -35,7 +35,7 @@ class Y2022D12(input: String) {
 //    Alternate solution uses A* and is slightly faster, works for all known puzzle inputs but part 2 relies on quirk of
 //    inputs that has all possible end points on the far left column of the grid. So the BFS solution above is more
 //    general, though less fun.
-
+//
 //        fun solve(heuristic: (Coord) -> Double): Int {
 //            val getEdges = { pos: Coord ->
 //                area
@@ -45,17 +45,17 @@ class Y2022D12(input: String) {
 //            }
 //            return Graph
 //                .aStar(
-//                    startId,
+//                    area.coordOf(startId),
 //                    heuristic = heuristic,
-//                    defaultEdges = { pos -> getEdges(pos).map { Graph.Edge(it, 1.0) } }
+//                    defaultEdges = { pos -> getEdges(pos).toEdges() }
 //                ).steps()
 //        }
-//    
+//
 //        fun part1(): Int {
 //            val target = area.coordOf(area.indexOf('S'))
 //            return solve(heuristic = { pos -> pos.manhattanDistance(target).toDouble() })
 //        }
-//    
+//
 //        fun part2() = solve(heuristic = { pos -> pos.x.toDouble() })
 
 }

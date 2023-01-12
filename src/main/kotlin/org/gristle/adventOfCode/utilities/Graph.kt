@@ -113,6 +113,8 @@ object Graph {
             AStarVertex(vertexId, parent.weight + weight, heuristic(vertexId), parent)
     }
 
+    fun <E> Iterable<E>.toEdges(weight: Double = 1.0) = map { Edge(it, weight) }
+
     /**
      * Finds the shortest path in a directed, weighted graph from a starting point to an end condition.
      *

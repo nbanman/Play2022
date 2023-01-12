@@ -1,9 +1,6 @@
 package org.gristle.adventOfCode.y2022.d10
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
-import org.gristle.adventOfCode.utilities.ocr
-import org.gristle.adventOfCode.utilities.toMutableGrid
+import org.gristle.adventOfCode.utilities.*
 
 class Y2022D10(input: String) {
 
@@ -34,7 +31,7 @@ class Y2022D10(input: String) {
         .take(240) // The OCR grid needs 240 exact
         .map { (cycle, register) -> ((cycle) % 40) in (register - 1)..(register + 1) }
         .toMutableGrid(40)
-        // .apply { println("\n${rep()}") }
+        .apply { println("\n${rep()}") }
         .ocr()
 }
 

@@ -4,11 +4,11 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2022D23(input: String) {
 
-    enum class Dir(val nsew: Nsew, val eval: Set<Coord>) {
-        N(Nsew.NORTH, setOf(Coord(-1, -1), Coord(0, -1), Coord(1, -1))),
-        S(Nsew.SOUTH, setOf(Coord(-1, 1), Coord(0, 1), Coord(1, 1))),
-        W(Nsew.WEST, setOf(Coord(-1, -1), Coord(-1, 0), Coord(-1, 1))),
-        E(Nsew.EAST, setOf(Coord(1, -1), Coord(1, 0), Coord(1, 1)));
+    enum class Dir(val nsew: Nsew, val eval: List<Coord>) {
+        N(Nsew.NORTH, listOf(Coord(-1, -1), Coord(0, -1), Coord(1, -1))),
+        S(Nsew.SOUTH, listOf(Coord(-1, 1), Coord(0, 1), Coord(1, 1))),
+        W(Nsew.WEST, listOf(Coord(-1, -1), Coord(-1, 0), Coord(-1, 1))),
+        E(Nsew.EAST, listOf(Coord(1, -1), Coord(1, 0), Coord(1, 1)));
 
         fun advance(n: Int): Dir = values()[(ordinal + n) % 4]
     }
@@ -21,20 +21,20 @@ class Y2022D23(input: String) {
 
     private fun Set<Coord>.move(dir: Dir): Set<Coord> {
         val proposedMoves = mapNotNull { elf ->
-            (0..3).asSequence()
-                .mapNotNull { i ->
-                    val currDir = dir.advance(i)
-                    if (elf.getNeighbors(true).intersect(this).isEmpty()) {
-                        elf to elf
-                    } else if (intersect(currDir.eval.map { it + elf }.toSet()).isEmpty()) {
-                        elf.move(currDir.nsew) to elf
-                    } else if (i == 3) {
-                        elf to elf
-                    } else {
-                        null
-                    }
-                }.firstOrNull()
+            (0..3).firstNotNullOfOrNull { i ->
+                val currDir = dir.advance(i)
+                if (elf.getNeighbors(true).intersect(this).isEmpty()) {
+                    elf to elf
+                } else if (intersect(currDir.eval.map { it + elf }).isEmpty()) {
+                    elf.move(currDir.nsew) to elf
+                } else if (i == 3) {
+                    elf to elf
+                } else {
+                    null
+                }
+            }
         }
+
         val uniques = buildSet { for ((move, _) in proposedMoves) if (!add(move)) remove(move) }
 
         val moved = proposedMoves
@@ -60,7 +60,6 @@ class Y2022D23(input: String) {
     }
 
     fun part1(): Int {
-
         val elvesAtRest = movement
             .take(11)
             .last()
@@ -91,19 +90,3 @@ fun main() {
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 1003 (374635ms)!!!
     println("Total time: ${timer.elapsed()}ms")
 }
-
-private val sinput = listOf(
-    """....#..
-..###.#
-#...#.#
-.#...##
-#.###..
-##.#.##
-.#..#..""",
-    """.....
-..##.
-..#..
-.....
-..##.
-....."""
-)

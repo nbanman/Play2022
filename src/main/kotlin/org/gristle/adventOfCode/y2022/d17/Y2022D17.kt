@@ -42,8 +42,7 @@ class Y2022D17(private val jetPattern: String) {
             append("+-------+\n")
         }
 
-
-        fun block() = blocks[index % 5]
+        private fun block() = blocks[index % 5]
 
         fun toIndices() = toCoords().map { it.asIndex(7) }
 
@@ -51,7 +50,7 @@ class Y2022D17(private val jetPattern: String) {
 
         val height: Int get() = max(top, previousTop)
 
-        fun toCoords() = block().map { it + Coord(x, y) }
+        private fun toCoords() = block().map { it + Coord(x, y) }
 
         fun toBlockInfo() = BlockInfo(wind, x, index % 5, max(top, previousTop), index)
 
@@ -93,7 +92,7 @@ class Y2022D17(private val jetPattern: String) {
         }
     }
 
-    val blocks = sequence<Block> {
+    private val blocks = sequence<Block> {
         val chamber = BooleanArray(10_000_000)
         var block = Block(0, 0, 2, 3, 0).drop(chamber, jetPattern)
         while (true) {
@@ -166,8 +165,7 @@ class Y2022D17(private val jetPattern: String) {
         val repeats = (1_000_000_000_000L - previousIndex + 1) / blocksInRepeat
         val endBlocks = (1_000_000_000_000L - (previousIndex + 1) - repeats * blocksInRepeat).toInt()
         val endLines = blockList[preIndex + endBlocks].top - prevLines
-        val answer = prevLines + repeats * linesInRepeat + endLines
-        return answer
+        return prevLines + repeats * linesInRepeat + endLines
     }
 }
 

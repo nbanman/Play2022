@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2022.d2
 
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
-import org.gristle.adventOfCode.utilities.lines
 
 class Y2022D2(input: String) {
     // This solution depends on modular arithmetic and establishing a mathematical relationship between two throws

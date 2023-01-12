@@ -89,7 +89,7 @@ class Y2022D16(input: String) {
                     }.minBy { it.second }
             }
 
-            val new = distanceMap.map { (valve, roomInfo) ->
+            val newStates = distanceMap.map { (valve, roomInfo) ->
                 val (roomNo, distance) = roomInfo
                 val newPos = run {
                     if (current.pos.size == 1) {
@@ -125,7 +125,7 @@ class Y2022D16(input: String) {
 
                 newState to newHeuristic
             }
-            open.addAll(new)
+            open.addAll(newStates)
         }
 
         return max
@@ -137,21 +137,9 @@ class Y2022D16(input: String) {
 }
 
 fun main() {
-    val input = listOf(
-        getInput(16, 2022),
-        """Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
-Valve BB has flow rate=13; tunnels lead to valves CC, AA
-Valve CC has flow rate=2; tunnels lead to valves DD, BB
-Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
-Valve EE has flow rate=3; tunnels lead to valves FF, DD
-Valve FF has flow rate=0; tunnels lead to valves EE, GG
-Valve GG has flow rate=0; tunnels lead to valves FF, HH
-Valve HH has flow rate=22; tunnel leads to valve GG
-Valve II has flow rate=0; tunnels lead to valves AA, JJ
-Valve JJ has flow rate=21; tunnel leads to valve II""",
-    )
+    val input = getInput(16, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D16(input[0])
+    val solver = Y2022D16(input)
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 2059 (121ms)
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 2790 (5337ms) 

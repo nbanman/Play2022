@@ -68,24 +68,9 @@ class Y2022D18(input: String) {
 }
 
 fun main() = runBlocking {
-    val input = listOf(
-        getInput(18, 2022),
-        """2,2,2
-1,2,2
-3,2,2
-2,1,2
-2,3,2
-2,2,1
-2,2,3
-2,2,4
-2,2,6
-1,2,5
-3,2,5
-2,1,5
-2,3,5""",
-    )
+    val input = getInput(18, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D18(input[0])
+    val solver = Y2022D18(input)
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 4332 (39ms)
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 2524 (1286ms)

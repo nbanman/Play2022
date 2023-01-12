@@ -32,29 +32,22 @@ class Y2022D14(input: String) {
         .last()
         .apply { cavern.add(this) }
 
-    fun part1(): Int {
+    fun solve(predicate: (Coord) -> Boolean): Int {
         val cave = cavern.toMutableSet()
         return generateSequence { settle(cave) }
-            .indexOfFirst { it.y > depth }
+            .indexOfFirst { predicate(it) }
     }
 
-    fun part2(): Int {
-        val cave = cavern.toMutableSet()
-        return 1 + generateSequence { settle(cave) }
-            .indexOfFirst { it == Coord(500, 0) }
-    }
+    fun part1() = solve { it.y > depth }
+
+    fun part2() = solve { it == Coord(500, 0) } + 1
 }
 
 
 fun main() {
-    val input = listOf(
-        getInput(14, 2022),
-        """498,4 -> 498,6 -> 496,6
-            |503,4 -> 502,4 -> 502,9 -> 494,9
-        """.trimMargin(),
-    )
+    val input = getInput(14, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D14(input[0])
+    val solver = Y2022D14(input)
     println("Class creation: ${timer.lap()}ms")
     println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 825
     println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 26729
