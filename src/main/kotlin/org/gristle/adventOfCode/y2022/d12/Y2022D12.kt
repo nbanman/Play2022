@@ -13,13 +13,13 @@ class Y2022D12(input: String) {
         else -> this
     }.code
 
-    private val startId = area.coordOf(area.indexOf('E'))
+    private val startId = area.indexOf('E')
 
-    private val getEdges = { pos: Coord ->
+    private val getEdges = { pos: Int ->
         area
             .getNeighborsIndexedValue(pos)
             .filter { (_, c) -> c.height() >= area[pos].height() - 1 }
-            .map { (index, _) -> area.coordOf(index) }
+            .map { (index, _) -> index }
     }
 
     private val vertices = Graph
