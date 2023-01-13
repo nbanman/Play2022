@@ -5,6 +5,21 @@ import kotlin.math.*
 data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
     companion object {
         val ORIGIN = Coord(0, 0)
+
+        val CROSS = listOf(
+            Coord(0, -1), Coord(-1, 0), Coord(0, 0), Coord(1, 0), Coord(0, 1),
+        )
+
+        val NSEW = listOf(
+            Coord(0, -1), Coord(0, 1), Coord(1, 0), Coord(-1, 0),
+        )
+
+        val ALLADJACENT = listOf(
+            Coord(-1, -1), Coord(0, -1), Coord(1, -1),
+            Coord(1, 0), Coord(-1, 0),
+            Coord(-1, 1), Coord(0, 1), Coord(1, 1),
+        )
+
         fun fromIndex(n: Int, width: Int) = Coord(n % width, n / width)
 
         inline fun forRectangle(tl: Coord, br: Coord, action: (coord: Coord) -> Unit) {
