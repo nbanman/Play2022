@@ -41,13 +41,8 @@ class Y2022D24(input: String) {
     } as Map<Int, List<Blizzard>>
 
     // State is custom rather than just the position because we have to do logic related to the minute as well to
-    // calculate Blizzard locations. A custom A* could just use the edgeweight but alas...
+    // calculate Blizzard locations. 
     data class State(val pos: Coord, val minute: Int)
-
-    // Used to generate all possible moves from a given position.
-    private val cross = listOf(
-        Coord(0, -1), Coord(-1, 0), Coord(0, 0), Coord(1, 0), Coord(0, 1),
-    )
 
     // Beginning and goal positions are the only wall openings.
     private val beginning = Coord.fromIndex(valley.indexOfFirst { it == '.' }, valley.width)
@@ -57,7 +52,7 @@ class Y2022D24(input: String) {
     private fun traverse(startPos: Coord, endPos: Coord, minute: Int): Int {
         val beginning = State(startPos, minute + 1)
         val defaultEdges = { (pos, minute): State ->
-            cross.map { it + pos }
+            Coord.CROSS.map { it + pos }
                 .filter { candidate ->
                     // Checks that the candidate is 1) in the valley; 2) not a wall; and 3) no blizzards are moving 
                     // into the candidate space. 
@@ -83,7 +78,8 @@ class Y2022D24(input: String) {
     fun part2(): Int {
         val firstTrip = traverse(beginning, goal, 0)
         val secondTrip = traverse(goal, beginning, firstTrip)
-        return firstTrip + secondTrip + traverse(beginning, goal, firstTrip + secondTrip)
+        val thirdTrip = traverse(beginning, goal, firstTrip + secondTrip)
+        return firstTrip + secondTrip + thirdTrip
     }
 }
 
