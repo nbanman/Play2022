@@ -83,6 +83,17 @@ open class MCoord(val coordinates: List<Int>) {
 
 class Xyz(val x: Int, val y: Int, val z: Int) : MCoord(listOf(x, y, z)) {
 
+    companion object {
+        val CROSS = listOf(
+            Xyz(-1, 0, 0),
+            Xyz(1, 0, 0),
+            Xyz(0, -1, 0),
+            Xyz(0, 1, 0),
+            Xyz(0, 0, -1),
+            Xyz(0, 0, 1)
+        )
+    }
+
     constructor(mCoord: MCoord) : this(mCoord[0], mCoord[1], mCoord[2])
 
     operator fun plus(other: Xyz) = Xyz(super.plus(other))
