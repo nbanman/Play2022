@@ -60,6 +60,7 @@ fun getInput(day: Int, year: Int = LocalDate.now().year, alternate: String = "")
                 inputFile.outputStream().use { output ->
                     input.copyTo(output)
                 }
+                inputFile.setReadOnly()
             }
         } finally {
             connection.disconnect()
