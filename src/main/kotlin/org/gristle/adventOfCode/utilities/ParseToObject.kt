@@ -10,6 +10,8 @@ data class Dummy2(val int: Int, val char: Char)
 
 data class Dummy(val name: String, val numbers: List<Int>)
 
+data class CoordObj(val name: String, val pos: Coord, val pos2: Coord, val title: String)
+
 fun main() {
     val t3 = listOf("3", "hi", "c")
     val t2 = listOf("3", "c")
@@ -17,41 +19,66 @@ fun main() {
     val dummy3 = parseObject<Dummy3>(::Dummy3, t3)
     val dummy2 = parseObject<Dummy2>(::Dummy2, t2)
     val dummy = parseObject<Dummy>(::Dummy, t1, Regex(", "))
-    println("$dummy, $dummy2, $dummy3")
+    val otra = parseObject<CoordObj>(::CoordObj, listOf("Neil", "7", "5", "3", "2", "journeyman"))
+    println("$otra, $dummy, $dummy2, $dummy3")
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <E> parseObject(obj: KFunction<*>, arguments: List<String>, split: Regex? = null): E {
+inline fun <reified E> parseObject(obj: KFunction<*>, arguments: List<String>, split: Regex? = null): E {
+    val argIterator = arguments.iterator()
     val parameters = obj
         .parameters
-        .zip(arguments)
-        .associate { (parameter, argument) ->
+        .map { parameter ->
+            val argsNeeded = when (parameter.type) {
+                typeOf<Coord>() -> 2
+                else -> 1
+            }
+            parameter to (1..argsNeeded).map { argIterator.next() }
+        }.associate { (parameter, argument) ->
             parameter to argument.convertTo(parameter.type, split)
         }
-    return obj.callBy(parameters) as E
+    val newObject = obj.callBy(parameters)
+    if (newObject is E) return newObject else
+        throw IllegalArgumentException("Cast failed: check that type parameter matches object reference")
 }
 
-fun String.convertTo(type: KType, split: Regex?): Any {
+fun List<String>.convertTo(type: KType, split: Regex?): Any {
     return when (type) {
-        typeOf<Int>() -> toInt()
-        typeOf<Long>() -> toLong()
-        typeOf<Char>() -> this[0]
-        typeOf<String>() -> this
+        typeOf<Int>() -> first().toInt()
+        typeOf<Long>() -> first().toLong()
+        typeOf<Char>() -> first()[0]
+        typeOf<String>() -> first()
+        typeOf<Coord>() -> Coord(first().toInt(), last().toInt())
         typeOf<List<String>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            this.split(split)
+            first().split(split)
         }
 
         typeOf<List<Int>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            this.split(split).map(String::toInt)
+            first().split(split).map(String::toInt)
         }
 
         typeOf<List<Long>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            this.split(split).map(String::toLong)
+            first().split(split).map(String::toLong)
+        }
+
+        typeOf<Set<String>>() -> {
+            if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
+            first().split(split).toSet()
+        }
+
+        typeOf<Set<Int>>() -> {
+            if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
+            first().split(split).map(String::toInt).toSet()
+        }
+
+        typeOf<Set<Long>>() -> {
+            if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
+            first().split(split).map(String::toLong).toSet()
         }
 
         else -> throw IllegalArgumentException("Type not supported by converter.")
     }
+
 }
