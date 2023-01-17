@@ -4,9 +4,11 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2022D18(input: String) {
 
-    // bounds contains three IntRanges, one for each of three dimensions, giving the boundaries of the droplet with
+    // bounds are IntRanges, one for each of three dimensions, giving the boundaries of the droplet with
     // a 1-space buffer on each side
-    private val bounds: Triple<IntRange, IntRange, IntRange>
+    private val xBound: IntRange
+    private val yBound: IntRange
+    private val zBound: IntRange
 
     // set of all cubes in the droplet
     private val cubes: Set<Xyz>
@@ -31,7 +33,9 @@ class Y2022D18(input: String) {
             Xyz(x, y, z)
         }.toSet()
 
-        bounds = Triple(minX - 1..maxX + 1, minY - 1..maxY + 1, minZ - 1..maxZ + 1)
+        xBound = minX - 1..maxX + 1
+        yBound = minY - 1..maxY + 1
+        zBound = minZ - 1..maxZ + 1
     }
 
     // utility function that returns the 6 spaces adjacent to a given cube
@@ -56,13 +60,13 @@ class Y2022D18(input: String) {
         // Returns a set of points in and around the droplet that are part of the exterior.
         val exterior: Set<Xyz> = Graph
             .bfsSequence(
-                startId = Xyz(bounds.first.first, bounds.second.first, bounds.third.first),
+                startId = Xyz(xBound.first, yBound.first, zBound.first),
                 defaultEdges = { pos ->
                     pos.adjacent().filter {
                         !cubes.contains(it) // the space is not a cube
-                                && it.x in bounds.first // is in-bounds on x-axis
-                                && it.y in bounds.second // y-axis
-                                && it.z in bounds.third // z-axis
+                                && it.x in xBound // is in-bounds on x-axis
+                                && it.y in yBound // y-axis
+                                && it.z in zBound // z-axis
                     }
                 }
             ).map { it.id }
