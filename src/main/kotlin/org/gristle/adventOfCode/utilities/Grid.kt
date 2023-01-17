@@ -39,6 +39,10 @@ interface Grid<out E> : List<E> {
 
     fun column(column: Int): List<E>
 
+    fun columnsSequence(): Sequence<List<E>>
+
+    fun rowsSequence(): Sequence<List<E>>
+
     fun getNeighborIndices(index: Int, includeDiagonals: Boolean = false, wrapAround: Boolean = false): List<Int>
 
     fun getNeighborIndices(x: Int, y: Int, includeDiagonals: Boolean = false, wrapAround: Boolean = false): List<Int>
@@ -69,6 +73,10 @@ interface Grid<out E> : List<E> {
     fun flipX(): Grid<E>
     fun flipY(): Grid<E>
     fun validCoord(coord: Coord): Boolean
+
+    fun getBounds(predicate: (E) -> Boolean): Pair<IntRange, IntRange>
+
+    fun getDimensionsAndOffset(padding: Int = 0, predicate: (E) -> Boolean): Pair<Coord, Coord>
 }
 
 interface MutableGrid<E> : Grid<E>, MutableList<E> {
@@ -149,6 +157,10 @@ class ArrayGrid<E> private constructor(
             acc + listOf(List(height) { index -> get(i + index * width) })
         }
     }
+
+    override fun columnsSequence(): Sequence<List<E>> = xIndices.asSequence().map { column(it) }
+
+    override fun rowsSequence(): Sequence<List<E>> = yIndices.asSequence().map { row(it) }
 
     override fun column(column: Int) = List(height) { i -> get(column + i * width) }
 
@@ -272,6 +284,36 @@ class ArrayGrid<E> private constructor(
         return elementsImpl
             .remove(element)
             .changeHeight()
+    }
+
+    override fun getBounds(predicate: (E) -> Boolean): Pair<IntRange, IntRange> {
+        val xMin = columnsSequence().indexOfFirst { it.any(predicate) }
+        val xMax = generateSequence(width - 1) { it - 1 }
+            .map { if (it < 0) null else IndexedValue(it, column(it)) }
+            .first { it?.value?.any(predicate) ?: false }
+            ?.index
+            ?: -1
+        val yMin = rowsSequence().indexOfFirst { it.any(predicate) }
+        val yMax = generateSequence(height - 1) { it - 1 }
+            .map { if (it < 0) null else IndexedValue(it, row(it)) }
+            .first { it?.value?.any(predicate) ?: false }
+            ?.index
+            ?: -1
+
+        return xMin..xMax to yMin..yMax
+    }
+
+    override fun getDimensionsAndOffset(padding: Int, predicate: (E) -> Boolean): Pair<Coord, Coord> {
+        val (xBound, yBound) = getBounds(predicate)
+        val dimensions = Coord(
+            xBound.last - xBound.first + 1 + padding * 2,
+            yBound.last - yBound.first + 1 + padding * 2
+        )
+        val offset = Coord(
+            padding - xBound.first,
+            padding - yBound.first
+        )
+        return dimensions to offset
     }
 
     // Bulk Modification Operations
