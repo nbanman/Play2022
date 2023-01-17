@@ -1,6 +1,5 @@
 package org.gristle.adventOfCode.y2022.d18
 
-import kotlinx.coroutines.runBlocking
 import org.gristle.adventOfCode.utilities.*
 
 class Y2022D18(input: String) {
@@ -31,15 +30,14 @@ class Y2022D18(input: String) {
 
     private fun Xyz.adjacent() = Xyz.CROSS.map { it + this }
 
-    fun part1(): Int {
-        return droplets.sumOf { droplet ->
-            val neighbors = droplet.adjacent()
-            neighbors.count { !droplets.contains(it) }
-        }
+    private inline fun solve(predicate: (Xyz) -> Boolean): Int = droplets.sumOf { droplet ->
+        droplet.adjacent().count { predicate(it) }
     }
 
+    fun part1() = solve { it !in droplets }
+
     fun part2(): Int {
-        val touchingAir = Graph
+        val exterior = Graph
             .bfs(
                 startId = Xyz(bounds.first.first, bounds.second.first, bounds.third.first),
                 defaultEdges = { pos ->
@@ -53,14 +51,11 @@ class Y2022D18(input: String) {
             ).map { it.id }
             .toSet()
 
-        return droplets.sumOf { droplet ->
-            val neighbors = droplet.adjacent()
-            neighbors.count { it in touchingAir }
-        }
+        return solve { it in exterior }
     }
 }
 
-fun main() = runBlocking {
+fun main() {
     val input = getInput(18, 2022)
     val timer = Stopwatch(start = true)
     val solver = Y2022D18(input)
