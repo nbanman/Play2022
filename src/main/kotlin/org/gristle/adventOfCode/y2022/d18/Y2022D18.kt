@@ -4,10 +4,15 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2022D18(input: String) {
 
+    // bounds contains three IntRanges, one for each of three dimensions, giving the boundaries of the droplet with
+    // a 1-space buffer on each side
     private val bounds: Triple<IntRange, IntRange, IntRange>
-    private val droplets: Set<Xyz>
+
+    // set of all cubes in the droplet
+    private val cubes: Set<Xyz>
 
     init {
+        // used to calculate the bounds
         var minX = Int.MAX_VALUE
         var maxX = Int.MIN_VALUE
         var minY = Int.MAX_VALUE
@@ -15,7 +20,8 @@ class Y2022D18(input: String) {
         var minZ = Int.MAX_VALUE
         var maxZ = Int.MIN_VALUE
 
-        droplets = input.getInts().chunked(3).map { (x, y, z) ->
+        // parsing bounds and cubes
+        cubes = input.getInts().chunked(3).map { (x, y, z) ->
             if (x < minX) minX = x
             if (x > maxX) maxX = x
             if (y < minY) minY = y
@@ -28,30 +34,41 @@ class Y2022D18(input: String) {
         bounds = Triple(minX - 1..maxX + 1, minY - 1..maxY + 1, minZ - 1..maxZ + 1)
     }
 
+    // utility function that returns the 6 spaces adjacent to a given cube
     private fun Xyz.adjacent() = Xyz.CROSS.map { it + this }
 
-    private inline fun solve(predicate: (Xyz) -> Boolean): Int = droplets.sumOf { droplet ->
-        droplet.adjacent().count { predicate(it) }
+    // for every cube in the droplet, count the number of adjacent spaces that match a given predicate, then
+    // sum that count. 
+    private inline fun surfaceArea(predicate: (Xyz) -> Boolean): Int = cubes.sumOf { cube ->
+        cube.adjacent().count { predicate(it) }
     }
 
-    fun part1() = solve { it !in droplets }
+    // Predicate returns true when the space isn't occupied by a cube in the droplet. This fulfils the surface area 
+    // rules of Part 1.
+    fun part1() = surfaceArea { it !in cubes }
 
+    // Starting from outside the cube, find all the spaces within the bounds that do not contain a droplet cube.
+    // The predicate returns true when the space is one of those exterior spaces. This fulfils the surface area rules
+    // of Part 2.
     fun part2(): Int {
-        val exterior = Graph
-            .bfs(
+        // Use a BFS flood fill starting from outside the droplet. Since the bounds ranges allow a space of at least
+        // one in every dimension, the BFS will go around the entire droplet and try to penetrate it.
+        // Returns a set of points in and around the droplet that are part of the exterior.
+        val exterior: Set<Xyz> = Graph
+            .bfsSequence(
                 startId = Xyz(bounds.first.first, bounds.second.first, bounds.third.first),
                 defaultEdges = { pos ->
                     pos.adjacent().filter {
-                        it.x in bounds.first
-                                && it.y in bounds.second
-                                && it.z in bounds.third
-                                && !droplets.contains(it)
+                        !cubes.contains(it) // the space is not a cube
+                                && it.x in bounds.first // is in-bounds on x-axis
+                                && it.y in bounds.second // y-axis
+                                && it.z in bounds.third // z-axis
                     }
                 }
             ).map { it.id }
             .toSet()
 
-        return solve { it in exterior }
+        return surfaceArea { it in exterior }
     }
 }
 
