@@ -4,39 +4,17 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2022D18(input: String) {
 
-    // bounds are IntRanges, one for each of three dimensions, giving the boundaries of the droplet with
-    // a 1-space buffer on each side
-    private val xBound: IntRange
-    private val yBound: IntRange
-    private val zBound: IntRange
-
     // set of all cubes in the droplet
-    private val cubes: Set<Xyz>
-
-    init {
-        // used to calculate the bounds
-        var minX = Int.MAX_VALUE
-        var maxX = Int.MIN_VALUE
-        var minY = Int.MAX_VALUE
-        var maxY = Int.MIN_VALUE
-        var minZ = Int.MAX_VALUE
-        var maxZ = Int.MIN_VALUE
-
-        // parsing bounds and cubes
-        cubes = input.getInts().chunked(3).map { (x, y, z) ->
-            if (x < minX) minX = x
-            if (x > maxX) maxX = x
-            if (y < minY) minY = y
-            if (y > maxY) maxY = y
-            if (z < minZ) minZ = z
-            if (z > maxZ) maxZ = z
+    private val cubes: Set<Xyz> = input
+        .getInts()
+        .chunked(3)
+        .map { (x, y, z) ->
             Xyz(x, y, z)
         }.toSet()
 
-        xBound = minX - 1..maxX + 1
-        yBound = minY - 1..maxY + 1
-        zBound = minZ - 1..maxZ + 1
-    }
+    // bounds are IntRanges, one for each of three dimensions, giving the boundaries of the droplet with
+    // a 1-space buffer on each side
+    private val bounds = cubes.getBounds(padding = 1)
 
     // utility function that returns the 6 spaces adjacent to a given cube
     private fun Xyz.adjacent() = Xyz.CROSS.map { it + this }
@@ -60,13 +38,13 @@ class Y2022D18(input: String) {
         // Returns a set of points in and around the droplet that are part of the exterior.
         val exterior: Set<Xyz> = Graph
             .bfsSequence(
-                startId = Xyz(xBound.first, yBound.first, zBound.first),
+                startId = Xyz(bounds[0].first, bounds[1].first, bounds[2].first),
                 defaultEdges = { pos ->
                     pos.adjacent().filter {
                         !cubes.contains(it) // the space is not a cube
-                                && it.x in xBound // is in-bounds on x-axis
-                                && it.y in yBound // y-axis
-                                && it.z in zBound // z-axis
+                                && it.x in bounds[0] // is in-bounds on x-axis
+                                && it.y in bounds[1] // y-axis
+                                && it.z in bounds[2] // z-axis
                     }
                 }
             ).map { it.id }
