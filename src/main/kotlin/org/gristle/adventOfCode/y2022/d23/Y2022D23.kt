@@ -64,16 +64,9 @@ class Y2022D23(input: String) {
     private fun Grove.move(dir: Direction): Grove {
 
         // The boundaries of the elves move. To keep the grid the right size, find the bounds of the grove
-        // then make a new grid with a padding of 1 around the boundary.
-        val xMin = xLimit(0, 1)
-        val xMax = xLimit(width - 1, -1)
-        val yMin = yLimit(0, 1)
-        val yMax = yLimit(height - 1, -1)
-
-        val nextGrove: Grove = MutableGrid(xMax - xMin + 3, yMax - yMin + 3) { false }
-
-        // used to map the new grove's coordinates to the old one
-        val offset = Coord(1 - xMin, 1 - yMin)
+        // then make a new grid with a padding of 1 around the boundary. Offset used to map old values to new grid.
+        val (dimensions, offset) = getDimensionsAndOffset(1) { it }
+        val nextGrove: Grove = MutableGrid(dimensions.x, dimensions.y) { false }
 
         // For each elf, try to make a move. Moves are greedy in that if a space is open, an elf will take it.
         // If a later elf thinks that's a good spot too, the spot in the new grove is checked. If an elf has taken
