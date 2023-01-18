@@ -36,8 +36,8 @@ class Y2021D5(input: String) {
     }
 
     val lines = input
-        .groupValues(pattern, String::toInt)
-        .map { Line(Coord(it[0], it[1]), Coord(it[2], it[3])) }
+        .groupValues(pattern)
+        .parseToObjects(Line::class)
 
     fun solve(includeDiagonals: Boolean): Int {
         val space = mutableMapOf<Coord, Int>()
