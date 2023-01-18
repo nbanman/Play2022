@@ -23,18 +23,18 @@ fun main() {
     println("$other, $dummy, $dummy2, $dummy3")
 }
 
-inline fun <E : Any> List<List<String>>.parseToObjects(kClass: KClass<E>, split: Regex? = null): List<E> {
+fun <E : Any> List<List<String>>.parseToObjects(kClass: KClass<E>, split: Regex? = null): List<E> {
     return map { line -> line.parseToObject(kClass, split) }
 }
 
-inline fun <E : Any> Sequence<List<String>>.parseToObjects(
+fun <E : Any> Sequence<List<String>>.parseToObjects(
     kClass: KClass<E>,
     split: Regex? = null
 ): Sequence<E> {
     return map { line -> line.parseToObject(kClass, split) }
 }
 
-inline fun <E : Any> List<String>.parseToObject(kClass: KClass<E>, split: Regex? = null): E {
+fun <E : Any> List<String>.parseToObject(kClass: KClass<E>, split: Regex? = null): E {
     val constructor = kClass.constructors.first()
     val arguments = iterator()
     val parameters = constructor
