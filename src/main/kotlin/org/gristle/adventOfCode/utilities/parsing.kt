@@ -1,5 +1,7 @@
 package org.gristle.adventOfCode.utilities
 
+import kotlin.reflect.KClass
+
 /**
  * Finds all numbers in a string and returns them as a List of Int.
  */
@@ -47,6 +49,26 @@ fun String.groupValues(pattern: Regex): List<List<String>> {
         .map { it.groupValues.drop(1) }
         .toList()
 }
+
+/**
+ * Takes a regex, parses the fields to supplied class and returns a sequence of instances
+ */
+fun <E : Any> String.parse(
+    kClass: KClass<E>,
+    matchPattern: Regex,
+    splitPattern: Regex? = null
+): Sequence<E> = matchPattern
+    .findAll(this)
+    .map { it.groupValues.drop(1).parseToObject(kClass, splitPattern) }
+
+fun <E : Any> String.parse(
+    kClass: KClass<E>,
+    matchPattern: String,
+    splitPattern: Regex? = null
+): Sequence<E> = matchPattern
+    .toRegex()
+    .findAll(this)
+    .map { it.groupValues.drop(1).parseToObject(kClass, splitPattern) }
 
 /**
  * Convenience method to obtain the group values of a findall regex search of a string,
