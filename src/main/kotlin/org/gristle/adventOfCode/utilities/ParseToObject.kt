@@ -51,6 +51,7 @@ fun Iterator<String>.convertTo(parameter: KParameter, split: Regex?): Any {
         typeOf<Char>() -> next()[0]
         typeOf<String>() -> next()
         typeOf<Coord>() -> Coord(next().toInt(), next().toInt())
+        typeOf<Xyz>() -> Xyz(next().toInt(), next().toInt(), next().toInt())
         typeOf<List<String>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
             next().split(split)
