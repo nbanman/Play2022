@@ -1,7 +1,7 @@
 package org.gristle.adventOfCode.utilities
 
-import kotlin.reflect.KFunction
-import kotlin.reflect.KType
+import kotlin.reflect.KClass
+import kotlin.reflect.KParameter
 import kotlin.reflect.typeOf
 
 data class Dummy3(val int: Int, val string: String, val char: Char)
@@ -16,69 +16,71 @@ fun main() {
     val t3 = listOf("3", "hi", "c")
     val t2 = listOf("3", "c")
     val t1 = listOf("Neil", "1, 2, 3")
-    val dummy3 = parseObject<Dummy3>(::Dummy3, t3)
-    val dummy2 = parseObject<Dummy2>(::Dummy2, t2)
-    val dummy = parseObject<Dummy>(::Dummy, t1, Regex(", "))
-    val otra = parseObject<CoordObj>(::CoordObj, listOf("Neil", "7", "5", "3", "2", "journeyman"))
-    println("$otra, $dummy, $dummy2, $dummy3")
+    val dummy3 = t3.parseToObject(Dummy3::class)
+    val dummy2 = t2.parseToObject(Dummy2::class)
+    val dummy = t1.parseToObject(Dummy::class, Regex(", "))
+    val other = listOf("Neil", "7", "5", "3", "2", "journeyman").parseToObject(CoordObj::class)
+    println("$other, $dummy, $dummy2, $dummy3")
 }
 
-inline fun <reified E> parseObject(obj: KFunction<*>, arguments: List<String>, split: Regex? = null): E {
-    val argIterator = arguments.iterator()
-    val parameters = obj
+inline fun <reified E : Any> List<List<String>>.parseToObjects(kClass: KClass<E>, split: Regex? = null): List<E> {
+    return map { line -> line.parseToObject(kClass, split) }
+}
+
+inline fun <reified E : Any> Sequence<List<String>>.parseToObjects(
+    kClass: KClass<E>,
+    split: Regex? = null
+): Sequence<E> {
+    return map { line -> line.parseToObject(kClass, split) }
+}
+
+inline fun <reified E : Any> List<String>.parseToObject(kClass: KClass<E>, split: Regex? = null): E {
+    val constructor = kClass.constructors.first()
+    val arguments = iterator()
+    val parameters = constructor
         .parameters
-        .map { parameter ->
-            val argsNeeded = when (parameter.type) {
-                typeOf<Coord>() -> 2
-                else -> 1
-            }
-            parameter to (1..argsNeeded).map { argIterator.next() }
-        }.associate { (parameter, argument) ->
-            parameter to argument.convertTo(parameter.type, split)
-        }
-    val newObject = obj.callBy(parameters)
-    if (newObject is E) return newObject else
-        throw IllegalArgumentException("Cast failed: check that type parameter matches object reference")
+        .associateWith { arguments.convertTo(it, split) }
+    return constructor.callBy(parameters)
 }
 
-fun List<String>.convertTo(type: KType, split: Regex?): Any {
-    return when (type) {
-        typeOf<Int>() -> first().toInt()
-        typeOf<Long>() -> first().toLong()
-        typeOf<Char>() -> first()[0]
-        typeOf<String>() -> first()
-        typeOf<Coord>() -> Coord(first().toInt(), last().toInt())
+fun Iterator<String>.convertTo(parameter: KParameter, split: Regex?): Any {
+
+    return when (parameter.type) {
+        typeOf<Int>() -> next().toInt()
+        typeOf<Long>() -> next().toLong()
+        typeOf<Char>() -> next()[0]
+        typeOf<String>() -> next()
+        typeOf<Coord>() -> Coord(next().toInt(), next().toInt())
         typeOf<List<String>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            first().split(split)
+            next().split(split)
         }
 
         typeOf<List<Int>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            first().split(split).map(String::toInt)
+            next().split(split).map(String::toInt)
         }
 
         typeOf<List<Long>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            first().split(split).map(String::toLong)
+            next().split(split).map(String::toLong)
         }
 
         typeOf<Set<String>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            first().split(split).toSet()
+            next().split(split).toSet()
         }
 
         typeOf<Set<Int>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            first().split(split).map(String::toInt).toSet()
+            next().split(split).map(String::toInt).toSet()
         }
 
         typeOf<Set<Long>>() -> {
             if (split == null) throw IllegalArgumentException("Split Regex not defined for List")
-            first().split(split).map(String::toLong).toSet()
+            next().split(split).map(String::toLong).toSet()
         }
 
         else -> throw IllegalArgumentException("Type not supported by converter.")
     }
-
 }
