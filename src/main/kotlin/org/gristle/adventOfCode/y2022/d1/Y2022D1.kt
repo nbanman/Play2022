@@ -8,12 +8,11 @@ class Y2022D1(input: String) {
         .split("\n\n") // split on blank lines, so each elf's snacks are grouped
         // sum all the ints found in each elf's string, then put them all in a descending priority queue
         .toPriorityQueueDescending { it.getInts().sum() }
+        .poll(3) // grab the top three contenders
 
-    fun part1(): Int = calories.peek() // peek at the top of the priority queue, which holds the highest sum
+    fun part1(): Int = calories.first() // peek at the top of the priority queue, which holds the highest sum
 
-    fun part2() = calories
-        .poll(3) // poll the priority queue three times, returning top three elf calorie sums
-        .sum() // sum those three
+    fun part2() = calories.sum() // sum those three
 }
 
 fun main() {
