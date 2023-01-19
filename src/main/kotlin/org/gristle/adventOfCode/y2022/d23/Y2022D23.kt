@@ -14,29 +14,6 @@ class Y2022D23(input: String) {
 
     private val grove: Grove = input.toMutableGrid { it == '#' }
 
-    // xLimit and yLimit look for the first and last instance of an elf in a given row
-    private fun Grove.xLimit(col: Int, direction: Int): Int {
-        var x = col
-        do {
-            for (y in 0 until height) {
-                if (this[y * width + x]) return x
-            }
-            x += direction
-        } while (if (direction > 0) x < width else x >= 0)
-        return -1
-    }
-
-    private fun Grove.yLimit(row: Int, direction: Int): Int {
-        var y = row
-        do {
-            for (x in 0 until width) {
-                if (this[y * width + x]) return y
-            }
-            y += direction
-        } while (if (direction > 0) y < height else y >= 0)
-        return -1
-    }
-
     // Checks to see if an elf has any neighbors.
     private fun Coord.adjacentEmpty(grove: Grove, dir: Direction): Boolean = when (dir) {
         Direction.N -> listOf(Coord(x - 1, y - 1), copy(y = y - 1), Coord(x + 1, y - 1))
@@ -116,10 +93,9 @@ class Y2022D23(input: String) {
         .last() // we just want the last one
         .let { (grove, _) ->
             // find the width and height of the box if there were no padding left
-            val width = grove.xLimit(grove.width - 1, -1) - grove.xLimit(0, 1) + 1
-            val height = grove.yLimit(grove.height - 1, -1) - grove.yLimit(0, 1) + 1
+            val (dimensions, _) = grove.getDimensionsAndOffset(0) { it }
             // the empty spaces are the area of that hypothetical box minus the number of elves
-            width * height - grove.count { it }
+            dimensions.x * dimensions.y - grove.count { it }
         }
 
     fun part2(): Int = movement
