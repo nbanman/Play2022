@@ -35,9 +35,7 @@ class Y2021D5(input: String) {
             }
     }
 
-    val lines = input
-        .groupValues(pattern)
-        .parseToObjects(Line::class)
+    val lines = input.parseToList(::Line, pattern)
 
     fun solve(includeDiagonals: Boolean): Int {
         val space = mutableMapOf<Coord, Int>()
