@@ -48,20 +48,42 @@ class Y2022D24(input: String) {
     private val beginning = Coord.fromIndex(valley.indexOfFirst { it == '.' }, valley.width)
     private val goal = Coord.fromIndex(valley.indexOfLast { it == '.' }, valley.width)
 
+    // Cached Blizzard values
+    private val interval = lcm((valley.width - 2).toLong(), (valley.height - 2).toLong()).toInt()
+    private val blizzardMap = buildMap<Int, MutableGrid<Boolean>> {
+        for (minute in 0 until interval) {
+            val blizzardLocations = MutableGrid(valley.width, valley.height) { false }
+            blizzards.entries.forEach { (firstPos, blizzardList) ->
+                if (firstPos >= valley.width) {
+                    val x = firstPos - valley.width
+                    blizzardList.forEach { blizzard ->
+                        val y = blizzard.locationAt(minute)
+                        blizzardLocations[x, y] = true
+                    }
+                } else {
+                    val y = firstPos
+                    blizzardList.forEach { blizzard ->
+                        val x = blizzard.locationAt(minute)
+                        blizzardLocations[x, y] = true
+                    }
+                }
+            }
+            put(minute, blizzardLocations)
+        }
+    }
+
     // A* algorithm
     private fun traverse(startPos: Coord, endPos: Coord, minute: Int): Int {
         val beginning = State(startPos, minute + 1)
         val defaultEdges = { (pos, minute): State ->
+
             Coord.CROSS.map { it + pos }
                 .filter { candidate ->
                     // Checks that the candidate is 1) in the valley; 2) not a wall; and 3) no blizzards are moving 
                     // into the candidate space. 
                     valley.validCoord(candidate)
                             && valley[candidate] != '#'
-                            && blizzards[candidate.y]
-                        ?.find { it.locationAt(minute) == candidate.x } == null
-                            && blizzards[candidate.x + valley.width]
-                        ?.find { it.locationAt(minute) == candidate.y } == null
+                            && !blizzardMap.getValue(minute % interval)[candidate]
                 }.map { Graph.Edge(State(it, minute + 1), 1.0) }
         }
 
@@ -88,7 +110,13 @@ fun main() {
     val timer = Stopwatch(start = true)
     val solver = Y2022D24(input)
     println("Class creation: ${timer.lap()}ms") // 34ms
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 277 (251ms) (410ms BFS)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 877 (469) (929ms BFS)
-    println("Total time: ${timer.elapsed()}ms") // 755ms (1375ms BFS)
+    // Tested:
+    // 1. For each minute in a repeating interval (LCM of width and height that blizzards travel), calculate location
+    //    of all Blizzards and store in a map. (fastest)
+    // 2. Calculate blizzard spots on-the-fly, only looking at the row and column that the elves are on (medium)
+    // 3. #2, except with BFS instead of A* (slowest)
+
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 277 (1. 140ms) (2. 251ms) (3. 410ms)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 877 (1. 235ms) (2. 469ms) (3. 929ms)
+    println("Total time: ${timer.elapsed()}ms") // (1. 520ms) (2. 755ms) (3. 1375ms)
 }
