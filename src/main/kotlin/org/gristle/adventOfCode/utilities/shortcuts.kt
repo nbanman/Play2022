@@ -174,4 +174,15 @@ fun <E> PriorityQueue<E>.poll(n: Int): List<E> {
     return MutableList(min(n, size)) { poll() }
 }
 
+/**
+ * Calls poll until the predicate is no longer met or the PriorityQueue is empty.
+ */
+inline fun <E> PriorityQueue<E>.pollWhile(predicate: (E) -> Boolean): List<E> {
+    val list = mutableListOf<E>()
+    while (isNotEmpty()) {
+        poll().let { if (predicate(it)) list.add(it) }
+    }
+    return list
+}
+
 
