@@ -1,46 +1,45 @@
 package org.gristle.adventOfCode.utilities
 
-import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.typeOf
 
 data class Dummy3(val int: Int, val string: String, val char: Char)
 
-data class Dummy2(val int: Int, val char: Char)
+data class Dummy2(val int: Int, val char: Char) {
+    companion object {
+        fun of(char: Char, int: Int) = Dummy2(int, char)
+    }
+}
 
 data class Dummy(val name: String, val numbers: List<Int>)
 
 data class CoordObj(val name: String, val pos: Coord, val pos2: Coord, val title: String)
 
+fun makeDummy2(char: Char, int: Int) = Dummy2(int, char)
+
 fun main() {
     val t3 = listOf("3", "hi", "c")
     val t2 = listOf("3", "c")
     val t1 = listOf("Neil", "1, 2, 3")
-    val dummy3 = t3.parseToObject(Dummy3::class)
-    val dummy2 = t2.parseToObject(Dummy2::class)
-    val dummy = t1.parseToObject(Dummy::class, Regex(", "))
-    val other = listOf("Neil", "7", "5", "3", "2", "journeyman").parseToObject(CoordObj::class)
-    println("$other, $dummy, $dummy2, $dummy3")
+    val dummy3 = t3.parseToObject(::Dummy3)
+    val dummy2 = t2.parseToObject(::Dummy2)
+    val dummy2b = listOf("c", "3").parseToObject(Dummy2::of)
+    val dummy = t1.parseToObject(::Dummy, Regex(", "))
+    val other = listOf("Neil", "7", "5", "3", "2", "journeyman").parseToObject(::CoordObj)
+
+
+    println("$dummy2b")
 }
 
-fun <E : Any> List<List<String>>.parseToObjects(kClass: KClass<E>, split: Regex? = null): List<E> {
-    return map { line -> line.parseToObject(kClass, split) }
-}
-
-fun <E : Any> Sequence<List<String>>.parseToObjects(
-    kClass: KClass<E>,
-    split: Regex? = null
-): Sequence<E> {
-    return map { line -> line.parseToObject(kClass, split) }
-}
-
-fun <E : Any> List<String>.parseToObject(kClass: KClass<E>, split: Regex? = null): E {
-    val constructor = kClass.constructors.first()
+fun <E : Any> List<String>.parseToObject(kFun: KFunction<E>, split: Regex? = null): E {
     val arguments = iterator()
-    val parameters = constructor
-        .parameters
-        .associateWith { arguments.convertTo(it, split) }
-    return constructor.callBy(parameters)
+    val parameters = kFun.parameters.associateWith { arguments.convertTo(it, split) }
+    return kFun.callBy(parameters)
+}
+
+fun <E : Any> List<List<String>>.parseToObject(kFun: KFunction<E>, split: Regex? = null): List<E> {
+    return map { line -> line.parseToObject(kFun, split) }
 }
 
 fun Iterator<String>.convertTo(parameter: KParameter, split: Regex?): Any {
@@ -82,6 +81,9 @@ fun Iterator<String>.convertTo(parameter: KParameter, split: Regex?): Any {
             next().split(split).map(String::toLong).toSet()
         }
 
-        else -> throw IllegalArgumentException("Type not supported by converter.")
+        else -> {
+
+            throw IllegalArgumentException("Type not supported by converter.")
+        }
     }
 }
