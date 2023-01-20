@@ -1,6 +1,6 @@
 package org.gristle.adventOfCode.utilities
 
-import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 
 /**
  * Finds all numbers in a string and returns them as a List of Int.
@@ -54,32 +54,44 @@ fun String.groupValues(pattern: Regex): List<List<String>> {
  * Takes a regex, parses the fields to supplied class and returns a sequence of instances
  */
 fun <E : Any> String.parse(
-    kClass: KClass<E>,
+    kFun: KFunction<E>,
     matchPattern: Regex,
     splitPattern: Regex? = null
 ): Sequence<E> = matchPattern
     .findAll(this)
-    .map { it.groupValues.drop(1).parseToObject(kClass, splitPattern) }
+    .map { it.groupValues.drop(1).parseToObject(kFun, splitPattern) }
 
 fun <E : Any> String.parse(
-    kClass: KClass<E>,
+    kFun: KFunction<E>,
     matchPattern: String,
     splitPattern: Regex? = null
 ): Sequence<E> = matchPattern
     .toRegex()
     .findAll(this)
-    .map { it.groupValues.drop(1).parseToObject(kClass, splitPattern) }
+    .map { it.groupValues.drop(1).parseToObject(kFun, splitPattern) }
+
+fun <E : Any> String.parseToList(
+    kFun: KFunction<E>,
+    matchPattern: Regex,
+    splitPattern: Regex? = null
+): List<E> = parse(kFun, matchPattern, splitPattern).toList()
+
+fun <E : Any> String.parseToList(
+    kFun: KFunction<E>,
+    matchPattern: String,
+    splitPattern: Regex? = null
+): List<E> = parse(kFun, matchPattern, splitPattern).toList()
 
 /**
  * Convenience method to obtain the group values of a findall regex search of a string,
- * with a way to map the strings to something else if they are all of the same type.
+ * with a way to map the strings to something else if they are all the same type.
  */
 inline fun <R> String.groupValues(pattern: String, transform: (String) -> R): List<List<R>> =
     groupValues(pattern.toRegex(), transform)
 
 /**
  * Convenience method to obtain the group values of a findall regex search of a string,
- * with a way to map the strings to something else if they are all of the same type.
+ * with a way to map the strings to something else if they are all the same type.
  */
 inline fun <R> String.groupValues(pattern: Regex, transform: (String) -> R): List<List<R>> {
     return pattern
@@ -139,13 +151,13 @@ inline fun <T> Iterable<T>.splitOn(predicate: (T) -> Boolean): List<List<T>> {
         }
     }
     d += u
-    return d;
+    return d
 }
 
 /**
  * Split on blank String
  */
-inline fun <String> Iterable<String>.splitOnBlank(): List<List<String>> {
+fun <String> Iterable<String>.splitOnBlank(): List<List<String>> {
     val d = mutableListOf<List<String>>()
     var u = mutableListOf<String>()
     forEach { s ->
@@ -157,5 +169,5 @@ inline fun <String> Iterable<String>.splitOnBlank(): List<List<String>> {
         }
     }
     d += u
-    return d;
+    return d
 }
