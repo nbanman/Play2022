@@ -7,226 +7,198 @@ import kotlinx.coroutines.withContext
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.getInts
-import java.util.*
+import org.gristle.adventOfCode.utilities.gvs
 import kotlin.math.ceil
 
+// I refactored and now it's 3x slower!
+// I "borrowed" (i.e., stole) heavily from ephemient's solution: 
+// https://github.com/ephemient/aoc2022/blob/main/kt/src/commonMain/kotlin/com/github/ephemient/aoc2022/Day19.kt
+// See previous commit for my (3x faster!) solution, though TBH that version has ephemient written all over it as
+// well, particularly in the coroutines.
+
+// This version relies heavily on Maps to store all the robot, resource, and relationship information. It is slow
+// because the State has to reconstruct two maps for each branch, rather than simply update a couple fields as my
+// previous version did.
+
+// This version is a more general solution. My original version relied on the fact that the resources are always the 
+// same and that for each blueprint every robot requires the same kinds of resources, just in different amounts. 
+// This version is agnostic as to the names and different types of resources.
+
+// This version is also significantly shorter because I do not need to handle special cases for my hard-coded types. 
+
+@Suppress("SameParameterValue")
 class Y2022D19(input: String) {
-
-    sealed class Robots {
-        data class Ore(val oreCost: Int) : Robots() {
-            override fun timeUntilBuild(state: State): Int = if (oreCost <= state.ore) {
-                1
-            } else {
-                ceil((oreCost - state.ore) / state.oreRobots.toFloat()).toInt() + 1
-            }
-        }
-
-        data class Clay(val oreCost: Int) : Robots() {
-            override fun timeUntilBuild(state: State): Int = if (oreCost <= state.ore) {
-                1
-            } else {
-                ceil((oreCost - state.ore) / state.oreRobots.toFloat()).toInt() + 1
-            }
-        }
-
-        data class Obsidian(val oreCost: Int, val clayCost: Int) : Robots() {
-            override fun timeUntilBuild(state: State): Int = maxOf(
-                if (oreCost <= state.ore) 1 else ceil((oreCost - state.ore) / state.oreRobots.toFloat()).toInt() + 1,
-                if (clayCost <= state.clay) 1 else ceil((clayCost - state.clay) / state.clayRobots.toFloat()).toInt() + 1,
-            )
-        }
-
-        data class Geode(val oreCost: Int, val obsidianCost: Int) : Robots() {
-            override fun timeUntilBuild(state: State): Int = maxOf(
-                if (oreCost <= state.ore) 1 else ceil((oreCost - state.ore) / state.oreRobots.toFloat()).toInt() + 1,
-                if (obsidianCost <= state.obsidian) {
-                    1
-                } else {
-                    ceil((obsidianCost - state.obsidian) / state.obsidianRobots.toFloat()).toInt() + 1
-                },
-            )
-        }
-
-        abstract fun timeUntilBuild(state: State): Int
-    }
 
     data class Blueprint(
         val id: Int,
-        val oreRobot: Robots.Ore,
-        val clayRobot: Robots.Clay,
-        val obsidianRobot: Robots.Obsidian,
-        val geodeRobot: Robots.Geode,
+        val robotCosts: Map<String, Map<String, Int>>,
     ) {
-        val maxOreRobots = maxOf(
-            oreRobot.oreCost,
-            clayRobot.oreCost,
-            obsidianRobot.oreCost,
-            geodeRobot.oreCost,
-        )
+        // maxMaterial is used to determine whether enough robots of a particular kind have been created that 
+        // any robot requiring that material can make a new robot each turn, such that no more robots of that
+        // kind need to ever be made.
+        val maxMaterial: Map<String, Int> = robotCosts.keys.mapNotNull { resource -> // for each resource...
+            // This takes the resource, goes back to each entry in robotCosts, and finds the cost for that resource
+            // Then it returns the max value. If the particular robot does not require that resource, then the
+            // .mapNotNull function excludes it because the map get function returns null. If no robot requires the
+            // resource, then the .maxOrNull function returns null instead of throwing an Exception. 
+            val maxMaterial = robotCosts.values
+                .mapNotNull { resourceMap -> resourceMap[resource] }
+                .maxOrNull()
+            // if maxMaterial is null then no robot requires that material and no entry need be created
+            // otherwise, map to Pair<String, Int> for conversion to Map.
+            if (maxMaterial == null) null else resource to maxMaterial
+        }.toMap()
     }
 
-    private val blueprints = input
-        .getInts()
-        .chunked(7)
-        .map {
-            Blueprint(
-                it[0],
-                Robots.Ore(it[1]),
-                Robots.Clay(it[2]),
-                Robots.Obsidian(it[3], it[4]),
-                Robots.Geode(it[5], it[6])
-            )
-        }.toList()
+    private val blueprints: List<Blueprint>
+
+    init { // parses input into a list of blueprint objects
+
+        // Regex to that finds relationships
+        val pattern = Regex("""Each ([a-z]+) robot costs (\d+) ([a-z]+)(?: and (\d+) ([a-z]+))?. ?""")
+
+        blueprints = input.lines().map { spec ->
+            val id = spec.getInts().first() // id is the first number in the spec
+            val robotCosts: Map<String, Map<String, Int>> = buildMap {
+                spec.gvs(pattern).forEach { gv ->
+                    val robotType = gv[0]
+                    val resourceMap: Map<String, Int> = buildMap {
+                        gv.drop(1).chunked(2).forEach { (cost, resource) ->
+                            if (resource != "") put(resource, cost.toInt())
+                        }
+                    }
+                    put(robotType, resourceMap)
+                }
+            }
+            Blueprint(id, robotCosts)
+        }
+    }
 
     data class State(
-        val blueprint: Blueprint,
         val minute: Int = 0,
-        val ore: Int = 0,
-        val clay: Int = 0,
-        val obsidian: Int = 0,
-        val geodes: Int = 0,
-        val oreRobots: Int = 1,
-        val clayRobots: Int = 0,
-        val obsidianRobots: Int = 0,
-        val geodeRobots: Int = 0,
-    ) : Comparable<State> {
-
-        fun nextStates(minutes: Int): List<State> {
-            val nextStates = mutableListOf<State>()
-            var buildTime: Int
-            // Don't build if you already have the production capacity to build one of anything (ie, the highest
-            // ore cost of a robot).
-            if (oreRobots < blueprint.maxOreRobots) {
-                buildTime = blueprint.oreRobot.timeUntilBuild(this)
-                if (minutes - minute - buildTime >= 0) {
-                    nextStates.add(
-                        copy(
+        val resources: Map<String, Int>,
+        val robots: Map<String, Int>,
+    ) {
+        // Delivers list of next possible states.
+        fun nextStates(blueprint: Blueprint, minutes: Int): List<State> = blueprint.robotCosts.keys
+            .mapNotNull { robotType ->
+                if ((robots.get0(robotType)) == (blueprint.maxMaterial[robotType] ?: Int.MAX_VALUE)) {
+                    null
+                } else {
+                    val buildTime = buildTime(blueprint, robotType)
+                    if (minutes - minute - buildTime < 0) {
+                        null
+                    } else {
+                        val newRobots = robots + (robotType to robots.get0(robotType) + 1)
+                        val newResources: Map<String, Int> = buildMap {
+                            putAll(resources)
+                            val costs = blueprint.robotCosts.getValue(robotType)
+                            forEach { (component, cost) ->
+                                this[component] = cost -
+                                        costs.get0(component) +
+                                        robots.get0(component) * buildTime
+                            }
+                        }
+                        State(
                             minute = minute + buildTime,
-                            ore = ore - blueprint.oreRobot.oreCost + buildTime * oreRobots,
-                            clay = clay + buildTime * clayRobots,
-                            obsidian = obsidian + buildTime * obsidianRobots,
-                            geodes = geodes + buildTime * geodeRobots,
-                            oreRobots = oreRobots + 1,
+                            resources = newResources,
+                            robots = newRobots,
                         )
-                    )
-                }
-            }
-            // Clay. Don't build more if you already have enough to build an obsidian robot (the only clay consumer) 
-            // in one turn.
-            if (clayRobots < blueprint.obsidianRobot.clayCost) {
-                buildTime = blueprint.clayRobot.timeUntilBuild(this)
-                if (minutes - minute - buildTime >= 0) {
-                    nextStates.add(
-                        copy(
-                            minute = minute + buildTime,
-                            ore = ore - blueprint.clayRobot.oreCost + buildTime * oreRobots,
-                            clay = clay + buildTime * clayRobots,
-                            obsidian = obsidian + buildTime * obsidianRobots,
-                            geodes = geodes + buildTime * geodeRobots,
-                            clayRobots = clayRobots + 1,
-                        )
-                    )
-                }
-            }
-            // Obsidian.
-            if (clayRobots > 0 && obsidianRobots < blueprint.geodeRobot.obsidianCost) {
-                buildTime = blueprint.obsidianRobot.timeUntilBuild(this)
-                if (minutes - minute - buildTime >= 0) {
-                    nextStates.add(
-                        copy(
-                            minute = minute + buildTime,
-                            ore = ore - blueprint.obsidianRobot.oreCost + buildTime * oreRobots,
-                            clay = clay - blueprint.obsidianRobot.clayCost + buildTime * clayRobots,
-                            obsidian = obsidian + buildTime * obsidianRobots,
-                            geodes = geodes + buildTime * geodeRobots,
-                            obsidianRobots = obsidianRobots + 1,
-                        )
-                    )
+                    }
                 }
             }
 
-            // Geode
-            if (obsidianRobots > 0) {
-                buildTime = blueprint.geodeRobot.timeUntilBuild(this)
-                if (minutes - minute - buildTime >= 0) {
-                    nextStates.add(
-                        copy(
-                            minute = minute + buildTime,
-                            ore = ore - blueprint.geodeRobot.oreCost + buildTime * oreRobots,
-                            clay = clay + buildTime * clayRobots,
-                            obsidian = obsidian - blueprint.geodeRobot.obsidianCost + buildTime * obsidianRobots,
-                            geodes = geodes + buildTime * geodeRobots,
-                            geodeRobots = geodeRobots + 1,
-                        )
-                    )
+        // Calculates the time needed to build a particular robot. It cycles through each component resource required
+        // to make the robot. For each component, it finds out how many resources are already available. If enough
+        // are available, assuming unlimited resources in the other components, the build time is 1. 
+        // If not enough are available, it finds out how many robots building that component there are and then 
+        // calculates how many turns are needed to harvest enough to build the robot. 
+        private fun buildTime(blueprint: Blueprint, robotType: String): Int =
+            blueprint.robotCosts.getValue(robotType).maxOf { (component, cost) ->
+                val resourcesAvailable = resources[component] ?: 0
+                if (cost <= resourcesAvailable) {
+                    1
+                } else {
+                    val robotsAvailable = robots.get0(component)
+                    if (robotsAvailable == 0) {
+                        Int.MAX_VALUE
+                    } else {
+                        ceil((cost - resourcesAvailable) / robotsAvailable.toFloat()).toInt() + 1
+                    }
                 }
             }
 
-            return nextStates
+        // This is a crude but fast calculation to see if the current State can possibly overtake the current leader.
+        // It assumes that until time runs out, one robot of the resource we want can be produced each turn.
+        fun maxBound(minutes: Int, resource: String): Int {
+            val currentAmount = resources[resource] ?: 0
+            val currentRobotNum = robots[resource] ?: 0
+            return currentAmount + (0 until (minutes - minute)).sumOf { it + currentRobotNum }
         }
 
-        // Prune those states that could not conceivably catch up to the leader.
-        fun maxBound(minutes: Int) = geodes + (0 until (minutes - minute)).sumOf { it + geodeRobots }
-
-        fun minBound(minutes: Int) = geodes + (minutes - minute) * geodeRobots
-
-        override fun compareTo(other: State): Int = compareBy<State> { it.geodes }
-            .thenByDescending { it.minute }
-            .compare(this, other)
-
-        override fun toString(): String {
-            return "State(minute=$minute, ore=$ore, clay=$clay, obsidian=$obsidian, geodes=$geodes, oreRobots=$oreRobots, clayRobots=$clayRobots, obsidianRobots=$obsidianRobots, geodeRobots=$geodeRobots)"
+        // This is a crude but fast calculation of the minimum number of a resource the State will produce before 
+        // time runs out. 
+        // It assumes that until time runs out, *no* robots of the resource we want can be produced.
+        fun minBound(minutes: Int, resource: String): Int {
+            val currentAmount = resources[resource] ?: 0
+            val currentRobotNum = robots[resource] ?: 0
+            return currentAmount + (minutes - minute) * currentRobotNum
         }
     }
 
-    private fun findGeodes(blueprint: Blueprint, minutes: Int): Int {
+    // Main loop uses a stack. Starting with initial state, it starts branching. For each state, it calculates
+    // the lower and upper bounds, storing the highest lower bound. If the upper bound is lower than the highest
+    // lower bound, it is discarded.
+    private fun findResource(blueprint: Blueprint, resource: String, initialState: State, minutes: Int): Int {
         var maxGeodes = 0
-        val pq = PriorityQueue<State>(compareByDescending { it })
-        pq.add(State(blueprint))
-        while (pq.isNotEmpty()) {
-            val state = pq.poll()
-            if (state.maxBound(minutes) < maxGeodes) continue
-            val minGeodes = state.minBound(minutes)
+        val queue = ArrayDeque<State>()
+        queue.add(initialState)
+        while (queue.isNotEmpty()) {
+            val state = queue.removeLast()
+            if (state.maxBound(minutes, resource) < maxGeodes) continue
+            val minGeodes = state.minBound(minutes, resource)
             if (minGeodes > maxGeodes) maxGeodes = minGeodes
-            pq.addAll(state.nextStates(minutes))
+            queue.addAll(state.nextStates(blueprint, minutes))
         }
+
         return maxGeodes
     }
+
+    private val initialState = State(
+        robots = mapOf("ore" to 1),
+        resources = mapOf(
+            "ore" to 0,
+            "clay" to 0,
+            "obsidian" to 0,
+            "geode" to 0,
+        )
+    )
 
     suspend fun part1() = withContext(Dispatchers.Default) {
         blueprints.map { blueprint ->
             async {
-                blueprint.id * findGeodes(blueprint, 24)
+                blueprint.id * findResource(blueprint, "geode", initialState, 24)
             }
         }.sumOf { it.await() }
     }
 
     suspend fun part2() = withContext(Dispatchers.Default) {
         blueprints.take(3).map { blueprint ->
-            async { findGeodes(blueprint, 32) }
+            async { findResource(blueprint, "geode", initialState, 32) }
         }.fold(1) { acc, deferred -> acc * deferred.await() }
+    }
+
+    companion object {
+        fun <K> Map<K, Int>.get0(key: K) = getOrElse(key) { 0 }
     }
 }
 
 fun main() = runBlocking {
-    val input = listOf(
-        getInput(19, 2022),
-        """Blueprint 1:
-  Each ore robot costs 4 ore.
-  Each clay robot costs 2 ore.
-  Each obsidian robot costs 3 ore and 14 clay.
-  Each geode robot costs 2 ore and 7 obsidian.
-
-Blueprint 2:
-  Each ore robot costs 2 ore.
-  Each clay robot costs 3 ore.
-  Each obsidian robot costs 3 ore and 8 clay.
-  Each geode robot costs 3 ore and 12 obsidian.""",
-    )
+    val input = getInput(19, 2022)
     val timer = Stopwatch(start = true)
-    val solver = Y2022D19(input[0])
+    val solver = Y2022D19(input)
     println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1427 (146ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 4400 (238ms)
-    println("Total time: ${timer.elapsed()}ms") // 408ms
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1427 (629ms) (146ms hardcoded)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 4400 (807ms) (238ms hardcoded)
+    println("Total time: ${timer.elapsed()}ms") // (1490ms) (408ms hardcoded)
 }
