@@ -14,7 +14,7 @@ class Y2022D5(input: String) {
         .dropLast(1) // gets rid of line labeling the stack numbers
         .transpose() // flip the strings vertically
         .filter { it.last().isLetter() } // get rid of strings that don't have crate information
-        .map { ArrayDeque(it.trimStart().toList()) } // create and load up stacks
+        .map { it.trimStart().toList() } // create and load up stacks
 
     // Get instructions
     val instructions = splitInputLines[1].map {
@@ -28,9 +28,11 @@ class Y2022D5(input: String) {
      * Takes a 'rearrange' function to delegate the rearrangement to each part.
      */
     fun solve(rearrange: (amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) -> Unit): String {
-        // stacks are mutable, so clone the stacks so that they can be reused 
+        // create arrayDeques for mutation
         val stacks = crateStacks.map { ArrayDeque(it) }
-        instructions.forEach { (amount, fromIndex, toIndex) -> rearrange(amount, stacks[fromIndex], stacks[toIndex]) }
+        instructions.forEach { (amount, fromIndex, toIndex) ->
+            rearrange(amount, stacks[fromIndex], stacks[toIndex])
+        }
         return buildString { stacks.forEach { stack -> append(stack.first()) } }
     }
 
@@ -38,7 +40,10 @@ class Y2022D5(input: String) {
      * Building block for the 'rearrange' function, moving crates from one stack to another.
      */
     fun move(amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) {
-        repeat(amount) { toStack.addFirst(fromStack.removeFirst()) }
+        repeat(amount) {
+            val letter = fromStack.removeFirst()
+            toStack.addFirst(letter)
+        }
     }
 
     fun part1() = solve { amount, fromStack, toStack ->

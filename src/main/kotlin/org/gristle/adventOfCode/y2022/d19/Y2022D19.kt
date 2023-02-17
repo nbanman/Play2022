@@ -80,32 +80,37 @@ class Y2022D19(input: String) {
         val robots: Map<String, Int>,
     ) {
         // Delivers list of next possible states.
-        fun nextStates(blueprint: Blueprint, minutes: Int): List<State> = blueprint.robotCosts.keys
-            .mapNotNull { robotType ->
-                if ((robots.get0(robotType)) == (blueprint.maxMaterial[robotType] ?: Int.MAX_VALUE)) {
-                    null
-                } else {
-                    val buildTime = buildTime(blueprint, robotType)
-                    if (minutes - minute - buildTime < 0) {
+        fun nextStates(blueprint: Blueprint, minutes: Int, cutoff: Map<String, Int>): List<State> =
+            blueprint.robotCosts.keys
+                .mapNotNull { robotType ->
+                    if ((robots.get0(robotType)) == (blueprint.maxMaterial[robotType] ?: Int.MAX_VALUE)) {
                         null
                     } else {
-                        val newRobots = robots + (robotType to robots.get0(robotType) + 1)
-                        val newResources: Map<String, Int> = buildMap {
-                            putAll(resources)
-                            val costs = blueprint.robotCosts.getValue(robotType)
-                            forEach { (component, cost) ->
-                                this[component] = cost -
-                                        costs.get0(component) +
-                                        robots.get0(component) * buildTime
+                        if (minutes - minute - cutoff.getValue(robotType) < 0) {
+                            null
+                        } else {
+                            val buildTime = buildTime(blueprint, robotType)
+                            if (minutes - minute - buildTime < 0) {
+                                null
+                            } else {
+                                val newRobots = robots + (robotType to robots.get0(robotType) + 1)
+                                val newResources: Map<String, Int> = buildMap {
+                                    putAll(resources)
+                                    val costs = blueprint.robotCosts.getValue(robotType)
+                                    forEach { (component, cost) ->
+                                        this[component] = cost -
+                                                costs.get0(component) +
+                                                robots.get0(component) * buildTime
+                                    }
+                                }
+                                State(
+                                    minute = minute + buildTime,
+                                    resources = newResources,
+                                    robots = newRobots,
+                                )
                             }
                         }
-                        State(
-                            minute = minute + buildTime,
-                            resources = newResources,
-                            robots = newRobots,
-                        )
                     }
-                }
             }
 
         // Calculates the time needed to build a particular robot. It cycles through each component resource required
@@ -150,6 +155,15 @@ class Y2022D19(input: String) {
     // the lower and upper bounds, storing the highest lower bound. If the upper bound is lower than the highest
     // lower bound, it is discarded.
     private fun findResource(blueprint: Blueprint, resource: String, initialState: State, minutes: Int): Int {
+        // create cutoff map for optimization
+        val cutoff = blueprint.robotCosts.keys.associateWith { robotType ->
+            when {
+                robotType == resource -> 1
+                blueprint.robotCosts.getValue(resource).containsKey(robotType) -> 3
+                else -> 5
+            }
+        }
+
         var maxGeodes = 0
         val queue = ArrayDeque<State>()
         queue.add(initialState)
@@ -158,7 +172,7 @@ class Y2022D19(input: String) {
             if (state.maxBound(minutes, resource) < maxGeodes) continue
             val minGeodes = state.minBound(minutes, resource)
             if (minGeodes > maxGeodes) maxGeodes = minGeodes
-            queue.addAll(state.nextStates(blueprint, minutes))
+            queue.addAll(state.nextStates(blueprint, minutes, cutoff))
         }
 
         return maxGeodes
@@ -198,7 +212,7 @@ fun main() = runBlocking {
     val timer = Stopwatch(start = true)
     val solver = Y2022D19(input)
     println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1427 (629ms) (146ms hardcoded)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 4400 (807ms) (238ms hardcoded)
-    println("Total time: ${timer.elapsed()}ms") // (1490ms) (408ms hardcoded)
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1427 (500ms) (629ms) (146ms hardcoded)
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 4400 (614ms) (807ms) (238ms hardcoded)
+    println("Total time: ${timer.elapsed()}ms") // (1173ms) (1490ms) (408ms hardcoded)
 }
