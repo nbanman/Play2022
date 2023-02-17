@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2015.d2
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
-import org.gristle.adventOfCode.utilities.runDay
 
 class Y2015D2(input: String) : Day {
 
@@ -25,6 +24,4 @@ class Y2015D2(input: String) : Day {
     override fun part2() = boxes.sumOf(Box::ribbonNeeded)
 }
 
-fun main() {
-    runDay(2, 2015, Y2015D2::class)
-} // 1588178, 3783758
+fun main() = Day.runDay(2, 2015, Y2015D2::class) // 1588178, 3783758
