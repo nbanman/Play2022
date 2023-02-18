@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2022.d17
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
 import kotlin.math.max
 
-class Y2022D17(private val jetPattern: String) {
+class Y2022D17(private val jetPattern: String) : Day {
 
     data class BlockInfo(val wind: Int, val x: Int = 2, val blockType: Int, val top: Int, val index: Int) {
         override fun equals(other: Any?): Boolean {
@@ -120,12 +119,12 @@ class Y2022D17(private val jetPattern: String) {
         append("+-------+\n")
     }
 
-    fun part1() = blocks
+    override fun part1() = blocks
         .take(2022)
         .last()
         .top
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val blockInfo = mutableSetOf<BlockInfo>()
         var blockList = emptyList<BlockInfo>()
         var preIndex = 0
@@ -169,15 +168,4 @@ class Y2022D17(private val jetPattern: String) {
     }
 }
 
-fun main() {
-    val input = listOf(
-        getInput(17, 2022),
-        """>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>""",
-    )
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D17(input[0])
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 3055
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 1507692307690
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(17, 2022, Y2022D17::class) // 3055, 1507692307690

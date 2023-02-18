@@ -1,10 +1,8 @@
 package org.gristle.adventOfCode.y2015.d5
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2015D5(input: String) {
+class Y2015D5(input: String) : Day {
     private val strings = input.lines()
 
     // Create Regex patterns for below functions
@@ -24,16 +22,9 @@ class Y2015D5(input: String) {
     private fun String.isNicePart1() = atLeast3Vowels() && atLeastOneTwice() && noForbiddenStrings()
     private fun String.isNicePart2() = atLeastTwoTwice() && repeatsWithOneBetween()
 
-    fun part1() = strings.count { it.isNicePart1() }
+    override fun part1() = strings.count { it.isNicePart1() }
 
-    fun part2() = strings.count { it.isNicePart2() }
+    override fun part2() = strings.count { it.isNicePart2() }
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2015D5(readRawInput("y2015/d5"))
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${c.part1()} (${timer.lap()}ms)") // 255
-    println("\tPart 2: ${c.part2()} (${timer.lap()}ms)") // 55
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(5, 2015, Y2015D5::class) // 255, 55

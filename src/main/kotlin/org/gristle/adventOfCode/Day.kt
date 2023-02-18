@@ -1,6 +1,5 @@
 package org.gristle.adventOfCode
 
-import kotlinx.coroutines.runBlocking
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
 import kotlin.reflect.KClass
@@ -15,7 +14,7 @@ interface Day {
             year: Int,
             kClass: KClass<T>? = null,
             sampleInput: String? = null,
-        ) = runBlocking {
+        ) {
             val constructor = if (kClass == null) {
                 val name = "org.gristle.adventOfCode.y$year.d$day.Y${year}D$day"
                 Class.forName(name).kotlin.constructors.first()
@@ -28,7 +27,7 @@ interface Day {
             val c = constructor.call(input) as Day
             println("Class creation: ${timer.lap()}ms")
             println("\tPart 1: ${c.part1()} (${timer.lap()}ms)")
-            println("\tPart 2: ${c.part2()} (${timer.lap()}ms)")
+            if (day != 25) println("\tPart 2: ${c.part2()} (${timer.lap()}ms)")
             println("Total time: ${timer.elapsed()}ms")
         }
     }

@@ -1,13 +1,12 @@
 package org.gristle.adventOfCode.y2022.d7
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.Day
 
-class Y2022D7(input: String) {
+class Y2022D7(input: String) : Day {
 
     // Directory node tracks child Directories in a map, and tracks the total file size of any files assigned to it 
     // or any child directory.
-    class Directory(val name: String) {
+    private class Directory(val name: String) {
         val directories: MutableMap<String, Directory> = mutableMapOf()
         var fileSize: Int = 0 // not just size of files in this directory, but files in child directories as well
 
@@ -43,9 +42,9 @@ class Y2022D7(input: String) {
     private val root = createFileStructure(input)
     private val allDirectories = root.inclusiveDirectories()
 
-    fun part1() = allDirectories.filter { it.fileSize <= 100000 }.sumOf(Directory::fileSize)
+    override fun part1() = allDirectories.filter { it.fileSize <= 100000 }.sumOf(Directory::fileSize)
 
-    fun part2() = allDirectories
+    override fun part2() = allDirectories
         .filter {
             val spaceAvailable = 70000000L - root.fileSize
             val minDirSize = 30000000L - spaceAvailable
@@ -53,12 +52,4 @@ class Y2022D7(input: String) {
         }.minOf(Directory::fileSize)
 }
 
-fun main() {
-    val input = getInput(7, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D7(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1477771
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 3579501
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(7, 2022, Y2022D7::class) // 1477771, 3579501

@@ -1,11 +1,14 @@
 package org.gristle.adventOfCode.y2022.d16
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.pollUntil
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
-class Y2022D16(input: String) {
+class Y2022D16(input: String) : Day {
     val pattern = """Valve (\w+) has flow rate=(\d+); tunnels? leads? to valves? (.*)""".toRegex()
     private val flowMap = mutableMapOf<String, Int>()
     private val edgeMapNoValves = mutableMapOf<String, List<Graph.Edge<String>>>()
@@ -131,18 +134,9 @@ class Y2022D16(input: String) {
         return max
     }
 
-    fun part1() = solve(1, 30)
+    override fun part1() = solve(1, 30)
 
-    fun part2() = solve(2, 26)
+    override fun part2() = solve(2, 26)
 }
 
-fun main() {
-    val input = getInput(16, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D16(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 2059 (121ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 2790 (5337ms) 
-    println("Total time: ${timer.elapsed()}ms")
-}
-
+fun main() = Day.runDay(16, 2022, Y2022D16::class) // 2059 (121ms), 2790 (5337ms)

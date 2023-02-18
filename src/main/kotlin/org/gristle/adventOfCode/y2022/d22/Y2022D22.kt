@@ -1,12 +1,13 @@
 package org.gristle.adventOfCode.y2022.d22
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 import kotlin.math.sqrt
 
 private typealias DirectionChange = Pair<Nsew, Nsew>
 private typealias CoordDirection = Pair<Coord, Nsew>
 
-class Y2022D22(input: String) {
+class Y2022D22(input: String) : Day {
 
     companion object {
         private fun Nsew.facing() = when (this) {
@@ -81,7 +82,7 @@ class Y2022D22(input: String) {
      * Part 1 traversal wraps the area. It does this by tracking the bounds of each row and column and makes any value
      * higher than the upper bound become the lower bound and vice-versa.
      */
-    fun part1(): Int {
+    override fun part1(): Int {
         val rowBounds = grove.rows().getBounds()
         val colBounds = grove.columns().getBounds()
 
@@ -110,7 +111,7 @@ class Y2022D22(input: String) {
      * by BFS need to be rotated and flipped to match that orientation, with corresponding changes to the direction
      * changes.
      */
-    fun part2(): Int {
+    override fun part2(): Int {
         // get the length of each side
         val sideLength = sqrt((grove.size - grove.count { it == ' ' }) / 6.0).toInt()
 
@@ -251,12 +252,4 @@ class Y2022D22(input: String) {
     }
 }
 
-fun main() {
-    val input = getInput(22, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D22(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 133174 (30ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 15410 (27ms)
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(22, 2022, Y2022D22::class) // 133174 (30ms), 15410 (27ms)

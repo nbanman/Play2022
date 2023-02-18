@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2022.d20
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getLongs
 
-class Y2022D20(private val input: String) {
+class Y2022D20(private val input: String) : Day {
 
     fun solve(factor: Int, times: Int): Long {
         // Pair numbers with their original index to ensure numbers are unique. I don't know a better way of getting
@@ -24,17 +23,11 @@ class Y2022D20(private val input: String) {
         }
     }
 
-    fun part1() = solve(1, 1)
+    override fun part1() = solve(1, 1)
 
-    fun part2() = solve(811589153, 10)
+    override fun part2() = solve(811589153, 10)
 }
 
-fun main() {
-    val input = getInput(20, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D20(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 4151 (87ms) (original 216ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 7848878698663 (488ms) (original 1006ms)
-    println("Total time: ${timer.elapsed()}ms")
-}
+// pt 1: 4151 (87ms) (original 216ms) 
+// pt 2: 7848878698663 (488ms) (original 1006ms)
+fun main() = Day.runDay(20, 2022, Y2022D20::class)

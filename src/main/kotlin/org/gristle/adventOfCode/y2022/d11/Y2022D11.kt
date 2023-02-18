@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2022.d11
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getIntList
 import org.gristle.adventOfCode.utilities.groupValues
 import kotlin.collections.fold as luv
@@ -13,7 +12,7 @@ import kotlin.collections.fold as luv
  * 
  * Look at previous version for what I'm apparently capable of myself.
  */
-class Y2022D11(val input: String) {
+class Y2022D11(val input: String) : Day {
 
     private val pattern = """
         Monkey \d+:
@@ -56,11 +55,11 @@ class Y2022D11(val input: String) {
         return me.luv(u, Long::times)
     }
 
-    fun part1() = solve(20) { this / 3 }
+    override fun part1() = solve(20) { this / 3 }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val lcm = monkeys.map { (_, monkey) -> monkey.test }.reduce(Int::times)
-        return solve(10000) { this % lcm }
+        return solve(10_000) { this % lcm }
     }
 
     class Monkey(
@@ -100,12 +99,4 @@ class Y2022D11(val input: String) {
     }
 }
 
-fun main() {
-    val input = getInput(11, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D11(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 88208
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 21115867968
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(11, 2022, Y2022D11::class) // 88208, 21115867968

@@ -1,9 +1,12 @@
 package org.gristle.adventOfCode.y2022.d12
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Graph.steps
+import org.gristle.adventOfCode.utilities.takeUntil
+import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2022D12(input: String) {
+class Y2022D12(input: String) : Day {
 
     private val area = input.toGrid()
 
@@ -27,10 +30,9 @@ class Y2022D12(input: String) {
             startId = startId,
             defaultEdges = getEdges
         ).takeUntil { area[it.id] == 'S' }
-        .toList()
 
-    fun part1() = vertices.steps()
-    fun part2() = vertices.first { area[it.id] in "Sa" }.weight.toInt()
+    override fun part1() = vertices.toList().steps()
+    override fun part2() = vertices.first { area[it.id] in "Sa" }.weight.toInt()
 
 //    Alternate solution uses A* and is slightly faster, works for all known puzzle inputs but part 2 relies on quirk of
 //    inputs that has all possible end points on the far left column of the grid. So the BFS solution above is more
@@ -60,12 +62,4 @@ class Y2022D12(input: String) {
 
 }
 
-fun main() {
-    val input = getInput(12, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D12(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 361
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 354
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(12, 2022, Y2022D12::class) // 361, 354

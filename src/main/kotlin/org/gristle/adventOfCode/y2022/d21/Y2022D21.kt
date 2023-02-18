@@ -1,21 +1,11 @@
 package org.gristle.adventOfCode.y2022.d21
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.gvs
 
 private typealias Operation = (Long, Long) -> Long
 
-class Y2022D21(private val input: String) {
-
-    companion object {
-        private fun String.toOperation(): Operation = when (this) {
-            "+" -> Long::plus
-            "-" -> Long::minus
-            "*" -> Long::times
-            else -> Long::div
-        }
-    }
+class Y2022D21(private val input: String) : Day {
 
     // Manages various maps. The maps are populated with the initialize fun. They cannot be prepopulated because
     // the dispatcher is passed by reference to the monkeys that it tracks.
@@ -186,12 +176,12 @@ class Y2022D21(private val input: String) {
         return dispatcher to monkeys
     }
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val (dispatcher, _) = getComponents()
         return dispatcher.monkeySay.getValue("root")
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val (_, monkeys) = getComponents(true)
         return monkeys
             .getValue("root")// start with the monkey named "root"
@@ -199,14 +189,15 @@ class Y2022D21(private val input: String) {
             .solveForX(Equation.Number(1L)) // change equation to solve for x
             .calculate() // calculate equation
     }
+
+    companion object {
+        private fun String.toOperation(): Operation = when (this) {
+            "+" -> Long::plus
+            "-" -> Long::minus
+            "*" -> Long::times
+            else -> Long::div
+        }
+    }
 }
 
-fun main() {
-    val input = getInput(21, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D21(input)
-    println("Class creation: ${timer.lap()}ms") // 0ms
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 309248622142100 (52ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 3757272361782 (13ms)
-    println("Total time: ${timer.elapsed()}ms") // 66ms
-}
+fun main() = Day.runDay(21, 2022, Y2022D21::class) // 309248622142100 (52ms), 3757272361782 (13ms)

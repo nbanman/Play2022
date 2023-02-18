@@ -1,9 +1,12 @@
 package org.gristle.adventOfCode.y2022.d15
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.getInts
+import org.gristle.adventOfCode.utilities.minMaxBy
 import kotlin.math.abs
 
-class Y2022D15(input: String) {
+class Y2022D15(input: String) : Day {
 
     data class Sensor(val pos: Coord, val beaconPos: Coord) {
         fun toRangeOrNull(y: Int): IntRange? {
@@ -51,12 +54,12 @@ class Y2022D15(input: String) {
         return mutableRanges
     }
 
-    fun part1() = sensors
+    override fun part1() = sensors
         .mapNotNull { it.toRangeOrNull(2000000) }
         .concatenate()
         .sumOf { it.last - it.first }
 
-    fun part2() = generateSequence(0) { it + 1 }
+    override fun part2() = generateSequence(0) { it + 1 }
         .map { y ->
             sensors
                 .mapNotNull { it.toRangeOrNull(y) }
@@ -69,12 +72,4 @@ class Y2022D15(input: String) {
         }
 }
 
-fun main() {
-    val input = getInput(15, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D15(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 5073496 (16ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 13081194638237 (2411ms)
-    println("Total time: ${timer.elapsed()}ms") // (2462ms)
-}
+fun main() = Day.runDay(15, 2022, Y2022D15::class) // 5073496 (16ms), 13081194638237 (2411ms)

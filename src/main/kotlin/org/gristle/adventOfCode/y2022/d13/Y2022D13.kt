@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2022.d13
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.Day
 
-class Y2022D13(input: String) {
+class Y2022D13(input: String) : Day {
     sealed class PData : Comparable<PData> {
         data class Value(val value: Int) : PData() {
 
@@ -63,14 +62,14 @@ class Y2022D13(input: String) {
         .filter(String::isNotBlank)
         .map(PData::of)
 
-    fun part1(): Int = packets
+    override fun part1(): Int = packets
         .chunked(2)
         .mapIndexed { index, value ->
             val (left, right) = value
             if (left < right) (index + 1) else 0
         }.sum()
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val dividerPackets = listOf(PData.of("[[2]]"), PData.of("[[6]]")).sorted()
         return dividerPackets
             .mapIndexed { index, packet -> packets.count { packet > it } + 1 + index }
@@ -78,12 +77,4 @@ class Y2022D13(input: String) {
     }
 }
 
-fun main() {
-    val input = getInput(13, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D13(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 5506
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 21756
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(13, 2022, Y2022D13::class) // 5506, 21756

@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2022.d2
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.Day
 
-class Y2022D2(input: String) {
+class Y2022D2(input: String) : Day {
     // This solution depends on modular arithmetic and establishing a mathematical relationship between two throws
     // and one outcome. 
 
@@ -40,24 +39,16 @@ class Y2022D2(input: String) {
     private val rounds = input.lines().map { it[0] - 'A' to it[2] - 'X' }
 
     // Part 1 tells us to interpret my number as my throw. So the task is to derive the outcome, then score accordingly.
-    fun part1() = rounds.sumOf { (opponentThrow, myThrow) ->
+    override fun part1() = rounds.sumOf { (opponentThrow, myThrow) ->
         val myOutcome = myOutcome(myThrow, opponentThrow)
         outcomeScore(myOutcome) + throwScore(myThrow)
     }
 
     // Part 2 tells us to interpret my number as my outcome. So the task is to derive my throw, then score accordingly.
-    fun part2() = rounds.sumOf { (opponentThrow, myOutcome) ->
+    override fun part2() = rounds.sumOf { (opponentThrow, myOutcome) ->
         val myThrow = myThrow(myOutcome, opponentThrow)
         outcomeScore(myOutcome) + throwScore(myThrow)
     }
 }
 
-fun main() {
-    val timer = Stopwatch(start = true)
-    val input = getInput(2, 2022)
-    val solver = Y2022D2(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 9241
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 14610
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(2, 2022, Y2022D2::class) // 9241, 14610

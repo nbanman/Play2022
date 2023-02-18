@@ -1,8 +1,12 @@
 package org.gristle.adventOfCode.y2022.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Xyz
+import org.gristle.adventOfCode.utilities.getBounds
+import org.gristle.adventOfCode.utilities.getInts
 
-class Y2022D18(input: String) {
+class Y2022D18(input: String) : Day {
 
     // set of all cubes in the droplet
     private val cubes: Set<Xyz> = input
@@ -27,12 +31,12 @@ class Y2022D18(input: String) {
 
     // Predicate returns true when the space isn't occupied by a cube in the droplet. This fulfils the surface area 
     // rules of Part 1.
-    fun part1() = surfaceArea { it !in cubes }
+    override fun part1() = surfaceArea { it !in cubes }
 
     // Starting from outside the cube, find all the spaces within the bounds that do not contain a droplet cube.
     // The predicate returns true when the space is one of those exterior spaces. This fulfils the surface area rules
     // of Part 2.
-    fun part2(): Int {
+    override fun part2(): Int {
         // Use a BFS flood fill starting from outside the droplet. Since the bounds ranges allow a space of at least
         // one in every dimension, the BFS will go around the entire droplet and try to penetrate it.
         // Returns a set of points in and around the droplet that are part of the exterior.
@@ -54,12 +58,4 @@ class Y2022D18(input: String) {
     }
 }
 
-fun main() {
-    val input = getInput(18, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D18(input)
-    println("Class creation: ${timer.lap()}ms") // 58ms
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 4332 (40ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 2524 (80ms) (1286ms original)
-    println("Total time: ${timer.elapsed()}ms") // 179ms
-}
+fun main() = Day.runDay(18, 2022, Y2022D18::class) // 4332 (40ms), 2524 (80ms) (1286ms original)

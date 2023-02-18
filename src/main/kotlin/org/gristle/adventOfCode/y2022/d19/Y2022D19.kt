@@ -207,12 +207,15 @@ class Y2022D19(input: String) {
     }
 }
 
+// Pt 1: 1427 (500ms) (629ms) (146ms hardcoded)
+// Pt 2: 4400 (614ms) (807ms) (238ms hardcoded)
+// Total: (1173ms) (1490ms) (408ms hardcoded)
 fun main() = runBlocking {
     val input = getInput(19, 2022)
     val timer = Stopwatch(start = true)
     val solver = Y2022D19(input)
     println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1427 (500ms) (629ms) (146ms hardcoded)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 4400 (614ms) (807ms) (238ms hardcoded)
-    println("Total time: ${timer.elapsed()}ms") // (1173ms) (1490ms) (408ms hardcoded)
+    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)")
+    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)")
+    println("Total time: ${timer.elapsed()}ms")
 }

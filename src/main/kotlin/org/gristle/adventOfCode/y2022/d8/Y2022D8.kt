@@ -1,17 +1,19 @@
 package org.gristle.adventOfCode.y2022.d8
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2022D8(input: String) {
+class Y2022D8(input: String) : Day {
 
     // Representations of the positions and heights of all the trees in the forest. 
     // Don't mistake these two variables for each other!
     private val forest = input.toGrid()
-    private val trees = forest.coords()
+    private val treeHeights = forest.coords().associateWith { forest[it] }
 
-    // utility functions that make the coordinates aware of their tree height and whether they are in the forest
-    private val Coord.treeHeight: Char get() = forest[this]
-    private val Coord.outOfForest: Boolean get() = !forest.validCoord(this)
+    // utility function that makes the coordinates aware of whether they are in the forest
+    private val Coord.outOfForest: Boolean get() = !treeHeights.containsKey(this)
 
     // for a given position, provide a list of sequences that generate coordinates radiating away from the position
     // in each of the four directions
@@ -21,8 +23,10 @@ class Y2022D8(input: String) {
 
     // determines whether a sequence should be terminated, returning true if the position is out of the forest 
     // or if the tree at the position blocks the starting tree's line of sight (LOS).
-    private fun terminating(pos: Coord, tree: Coord): Boolean =
-        pos.outOfForest || pos.treeHeight >= tree.treeHeight
+    private fun terminating(pos: Coord, tree: Coord): Boolean {
+        val posHeight = treeHeights[pos] ?: return true
+        return posHeight >= treeHeights.getValue(tree)
+    }
 
     // for a given position, checks all directions and returns true if *any* allow LOS out of the forest
     private fun Coord.isVisible(): Boolean {
@@ -47,17 +51,9 @@ class Y2022D8(input: String) {
                 .let { (index, pos) -> index + if (pos.outOfForest) 0 else 1 }
         }.reduce(Int::times)
 
-    fun part1(): Int = trees.count { tree -> tree.isVisible() }
+    override fun part1(): Int = treeHeights.keys.count { tree -> tree.isVisible() }
 
-    fun part2(): Int = trees.maxOf { treehouse -> scenicScore(treehouse) }
+    override fun part2(): Int = treeHeights.keys.maxOf(::scenicScore)
 }
 
-fun main() {
-    val input = getInput(8, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D8(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1708
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 504000
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(8, 2022, Y2022D8::class) // 1708, 504000

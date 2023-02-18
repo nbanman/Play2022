@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2022.d14
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.getInts
 
-class Y2022D14(input: String) {
+class Y2022D14(input: String) : Day {
 
     private val cavern: Set<Coord> = buildSet {
         input.lines().forEach { line ->
@@ -38,18 +37,9 @@ class Y2022D14(input: String) {
             .indexOfFirst { predicate(it) }
     }
 
-    fun part1() = solve { it.y > depth }
+    override fun part1() = solve { it.y > depth }
 
-    fun part2() = solve { it == Coord(500, 0) } + 1
+    override fun part2() = solve { it == Coord(500, 0) } + 1
 }
 
-
-fun main() {
-    val input = getInput(14, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D14(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 825
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 26729
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(14, 2022, Y2022D14::class) // 825, 26729

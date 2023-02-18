@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2015.d3
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2015D3(private val input: String) {
+class Y2015D3(private val input: String) : Day {
 
     fun Coord.move(c: Char) = when (c) {
         '^' -> north()
@@ -13,12 +12,12 @@ class Y2015D3(private val input: String) {
         else -> west()
     }
 
-    fun part1() = input
+    override fun part1() = input
         .runningFold(Coord.ORIGIN) { acc, c -> acc.move(c) }
         .toSet()
         .size
 
-    fun part2() = input
+    override fun part2() = input
         .foldIndexed(mutableListOf(Coord(0, 0)) to mutableListOf(Coord(0, 0))) { index, acc, c ->
             val roboSanta = index % 2 == 1
             val listToAdd = if (roboSanta) acc.second else acc.first
@@ -29,10 +28,5 @@ class Y2015D3(private val input: String) {
         .size
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2015D3(readRawInput("y2015/d3"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 2081
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 2341
-}
+fun main() = Day.runDay(3, 2015, Y2015D3::class) // 2081, 2341
+    

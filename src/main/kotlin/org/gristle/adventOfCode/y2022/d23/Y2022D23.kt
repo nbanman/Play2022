@@ -1,10 +1,13 @@
 package org.gristle.adventOfCode.y2022.d23
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.MutableGrid
+import org.gristle.adventOfCode.utilities.toMutableGrid
 
 typealias Grove = MutableGrid<Boolean>
 
-class Y2022D23(input: String) {
+class Y2022D23(input: String) : Day {
 
     enum class Direction {
         N, S, W, E;
@@ -88,7 +91,7 @@ class Y2022D23(input: String) {
     private val movement =
         generateSequence(grove to Direction.N) { (current, dir) -> current.move(dir) to dir.advance(1) }
 
-    fun part1(): Int = movement
+    override fun part1(): Int = movement
         .take(11) // iterate 10 times from initial
         .last() // we just want the last one
         .let { (grove, _) ->
@@ -98,19 +101,13 @@ class Y2022D23(input: String) {
             dimensions.x * dimensions.y - grove.count { it }
         }
 
-    fun part2(): Int = movement
+    override fun part2(): Int = movement
         .zipWithNext() // zip each grove with the previous grove
         .indexOfFirst { (prev, next) -> // compare the two groves...
             prev.first == next.first // grab the first time when they are the same
         } + 1 // add one because we actually want the second time they are the same
 }
 
-fun main() {
-    val input = getInput(23, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D23(input)
-    println("Class creation: ${timer.lap()}ms") // 17ms
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 3812 (65ms) (original 10228ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 1003 (697ms) (original 374635ms!!!)
-    println("Total time: ${timer.elapsed()}ms") // 780ms
-}
+// pt1: 3812 (65ms) (original 10228ms)
+// pt2: 1003 (697ms) (original 374635ms!!!)
+fun main() = Day.runDay(23, 2022, Y2022D23::class)

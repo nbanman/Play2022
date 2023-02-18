@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2022.d25
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.Day
 
 private typealias Snafu = String
 
-class Y2022D25(private val input: String) {
+class Y2022D25(private val input: String) : Day {
 
     private fun Long.toSnafu(): Snafu = generateSequence(this) { (it + 2) / 5 }
         .takeWhile { it != 0L }
@@ -21,17 +20,12 @@ class Y2022D25(private val input: String) {
         }
     }
 
-    fun part1() = input
+    override fun part1() = input
         .lines()
         .sumOf { it.toBase10() }
         .toSnafu()
+    
+    override fun part2() = "Damn interfaces!"
 }
 
-fun main() {
-    val input = getInput(25, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D25(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 2-=2-0=-0-=0200=--21 (29ms)
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(25, 2022, Y2022D25::class) // 2-=2-0=-0-=0200=--21 (29ms)

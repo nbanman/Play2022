@@ -1,9 +1,10 @@
 package org.gristle.adventOfCode.y2022.d24
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 import org.gristle.adventOfCode.utilities.Graph.steps
 
-class Y2022D24(input: String) {
+class Y2022D24(input: String) : Day {
 
     private val valley = input.toGrid()
 
@@ -95,9 +96,9 @@ class Y2022D24(input: String) {
         return distances.steps()
     }
 
-    fun part1(): Int = traverse(beginning, goal, 0)
+    override fun part1(): Int = traverse(beginning, goal, 0)
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val firstTrip = traverse(beginning, goal, 0)
         val secondTrip = traverse(goal, beginning, firstTrip)
         val thirdTrip = traverse(beginning, goal, firstTrip + secondTrip)
@@ -105,18 +106,12 @@ class Y2022D24(input: String) {
     }
 }
 
-fun main() {
-    val input = getInput(24, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D24(input)
-    println("Class creation: ${timer.lap()}ms") // 34ms
-    // Tested:
-    // 1. For each minute in a repeating interval (LCM of width and height that blizzards travel), calculate location
-    //    of all Blizzards and store in a map. (fastest)
-    // 2. Calculate blizzard spots on-the-fly, only looking at the row and column that the elves are on (medium)
-    // 3. #2, except with BFS instead of A* (slowest)
-
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 277 (1. 140ms) (2. 251ms) (3. 410ms)
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 877 (1. 235ms) (2. 469ms) (3. 929ms)
-    println("Total time: ${timer.elapsed()}ms") // (1. 520ms) (2. 755ms) (3. 1375ms)
-}
+// Tested:
+// 1. For each minute in a repeating interval (LCM of width and height that blizzards travel), calculate location
+//    of all Blizzards and store in a map. (fastest)
+// 2. Calculate blizzard spots on-the-fly, only looking at the row and column that the elves are on (medium)
+// 3. #2, except with BFS instead of A* (slowest)
+// Pt 1: 277 (1. 140ms) (2. 251ms) (3. 410ms)
+// Pt 2: 877 (1. 235ms) (2. 469ms) (3. 929ms)
+// Total: (1. 520ms) (2. 755ms) (3. 1375ms)
+fun main() = Day.runDay(24, 2022, Y2022D24::class)

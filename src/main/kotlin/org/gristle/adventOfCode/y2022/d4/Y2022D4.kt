@@ -1,29 +1,24 @@
 package org.gristle.adventOfCode.y2022.d4
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.containsAll
+import org.gristle.adventOfCode.utilities.getInts
+import org.gristle.adventOfCode.utilities.overlaps
 
-class Y2022D4(input: String) {
+class Y2022D4(input: String) : Day {
 
     private val ranges = input
         .getInts(true)
         .chunked(4)
         .map { it[0]..it[1] to it[2]..it[3] }
-        .toList()
 
-    fun part1() = ranges.count { (left, right) ->
+    override fun part1() = ranges.count { (left, right) ->
         left.containsAll(right) || right.containsAll(left)
     }
 
-    fun part2() = ranges.count { (left, right) ->
+    override fun part2() = ranges.count { (left, right) ->
         left.overlaps(right)
     }
 }
 
-fun main() {
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D4(getInput(4, 2022))
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 605
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 914
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(4, 2022, Y2022D4::class) // 605, 914

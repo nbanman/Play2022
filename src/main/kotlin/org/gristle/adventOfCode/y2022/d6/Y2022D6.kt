@@ -1,14 +1,13 @@
 package org.gristle.adventOfCode.y2022.d6
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.Day
 
-class Y2022D6(private val input: String) {
+class Y2022D6(private val input: String) : Day {
     // Pretty one-liner (that I came up with) is 4x slower
-    fun slowSolve(n: Int) = n + input.windowed(4).indexOfFirst { it.toSet().size == n }
+    private fun slowSolve(n: Int) = n + input.windowed(n).indexOfFirst { it.toSet().size == n }
 
     // Alexander af Trolle's brilliant solution, modified to use an IntArray for kicks.
-    fun solve(n: Int): Int {
+    private fun solve(n: Int): Int {
         // tracks the index of the last time the character was encountered
         val indexMap = IntArray(26)
         // tracks the index of the last time a first character of a duplicate was encountered
@@ -24,16 +23,8 @@ class Y2022D6(private val input: String) {
         } + 1
     }
 
-    fun part1() = solve(4)
-    fun part2() = solve(14)
+    override fun part1() = slowSolve(4)
+    override fun part2() = slowSolve(14)
 }
 
-fun main() {
-    val input = getInput(6, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D6(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 1361
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 3263
-    println("Total time: ${timer.elapsed()}ms") // 20ms
-}
+fun main() = Day.runDay(6, 2022, Y2022D6::class) // 1361, 3263

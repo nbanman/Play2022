@@ -1,13 +1,12 @@
 package org.gristle.adventOfCode.y2022.d9
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
 import kotlin.math.sign
 
 // Sequence-palooza!!
-class Y2022D9(input: String) {
+class Y2022D9(input: String) : Day {
 
     // parse directional Char to a direction object that can move a Coord in that direction
     private fun Char.toDirection() = when (this) {
@@ -50,16 +49,8 @@ class Y2022D9(input: String) {
         .toSet()
         .size
 
-    fun part1() = solve(2)
-    fun part2() = solve(10)
+    override fun part1() = solve(2)
+    override fun part2() = solve(10)
 }
 
-fun main() {
-    val input = getInput(9, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D9(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 6175
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 2578
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(9, 2022, Y2022D9::class) // 6175, 2578
