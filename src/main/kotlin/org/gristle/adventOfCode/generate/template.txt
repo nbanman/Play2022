@@ -1,26 +1,19 @@
 package org.gristle.adventOfCode.y[[YEAR]].d[[DAY]]
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 
-class Y[[YEAR]]D[[DAY]](input: String) {
+class Y[[YEAR]]D[[DAY]](input: String) : Day {
 
     private val parsed = input.lines()
 
-    fun part1() = "To be implemented"
+    override fun part1() = "To be implemented"
 
-    fun part2() = "To be implemented"
+    override fun part2() = "To be implemented"
 }
 
-fun main() {
-    val input = getInput([[DAY]], [[YEAR]])
-    val timer = Stopwatch(start = true)
-    val solver = Y[[YEAR]]D[[DAY]](sinput[0])
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)") // 
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)") // 
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay([[DAY]], [[YEAR]], Y[[YEAR]]D[[DAY]]::class, sampleInput[0]) //  
 
-private val sinput = listOf(
+private val sampleInput = listOf(
     """""",
 )
