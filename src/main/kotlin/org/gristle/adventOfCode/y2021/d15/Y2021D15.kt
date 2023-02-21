@@ -1,11 +1,15 @@
 package org.gristle.adventOfCode.y2021.d15
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Graph.steps
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2021D15(input: String) {
+class Y2021D15(input: String) : Day {
 
-    private val initialCavern = input.toGrid(Char::toDigit)
+    private val initialCavern = input.toGrid(Char::digitToInt)
 
     /**
      * Uses A* algorithm to find the shortest path from the start (index 0) to the end (lastIndex of Grid).
@@ -21,10 +25,10 @@ class Y2021D15(input: String) {
     }
 
     // Runs A* on the given cavern
-    fun part1() = shortestPath(initialCavern)
+    override fun part1() = shortestPath(initialCavern)
 
     // Expands cavern per part2 rules and runs A* on it.
-    fun part2(): Int {
+    override fun part2(): Int {
         // Utility fun adds *n* to the existing risk, with 10 rolling back to 1.
         fun Int.addRisk(n: Int) = (this + n - 1) % 9 + 1
 
@@ -53,11 +57,6 @@ class Y2021D15(input: String) {
     }
 }
 
-fun main() {
-    val timer = Stopwatch(start = true)
-    val c = Y2021D15(readRawInput("y2021/d15"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 602 (78ms Dij) (64 aStar)
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 2935 (461ms Dij) (327 aStar)
-    println("Total time: ${timer.elapsed()}ms")
-}
+// pt. 1: 602 (78ms Dij) (64 aStar)
+// pt. 2: 2935 (461ms Dij) (327 aStar)
+fun main() = Day.runDay(15, 2021, Y2021D15::class)
