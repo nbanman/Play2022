@@ -1,5 +1,7 @@
 package org.gristle.adventOfCode.utilities
 
+fun <T> Iterator<T>.nextOrNull(): T? = if (hasNext()) next() else null
+
 fun <T> Sequence<T>.stabilized() = zipWithNext().first { (prev, next) -> prev == next }.first
 
 fun <T> Sequence<IndexedValue<T>>.stabilized() = zipWithNext()
