@@ -1,13 +1,14 @@
 package org.gristle.adventOfCode.y2020.d13
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2020D13(input: String) {
+class Y2020D13(input: String) : Day {
 
     private val lines = input.lines()
+
     data class Bus(val id: Long, val offset: Long)
     data class BusState(val time: Int, val busId: Long)
+
     private fun modularInverse(ni: Long, mod: Long) =
         generateSequence(1L) { it + 1 }
             .first { (ni % mod * it) % mod == 1L }
@@ -28,7 +29,7 @@ class Y2020D13(input: String) {
         }
     }
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val start = lines.first().toInt()
         val timeSequence = generateSequence(BusState(start, 0)) { (time, _) ->
             val id = buses.find { bus -> (time + 1) % bus.id == 0L }?.id ?: 0L
@@ -39,15 +40,7 @@ class Y2020D13(input: String) {
             .let { it.busId * (it.time - start) }
     }
 
-    fun part2() = crt(buses).let { it.id - it.offset }
+    override fun part2() = crt(buses).let { it.id - it.offset }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D13(readRawInput("y2020/d13"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 115
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 756261495958122
-}
+fun main() = Day.runDay(13, 2020, Y2020D13::class) // 115, 756261495958122
