@@ -1,14 +1,13 @@
 package org.gristle.adventOfCode.y2016.d14
 
-import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.md5
-import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 
-class Y2016D14(private val input: String) {
+class Y2016D14(private val input: String) : Day {
 
     private fun String.stretchedMd5() = (1..2017).fold(this) { acc, _ -> acc.md5() }
-    
+
     private data class Marker(val index: Int, val hash: String, val three: Char?, val fives: List<Char>) {
         companion object {
             private val threes = """([\da-f])\1{2}""".toRegex()
@@ -53,16 +52,9 @@ class Y2016D14(private val input: String) {
         return counted.sortedBy { it.index }[63].index
     }
 
-    fun part1() = solve(String::md5)
+    override fun part1() = solve(String::md5)
 
-    fun part2() = solve { it.stretchedMd5() }
+    override fun part2() = solve { it.stretchedMd5() }
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2016D14(readRawInput("y2016/d14"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 18626 (124ms)
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 20092 (11571ms)
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(14, 2016, Y2016D14::class) // 18626 (124ms), 20092 (11571ms)
