@@ -1,12 +1,10 @@
 package org.gristle.adventOfCode.y2016.d5
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Md5
 import org.gristle.adventOfCode.utilities.Md5.toHex
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.toDigit
 
-class Y2016D5(input: String) {
+class Y2016D5(input: String) : Day {
 
     private val md5Sequence = generateSequence(0) { it + 1 }
         .map { Md5.getDigest(input + it) }
@@ -14,16 +12,16 @@ class Y2016D5(input: String) {
         .map { it.toHex() }
         .filter { it[4] == '0' }
 
-    fun part1() = md5Sequence
+    override fun part1() = md5Sequence
         .map { it[5] }
         .take(8)
         .joinToString("")
 
-    fun part2(): String {
+    override fun part2(): String {
         val password = CharArray(8) { '.' }
         return md5Sequence
             .mapNotNull { hash ->
-                val place = hash[5].toDigit()
+                val place = hash[5].digitToIntOrNull() ?: -1
                 if (place in 0..7 && password[place] == '.') {
                     password[place] = hash[6]
                     password
@@ -35,11 +33,4 @@ class Y2016D5(input: String) {
     }
 }
 
-fun main() {
-    val timer = Stopwatch(start = true)
-    val c = Y2016D5(readRawInput("y2016/d5"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 4543c154
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 1050cbbd
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(5, 2016, Y2016D5::class) // 4543c154, 1050cbbd
