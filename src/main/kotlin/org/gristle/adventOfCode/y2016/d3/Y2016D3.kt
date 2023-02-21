@@ -6,11 +6,7 @@ import org.gristle.adventOfCode.utilities.transpose
 
 private typealias Triangle = List<Int>
 
-private fun Triangle.isValid(): Boolean {
-    val (a, b, c) = this
-    val max = maxOf(a, b, c)
-    return a + b + c - max > max
-}
+private fun Triangle.isValid() = sum() - max() > max()
 
 class Y2016D3(input: String) : Day {
 
