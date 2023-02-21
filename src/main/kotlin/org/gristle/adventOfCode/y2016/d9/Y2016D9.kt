@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2016.d9
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2016D9(private val input: String) {
+class Y2016D9(private val input: String) : Day {
 
     data class Marker(val length: Int, val times: Int, val range: IntRange)
 
@@ -21,8 +20,8 @@ class Y2016D9(private val input: String) {
         val potentialMarkers = """\((\d+)x(\d+)\)"""
             .toRegex()
             .findAll(input)
-            .toList()
             .map { Marker(it.groupValues[1].toInt(), it.groupValues[2].toInt(), it.range) }
+            .toList()
 
         var lastMarker = 0
         val markers = potentialMarkers.filter { marker ->
@@ -37,16 +36,18 @@ class Y2016D9(private val input: String) {
         if (markers.isEmpty()) return input.length
 
         var parser = 0
-        val sb = StringBuilder()
 
-        for (marker in markers) {
-            sb.append(input.substring(parser, marker.range.first))
-            val repeatRange = input.substring(marker.range.last + 1, marker.range.last + 1 + marker.length)
-            sb.append(repeatRange.repeat(marker.times))
-            parser = marker.range.last + 1 + marker.length
+        val sb = buildString {
+            for (marker in markers) {
+                append(input.substring(parser, marker.range.first))
+                val repeatRange = input.substring(marker.range.last + 1, marker.range.last + 1 + marker.length)
+                append(repeatRange.repeat(marker.times))
+                parser = marker.range.last + 1 + marker.length
+            }
+            append(input.drop(markers.last().range.last + markers.last().length + 1))
         }
-        sb.append(input.drop(markers.last().range.last + markers.last().length + 1))
-        return sb.toString().length
+
+        return sb.length
     }
 
     private fun p2Decompress(s: String): Long {
@@ -62,17 +63,9 @@ class Y2016D9(private val input: String) {
         return count
     }
 
-    fun part1() = p1Decompress()
+    override fun part1() = p1Decompress()
 
-    fun part2() = p2Decompress(input)
+    override fun part2() = p2Decompress(input)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D9(readRawInput("y2016/d9"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 110346
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 10774309173
-}
+fun main() = Day.runDay(9, 2016, Y2016D9::class) // 110346, 10774309173 
