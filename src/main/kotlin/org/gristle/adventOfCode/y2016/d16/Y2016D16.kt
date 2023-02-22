@@ -1,50 +1,43 @@
 package org.gristle.adventOfCode.y2016.d16
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-// Not refactored, but not terrible!
+class Y2016D16(private val input: String) : Day {
 
-class Y2016D16(private val input: String) {
-
-    private tailrec fun checkSum(a: String): String {
-        val sum = a
-            .chunked(2)
-            .map { if (it == "00" || it == "11") '1' else '0' }
-            .joinToString("")
-        return if (sum.length % 2 == 1) {
-            sum
+    private tailrec fun checkSum(a: BooleanArray): String {
+        val sum = BooleanArray(a.size / 2) { idx ->
+            !(a[idx * 2] xor a[idx * 2 + 1])
+        }
+        return if (sum.size % 2 == 1) {
+            val answer = buildString { sum.forEach { append(if (it) '1' else '0') } }
+            answer
         } else {
             checkSum(sum)
         }
     }
 
-    private tailrec fun dragonCurve(a: String, diskSize: Int): String {
-        return if (a.length >= diskSize) {
-            a.substring(0, diskSize)
+    private tailrec fun dragonCurve(a: BooleanArray, diskSize: Int): BooleanArray {
+        return if (a.size >= diskSize) {
+            a.sliceArray(0..diskSize)
         } else {
-            val b = a
-                .reversed()
-                .map { if(it == '1') '0' else '1' }
-                .joinToString("")
-            dragonCurve(a + '0' + b, diskSize)
+            val b = BooleanArray(a.size * 2 + 1) { idx ->
+                if (idx < a.size) {
+                    a[idx]
+                } else if (idx > a.size) {
+                    !a[a.size * 2 - idx]
+                } else false
+            }
+            dragonCurve(b, diskSize)
         }
-
     }
 
-    fun solve(diskSize: Int) = checkSum(dragonCurve(input, diskSize))
+    fun solve(diskSize: Int) = checkSum(dragonCurve(input.map { it == '1' }.toBooleanArray(), diskSize))
 
-    fun part1() = solve(272)
+    override fun part1() = solve(272)
 
-    fun part2() = solve(35651584)
+    override fun part2() = solve(35651584)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D16(readRawInput("y2016/d16"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 10010101010011101
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 01100111101101111
-}
+// String-based times: (creation, 9ms; pt1, 1ms; pt2, 4321ms)
+// BooleanArray-based times: (creation, 5ms; pt1, 0ms; pt2, 252ms)
+fun main() = Day.runDay(16, 2016, Y2016D16::class) // 10010101010011101, 01100111101101111 
