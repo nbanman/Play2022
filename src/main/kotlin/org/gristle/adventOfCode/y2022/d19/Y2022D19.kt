@@ -2,10 +2,8 @@ package org.gristle.adventOfCode.y2022.d19
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.getInput
+import org.gristle.adventOfCode.SuspendedDay
 import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.gvs
 import kotlin.math.ceil
@@ -27,7 +25,7 @@ import kotlin.math.ceil
 // This version is also significantly shorter because I do not need to handle special cases for my hard-coded types. 
 
 @Suppress("SameParameterValue")
-class Y2022D19(input: String) {
+class Y2022D19(input: String) : SuspendedDay {
 
     data class Blueprint(
         val id: Int,
@@ -188,7 +186,7 @@ class Y2022D19(input: String) {
         )
     )
 
-    suspend fun part1() = withContext(Dispatchers.Default) {
+    override suspend fun part1() = withContext(Dispatchers.Default) {
         blueprints.map { blueprint ->
             async {
                 blueprint.id * findResource(blueprint, "geode", initialState, 24)
@@ -196,7 +194,7 @@ class Y2022D19(input: String) {
         }.sumOf { it.await() }
     }
 
-    suspend fun part2() = withContext(Dispatchers.Default) {
+    override suspend fun part2() = withContext(Dispatchers.Default) {
         blueprints.take(3).map { blueprint ->
             async { findResource(blueprint, "geode", initialState, 32) }
         }.fold(1) { acc, deferred -> acc * deferred.await() }
@@ -210,12 +208,4 @@ class Y2022D19(input: String) {
 // Pt 1: 1427 (500ms) (629ms) (146ms hardcoded)
 // Pt 2: 4400 (614ms) (807ms) (238ms hardcoded)
 // Total: (1173ms) (1490ms) (408ms hardcoded)
-fun main() = runBlocking {
-    val input = getInput(19, 2022)
-    val timer = Stopwatch(start = true)
-    val solver = Y2022D19(input)
-    println("Class creation: ${timer.lap()}ms")
-    println("\tPart 1: ${solver.part1()} (${timer.lap()}ms)")
-    println("\tPart 2: ${solver.part2()} (${timer.lap()}ms)")
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = SuspendedDay.runDay(19, 2022, Y2022D19::class)
