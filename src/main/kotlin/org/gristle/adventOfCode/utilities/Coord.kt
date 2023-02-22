@@ -188,3 +188,8 @@ fun Iterable<Coord>.getBounds(padding: Int): Pair<IntRange, IntRange> {
 }
 
 fun Pair<Int, Int>.toCoord() = Coord(first, second)
+
+operator fun Pair<Coord, Coord>.contains(pos: Coord): Boolean {
+    val (tl, br) = this
+    return pos.x >= tl.x && pos.x <= br.x && pos.y >= tl.y && pos.y <= br.y
+}
