@@ -1,16 +1,15 @@
 package org.gristle.adventOfCode.y2016.d20
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.gvs
 import kotlin.math.max
 
-class Y2016D20(input: String) {
+class Y2016D20(input: String) : Day {
 
     // parse input into ranges and sort the ranges by the start of the range. Using Long instead of UInt to 
     // avoid overflow issues.
     private val ranges = input
-        .groupValues("""(\d+)-(\d+)""", String::toLong)
+        .gvs("""(\d+)-(\d+)""", String::toLong)
         .map { it[0]..it[1] }
         .sortedBy(LongRange::first)
 
@@ -21,21 +20,19 @@ class Y2016D20(input: String) {
             (ip until range.first).forEach { yield(it) } // yield all values b/t ip and range.first
             ip = max(ip, range.last + 1) // ip cannot be w/in range so bump ip to the end of the range + 1
         }
+
         // if last range did not go to 4294967295, this would continue to yield numbers until that max was reached
-        yieldAll(ip..UInt.MAX_VALUE.toLong())
+        yieldAll(ip..4294967295L)
     }
 
-    fun part1() = ipSequence.first() // gets first (i.e., lowest) unblocked ip
+    override fun part1() = ipSequence.first() // gets first (i.e., lowest) unblocked ip
 
-    fun part2() = ipSequence.count() // counts total unblocked ips
+    override fun part2() = ipSequence.count() // counts total unblocked ips
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D20(readRawInput("y2016/d20"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 19449262
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 119
-}
+fun main() = Day.runDay(20, 2016, Y2016D20::class)
+
+//Class creation: 34ms
+//Part 1: 19449262 (2ms)
+//Part 2: 119 (0ms)
+//Total time: 37ms
