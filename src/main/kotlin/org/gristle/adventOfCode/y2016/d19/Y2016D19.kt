@@ -1,37 +1,28 @@
 package org.gristle.adventOfCode.y2016.d19
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import kotlin.math.log10
 import kotlin.math.pow
 
-// Not refactored; ugly but fast
-class Y2016D19(input: String) {
+class Y2016D19(input: String) : Day {
     private val elves = input.toInt()
 
-    private val exponent = (log10(elves.toDouble()) / log10(2.0)).toInt()
+    override fun part1(): Int {
+        val exponent = (log10(elves.toDouble()) / log10(2.0)).toInt()
+        return (elves - (2.0.pow(exponent).toInt())) * 2 + 1
+    }
 
-    private val exp = (log10(elves.toDouble()) / log10(3.0)).toInt()
-    private val diff = elves - 3.0.pow(exp).toInt()
-
-    fun part1() = (elves - (2.0.pow(exponent).toInt())) * 2 + 1
-
-    fun part2() = if (diff == 0) {
-        elves
-    } else {
-        val lastUp = 3.0.pow(exp).toInt()
+    override fun part2(): Int {
+        val exponent = (log10(elves.toDouble()) / log10(3.0)).toInt()
+        val lastUp = 3.0.pow(exponent).toInt()
+        val diff = elves - 3.0.pow(exponent).toInt()
         val ones = minOf(diff, lastUp)
         val twos = maxOf(diff - ones, 0)
-        ones + twos * 2
+        return ones + twos * 2
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D19(readRawInput("y2016/d19"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1816277
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1410967
-}
+// Class creation: 5ms
+// Part 1: 1816277 (0ms)
+// Part 2: 1410967 (0ms)
+fun main() = Day.runDay(19, 2016, Y2016D19::class) 
