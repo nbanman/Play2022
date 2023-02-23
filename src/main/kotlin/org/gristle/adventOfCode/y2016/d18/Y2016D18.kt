@@ -1,40 +1,34 @@
 package org.gristle.adventOfCode.y2016.d18
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-typealias Row = String
-class Y2016D18(private val input: String) {
+class Y2016D18(input: String) : Day {
 
-    // Sequence counts number of '.' in each row. "row" is mutable state, confined to the sequence. After the
-    // first call, each subsequent call mutates the internal state to find the next row.
-    private val safeTiles = sequence {
-        fun Row.nextRow() = ".$this."
-            .windowed(3)
-            .map { if (it == "^^^" || it == "..." || it == "^.^" || it == ".^.") '.' else '^' }
-            .joinToString("")
-        // Mutable state starts with input. Successive calls will find next row.
-        var row = input
+    // Convert input to BooleanArray
+    private val start = BooleanArray(input.length) { i -> input[i] == '.' }
 
-        do {
-            yield(row.count { it == '.' })
-            row = row.nextRow()
-        } while (true)
+    // Takes a row and returns the next one using the rules in the problem. 
+    private fun BooleanArray.nextRow() = BooleanArray(size) { i ->
+        when (i) {
+            0 -> this[1] // no previous so answer is true if next is true
+            lastIndex -> this[i - 1] // no next so answer is true if previous is true
+            else -> this[i - 1] == this[i + 1] // base case: true if previous and next are the same
+        }
     }
 
-    private fun solve(rows: Int) = safeTiles.take(rows).sum()
+    // Creates a sequence of the rows and sums the number of true values in each row.
+    private fun solve(rows: Int) = generateSequence(start) { it.nextRow() }
+        .take(rows)
+        .sumOf { row -> row.count { it } }
 
-    fun part1() = solve(40)
+    override fun part1() = solve(40)
 
-    fun part2() = solve(400_000)
+    override fun part2() = solve(400_000)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D18(readRawInput("y2016/d18"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1987
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 19984714
-}
+// Times in parentheses are for previous String-based solution. 
+// Class creation: 5ms (13ms)
+// Part 1: 1987 4ms (7ms)
+// Part 2: 19984714 286ms (2295ms)
+// Total time: 297ms (2315ms)
+fun main() = Day.runDay(18, 2016, Y2016D18::class)
