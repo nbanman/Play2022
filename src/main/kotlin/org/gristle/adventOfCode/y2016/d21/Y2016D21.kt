@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2016.d21
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
 // Not refactored, but not horrible. Maybe I'm getting better!
-class Y2016D21(input: String) {
+class Y2016D21(input: String) : Day {
     data class Command(val name: String, val pos1: String, val pos2: String) {
         private fun String.rotateLeft(n: Int) = rotate(n)
 
@@ -95,17 +94,13 @@ class Y2016D21(input: String) {
         .groupValues(pattern)
         .map { Command(it[0], it[1], it[2]) }
 
-    fun part1() = commands.fold(passcode) { acc, command -> command.execute(acc) }
+    override fun part1() = commands.fold(passcode) { acc, command -> command.execute(acc) }
 
-    fun part2() = commands.foldRight(passcode2) { command, acc -> command.execute(acc, reversed = true) }
+    override fun part2() = commands.foldRight(passcode2) { command, acc -> command.execute(acc, reversed = true) }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D21(readRawInput("y2016/d21"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // bfheacgd
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // gcehdbfa
-}
+fun main() = Day.runDay(21, 2016, Y2016D21::class)
+
+//Class creation: 40ms
+//Part 1: bfheacgd (11ms)
+//Part 2: gcehdbfa (0ms)
