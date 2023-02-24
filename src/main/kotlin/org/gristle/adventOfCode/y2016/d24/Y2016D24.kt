@@ -1,7 +1,10 @@
 package org.gristle.adventOfCode.y2016.d24
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Graph.steps
+import org.gristle.adventOfCode.utilities.getEdgeMap
+import org.gristle.adventOfCode.utilities.toGrid
 
 /**
  * Refactored; faster and cleaner!
@@ -21,7 +24,7 @@ import org.gristle.adventOfCode.utilities.Graph.steps
  * weighted edge map for all important locations. It is the same speed, but it is hopefully useful in the future.
  */
 
-class Y2016D24(input: String) {
+class Y2016D24(input: String) : Day {
     // Read map
     private val layout = input.toGrid()
 
@@ -52,22 +55,18 @@ class Y2016D24(input: String) {
     fun solve(endCondition: (State) -> Boolean) = Graph.dijkstra(start, endCondition, defaultEdges = getEdges).steps()
 
     // Part one ends when all numbers have been visited
-    fun part1() = solve { it.numbersVisited.size == numbers.size }
+    override fun part1() = solve { it.numbersVisited.size == numbers.size }
 
     // Part two ends when all numbers have been visited AND the robot has gone back to '0'
-    fun part2() = solve { it.location == '0' && it.numbersVisited.size == numbers.size }
+    override fun part2() = solve { it.location == '0' && it.numbersVisited.size == numbers.size }
 }
 
-fun main() {
-    val timer = Stopwatch(start = true)
-    val c = Y2016D24(readRawInput("y2016/d24"))
-//    val c = Y2016D24("""###########
-//#0.1.....2#
-//#.#######.#
-//#4.......3#
-//###########""")
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 470 (218ms OG) (370ms BFS) (133ms 2-stage DFS-Dijk)
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 720 (36ms OG) (638ms BFS) (10ms 2-stage DFS-Dijk)
-    println("Total time: ${timer.elapsed()}ms") // 148ms
-}
+fun main() = Day.runDay(24, 2016, Y2016D24::class)
+
+//Class creation: 95ms
+//Part 1: 470 (9ms)
+//Part 2: 720 (12ms)
+//Total time: 116ms
+
+// (218ms OG) (370ms BFS) (133ms 2-stage DFS-Dijk)
+// (36ms OG) (638ms BFS) (10ms 2-stage DFS-Dijk)
