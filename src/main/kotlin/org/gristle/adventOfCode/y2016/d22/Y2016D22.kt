@@ -8,7 +8,7 @@ class Y2016D22(input: String) : Day {
 
     private val pattern = """(\d+)-y(\d+) +(\d+)T +(\d+)""".toRegex()
 
-    data class ProblemNode(val coord: Coord, val size: Int, val used: Int, val garbage: Boolean) {
+    data class Node(val coord: Coord, val size: Int, val used: Int, val garbage: Boolean) {
         val available = size - used
 
         override fun toString(): String {
@@ -23,7 +23,7 @@ class Y2016D22(input: String) : Day {
     private val nodes = gv
         .map {
             val coord = Coord(it[0], it[1])
-            ProblemNode(coord, it[2], it[3], coord == garbageCoord)
+            Node(coord, it[2], it[3], coord == garbageCoord)
         }
 
     override fun part1() = nodes
