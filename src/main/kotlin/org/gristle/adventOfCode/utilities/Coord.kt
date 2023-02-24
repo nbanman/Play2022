@@ -173,7 +173,7 @@ fun Iterable<Coord>.flipY(): List<Coord> = map { Coord(-it.x, it.y) }
 // flip along the x-axis (ie, y changes)
 fun Iterable<Coord>.flipX(): List<Coord> = map { Coord(it.x, -it.y) }
 
-fun Iterable<Coord>.getBounds(padding: Int): Pair<IntRange, IntRange> {
+fun Iterable<Coord>.getBounds(padding: Int = 0): Pair<IntRange, IntRange> {
     var xMin = Int.MAX_VALUE
     var xMax = Int.MIN_VALUE
     var yMin = Int.MAX_VALUE
