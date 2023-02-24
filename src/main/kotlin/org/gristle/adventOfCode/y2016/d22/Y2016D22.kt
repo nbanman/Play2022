@@ -47,6 +47,7 @@ class Y2016D22(input: String) : Day {
      * leave as an exercise to the next coder.
      */
     override fun part2(): Int {
+
         // looks through the nodes and finds the boundaries, puts them into top-left and bottom-right Coords.
         val bounds = nodes.map(Node::coord).getBounds().let { (xR, yR) -> Coord.ORIGIN to Coord(xR.last, yR.last) }
 
