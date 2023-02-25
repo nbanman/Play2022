@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2016.d1
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2016D1(input: String) {
+class Y2016D1(input: String) : Day {
 
     data class Instruction(val turn: Char, val distance: Int)
 
@@ -22,11 +21,11 @@ class Y2016D1(input: String) {
         .split(", ")
         .map { Instruction(it[0], it.drop(1).toInt()) }
 
-    fun part1(): Int = instructions
+    override fun part1(): Int = instructions
         .fold(State(), State::move)
         .manhattanDistance()
 
-    tailrec fun part2(
+    tailrec fun solvePart2(
         state: State = State(),
         visited: Set<Coord> = setOf(Coord.ORIGIN),
         instructions: List<Instruction> = this.instructions
@@ -38,20 +37,19 @@ class Y2016D1(input: String) {
             val newPos = state.coord.move(newDir, i)
             if (visited.contains(newPos)) return newPos.manhattanDistance() else newVisited.add(newPos)
         }
-        return part2(
+        return solvePart2(
             state.move(instruction),
             visited + newVisited,
             instructions.drop(1)
         )
     }
+
+    override fun part2() = solvePart2()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D1(readRawInput("y2016/d1"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 226
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 79
-}
+fun main() = Day.runDay(1, 2016, Y2016D1::class)
+
+//    Class creation: 6ms
+//    Part 1: 226 (3ms)
+//    Part 2: 79 (4ms)
+//    Total time: 14ms
