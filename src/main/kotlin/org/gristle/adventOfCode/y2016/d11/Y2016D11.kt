@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2016.d11
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Graph.steps
-import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2016D11(private val input: String) {
+class Y2016D11(private val input: String) : Day {
 
     private val pattern = """(\w+)(?: |-compatible )(generator|microchip)""".toRegex()
 
@@ -129,17 +128,17 @@ class Y2016D11(private val input: String) {
             .steps()
     }
 
-    fun part1() = solveFloors(parseFloors(false))
+    override fun part1() = solveFloors(parseFloors(false))
 
-    fun part2() = solveFloors(parseFloors(true))
+    override fun part2() = solveFloors(parseFloors(true))
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D11(readRawInput("y2016/d11"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 47 (680ms custom BFS) (210ms library BFS)
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 71 (9776ms custom BFS) (409ms library BFS)
-}
+fun main() = Day.runDay(11, 2016, Y2016D11::class)
+
+// (680ms custom BFS) (210ms library BFS)
+// (9776ms custom BFS) (409ms library BFS)
+
+//    Class creation: 10ms
+//    Part 1: 47 (152ms)
+//    Part 2: 71 (421ms)
+//    Total time: 583ms

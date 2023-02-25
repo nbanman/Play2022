@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2016.d2
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
-class Y2016D2(input: String) {
+class Y2016D2(input: String) : Day {
     private val codes = input.lines()
 
     private fun Coord.toNumpad1() = (y * 3 + x + 1).toString()
@@ -38,7 +37,7 @@ class Y2016D2(input: String) {
         return coords.drop(1).joinToString("") { it.conversion() }
     }
 
-    fun part1(): String {
+    override fun part1(): String {
         val start = Coord(1, 1)
         val size = Coord(3, 3)
         val padTraverse = { coord: Coord, c: Char ->
@@ -53,7 +52,7 @@ class Y2016D2(input: String) {
         return solve(start, padTraverse, conversion)
     }
 
-    fun part2(): String {
+    override fun part2(): String {
         val start = Coord(0, 2)
         val size = Coord(5, 5)
         val padTraverse = { coord: Coord, c: Char ->
@@ -91,12 +90,9 @@ class Y2016D2(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2016D2(readRawInput("y2016/d2"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 92435
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // C1A88
-}
+fun main() = Day.runDay(2, 2016, Y2016D2::class)
+
+//    Class creation: 16ms
+//    Part 1: 92435 (6ms)
+//    Part 2: C1A88 (2ms)
+//    Total time: 25ms
