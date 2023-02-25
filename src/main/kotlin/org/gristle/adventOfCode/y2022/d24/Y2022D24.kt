@@ -51,7 +51,7 @@ class Y2022D24(input: String) : Day {
 
     // Cached Blizzard values
     private val interval = lcm((valley.width - 2).toLong(), (valley.height - 2).toLong()).toInt()
-    private val blizzardMap = buildMap<Int, MutableGrid<Boolean>> {
+    private val blizzardMap = buildMap {
         for (minute in 0 until interval) {
             val blizzardLocations = MutableGrid(valley.width, valley.height) { false }
             blizzards.entries.forEach { (firstPos, blizzardList) ->
@@ -62,10 +62,9 @@ class Y2022D24(input: String) : Day {
                         blizzardLocations[x, y] = true
                     }
                 } else {
-                    val y = firstPos
                     blizzardList.forEach { blizzard ->
                         val x = blizzard.locationAt(minute)
-                        blizzardLocations[x, y] = true
+                        blizzardLocations[x, firstPos] = true
                     }
                 }
             }
