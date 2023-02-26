@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2017.d6
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2017D6(input: String) {
+class Y2017D6(input: String) : Day {
 
     private val initialState = input.split('\t').map { it.toInt() }
 
@@ -19,7 +18,7 @@ class Y2017D6(input: String) {
         return newList
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val states = mutableSetOf<List<Int>>()
         return generateSequence(initialState) {
             states.add(it)
@@ -27,7 +26,7 @@ class Y2017D6(input: String) {
         }.indexOfFirst { states.contains(it) }
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val states = mutableSetOf<List<Int>>()
         var firstIndex = 0
         val matchIndex = generateSequence(initialState) {
@@ -43,12 +42,9 @@ class Y2017D6(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D6(readRawInput("y2017/d6"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 12841
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 8038
-}
+fun main() = Day.runDay(6, 2017, Y2017D6::class)
+
+//    Class creation: 5ms
+//    Part 1: 12841 (20ms)
+//    Part 2: 8038 (13ms)
+//    Total time: 39ms

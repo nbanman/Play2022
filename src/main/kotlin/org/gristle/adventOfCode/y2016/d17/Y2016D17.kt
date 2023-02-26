@@ -59,7 +59,7 @@ class Y2016D17(private val input: String) : Day {
         .passCode
         .drop(input.length)
 
-    // Part two wants the fastest path, so BFS until no more edges are found. The answer is the weight of the last
+    // Part two wants the longest path, so BFS until no more edges are found. The answer is the weight of the last
     // Node found at endPos.
     override fun part2() = Graph
         .bfs(

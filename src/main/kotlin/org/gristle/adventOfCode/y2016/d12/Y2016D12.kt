@@ -8,11 +8,12 @@ import org.gristle.adventOfCode.y2016.shared.runInstructions
 
 class Y2016D12(input: String) : Day {
 
-    private val pattern = """(\w+) (-?\w+)(?: (-?\w+))?""".toRegex()
-
-    val instructions = input
-        .groupValues(pattern)
-        .map { Assembunny(it[0], it[1], it[2]) }
+    val instructions = let {
+        val pattern = """(\w+) (-?\w+)(?: (-?\w+))?""".toRegex()
+        input
+            .groupValues(pattern)
+            .map { Assembunny(it[0], it[1], it[2]) }
+    }
 
     private val p1Registers = Registers()
     private val p2Registers = Registers().apply { updateValue("c", 1) }

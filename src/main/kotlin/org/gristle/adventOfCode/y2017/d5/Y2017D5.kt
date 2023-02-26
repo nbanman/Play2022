@@ -1,10 +1,8 @@
 package org.gristle.adventOfCode.y2017.d5
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2017D5(input: String) {
+class Y2017D5(input: String) : Day {
 
     val instructions = input.lines().map { it.toInt() }
 
@@ -21,17 +19,14 @@ class Y2017D5(input: String) {
         return counter
     }
 
-    fun part1() = solve { 1 }
+    override fun part1() = solve { 1 }
 
-    fun part2() = solve { jumps -> if (jumps >= 3) -1 else 1 }
+    override fun part2() = solve { jumps -> if (jumps >= 3) -1 else 1 }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D5(readRawInput("y2017/d5"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 373160
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 26395586
-}
+fun main() = Day.runDay(5, 2017, Y2017D5::class)
+
+//    Class creation: 22ms
+//    Part 1: 373160 (29ms)
+//    Part 2: 26395586 (275ms)
+//    Total time: 327ms

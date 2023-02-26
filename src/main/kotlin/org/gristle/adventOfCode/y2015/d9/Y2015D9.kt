@@ -2,9 +2,7 @@ package org.gristle.adventOfCode.y2015.d9
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
-import org.gristle.adventOfCode.utilities.Graph.steps
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.takeUntil
 
 class Y2015D9(private val input: String) : Day {
 
@@ -33,21 +31,26 @@ class Y2015D9(private val input: String) : Day {
 
     // Part one finds the shortest path so the end condition is specified with takeUntil. It runs from each city
     // (hmm... Floyd-Warshall?) then takes the minimum of each city.
-    override fun part1() = cities.minOf { city ->
-        tour(city)
-            .takeUntil { it.id.size == cities.size }
-            .steps()
-    }
+    override fun part1() = cities
+        .minOf { city ->
+            tour(city)
+                .first { it.id.size == cities.size }
+                .weight
+        }.toInt()
 
     // Part two is the same as Part one except that it finds the longest path so no end condition is specified.
     // Instead, it runs until there are no more nodes to visit, then grabs the largest weight.
-    override fun part2() = cities.maxOf { city ->
-        tour(city)
-            .filter { it.id.size == cities.size }
-            .maxOf { it.weight.toInt() }
-    }
+    override fun part2() = cities
+        .maxOf { city ->
+            tour(city)
+                .last { it.id.size == cities.size }
+                .weight
+        }.toInt()
 }
 
-// Pt1: 207 (27ms Dij) (156ms old)
-// Pt2: 804 (171ms Dij) (140ms old)
 fun main() = Day.runDay(9, 2015, Y2015D9::class)
+
+//    Class creation: 19ms
+//    Part 1: 207 (23ms) (156ms old)
+//    Part 2: 804 (176ms) (140ms old)
+//    Total time: 219ms

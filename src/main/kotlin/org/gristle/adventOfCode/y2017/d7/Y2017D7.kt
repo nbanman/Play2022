@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2017.d7
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2017D7(input: String) {
+class Y2017D7(input: String) : Day {
 
     private val pattern = """(\w+) \((\d+)\)(?: -> (.*))?""".toRegex()
 
@@ -74,16 +73,14 @@ class Y2017D7(input: String) {
         Program[(pgNames - childNames).first()] ?: throw IllegalArgumentException()
     }
 
-    fun part1() = bottomProgram.name
+    override fun part1() = bottomProgram.name
 
-    fun part2() = bottomProgram.rebalance()}
-
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D7(readRawInput("y2017/d7"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // airlri
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1206
+    override fun part2() = bottomProgram.rebalance()
 }
+
+fun main() = Day.runDay(7, 2017, Y2017D7::class)
+
+//    Class creation: 35ms
+//    Part 1: airlri (0ms)
+//    Part 2: 1206 (3ms)
+//    Total time: 39ms
