@@ -25,7 +25,7 @@ class Y2016D1(input: String) : Day {
         .fold(State(), State::move)
         .manhattanDistance()
 
-    tailrec fun solvePart2(
+    private tailrec fun solvePart2(
         state: State = State(),
         visited: Set<Coord> = setOf(Coord.ORIGIN),
         instructions: List<Instruction> = this.instructions
