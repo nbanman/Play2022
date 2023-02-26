@@ -6,11 +6,11 @@ import org.gristle.adventOfCode.utilities.transpose
 
 private typealias Triangle = List<Int>
 
-private fun Triangle.isValid() = sum() - max() > max()
-
 class Y2016D3(input: String) : Day {
 
     private val triangles = input.getInts().chunked(3)
+
+    private fun Triangle.isValid() = sum() - max() > max()
 
     override fun part1(): Int = triangles.count { it.isValid() }
 
