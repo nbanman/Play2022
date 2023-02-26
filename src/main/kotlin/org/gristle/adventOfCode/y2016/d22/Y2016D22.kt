@@ -71,28 +71,30 @@ class Y2016D22(input: String) : Day {
 
         // finds edges for the "outer" A*. Calls an "inner" A* to find the weight for those edges.
         val move: (State) -> List<Graph.Edge<State>> = { (pos, empty) ->
-            pos.adjacent().map { neighbor ->
-                val weight = let {
+            pos
+                .adjacent()
+                .map { neighbor ->
+                    val weight = let {
 
-                    // inner heuristic is manhattan distance. No 5x factor needed because it is simple movement.
-                    val innerHeuristic = { innerPos: Coord -> innerPos.manhattanDistance(neighbor).toDouble() }
+                        // inner heuristic is manhattan distance. No 5x factor needed because it is simple movement.
+                        val innerHeuristic = { innerPos: Coord -> innerPos.manhattanDistance(neighbor).toDouble() }
 
-                    // edges for the inner A* uses same Coord.adjacent() function, but passes the goalData location
-                    // as a coordinate to exclude from the list of edges.
-                    val innerMove = { innerPos: Coord -> innerPos.adjacent(pos).map { Graph.Edge(it, 1.0) } }
+                        // edges for the inner A* uses same Coord.adjacent() function, but passes the goalData location
+                        // as a coordinate to exclude from the list of edges.
+                        val innerMove = { innerPos: Coord -> innerPos.adjacent(pos).map { Graph.Edge(it, 1.0) } }
 
-                    // runs A* to find the shortest distance (ie, weight) from the current empty spot to the spot
-                    // where the goal data will move.
-                    Graph.aStar(
-                        startId = empty,
-                        heuristic = innerHeuristic,
-                        defaultEdges = innerMove,
-                    ).steps()
-                } + 1.0 // add 1 to move the goal data into the empty spot
+                        // runs A* to find the shortest distance (ie, weight) from the current empty spot to the spot
+                        // where the goal data will move.
+                        Graph.aStar(
+                            startId = empty,
+                            heuristic = innerHeuristic,
+                            defaultEdges = innerMove,
+                        ).steps()
+                    } + 1.0 // add 1 to move the goal data into the empty spot
 
-                // the empty spot is now where the goal data used to be
-                Graph.Edge(neighbor to pos, weight)
-            }
+                    // the empty spot is now where the goal data used to be
+                    Graph.Edge(neighbor to pos, weight)
+                }
         }
 
         // Runs the outer A*!
