@@ -1,69 +1,50 @@
 package org.gristle.adventOfCode.y2021.d3
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.utilities.stripCarriageReturns
-import org.gristle.adventOfCode.utilities.toGrid
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.toInt
 
-class Y2021D3(input: String) {
+class Y2021D3(input: String) : Day {
 
-    private val strippedInput = input.stripCarriageReturns()
-    fun part1(): Int {
+    private val codes = input
+        .lineSequence()
+        .map { line -> BooleanArray(line.length) { i -> line[i] == '1' } }
+        .toList()
 
-        fun List<List<Char>>.toInt(matchDigit: Int): Int {
-            return this
-                .map { freqDist ->
-                    freqDist.count { it == matchDigit.digitToChar() } * 2 >= freqDist.size
-                }.foldIndexed(0) { index, acc, i ->
-                    if (i) {
-                        acc + 1.shl(size - 1 - index)
-                    } else {
-                        acc
-                    }
-                }
+    private fun findRate(codes: List<BooleanArray>, target: Boolean): Int =
+        BooleanArray(codes.first().size) { i ->
+            codes.count { it[i] == target } * 2 >= codes.size
+        }.toInt()
+    
+    private fun findRating(codes: List<BooleanArray>, predicate: (Int) -> Boolean): Int {
+        val codeFilter = generateSequence(codes to 0) { (codes, i) ->
+            val filteredCodes = codes.filter { code ->
+                val criteria = predicate((codes.count { it[i] } * 2).compareTo(codes.size))
+                code[i] == criteria
+            }
+            filteredCodes to i + 1
         }
+        return codeFilter
+            .first { (codes, _) -> codes.size == 1 }
+            .let { (codes, _) -> codes.first() }
+            .toInt()
+    }
 
-        val cols = strippedInput
-            .toGrid()
-            .rotate90()
-            .flipY()
-            .rows()
-
-        val gamma = cols.toInt(1)
-
-        val epsilon = cols.toInt(0)
-
+    override fun part1(): Int {
+        val gamma: Int = findRate(codes, true)
+        val epsilon: Int = findRate(codes, false)
         return gamma * epsilon
     }
 
-    fun part2(): Int {
-        val rows = strippedInput.split('\n')
-
-        var o2Gen = rows
-        var pos = 0
-        while (o2Gen.size > 1) {
-            val shouldBe1 = o2Gen.count { it[pos] == '1' } * 2 >= o2Gen.size
-            o2Gen = o2Gen.filter { (shouldBe1 && it[pos] == '1') || (!shouldBe1 && it[pos] == '0') }
-            pos++
-        }
-
-        var co2 = rows
-        pos = 0
-        while (co2.size > 1) {
-            val shouldBe0 = co2.count { it[pos] == '0' } * 2 <= co2.size
-            co2 = co2.filter { (shouldBe0 && it[pos] == '0') || (!shouldBe0 && it[pos] == '1') }
-            pos++
-        }
-        return o2Gen.first().toInt(2) * co2.first().toInt(2)
+    override fun part2(): Int {
+        val o2Gen = findRating(codes) { it >= 0 }
+        val co2Scrubber = findRating(codes) { it < 0 }
+        return o2Gen * co2Scrubber
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D3(readRawInput("y2021/d3"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3969000
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 4267809
-}
+fun main() = Day.runDay(3, 2021, Y2021D3::class)
+
+//    Class creation: 16ms
+//    Part 1: 3969000 (18ms)
+//    Part 2: 4267809 (1ms)
+//    Total time: 35ms
