@@ -1,68 +1,39 @@
 package org.gristle.adventOfCode.y2021.d2
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.getInts
 
-class Y2021D2(input: String) {
-
-    sealed class Command(val amt: Int) {
-        abstract fun execute1(coord: Coord): Coord
-        abstract fun execute2(heading: Pair<Coord, Int>): Pair<Coord, Int>
-        companion object {
-            fun fromGv(gv: List<String>): Command {
-                val amt = gv[1].toInt()
-                return when (gv[0]) {
-                    "forward" -> Forward(amt)
-                    "up" -> Up(amt)
-                    "down" -> Down(amt)
-                    else -> throw IllegalArgumentException("Regex captured invalid group.")
-                }
-            }
-        }
-
-        class Forward(amt: Int) : Command(amt) {
-            override fun execute1(coord: Coord) = coord.east(amt)
-
-            override fun execute2(heading: Pair<Coord, Int>) =
-                heading.first.east(amt).south(heading.second * amt) to heading.second
-        }
-
-        class Up(amt: Int) : Command(amt) {
-            override fun execute1(coord: Coord) = coord.north(amt)
-
-            override fun execute2(heading: Pair<Coord, Int>) = heading.first to heading.second - amt
-        }
-
-        class Down(amt: Int) : Command(amt) {
-            override fun execute1(coord: Coord) = coord.south(amt)
-
-            override fun execute2(heading: Pair<Coord, Int>) = heading.first to heading.second + amt
-        }
-    }
-
-    val pattern = """(forward|down|up) (\d+)"""
+class Y2021D2(input: String) : Day {
 
     val commands = input
-        .groupValues(pattern)
-        .map { Command.fromGv(it) }
+        .lines()
+        .map { line -> line[0] to line.getInts().first() }
 
-    fun part1() = commands
-        .fold(Coord(0, 0)) { acc, command -> command.execute1(acc) }
-        .let { it.x * it.y }
+    override fun part1(): Int = commands
+        .fold(Coord.ORIGIN) { pos, (dir, amt) ->
+            when (dir) {
+                'f' -> pos.copy(x = pos.x + amt)
+                'u' -> pos.copy(y = pos.y - amt)
+                'd' -> pos.copy(y = pos.y + amt)
+                else -> throw IllegalArgumentException("invalid command")
+            }
+        }.let { it.x * it.y }
 
-    fun part2() = commands
-        .fold(Coord(0, 0) to 0) { acc, command -> command.execute2(acc) }
-        .let { it.first.x * it.first.y }
+    override fun part2(): Int = commands
+        .fold(Coord.ORIGIN to 0) { (pos, aim), (dir, amt) ->
+            when (dir) {
+                'f' -> Coord(pos.x + amt, pos.y + aim * amt) to aim
+                'u' -> pos to aim - amt
+                'd' -> pos to aim + amt
+                else -> throw IllegalArgumentException("invalid command")
+            }
+        }.let { (pos, _) -> pos.x * pos.y }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D2(readRawInput("y2021/d2"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2117664
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2073416724
-}
+fun main() = Day.runDay(2, 2021, Y2021D2::class)
+
+//    Class creation: 32ms
+//    Part 1: 2117664 (3ms)
+//    Part 2: 2073416724 (1ms)
+//    Total time: 37ms
