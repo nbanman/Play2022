@@ -8,25 +8,26 @@ private typealias PropagationRules = Map<String, Pair<String, String>>
 private typealias ProteinPairs = Map<String, Long>
 
 class Y2021D14(input: String) : Day {
-    private val proteinPairs: ProteinPairs
-    private val firstAndLast: String
-    private val rules: PropagationRules
-    init {
 
+    private val proteinPairs: ProteinPairs
+    private val edgeProteins: String
+    private val rules: PropagationRules
+
+    init {
         // Intermediate parsing step for defining above values, splitting the template input from the rules input
-        val (polymerTemplate, rulesInput) = input.blankSplit()
+        val (templateInput, rulesInput) = input.blankSplit()
 
         // Initial polymer state represented as a map of pairs of proteins along with the number of times the pair
         // exists in the String.    
         proteinPairs = buildMap {
-            polymerTemplate.windowed(2).forEach { key ->
+            templateInput.windowed(2).forEach { key ->
                 this[key] = (this[key] ?: 0L) + 1 // bumps count
             }
         }
 
         // The main algorithm does not properly count proteins that are at the ends of the polymer, so those proteins
         // need to be retained.
-        firstAndLast = "${polymerTemplate.first()}${polymerTemplate.last()}"
+        edgeProteins = "${templateInput.first()}${templateInput.last()}"
 
         // Propagation rules. The solving algorithm counts number of neighboring proteins.
         // Thus, the insertion rule is represented by a pair of strings. "AB => C" becomes "AC" to "CB"
@@ -40,53 +41,61 @@ class Y2021D14(input: String) : Day {
     }
 
     /**
-     * Runs a single step, returning a map with updated pair counts.
-     */
-    private fun ProteinPairs.step(): Map<String, Long> {
-        val newPairs = mutableMapOf<String, Long>()
-        forEach { (polyPair, amt) ->
-            val (a, b) = rules.getValue(polyPair)
-            newPairs[a] = (newPairs[a] ?: 0L) + amt
-            newPairs[b] = (newPairs[b] ?: 0L) + amt
-        }
-        return newPairs
-    }
-
-    /**
      * The protein expands exponentially, so rather than try to store the protein as a string, the algorithm
      * updates a map that keeps track of how many times a pair has been encountered. Then each step, that pair
      * repropagates using the propagation rules, and the resulting pairs' amounts are increased by the amount of
-     * the original pair. This double-counts the number of all the proteins except the ones at the very beginning and
-     * end, so extra counts are made for the end proteins and then the result is divided by 2. This is the number of
-     * total proteins. Then the answer is the most common protein minus the least common protein.
+     * the original pair.
      */
-    private fun solve(steps: Int): Long {
+    private fun solve(steps: Int): Long = proteinPairs
+        .polymerize(steps) // Runs the stepping process n number of times.
+        .countProteins() // Count tne number of each protein.
+        .minMax() // Grab the highest and lowest values
+        .let { (min, max) -> max - min } // return the difference
 
-        // Runs the stepping process n number of times.
-        val steppedPairs = (1..steps).fold(proteinPairs) { pairs, _ -> pairs.step() }
+    /**
+     * Runs the polymerization process n number of times.
+     */
+    private tailrec fun ProteinPairs.polymerize(steps: Int): ProteinPairs {
+        return if (steps == 0) {
+            this
+        } else {
+            val newPairs = mutableMapOf<String, Long>()
+            for ((proteins, amt) in this) {
+                val (a, b) = rules.getValue(proteins)
+                newPairs[a] = (newPairs[a] ?: 0L) + amt
+                newPairs[b] = (newPairs[b] ?: 0L) + amt
+            }
+            newPairs.polymerize(steps - 1)
+        }
+    }
 
-        // Count number of proteins by iterating through the pairs and adding the pair amount for each time the 
-        // protein appears. Note that the value stored is a double count because the same protein is counted in the
-        // first position and then in the last position!
-        val proteinCounts = buildMap {
-            for ((proteins, amt) in steppedPairs) {
+    /**
+     * Take the map of protein pairs and return a list of counts of proteins.
+     */
+    private fun ProteinPairs.countProteins(): List<Long> {
+
+        // iterates through the pairs and adds the pair count amount to each individual protein. Note that this
+        // double-counts the proteins because they occupy the first position in one pair and the last position
+        // in another pair.
+        val doubleCounts: Map<Char, Long> = buildMap {
+            for ((proteins, amt) in this@countProteins) {
                 for (protein in proteins) {
                     this[protein] = (this[protein] ?: 0L) + amt
                 }
             }
 
-            // Proteins at the very end are not double-counted, so bump the count for these to make it consistent. 
-            for (protein in firstAndLast) {
+            // Proteins at the very beginning and end are not double-counted, so bump the count for these to make
+            // it consistent. 
+            for (protein in edgeProteins) {
                 this[protein] = (this[protein] ?: 0L) + 1L
             }
         }
 
-        // Grab the highest and lowest values, return the difference (divided by 2 to adjust the double-count).
-        return proteinCounts.values.minMax().let { (min, max) -> (max - min) / 2 }
+        // Return a list of counts by dividing by 2.
+        return doubleCounts.map { it.value / 2 }
     }
 
     override fun part1() = solve(10)
-
     override fun part2() = solve(40)
 }
 
