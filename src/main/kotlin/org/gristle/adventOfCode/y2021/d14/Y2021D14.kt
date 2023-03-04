@@ -25,8 +25,8 @@ class Y2021D14(input: String) : Day {
             }
         }
 
-        // The main algorithm does not properly count proteins that are at the ends of the polymer, so those proteins
-        // need to be retained.
+        // The protein counting algorithm does not properly count proteins that are at the ends of the polymer, 
+        // so those proteins need to be retained.
         edgeProteins = "${templateInput.first()}${templateInput.last()}"
 
         // Propagation rules. The solving algorithm counts number of neighboring proteins.
