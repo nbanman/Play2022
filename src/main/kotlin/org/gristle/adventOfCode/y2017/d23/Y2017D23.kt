@@ -1,15 +1,14 @@
 package org.gristle.adventOfCode.y2017.d23
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2017.d18.Y2017D18
 
 // not refactored! ugly!
-class Y2017D23(input: String) {
+class Y2017D23(input: String) : Day {
 
     private val pattern = """(\w{3}) (-?\w+) (-?\w+)""".toRegex()
-    
+
     val commands = input
         .groupValues(pattern)
         .map { Y2017D18.Command(it[0], it[1], it[2]) }
@@ -22,7 +21,7 @@ class Y2017D23(input: String) {
         registers[arg] ?: 0L
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         var index = 0
         var p1 = 0
         while (index in commands.indices) {
@@ -31,6 +30,7 @@ class Y2017D23(input: String) {
                 "set" -> {
                     registers[command.arg1] = valueOf(command.arg2)
                 }
+
                 "sub" -> {
                     registers[command.arg1] = valueOf(command.arg1) - valueOf(command.arg2)
                 }
@@ -50,7 +50,7 @@ class Y2017D23(input: String) {
         return p1
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         // Part 2
         val b = commands.first().arg2.toInt() * 100 + 100_000
         return (b..b + 17_000 step 17).count {
@@ -59,12 +59,9 @@ class Y2017D23(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D23(readRawInput("y2017/d23"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3025
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 915
-}
+fun main() = Day.runDay(23, 2017, Y2017D23::class)
+
+//    Class creation: 20ms
+//    Part 1: 3025 (12ms)
+//    Part 2: 915 (15ms)
+//    Total time: 47ms
