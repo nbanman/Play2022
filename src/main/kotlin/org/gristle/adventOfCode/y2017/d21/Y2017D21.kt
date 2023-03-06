@@ -2,76 +2,71 @@ package org.gristle.adventOfCode.y2017.d21
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
+import kotlin.math.sqrt
 
 class Y2017D21(private val input: String) : Day {
-    data class Rule(val patternWithDashes: String, private val replacementWithDashes: String) {
-        val pattern = patternWithDashes.replace("/", "")
-        private val replacement = replacementWithDashes.replace("/", "")
-        private val patternWidth = patternWithDashes.length - pattern.length + 1
-        private val patternGrid = pattern.toGrid(patternWidth)
-        val replacementGrid = replacement.toGrid(patternWidth + 1)
-        private val flips = listOf(patternGrid, patternGrid.flipX())
-        private val rotateFunctions = listOf<(Grid<Char>) -> Grid<Char>>(
-            Grid<Char>::rotate90,
-            Grid<Char>::rotate90,
-            Grid<Char>::rotate90
-        )
-        val permutations = flips.flatMap { flip ->
-            rotateFunctions
-                .runningFold(flip) { acc, rotation -> rotation(acc) }
-        }
-    }
 
-    private val twos: Map<Grid<Char>, Grid<Char>>
-    private val threes: Map<Grid<Char>, Grid<Char>>
-
-    init {
-        val (twoRules, threeRules) = input.lines()
-            .map { line ->
-                line
-                    .split(" => ")
+    private val rules: Map<Grid<Boolean>, Grid<Boolean>> = buildMap {
+        input
+            .replace("/", "")
+            .lines()
+            .forEach { line ->
+                val side: Int
+                val prev = line
+                    .takeWhile { it != ' ' }
                     .let {
-                        Rule(it.first(), it.last())
+                        side = sqrt(it.length.toDouble()).toInt()
+                        Grid(side, side) { i -> it[i] == '#' }
                     }
-            }.partition { it.patternWithDashes.length == 5 }
 
-        twos = twoRules
-            .flatMap { rule ->
-                rule.permutations.map { it to rule.replacementGrid }
-            }.toMap()
+                val next = line
+                    .takeLastWhile { it != ' ' }
+                    .let { Grid(side + 1, side + 1) { i -> it[i] == '#' } }
 
-        threes = threeRules
-            .flatMap { rule ->
-                rule.permutations.map { it to rule.replacementGrid }
-            }.toMap()
+                listOf(prev, prev.flipX())
+                    .asSequence()
+                    .flatMap { generateSequence(it, Grid<Boolean>::rotate90).take(4) }
+                    .forEach { put(it, next) }
+            }
     }
 
-    private fun expandGrid(
-        grid: Grid<Char>,
-        twos: Map<Grid<Char>, Grid<Char>>,
-        threes: Map<Grid<Char>, Grid<Char>>
-    ): Grid<Char> {
-        val (square, rules) = if (grid.width % 2 == 0) 2 to twos else 3 to threes
-        val subGrids = mutableListOf<Grid<Char>>()
-        for (y in 0 until grid.height step square) {
-            for (x in 0 until grid.width step square) {
-                subGrids.add(grid.subGrid(Coord(x, y), square, square))
+    private fun expandGrid(grid: Grid<Boolean>): Grid<Boolean> {
+        val length = if (grid.width and 1 == 0) 2 else 3
+        val subGrids = buildList {
+            for (y in 0 until grid.height step length) {
+                for (x in 0 until grid.width step length) {
+                    add(grid.subGrid(Coord(x, y), length, length))
+                }
             }
-        }
-        val transformedSubs = subGrids.map { transGrid ->
+        }.toGrid(grid.width / length)
+
+        val transformedSubs = subGrids.mapToGrid { transGrid ->
             rules[transGrid] ?: throw Exception("no rule matches transGrid")
         }
-        return transformedSubs
-            .chunked(kotlin.math.sqrt(transformedSubs.size.toDouble()).toInt())
-            .map { it.reduce { acc, g -> acc.addRight(g) } }
-            .let { it.reduce { acc, g -> acc.addDown(g) }}
+
+        val expandedSize = transformedSubs.first().size * transformedSubs.size
+
+        val expandedLength = sqrt(expandedSize.toDouble()).toInt()
+
+        val expandedArray = MutableGrid(expandedLength, expandedLength) { false }
+
+        for (subPos in transformedSubs.coords()) {
+            val subGrid = transformedSubs[subPos]
+            val offset = Coord(subPos.x * (length + 1), subPos.y * (length + 1))
+            for (pos in subGrid.coords()) {
+                expandedArray[pos + offset] = subGrid[pos]
+            }
+        }
+
+        return expandedArray.toGrid(expandedLength)
     }
 
-    fun solve(iterations: Int): Int {
-        val initial = ".#...####".toGrid(3)
-        return (1..iterations).fold(initial) { acc, _ ->
-            expandGrid(acc, twos, threes)
-        }.count { it == '#' }
+    private fun solve(iterations: Int): Int {
+        val initial = ".#...####".toGrid(3).mapToGrid { it == '#' }
+        return generateSequence(initial, ::expandGrid)
+            .take(iterations + 1)
+            .last()
+            .count { it }
     }
 
     override fun part1() = solve(5)
@@ -81,7 +76,7 @@ class Y2017D21(private val input: String) : Day {
 
 fun main() = Day.runDay(21, 2017, Y2017D21::class)
 
-//    Class creation: 11ms
-//    Part 1: 150 (22ms)
-//    Part 2: 2606275 (46194ms)
-//    Total time: 46228ms
+//    Class creation: 39ms
+//    Part 1: 150 (6ms)
+//    Part 2: 2606275 (1205ms)
+//    Total time: 1252ms
