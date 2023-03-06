@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2021.d17
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.minMax
-import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
-class Y2021D17(input: String) {
+class Y2021D17(input: String) : Day {
 
     data class Vector(val pos: Coord, val velocity: Coord) {
         fun step(): Vector {
@@ -66,9 +65,9 @@ class Y2021D17(input: String) {
         Box(Coord(x1, y2), Coord(x2, y1))
     }
 
-    fun part1() = box.maxY
+    override fun part1() = box.maxY
 
-    fun part2() = (box.minY..box.maxY)
+    override fun part2() = (box.minY..box.maxY)
         .map { y -> y to box.ySteps(Vector(Coord(0, 0), Coord(0, y))) }
         .filter { (_, ySteps) -> ySteps.isNotEmpty() }
         .flatMap { (y, ySteps) ->
@@ -79,12 +78,9 @@ class Y2021D17(input: String) {
         .size
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D17(readRawInput("y2021/d17"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 17766
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1733
-}
+fun main() = Day.runDay(17, 2021, Y2021D17::class)
+
+//    Class creation: 15ms
+//    Part 1: 17766 (0ms)
+//    Part 2: 1733 (79ms)
+//    Total time: 95ms

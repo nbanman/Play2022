@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2021.d16
 
-import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.print
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2021D16(input: String) {
+class Y2021D16(input: String) : Day {
 
     sealed class Packet(val version: Int, val typeId: Int) {
 
@@ -140,16 +139,14 @@ class Y2021D16(input: String) {
 
     private val packet = Packet.parse(BitProvider.fromHex(input))
 
-    fun part1() = packet.versionSum()
+    override fun part1() = packet.versionSum()
 
-    fun part2() = packet.value()
+    override fun part2() = packet.value()
 }
 
-fun main() {
-    val timer = Stopwatch(start = true)
-    val c = Y2021D16(readRawInput("y2021/d16"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 979
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 277110354175
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(16, 2021, Y2021D16::class)
+
+//    Class creation: 21ms
+//    Part 1: 979 (0ms)
+//    Part 2: 277110354175 (1ms)
+//    Total time: 23ms

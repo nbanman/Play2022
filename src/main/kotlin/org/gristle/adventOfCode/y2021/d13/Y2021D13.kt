@@ -1,8 +1,9 @@
 package org.gristle.adventOfCode.y2021.d13
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 
-class Y2021D13(input: String) {
+class Y2021D13(input: String) : Day {
 
     data class FoldInstruction(val axis: Char, val amt: Int) {
         fun execute(paper: Grid<Boolean>): Grid<Boolean> {
@@ -44,13 +45,22 @@ class Y2021D13(input: String) {
         }.toGrid(larger.width)
     }
 
-    private val foldInstructions = input
-        .groupValues("""fold along ([xy])=(\d+)""")
-        .map { FoldInstruction(it[0][0], it[1].toInt()) }
+    private val foldInstructions: List<FoldInstruction>
 
-    private val dots = input
-        .groupValues("""(\d+),(\d+)""", String::toInt)
-        .map { Coord(it[0], it[1]) }
+    private val dots: List<Coord>
+
+    init {
+        val (dotInput, foldInput) = input.blankSplit()
+
+        dots = input
+            .getInts()
+            .chunked(2) { Coord(it[0], it[1]) }
+            .toList()
+
+        foldInstructions = foldInput
+            .groupValues("""fold along ([xy])=(\d+)""")
+            .map { FoldInstruction(it[0][0], it[1].toInt()) }
+    }
 
     private val paperWidth = dots.maxOf { it.x } + 1
     private val paperHeight = dots.maxOf { it.y } + 1
@@ -60,19 +70,16 @@ class Y2021D13(input: String) {
             dots.forEach { dot -> this[dot] = true }
         } as Grid<Boolean>
 
-    fun part1() = foldInstructions.first().execute(paper).count { it }
+    override fun part1() = foldInstructions.first().execute(paper).count { it }
 
-    fun part2(): String = foldInstructions
+    override fun part2(): String = foldInstructions
         .fold(paper) { acc, foldInstruction -> foldInstruction.execute(acc) }
         .ocr()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D13(readRawInput("y2021/d13"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 735
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // UFRZKAUZ
-}
+fun main() = Day.runDay(13, 2021, Y2021D13::class)
+
+//    Class creation: 70ms
+//    Part 1: 740 (173ms)
+//    Part 2: UFRZKAUZ (113ms)
+//    Total time: 357ms

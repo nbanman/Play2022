@@ -1,25 +1,28 @@
 package org.gristle.adventOfCode.y2017.d11
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Hexagon
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2017D11(input: String) {
+class Y2017D11(input: String) : Day {
     private val dirs = input.split(',')
 
-    fun solve(): Pair<Int, Int> {
+    val solution: Pair<Int, Int> = let {
         val home = Hexagon()
-        return dirs
+        dirs
             .fold(home to 0) { (hex, furthest), step ->
                 val intermediate = hex.hexAt(step)
                 intermediate to maxOf(furthest, intermediate.distance(home))
             }.let { (hex, furthest) -> hex.distance(home) to furthest }
     }
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    val time = System.nanoTime()
-    val (part1, part2) = Y2017D11(readRawInput("y2017/d11")).solve()
-    println("Part 1: $part1") // 747
-    println("Part 2: $part2 (${elapsedTime(time)}ms)") // 1544
-}
+fun main() = Day.runDay(11, 2017, Y2017D11::class)
+
+//    Class creation: 19ms
+//    Part 1: 747 (0ms)
+//    Part 2: 1544 (0ms)
+//    Total time: 19ms

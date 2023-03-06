@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2017.d14
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.toGrid
-import org.gristle.adventOfCode.y2017.d10.Y2017D10.Companion.denseHash
 import org.gristle.adventOfCode.y2017.d12.Y2017D12.Companion.allLinks
+import org.gristle.adventOfCode.y2017.shared.denseHash
 
-class Y2017D14(input: String) {
+class Y2017D14(input: String) : Day {
 
     private fun stringRep(input: String): String {
         val preparation = input
@@ -32,9 +31,9 @@ class Y2017D14(input: String) {
         stringRep("$input-$i")
     }
 
-    fun part1() = rows.sumOf { row -> row.count { it == '1' } }
+    override fun part1() = rows.sumOf { row -> row.count { it == '1' } }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val width = rows.first().length
         val grid = List(width * rows.size) { index ->
             val x = index % width
@@ -57,12 +56,9 @@ class Y2017D14(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D14(readRawInput("y2017/d14"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 8222
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1086
-}
+fun main() = Day.runDay(14, 2017, Y2017D14::class)
+
+//    Class creation: 442ms
+//    Part 1: 8222 (1ms)
+//    Part 2: 1086 (105ms)
+//    Total time: 549ms

@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2017.d8
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2017D8(input: String) {
+class Y2017D8(input: String) : Day {
 
     private val pattern = """([a-z]+) (inc|dec) (-?\d+) if ([a-z]+) (<=|<|==|!=|>|>=) (-?\d+)""".toRegex()
 
@@ -40,15 +39,20 @@ class Y2017D8(input: String) {
             Instruction(gv[0], amount, gv[3], gv[4], gv[5].toInt())
         }
 
-    fun solve(): Pair<Int?, Int> {
+    private val solution = let {
         val register = mutableMapOf<String, Int>().withDefault { 0 }
         val highest = instructions.maxOf { it.execute(register) }
-        return register.values.maxOrNull() to highest
+        register.values.max() to highest
     }
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2017D8(readRawInput("y2017/d8")).solve()
-    println("Part 1: $p1\nPart 2: $p2 (${elapsedTime(time)}ms)") // 6343, 7184
-}
+fun main() = Day.runDay(8, 2017, Y2017D8::class)
+
+//    Class creation: 35ms
+//    Part 1: 6343 (0ms)
+//    Part 2: 7184 (0ms)
+//    Total time: 35ms

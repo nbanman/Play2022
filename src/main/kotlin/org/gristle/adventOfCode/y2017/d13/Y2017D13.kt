@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2017.d13
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getInts
 
-class Y2017D13(input: String) {
+class Y2017D13(input: String) : Day {
 
     private data class Layer(val depth: Int, val range: Int) {
         fun severity(): Int {
@@ -12,27 +11,25 @@ class Y2017D13(input: String) {
                 depth * range
             } else 0
         }
+
         fun isTriggered(offset: Int) = (depth + offset) % ((range - 1) * 2) == 0
     }
 
     private val layers = input
-        .groupValues("""(\d+): (\d+)""", String::toInt)
+        .getInts()
+        .chunked(2)
         .map { Layer(it[0], it[1]) }
+        .toList()
 
-    var index = 0
+    override fun part1() = layers.sumOf(Layer::severity)
 
-    fun part1() = layers.sumOf(Layer::severity)
-
-    fun part2() = generateSequence(0) { it + 1 }
+    override fun part2() = generateSequence(0) { it + 1 }
         .first { index -> layers.none { it.isTriggered(index) } }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D13(readRawInput("y2017/d13"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1528
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 3896406
-}
+fun main() = Day.runDay(13, 2017, Y2017D13::class)
+
+//    Class creation: 13ms
+//    Part 1: 1528 (0ms)
+//    Part 2: 3896406 (149ms)
+//    Total time: 162ms

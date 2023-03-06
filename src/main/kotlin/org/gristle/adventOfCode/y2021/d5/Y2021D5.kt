@@ -1,8 +1,11 @@
 package org.gristle.adventOfCode.y2021.d5
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.minMax
+import org.gristle.adventOfCode.utilities.parseToList
 
-class Y2021D5(input: String) {
+class Y2021D5(input: String) : Day {
 
     private val pattern = """(\d+),(\d+) -> (\d+),(\d+)"""
 
@@ -45,18 +48,15 @@ class Y2021D5(input: String) {
         return space.count { it.value >= 2 }
     }
 
-    fun part1() = solve(false)
+    override fun part1() = solve(false)
 
-    fun part2() = solve(true)
+    override fun part2() = solve(true)
 
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D5(readRawInput("y2021/d5"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5774
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 18423
-}
+fun main() = Day.runDay(5, 2021, Y2021D5::class)
+
+//    Class creation: 78ms
+//    Part 1: 5774 (154ms)
+//    Part 2: 18423 (148ms)
+//    Total time: 381ms   

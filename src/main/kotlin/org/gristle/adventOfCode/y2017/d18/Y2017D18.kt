@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2017.d18
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 
 // Not refactored. Ugly but fast enough.
-class Y2017D18(input: String) {
+class Y2017D18(input: String) : Day {
 
     private val pattern = """([a-z]{3}) ([-a-z\d]+)(?: ([-a-z\d]+))?""".toRegex()
 
@@ -86,7 +85,7 @@ class Y2017D18(input: String) {
         .groupValues(pattern)
         .map { Command(it[0], it[1], it[2]) }
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val registers = mutableMapOf<String, Long>()
         var frequency = 0L
 
@@ -131,14 +130,14 @@ class Y2017D18(input: String) {
         return -1
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val dequeA: Deque<Long> = LinkedList()
         val dequeB: Deque<Long> = LinkedList()
 
         val programA = Program(commands, 0L, dequeA, dequeB)
         val programB = Program(commands, 1L, dequeB, dequeA)
 
-        while(!(programA.deadlock && programB.deadlock)) {
+        while (!(programA.deadlock && programB.deadlock)) {
             programA.execute()
             programB.execute()
         }
@@ -146,12 +145,9 @@ class Y2017D18(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D18(readRawInput("y2017/d18"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 9423
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 7620
-}
+fun main() = Day.runDay(18, 2017, Y2017D18::class)
+
+//    Class creation: 19ms
+//    Part 1: 9423 (2ms)
+//    Part 2: 7620 (22ms)
+//    Total time: 44ms

@@ -1,46 +1,15 @@
 package org.gristle.adventOfCode.y2017.d10
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.shift
+import org.gristle.adventOfCode.y2017.shared.denseHash
+import org.gristle.adventOfCode.y2017.shared.knotHash
 
-class Y2017D10(private val input: String) {
+class Y2017D10(private val input: String) : Day {
 
-    companion object {
-        fun denseHash(lengths: List<Int>): String {
-            val ring = List(256) { it }
-            val shiftSum = lengths.sum() * 64
-            val skipSum = (lengths.size) * 64
-            val p2 = (0 until 64).fold(ring) { acc, i ->
-                acc.knotHash(lengths, i * (lengths.size))
-            }
-            val totalSkips = (1 until skipSum).reduce { acc, i -> acc + i }
-            val reshifted = p2.shift(0 - (shiftSum + totalSkips))
-
-            val denseHash = reshifted
-                .chunked(16)
-                .joinToString("") { chunk ->
-                    val reduction = chunk.reduce { acc, i -> acc xor i }
-                    String.format("%02x", reduction)
-                }
-            return denseHash
-        }
-
-        private fun <E> List<E>.knotHash(lengths: List<Int>, skip: Int = 0): List<E> {
-            return lengths.foldIndexed(this) { index, accRing, length ->
-                knot(accRing, length, skip + index)
-            }
-        }
-
-        private fun <E> knot(ring: List<E>, length: Int, skip: Int): List<E> {
-            val reversePart = ring.subList(0, length).reversed()
-            return (reversePart + ring.drop(reversePart.size)).shift(length + skip)
-        }
-    }
-
-    fun part1(): Int {
+    override fun part1(): Int {
         val lengths = input.split(',').map { it.toInt() }
-        val ring = List (256) { it }
+        val ring = List(256) { it }
         return ring.knotHash(lengths)
             .shift(0 - (lengths.sum() + ((1 until lengths.size).reduce { acc, i -> acc + i })))
             .take(2)
@@ -49,15 +18,12 @@ class Y2017D10(private val input: String) {
             }
     }
 
-    fun part2() = denseHash(input.map { it.code } + listOf(17, 31, 73, 47, 23))
+    override fun part2() = denseHash(input.map { it.code } + listOf(17, 31, 73, 47, 23))
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D10(readRawInput("y2017/d10"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 23874
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // e1a65bfb5a5ce396025fab5528c25a87
-}
+fun main() = Day.runDay(10, 2017, Y2017D10::class)
+
+//    Class creation: 11ms
+//    Part 1: 23874 (1ms)
+//    Part 2: e1a65bfb5a5ce396025fab5528c25a87 (29ms)
+//    Total time: 42ms

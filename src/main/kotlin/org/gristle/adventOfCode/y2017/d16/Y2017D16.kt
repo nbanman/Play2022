@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2017.d16
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
 // not refactored!
-class Y2017D16(input: String) {
+class Y2017D16(input: String) : Day {
 
     private data class Command(val name: String, val arg1: String, val arg2: String) {
         fun execute(line: String): String {
@@ -48,9 +47,9 @@ class Y2017D16(input: String) {
     private val start = "abcdefghijklmnop"
     private val part1 = danceParty(start)
 
-    fun part1() = part1
+    override fun part1() = part1
 
-    fun part2(): String {
+    override fun part2(): String {
         val register = mutableSetOf(start, part1)
         while (true) {
             val new = danceParty(register.last())
@@ -60,12 +59,9 @@ class Y2017D16(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D16(readRawInput("y2017/d16"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // hmefajngplkidocb
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // fbidepghmjklcnoa
-}
+fun main() = Day.runDay(16, 2017, Y2017D16::class)
+
+//    Class creation: 57ms
+//    Part 1: hmefajngplkidocb (0ms)
+//    Part 2: fbidepghmjklcnoa (146ms)
+//    Total time: 204ms

@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2021.d7
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import kotlin.math.abs
 
-class Y2021D7(input: String) {
+class Y2021D7(input: String) : Day {
 
     private val crabs = input.split(',').map { it.toInt() }
 
@@ -26,18 +25,15 @@ class Y2021D7(input: String) {
 
         return optimalAlignmentCost(newRange, fuelCost)
     }
-    
-    fun part1() = crabs.optimalAlignmentCost { it }
 
-    fun part2() = crabs.optimalAlignmentCost { (1..it).sum() }
+    override fun part1() = crabs.optimalAlignmentCost { it }
+
+    override fun part2() = crabs.optimalAlignmentCost { (1..it).sum() }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D7(readRawInput("y2021/d7"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 343468
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 96086265
-}
+fun main() = Day.runDay(7, 2021, Y2021D7::class)
+
+//    Class creation: 7ms
+//    Part 1: 343468 (6ms)
+//    Part 2: 96086265 (17ms)
+//    Total time: 31ms

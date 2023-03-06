@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2017.d9
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2017D9(private val input: String) {
+class Y2017D9(private val input: String) : Day {
 
-    fun solve(): Pair<Int, Int> {
+    val solution: Pair<Int, Int> = let {
         var inGarbage = false
         var garbage = 0
         var depth = 0
@@ -23,18 +22,25 @@ class Y2017D9(private val input: String) {
                         depth++
                         score += depth
                     }
+
                     '}' -> {
                         depth--
                     }
                 }
             }
         }
-        return score to garbage
+        score to garbage
     }
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2017D9(readRawInput("y2017/d9")).solve()
-    println("Part 1: $p1\nPart 2: $p2 (${elapsedTime(time)}ms)") // 9251, 4322
-}
+
+fun main() = Day.runDay(9, 2017, Y2017D9::class)
+
+//    Class creation: 15ms
+//    Part 1: 9251 (0ms)
+//    Part 2: 4322 (0ms)
+//    Total time: 15ms

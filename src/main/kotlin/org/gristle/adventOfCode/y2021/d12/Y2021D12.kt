@@ -1,13 +1,12 @@
 package org.gristle.adventOfCode.y2021.d12
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import java.util.*
 
-class Y2021D12(private val input: String) {
-    
+class Y2021D12(private val input: String) : Day {
+
     // build a map of edges from each location
-    private val edges = buildMap<String, MutableList<String>> { 
+    private val edges = buildMap<String, MutableList<String>> {
         input
             .lines()
             .map { it.split('-') }
@@ -17,7 +16,7 @@ class Y2021D12(private val input: String) {
             }
     } as Map<String, List<String>>
 
-    // Custom BFS that searches entire space, looking for number of possible paths rather than shortest path.
+    // Custom BFS that searches entire space, looking for number of possible paths rather than the shortest path.
     // Uses custom state object to efficiently conform with part2 navigation rules.
     private fun findPaths(allowOneExtra: Boolean = false): Int {
         
@@ -48,17 +47,16 @@ class Y2021D12(private val input: String) {
         }
         return count
     }
-    
-    fun part1() = findPaths()
-    fun part2() = findPaths(true)
+
+    override fun part1() = findPaths()
+    override fun part2() = findPaths(true)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D12(readRawInput("y2021/d12"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 4104 
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 119760 (417ms old, 130ms new)
-}
+fun main() = Day.runDay(12, 2021, Y2021D12::class)
+
+//    (417ms old, 130ms new)
+
+//    Class creation: 15ms
+//    Part 1: 4104 (23ms)
+//    Part 2: 119760 (129ms)
+//    Total time: 168ms

@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2017.d19
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Grid
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2017D19(private val input: String) {
+class Y2017D19(private val input: String) : Day {
     class Mouse(private val maze: Grid<Char>, private val startIndex: Int) {
 
         tailrec fun runMaze(
@@ -36,7 +35,7 @@ class Y2017D19(private val input: String) {
                     else -> index + 1
                 }
             }
-            val newDirection = when(newIndex) {
+            val newDirection = when (newIndex) {
                 index - 1 -> "left"
                 index + 1 -> "right"
                 index + maze.width -> "down"
@@ -46,17 +45,21 @@ class Y2017D19(private val input: String) {
         }
     }
 
-    fun solve(): Pair<String, Int> {
-        val maze = input.toGrid()
+    val solution: Pair<String, Int> = let {
+        val maze = "$input ".toGrid()
         val startIndex = maze.indexOfFirst { it != ' ' }
         val (p1, p2) = Mouse(maze, startIndex).runMaze()
-        return p1 to p2
+        p1 to p2
     }
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2017D19(readRawInput("y2017/d19")).solve()
-    println("Part 1: $p1") // EOCZQMURF
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 16312
-}
+fun main() = Day.runDay(19, 2017, Y2017D19::class)
+
+//    Class creation: 58ms
+//    Part 1: EOCZQMURF (0ms)
+//    Part 2: 16312 (0ms)
+//    Total time: 58ms

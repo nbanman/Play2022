@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2021.d11
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.toGrid
 import org.gristle.adventOfCode.utilities.toMutableGrid
 
-class Y2021D11(input: String) {
+class Y2021D11(input: String) : Day {
 
     private val grid = input.toGrid(Character::getNumericValue)
 
@@ -37,18 +36,16 @@ class Y2021D11(input: String) {
         } while (true)
     }
 
-    fun part1() = flashSequence.take(100).sum() // sum up all the flashes that occurred in 1st 100 turns
+    override fun part1() = flashSequence.take(100).sum() // sum up all the flashes that occurred in 1st 100 turns
 
     // look for the first turn where every octopus has flashed (ie, been reset). Get the index of that turn and 
     // add one to compensate for zero-indexing.
-    fun part2() = flashSequence.indexOfFirst { it == grid.size } + 1
+    override fun part2() = flashSequence.indexOfFirst { it == grid.size } + 1
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2021D11(readRawInput("y2021/d11"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 1669
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 351
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(11, 2021, Y2021D11::class)
+
+//    Class creation: 15ms
+//    Part 1: 1669 (28ms)
+//    Part 2: 351 (20ms)
+//    Total time: 64ms

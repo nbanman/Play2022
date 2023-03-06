@@ -1,17 +1,17 @@
 package org.gristle.adventOfCode.y2021.d4
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Grid
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readStrippedInput
 import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2021D4(input: String) {
+class Y2021D4(input: String) : Day {
 
     data class BingoCard(val grid: Grid<Int>) {
         private val winConditions = (grid.rows() + grid.columns())
             .map { it.toSet() }
+
         fun bingo(calledNumbers: List<Int>) = winConditions.any { it.intersect(calledNumbers.toSet()) == it }
-        
+
         fun score(calledNumbers: List<Int>) = grid.sum() - calledNumbers.intersect(grid).sum()
     }
 
@@ -26,8 +26,8 @@ class Y2021D4(input: String) {
                 .split(' ', '\n')
                 .mapNotNull { it.toIntOrNull() }
         }.map { BingoCard(it.toGrid(5)) }
-    
-    fun part1(): Int {
+
+    override fun part1(): Int {
         val calledNumbers = drawPile.take(4).toMutableList()
         return drawPile
             .asSequence()
@@ -39,9 +39,9 @@ class Y2021D4(input: String) {
             .let { bingoCard ->
                 bingoCard.score(calledNumbers) * calledNumbers.last()
             }
-    } 
-        
-    fun part2(): Int {
+    }
+
+    override fun part2(): Int {
         val calledNumbers = drawPile.toMutableList()
         return drawPile
             .reversed()
@@ -58,12 +58,9 @@ class Y2021D4(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D4(readStrippedInput("y2021/d4"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 39902
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 26936
-}
+fun main() = Day.runDay(4, 2021, Y2021D4::class)
+
+//    Class creation: 30ms
+//    Part 1: 39902 (44ms)
+//    Part 2: 26936 (6ms)
+//    Total time: 81ms

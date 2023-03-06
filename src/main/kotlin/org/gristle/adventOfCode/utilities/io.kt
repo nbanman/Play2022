@@ -6,7 +6,7 @@ import java.net.URL
 import java.time.LocalDate
 
 const val SESSION =
-    "53616c7465645f5fb11066d92ddc288fc43ef3462bc477713612df0d0abce56129c3e9f3ebe89a4c22373556bc48623fea51bc240fd55e24089442677e7e8cd0"
+    "53616c7465645f5fdf37ca6e2c5944bcfbb96ff7f2c8c3f0e9519bb07aeb30eb920d6dfb3e9e65131a7d078b3d4a249e587e347008e521f2cf78501980297bc5"
 
 /**
  * Reads lines from the given input txt file.

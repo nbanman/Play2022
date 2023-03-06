@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2021.d8
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2021D8(input: String) {
+class Y2021D8(input: String) : Day {
 
     data class Display(val wires: List<Set<Char>>, val display: List<Set<Char>>) {
 
@@ -50,18 +49,15 @@ class Y2021D8(input: String) {
 
     // Calculates how many times digits 1, 4, 7, or 8 appear by looking at the sets of wires in the Display
     // and counting the sets that do not use 5 or 6 wires. All other sets will correspond to digits 1, 4, 7, or 8.
-    fun part1() = displays.flatMap(Display::display).count { it.size !in 5..6 }
+    override fun part1() = displays.flatMap(Display::display).count { it.size !in 5..6 }
 
     // Sums the output values of all the displays
-    fun part2() = displays.sumOf(Display::outputValue)
+    override fun part2() = displays.sumOf(Display::outputValue)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D8(readRawInput("y2021/d8"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 397
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1027422
-}
+fun main() = Day.runDay(8, 2021, Y2021D8::class)
+
+//    Class creation: 51ms
+//    Part 1: 397 (0ms)
+//    Part 2: 1027422 (0ms)
+//    Total time: 52ms

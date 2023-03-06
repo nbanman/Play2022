@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2021.d10
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import java.util.*
 
-class Y2021D10(input: String) {
+class Y2021D10(input: String) : Day {
     private val lines = input.lines()
 
     // Functions and definitions to use with the "parse" function below.
@@ -45,7 +44,7 @@ class Y2021D10(input: String) {
     }
 
     // sums the syntax error scores
-    fun part1() = lines
+    override fun part1() = lines
         .sumOf { line ->
             line.parse(
                 onCorrupt = { syntaxErrorScore[it] },
@@ -53,7 +52,7 @@ class Y2021D10(input: String) {
             ) ?: 0 // only corrupt strings have a syntax error score 
         }
 
-    fun part2() = lines
+    override fun part2() = lines
         .mapNotNull { line ->
             line.parse(
                 onCorrupt = { null }, // combined with mapNotNull above, this discards corrupt strings
@@ -63,11 +62,9 @@ class Y2021D10(input: String) {
         .let { it[it.size / 2] } // returns the middle score
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2021D10(readRawInput("y2021/d10"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 167379
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 2776842859
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(10, 2021, Y2021D10::class)
+
+//    Class creation: 23ms
+//    Part 1: 167379 (3ms)
+//    Part 2: 2776842859 (3ms)
+//    Total time: 31ms

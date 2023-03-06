@@ -43,7 +43,7 @@ class Y2021D14(input: String) : Day {
     /**
      * The protein expands exponentially, so rather than try to store the protein as a string, the algorithm
      * updates a map that keeps track of how many times a pair has been encountered. Then each step, that pair
-     * repropagates using the propagation rules, and the resulting pairs' amounts are increased by the amount of
+     * re-propagates using the propagation rules, and the resulting pairs' amounts are increased by the amount of
      * the original pair.
      */
     private fun solve(steps: Int): Long = proteinPairs

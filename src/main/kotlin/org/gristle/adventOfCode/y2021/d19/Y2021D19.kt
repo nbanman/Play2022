@@ -90,8 +90,8 @@ class Y2021D19(input: String) {
         fun merge(): Scanner {
             // Pick the first matches and use them to align and find offset
             val matchSet = matches.first()
-            val masterIndexPair = master.coordPairs[matchSet]!!
-            val bIndexPair = b.coordPairs[matchSet]!!
+            val masterIndexPair = master.coordPairs.getValue(matchSet)
+            val bIndexPair = b.coordPairs.getValue(matchSet)
             val m1 = master.beacons[masterIndexPair.first]
             val m2 = master.beacons[masterIndexPair.second]
             val mDiff = m1 - m2

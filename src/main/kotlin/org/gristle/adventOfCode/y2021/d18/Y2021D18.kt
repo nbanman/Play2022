@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2021.d18
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import java.util.*
 import kotlin.math.ceil
 
-class Y2021D18(input: String) {
+class Y2021D18(input: String) : Day {
 
     data class Snailfish constructor(val expression: String) {
 
@@ -108,23 +107,20 @@ class Y2021D18(input: String) {
 
     private val snailfish = input.lines().map(Snailfish::fromString)
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val sum = snailfish.reduce(Snailfish::plus)
         return sum.magnitude()
     }
 
-    fun part2() = snailfish
+    override fun part2() = snailfish
         .flatMapIndexed { index: Int, sf: Snailfish ->
             ((index + 1)..snailfish.lastIndex).map { sf2Index -> (sf + snailfish[sf2Index]).magnitude() }
         }.max()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D18(readRawInput("y2021/d18"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3806
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 4727
-}
+fun main() = Day.runDay(18, 2021, Y2021D18::class)
+
+//    Class creation: 26ms
+//    Part 1: 3806 (153ms)
+//    Part 2: 4727 (455ms)
+//    Total time: 635ms
