@@ -1,8 +1,11 @@
 package org.gristle.adventOfCode.y2017.d22
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2017D22(input: String) {
+class Y2017D22(input: String) : Day {
     enum class NodeState {
         CLEAN {
             override fun advance() = WEAKENED
@@ -57,7 +60,7 @@ class Y2017D22(input: String) {
         return (1..bursts).fold(virus) { acc, _ -> acc.burst() }.infections
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val burst: Virus.() -> Virus = {
             val currentNode = nodes.getValue(pos)
             if (currentNode == NodeState.CLEAN) {
@@ -70,8 +73,8 @@ class Y2017D22(input: String) {
         }
         return solve(10_000, burst)
     }
-    
-    fun part2(): Int {
+
+    override fun part2(): Int {
         val burst: Virus.() -> Virus = {
             val currentNode = nodes.getValue(pos)
             nodes[pos] = currentNode.advance()
@@ -86,12 +89,9 @@ class Y2017D22(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D22(readRawInput("y2017/d22"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5348 (25ms)
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2512225 (2033ms)
-}
+fun main() = Day.runDay(22, 2017, Y2017D22::class)
+
+//    Class creation: 18ms
+//    Part 1: 5348 (17ms)
+//    Part 2: 2512225 (1643ms)
+//    Total time: 1678ms

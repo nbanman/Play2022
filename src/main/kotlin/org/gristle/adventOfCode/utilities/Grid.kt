@@ -133,10 +133,10 @@ class ArrayGrid<E> private constructor(
         require(newWidth > 0 && newHeight > 0)
         val adjustedWidth = min(width - coord.x, newWidth)
         val adjustedHeight = min(height - coord.y, newHeight)
-        return List(adjustedWidth * adjustedHeight) { i ->
+        return Grid(adjustedWidth, adjustedHeight) { i ->
             val newCoord = Coord(i % adjustedWidth, i / adjustedWidth)
             get(coord + newCoord)
-        }.toGrid(newWidth)
+        }
     }
 
     override fun subGrid(topLeft: Coord, bottomRight: Coord): Grid<E> {
