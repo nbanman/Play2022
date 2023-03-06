@@ -1,36 +1,34 @@
 package org.gristle.adventOfCode.y2018.d1
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getIntList
 
-class Y2018D1(input: String) {
+class Y2018D1(input: String) : Day {
 
-    private val changes = input.lines().map(String::toInt)
+    private val changes = input.getIntList()
 
-    fun part1() = changes.sum()
-
-    fun part2(): Int {
-        val states = mutableSetOf(0)
-        tailrec fun change(freq: Int, index: Int): Int {
-            val newState = freq + changes[index]
-            return if (states.contains(newState)) {
-                newState
-            } else {
-                states.add(newState)
-                change(newState, (index + 1) % changes.size)
-            }
+    private tailrec fun calibrate(
+        freq: Int = 0,
+        states: MutableSet<Int> = mutableSetOf(),
+        index: Int = 0,
+    ): Int {
+        val newState = freq + changes[index]
+        return if (newState in states) {
+            newState
+        } else {
+            states.add(newState)
+            calibrate(newState, states, (index + 1) % changes.size)
         }
-        return change(0, 0)
     }
+
+    override fun part1() = changes.sum()
+
+    override fun part2() = calibrate()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D1(readRawInput("y2018/d1"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 433
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 256
-}
+fun main() = Day.runDay(1, 2018, Y2018D1::class)
+
+//    Class creation: 22ms
+//    Part 1: 433 (0ms)
+//    Part 2: 256 (24ms)
+//    Total time: 46ms
