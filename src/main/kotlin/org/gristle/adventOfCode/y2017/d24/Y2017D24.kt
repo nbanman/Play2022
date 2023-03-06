@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2017.d24
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getInts
 
 private typealias Bridge = List<Y2017D24.MagComp>
 
-class Y2017D24(input: String) {
+class Y2017D24(input: String) : Day {
 
     data class MagComp(val a: Int = 0, val b: Int = 0) {
         val strength = a + b
@@ -20,7 +19,7 @@ class Y2017D24(input: String) {
         comparator: Comparator<Bridge>,
         n: Int = 0,
         bridge: Bridge = listOf(),
-        remaining: List<MagComp> = components,
+        remaining: Bridge = components,
     ): Bridge {
         return remaining
             .filter { it.canJoin(n) }
@@ -29,20 +28,20 @@ class Y2017D24(input: String) {
     }
 
     private val components = input
-        .groupValues("""(\d+)\/(\d+)""", String::toInt)
+        .getInts()
+        .chunked(2)
         .map { MagComp(it[0], it[1]) }
+        .toList()
 
     private val compareByStrength = compareBy { bridge: Bridge -> bridge.strength() }
-    fun part1() = buildBridge(compareByStrength).strength()
-    fun part2() = buildBridge(compareBy(Bridge::size) then compareByStrength).strength()
+
+    override fun part1() = buildBridge(compareByStrength).strength()
+    override fun part2() = buildBridge(compareBy(Bridge::size) then compareByStrength).strength()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2017D24(readRawInput("y2017/d24"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1868 (638ms custom)
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1841 (533ms custom)
-}
+fun main() = Day.runDay(24, 2017, Y2017D24::class)
+
+//    Class creation: 17ms
+//    Part 1: 1868 (602ms)
+//    Part 2: 1841 (589ms)
+//    Total time: 1209ms
