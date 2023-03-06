@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2018.d4
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.transpose
 
-class Y2018D4(input: String) {
+class Y2018D4(input: String) : Day {
 
     data class LogEntry(
         val month: Int,
@@ -63,7 +62,7 @@ class Y2018D4(input: String) {
             ?: throw Exception("Map entry has no value")
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val sleepiest = guards.entries
             .maxByOrNull { guard -> guard.value.sumOf { day -> day.count { it } } }
             ?: throw Exception("Map entry has no value")
@@ -72,7 +71,7 @@ class Y2018D4(input: String) {
         return guardId * sleepiestTimes.index
     }
 
-    fun part2() = guards
+    override fun part2() = guards
         .entries
         .map { guard ->
             val minuteMap = getTimeList(guard)
@@ -81,12 +80,9 @@ class Y2018D4(input: String) {
         ?.let { it.first.drop(1).toInt() * it.second.index }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D4(readRawInput("y2018/d4"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 19025
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 23776
-}
+fun main() = Day.runDay(4, 2018, Y2018D4::class)
+
+//    Class creation: 43ms
+//    Part 1: 19025 (7ms)
+//    Part 2: 23776 (4ms)
+//    Total time: 55ms

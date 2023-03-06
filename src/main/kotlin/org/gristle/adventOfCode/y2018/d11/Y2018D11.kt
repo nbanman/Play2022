@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2018.d11
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2018D11(private val input: String) {
+class Y2018D11(private val input: String) : Day {
 
     private fun powerLevel(c: Coord): Int {
         val rackId = c.x + 10
@@ -30,7 +29,7 @@ class Y2018D11(private val input: String) {
     }
 
 
-    fun part1(): Coord {
+    override fun part1(): Coord {
         // Part 1
         var p1 = Maximum(Coord(0, 0), 0, 3)
         grid
@@ -46,7 +45,7 @@ class Y2018D11(private val input: String) {
        return p1.c
     }
 
-    fun part2(): Pair<Coord, Int> {
+    override fun part2(): Pair<Coord, Int> {
         // Part 2
         var p2 = Maximum(Coord(0, 0), 0, 0)
         var cGrid = grid
@@ -66,12 +65,9 @@ class Y2018D11(private val input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D11(readRawInput("y2018/d11"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 235,48
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 285,113,11
-}
+fun main() = Day.runDay(Y2018D11::class)
+
+//    Class creation: 25ms
+//    Part 1: (235, 48) (69ms)
+//    Part 2: ((285, 113), 11) (422ms)
+//    Total time: 517ms

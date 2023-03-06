@@ -1,11 +1,9 @@
 package org.gristle.adventOfCode.y2018.d12
 
-import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.eachCount
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2018D12(input: String) {
+class Y2018D12(input: String) : Day {
     private val lines = input.lines()
 
     // parse initial row of plants
@@ -43,7 +41,7 @@ class Y2018D12(input: String) {
         mapIndexed { index, c -> if (c == '#') (index - (generations * 2)) else 0 }
             .sum()
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val generations = 20
         // take the sequence, run it 21 times (first time yields the initial row), then get the pot number sum
         // of the last row generation generated.
@@ -53,7 +51,7 @@ class Y2018D12(input: String) {
             .sumOfPotNumbers(generations) // get sum of pot numbers
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         // too many generations to naively compute!
         val generations = 50_000_000_000
 
@@ -91,10 +89,9 @@ class Y2018D12(input: String) {
     }
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2018D12(readRawInput("y2018/d12"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 4110
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 2650000000466
-}
+fun main() = Day.runDay(Y2018D12::class)
+
+//    Class creation: 21ms
+//    Part 1: 4110 (3ms)
+//    Part 2: 2650000000466 (45ms)
+//    Total time: 70ms

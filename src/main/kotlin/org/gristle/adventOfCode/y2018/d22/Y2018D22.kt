@@ -1,8 +1,12 @@
 package org.gristle.adventOfCode.y2018.d22
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Graph.steps
-class Y2018D22(input: String) {
+import org.gristle.adventOfCode.utilities.groupValues
+
+class Y2018D22(input: String) : Day {
 
     private val pattern = Regex("""depth: (\d+)\r?\ntarget: (\d+),(\d+)""")
 
@@ -58,7 +62,7 @@ class Y2018D22(input: String) {
     private val cavern = Cavern(start, target, depth)
 
     // for each position in the rectangle formed by the start and the target, add up the risk level
-    fun part1() = Coord.rectangleFrom(start, target).sumOf { cavern[it].ordinal }
+    override fun part1() = Coord.rectangleFrom(start, target).sumOf { cavern[it].ordinal }
 
     enum class Tool { GEAR, TORCH, NEITHER }
 
@@ -85,7 +89,7 @@ class Y2018D22(input: String) {
      * tool. The heuristic is the manhattan distance to the target. Edges are found by looking at neighboring
      * positions and calculating what tool change, if necessary, needs to be made.
      */
-    fun part2() = Graph
+    override fun part2() = Graph
         .aStar(
             startId = State(start, Tool.TORCH),
             heuristic = { state -> state.pos.manhattanDistance(target).toDouble() },
@@ -106,12 +110,9 @@ class Y2018D22(input: String) {
         ).steps()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D22(readRawInput("y2018/d22"))
-    println("Class creation: ${elapsedTime(time)}ms") // (35ms) (98ms grid)
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5637 (27ms) (1ms grid)
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 969 (1057ms) (491ms grid)
-}
+fun main() = Day.runDay(Y2018D22::class)
+
+//    Class creation: 19ms (98ms grid)
+//    Part 1: 5637 (14ms) (1ms grid)
+//    Part 2: 969 (1251ms) (491ms grid)
+//    Total time: 1285ms

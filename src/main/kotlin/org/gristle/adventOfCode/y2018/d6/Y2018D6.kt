@@ -1,8 +1,11 @@
 package org.gristle.adventOfCode.y2018.d6
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.MutableGrid
+import org.gristle.adventOfCode.utilities.minMaxRanges
 
-class Y2018D6(input: String) {
+class Y2018D6(input: String) : Day {
 
     private val offsetCoordinates = input.lines().map { line ->
         val (x, y) = line.split(", ").map(String::toInt)
@@ -37,7 +40,7 @@ class Y2018D6(input: String) {
         }
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val borderingIds = (space.row(0) + space.row(space.height - 1) +
                 space.column(0) + space.column(space.width - 1)).toSet()
 
@@ -49,17 +52,14 @@ class Y2018D6(input: String) {
             .maxOf { it.value }
     }
 
-    fun part2() = space.indices.count { index ->
+    override fun part2() = space.indices.count { index ->
         coordinates.sumOf { it.manhattanDistance(space.coordOf(index)) } < 10_000
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D6(readRawInput("y2018/d6"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5365
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 42513
-}
+fun main() = Day.runDay(Y2018D6::class)
+
+//    Class creation: 432ms
+//    Part 1: 5365 (35ms)
+//    Part 2: 42513 (47ms)
+//    Total time: 515ms

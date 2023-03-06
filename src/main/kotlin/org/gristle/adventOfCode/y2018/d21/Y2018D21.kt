@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2018.d21
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
-import org.gristle.adventOfCode.y2018.d19.Ops
+import org.gristle.adventOfCode.y2018.shared.Ops
 
-class Y2018D21(private val input: String) {
+class Y2018D21(private val input: String) : Day {
     private val pattern = """([a-z]{4}) (\d+) (\d+) (\d+)""".toRegex()
 
     data class Command(
@@ -61,11 +60,17 @@ class Y2018D21(private val input: String) {
             }
         }
     }
+
+    val solution = solve()
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2018D21(readRawInput("y2018/d21")).solve()
-    println("Part 1: $p1") // 3345459
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 5857354 
-}
+fun main() = Day.runDay(Y2018D21::class)
+
+//    Class creation: 341513ms
+//    Part 1: 3345459 (0ms)
+//    Part 2: 5857354 (0ms)
+//    Total time: 341513ms

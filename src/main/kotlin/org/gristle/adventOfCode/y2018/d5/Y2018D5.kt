@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2018.d5
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import java.util.*
 import kotlin.math.abs
 
-class Y2018D5(input: String) {
+class Y2018D5(input: String) : Day {
 
     private fun String.react() = ArrayDeque<Char>()
         .also { forEach { c -> if (it.isEmpty() || abs(it.peek() - c) != 32) it.push(c) else it.pop() } }
@@ -13,19 +12,16 @@ class Y2018D5(input: String) {
 
     private val reacted = input.react()
 
-    fun part1() = reacted.length
+    override fun part1() = reacted.length
 
-    fun part2() = ('a'..'z')
+    override fun part2() = ('a'..'z')
         .map { reacted.replace(it.toString(), "", true).react().length }
         .minByOrNull { it }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D5(readRawInput("y2018/d5"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 10972
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 5278
-}
+fun main() = Day.runDay(Y2018D5::class)
+
+//    Class creation: 30ms
+//    Part 1: 10972 (0ms)
+//    Part 2: 5278 (34ms)
+//    Total time: 64ms

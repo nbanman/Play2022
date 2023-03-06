@@ -1,12 +1,15 @@
 package org.gristle.adventOfCode.y2018.d23
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Xyz
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.pollUntil
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.ln
 import kotlin.math.pow
 
-class Y2018D23(input: String) {
+class Y2018D23(input: String) : Day {
 
     data class Nanobot(val pos: Xyz, val radius: Int) {
         fun inRangeOf(other: Nanobot) = radius >= pos.manhattanDistance(other.pos)
@@ -78,12 +81,12 @@ class Y2018D23(input: String) {
         .groupValues(pattern, String::toInt)
         .map { Nanobot(Xyz(it[0], it[1], it[2]), it[3]) }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val strongest = nanobots.maxByOrNull(Nanobot::radius) ?: return -1
         return nanobots.count { strongest.inRangeOf(it) }
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val xMin = nanobots.minOf { it.pos.x }
         val xMax = nanobots.maxOf { it.pos.x }
         val yMin = nanobots.minOf { it.pos.y }
@@ -108,16 +111,13 @@ class Y2018D23(input: String) {
                 cubes.add(c)
             }
         }
-        return current.pos.manhattanDistance(Xyz(0,0,0))
+        return current.pos.manhattanDistance(Xyz(0, 0, 0))
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D23(readRawInput("y2018/d23"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 481
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 47141479
-}
+fun main() = Day.runDay(Y2018D23::class)
+
+//    Class creation: 37ms
+//    Part 1: 481 (2ms)
+//    Part 2: 47141479 (874ms)
+//    Total time: 914ms

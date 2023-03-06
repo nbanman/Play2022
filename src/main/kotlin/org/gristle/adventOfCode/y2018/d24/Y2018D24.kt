@@ -1,17 +1,16 @@
 package org.gristle.adventOfCode.y2018.d24
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2018D24(input: String) {
-    private val data = input.split("Infection:\r\n")
+class Y2018D24(input: String) : Day {
+    private val data = input.split("Infection:\n")
 
     private var boost = 0
-    
+
     private val selectionOrder =
         compareByDescending<ArmyUnit> { it.effectivePower(boost) }.thenByDescending { it.initiative }
-    
+
     data class ArmyUnit(
         val team: String,
         val group: Int,
@@ -38,7 +37,7 @@ class Y2018D24(input: String) {
         fun isImmune(other: ArmyUnit): Boolean = other.damageType in immunities
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         var immuneSystem = makeUnits("Immune System", data.first())
         var infection = makeUnits("Infection", data.last())
         // play rounds
@@ -64,16 +63,16 @@ class Y2018D24(input: String) {
         return (immuneSystem + infection).sumOf { it.units }
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         // play rounds
         var skipped: Boolean
-        loop@do {
+        loop@ do {
             skipped = false
             var immuneSystem = makeUnits("Immune System", data.first())
             var infection = makeUnits("Infection", data.last())
             boost++
             var round = 0
-            while(immuneSystem.isNotEmpty() && infection.isNotEmpty()) {
+            while (immuneSystem.isNotEmpty() && infection.isNotEmpty()) {
 
                 round++
                 val unitSum = immuneSystem.sumOf { it.units } + infection.sumOf { it.units }
@@ -141,18 +140,16 @@ class Y2018D24(input: String) {
             ArmyUnit(team, index + 1, units, hp, immunities, weaknesses, damage, damageType, initiative)
         }
 
-    private val pattern = """(\d+) units each with (\d+) hit points (?:\(([^)]+)\) )?with an attack that does (\d+) ([a-z]+) damage at initiative (\d+)""".toRegex()
+    private val pattern =
+        """(\d+) units each with (\d+) hit points (?:\(([^)]+)\) )?with an attack that does (\d+) ([a-z]+) damage at initiative (\d+)""".toRegex()
     private val patternWeak = """weak to ((?:[a-z]+(?:, )?)+)""".toRegex()
     private val patternImmune = """immune to ((?:[a-z]+(?:, )?)+)""".toRegex()
-    
+
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D24(readRawInput("y2018/d24"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 15165
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 4037
-}
+fun main() = Day.runDay(Y2018D24::class)
+
+//    Class creation: 14ms
+//    Part 1: 15165 (29ms)
+//    Part 2: 4037 (397ms)
+//    Total time: 440ms

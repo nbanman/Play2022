@@ -1,9 +1,13 @@
 package org.gristle.adventOfCode.y2018.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.mapToGridIndexed
+import org.gristle.adventOfCode.utilities.toGrid
 
 typealias CollectionArea = Grid<Char>
-class Y2018D18(input: String) {
+
+class Y2018D18(input: String) : Day {
 
     // Provides successive generations of the collection area, starting at minute 0 (initial).
     private val generator: Sequence<CollectionArea> = generateSequence(input.toGrid()) { prev ->
@@ -21,7 +25,7 @@ class Y2018D18(input: String) {
     private fun CollectionArea.resourceValue() = count { it == '|' } * count { it == '#' }
 
     // Generate 10 minutes' worth of changes, then get the resource value.
-    fun part1() = generator
+    override fun part1() = generator
         .take(11) // take 11 instead of 10 because the first is minute 0 (initial state)
         .last() // grab last generated value
         .resourceValue() // get resource value
@@ -29,7 +33,7 @@ class Y2018D18(input: String) {
     // Generates new states and stores the states in a cache. When the new state is the same as a previous state,
     // stop generating. The cache plus the first repeat value provides the information needed to provide the state
     // after 1 billion generations.
-    fun part2(): Int {
+    override fun part2(): Int {
         // Cache is a simple *ordered* Set of states. 
         val cache = mutableSetOf<CollectionArea>()
 
@@ -51,12 +55,9 @@ class Y2018D18(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D18(readRawInput("y2018/d18"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 605154
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 200364
-}
+fun main() = Day.runDay(Y2018D18::class)
+
+//    Class creation: 23ms
+//    Part 1: 605154 (50ms)
+//    Part 2: 200364 (375ms)
+//    Total time: 448ms

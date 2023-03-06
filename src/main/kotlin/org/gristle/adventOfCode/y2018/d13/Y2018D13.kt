@@ -1,8 +1,11 @@
 package org.gristle.adventOfCode.y2018.d13
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2018D13(private val input: String) {
+class Y2018D13(private val input: String) : Day {
 
     data class Car(
         val c: Coord,
@@ -27,8 +30,8 @@ class Y2018D13(private val input: String) {
         abstract fun advance(): TurnState
     }
 
-    fun solve(): Pair<Coord, Coord> {
-        val maze = input.toGrid()
+    val solution: Pair<Coord, Coord> = let {
+        val maze = "$input       ".toGrid()
         var firstCrash = Coord.ORIGIN
         var cars = maze
             .mapIndexedNotNull { index, c ->
@@ -99,16 +102,20 @@ class Y2018D13(private val input: String) {
                     }
                 }
             cars = cars
-                .filter { it.c !in crashLocations && !it.crashed}
+                .filter { it.c !in crashLocations && !it.crashed }
                 .sortedBy { maze.indexOf(it.c) }
         }
-        return firstCrash to cars.first().c
+        firstCrash to cars.first().c
     }
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2018D13(readRawInput("y2018/d13")).solve()
-    println("Part 1: $p1") // 86,118
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 2,81
-}
+fun main() = Day.runDay(Y2018D13::class)
+//    
+//    Class creation: 80ms
+//    Part 1: (86, 118) (0ms)
+//    Part 2: (2, 81) (0ms)
+//    Total time: 80ms

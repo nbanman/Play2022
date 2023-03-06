@@ -60,3 +60,8 @@ class Y2021D15(input: String) : Day {
 // pt. 1: 602 (78ms Dij) (64 aStar)
 // pt. 2: 2935 (461ms Dij) (327 aStar)
 fun main() = Day.runDay(15, 2021, Y2021D15::class)
+
+//    Class creation: 20ms
+//    Part 1: 602 (45ms)
+//    Part 2: 2935 (371ms)
+//    Total time: 437ms

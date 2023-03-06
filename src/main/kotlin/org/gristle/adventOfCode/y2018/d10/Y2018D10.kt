@@ -1,8 +1,9 @@
 package org.gristle.adventOfCode.y2018.d10
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 
-class Y2018D10(input: String) {
+class Y2018D10(input: String) : Day {
 
     data class MovingPoint(val pos: Coord, val vel: Coord)
 
@@ -14,23 +15,20 @@ class Y2018D10(input: String) {
 
     private fun List<MovingPoint>.move() = map { point -> point.copy(pos = point.pos + point.vel) }
 
-    private val answer = generateSequence (points) { it.move() }
+    private val answer = generateSequence(points) { it.move() }
         .withIndex()
         .first { (_, points) ->
             val (_, yRange) = points.map(MovingPoint::pos).minMaxRanges()
             yRange.last - yRange.first == 9
         }
-    
-    fun part1() = answer.value.map(MovingPoint::pos).toGraphicString('.').ocr()
-    fun part2() = answer.index
+
+    override fun part1() = answer.value.map(MovingPoint::pos).toGraphicString('.').ocr()
+    override fun part2() = answer.index
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D10(readRawInput("y2018/d10"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // LRCXFXRP
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 10630
-}
+fun main() = Day.runDay(Y2018D10::class)
+
+//    Class creation: 187ms
+//    Part 1: LRCXFXRP (10ms)
+//    Part 2: 10630 (0ms)
+//    Total time: 198ms

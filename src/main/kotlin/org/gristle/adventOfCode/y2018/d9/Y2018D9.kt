@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2018.d9
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2018D9(private val input: String) {
-    
+class Y2018D9(private val input: String) : Day {
+
     private val pattern = """(\d+) players; last marble is worth (\d+) points""".toRegex()
 
     class Dll<E>(val value: E, leftNode: Dll<E>? = null, rightNode: Dll<E>? = null) {
@@ -51,17 +50,15 @@ class Y2018D9(private val input: String) {
         }
         return scores.maxOf { it.amt }
     }
-    fun part1() = solve()
 
-    fun part2() = solve(100)
+    override fun part1() = solve()
+
+    override fun part2() = solve(100)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D9(readRawInput("y2018/d9"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 422980
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 3552041936
-}
+fun main() = Day.runDay(Y2018D9::class)
+
+//    Class creation: 17ms
+//    Part 1: 422980 (11ms)
+//    Part 2: 3552041936 (505ms)
+//    Total time: 533ms

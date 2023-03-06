@@ -1,18 +1,19 @@
 package org.gristle.adventOfCode.y2018.d14
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2018D14(input: String) {
+class Y2018D14(input: String) : Day {
     private val inputNum = input.toInt()
 
-    fun solve(): Pair<String, Int> {
+    private val solution: Pair<String, Int> = let {
         var size = 2
         val recipes = MutableList(30_000_000) { -1 }
         recipes[0] = 3
         recipes[1] = 7
         var elves = listOf(0, 1)
-        while (recipes.subList(maxOf(size - 7, 0), size - 1).joinToString("").toInt() != inputNum && size < recipes.size) {
+        while (recipes.subList(maxOf(size - 7, 0), size - 1).joinToString("")
+                .toInt() != inputNum && size < recipes.size
+        ) {
             val (ten, one) = elves.sumOf { recipes[it] }.let { it / 10 to it % 10 }
             if (ten != 0) {
                 recipes[size] = ten
@@ -25,13 +26,16 @@ class Y2018D14(input: String) {
                 (elf + (recipes[elf] + 1)) % size
             }
         }
-        return recipes.subList(inputNum, inputNum + 10).joinToString("") to size - 7
+        recipes.subList(inputNum, inputNum + 10).joinToString("") to size - 7
     }
+
+    override fun part1() = solution.first
+    override fun part2() = solution.second
 }
 
-fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2018D14(readRawInput("y2018/d14")).solve()
-    println("Part 1: $p1") // 4910101614
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 20253137
-}
+fun main() = Day.runDay(Y2018D14::class)
+
+//    Class creation: 5844ms
+//    Part 1: 4910101614 (0ms)
+//    Part 2: 20253137 (0ms)
+//    Total time: 5844ms

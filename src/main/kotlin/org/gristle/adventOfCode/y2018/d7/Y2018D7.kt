@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2018.d7
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2018D7(input: String) {
+class Y2018D7(input: String) : Day {
 
     val pattern = """Step ([A-Z]) must be finished before step ([A-Z]) can begin.""".toRegex()
 
@@ -24,7 +23,7 @@ class Y2018D7(input: String) {
 
     private val start = (instructions.map { it[0] }.toSet() - instructions.map { it[1] }.toSet())
 
-    fun part1(): String {
+    override fun part1(): String {
         val sb = StringBuilder()
         val potentials = start.toMutableList()
         while (potentials.isNotEmpty()) {
@@ -41,7 +40,7 @@ class Y2018D7(input: String) {
         return sb.toString()
     }
 
-    fun part2(workers: Int = 5, offset: Int = 60): Int {
+    fun solvePart2(workers: Int = 5, offset: Int = 60): Int {
         // done tracks the letters that have been delivered
         val done = mutableSetOf<Char>()
         // doneSize used to terminate the sequence. When "done" has all the letters, it will stop.
@@ -81,21 +80,20 @@ class Y2018D7(input: String) {
                 }
                 // match those letters to idle workers, and start the workers working on them. Remove from
                 // potentials pool
-                workerPool.filter{ it.workingOn == '.' }.zip(vettedPotentials).forEach { (worker, c) ->
+                workerPool.filter { it.workingOn == '.' }.zip(vettedPotentials).forEach { (worker, c) ->
                     worker.workingOn = c
                     worker.whenReady = sec + offset + c.code - 64
                     potentials.remove(c)
                 }
             }.first { done.size == doneSize }
     }
+
+    override fun part2() = solvePart2()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D7(readRawInput("y2018/d7"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // ABGKCMVWYDEHFOPQUILSTNZRJX
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 898
-}
+fun main() = Day.runDay(Y2018D7::class)
+//    
+//    Class creation: 24ms
+//    Part 1: ABGKCMVWYDEHFOPQUILSTNZRJX (2ms)
+//    Part 2: 898 (8ms)
+//    Total time: 34ms

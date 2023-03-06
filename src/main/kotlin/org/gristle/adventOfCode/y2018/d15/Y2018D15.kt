@@ -2,6 +2,7 @@
 
 package org.gristle.adventOfCode.y2018.d15
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 
 /**
@@ -52,7 +53,7 @@ fun Grid<Y2018D15.Entity>.print(round: Int, finishMidRound: Boolean = false) {
     println(rep)
 }
 
-class Y2018D15(val input: String) {
+class Y2018D15(val input: String) : Day {
 
     /**
      * Classes and objects to define the game elements
@@ -210,22 +211,19 @@ class Y2018D15(val input: String) {
         return victor to round * hp
     }
 
-    fun part1() = solve(3).second
+    override fun part1() = solve(3).second
 
     // Plays the game several times, each time increasing elven damage until the elves with without losing
     // a single Elf.
-    fun part2() = generateSequence(4) { it + 1 }
+    override fun part2() = generateSequence(4) { it + 1 }
         .map { solve(it) }
         .first { (victor, _) -> victor == "Elves" }
         .second
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D15(readRawInput("y2018/d15"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 224370
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 45539
-}
+fun main() = Day.runDay(Y2018D15::class)
+
+//    Class creation: 17ms
+//    Part 1: 224370 (703ms)
+//    Part 2: 45539 (3326ms)
+//    Total time: 4047ms

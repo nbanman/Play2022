@@ -1,8 +1,12 @@
 package org.gristle.adventOfCode.y2018.d17
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.MutableGrid
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.toMutableGrid
 
-class Y2018D17(private val input: String) {
+class Y2018D17(private val input: String) : Day {
 
     private data class Directive(val xRange: IntRange, val yRange: IntRange)
 
@@ -37,7 +41,7 @@ class Y2018D17(private val input: String) {
         for (x in leftMost..rightMost) { cavern[x, coord.y] = fill }
     }
 
-    fun solve(): Pair<Int, Int> {
+    val solution: Pair<Int, Int> = let {
         var minY = 0
         val cavern = input
             .groupValues("""([xy])=(\d+), [xy]=(\d+)\.\.(\d+)""")
@@ -88,14 +92,18 @@ class Y2018D17(private val input: String) {
             currentSpoutSpots = cavern.spoutSpots()
             currentPoolSpots = cavern.poolSpots()
         }
-        return cavern.drop(minY * cavern.width).count { it in "|~" } to  
-            cavern.drop(minY * cavern.width).count { it in "~" }
+        cavern.drop(minY * cavern.width).count { it in "|~" } to
+                cavern.drop(minY * cavern.width).count { it in "~" }
     }
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2018D17(readRawInput("y2018/d17")).solve()
-    println("Part 1: $p1") // 40879
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 34693
-}
+fun main() = Day.runDay(Y2018D17::class)
+
+//    Class creation: 12948ms
+//    Part 1: 40879 (0ms)
+//    Part 2: 34693 (0ms)
+//    Total time: 12948ms

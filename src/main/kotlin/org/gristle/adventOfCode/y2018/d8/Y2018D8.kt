@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2018.d8
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2018D8(input: String) {
+class Y2018D8(input: String) : Day {
 
     private val licence = input.split(' ').map(String::toInt)
 
@@ -54,17 +53,14 @@ class Y2018D8(input: String) {
 
     private val licenseTree = Node.of(licence)
 
-    fun part1() = licenseTree.sumOfMetadata
+    override fun part1() = licenseTree.sumOfMetadata
 
-    fun part2() = licenseTree.value
+    override fun part2() = licenseTree.value
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D8(readRawInput("y2018/d8"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 36027
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 23960
-}
+fun main() = Day.runDay(Y2018D8::class)
+
+//    Class creation: 96ms
+//    Part 1: 36027 (1ms)
+//    Part 2: 23960 (0ms)
+//    Total time: 98ms

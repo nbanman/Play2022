@@ -1,10 +1,11 @@
 package org.gristle.adventOfCode.y2018.d20
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 import org.gristle.adventOfCode.utilities.Graph.steps
 import java.util.*
 
-class Y2018D20(private val input: String) {
+class Y2018D20(private val input: String) : Day {
 
     private fun makeMap(): Grid<Char> {
         val length = input.length / 2 + 20
@@ -56,11 +57,9 @@ class Y2018D20(private val input: String) {
         val bottomRight = map.lastCoordOfElement('#')
         val gridSizes = bottomRight - topLeft
 
-        val returnMap = map
+        return map
             .subGrid(topLeft, gridSizes.x + 1, gridSizes.y + 1)
             .let { m -> m.mapToGrid { if (it == '?') '#' else it } }
-
-        return returnMap
     }
 
     private val area = makeMap()
@@ -70,16 +69,13 @@ class Y2018D20(private val input: String) {
             .map { area.coordOf(it) }
     }
 
-    fun part1() = distances.steps() / 2
-    fun part2() = distances.count { area[it.id] == '.' && it.weight >= 2000 }
+    override fun part1() = distances.steps() / 2
+    override fun part2() = distances.count { area[it.id] == '.' && it.weight >= 2000 }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D20(readRawInput("y2018/d20"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3930
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 8240
-}
+fun main() = Day.runDay(Y2018D20::class)
+
+//    Class creation: 1729ms
+//    Part 1: 3930 (0ms)
+//    Part 2: 8240 (8ms)
+//    Total time: 1738ms

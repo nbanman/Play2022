@@ -1,24 +1,23 @@
 package org.gristle.adventOfCode.y2018.d16
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
 fun List<Int>.store(location: Int, result: Int) = mapIndexed { index, i ->
     if (index == location) result else i
 }
 
-class Y2018D16(private val input: String) {
+class Y2018D16(private val input: String) : Day {
     private enum class Ops(val fn: (reg: List<Int>, a: Int, b: Int, c: Int) -> List<Int>) {
-        ADDR( { reg, a, b, c -> reg.store(c, reg[a] + reg[b]) } ),
-        ADDI( { reg, a, b, c -> reg.store(c, reg[a] + b) } ),
-        MULR( { reg, a, b, c -> reg.store(c, reg[a] * reg[b]) } ),
-        MULI( { reg, a, b, c -> reg.store(c, reg[a] * b) } ),
-        BANR( { reg, a, b, c -> reg.store(c, reg[a] and reg[b]) } ),
-        BANI( { reg, a, b, c -> reg.store(c, reg[a] and b) } ),
-        BORR( { reg, a, b, c -> reg.store(c, reg[a] or reg[b]) } ),
-        BORI( { reg, a, b, c -> reg.store(c, reg[a] or b) } ),
-        SETR( { reg, a, _, c -> reg.store(c, reg[a]) } ),
+        ADDR({ reg, a, b, c -> reg.store(c, reg[a] + reg[b]) }),
+        ADDI({ reg, a, b, c -> reg.store(c, reg[a] + b) }),
+        MULR({ reg, a, b, c -> reg.store(c, reg[a] * reg[b]) }),
+        MULI({ reg, a, b, c -> reg.store(c, reg[a] * b) }),
+        BANR({ reg, a, b, c -> reg.store(c, reg[a] and reg[b]) }),
+        BANI({ reg, a, b, c -> reg.store(c, reg[a] and b) }),
+        BORR({ reg, a, b, c -> reg.store(c, reg[a] or reg[b]) }),
+        BORI({ reg, a, b, c -> reg.store(c, reg[a] or b) }),
+        SETR({ reg, a, _, c -> reg.store(c, reg[a]) }),
         SETI( { reg, a, _, c -> reg.store(c, a) } ),
         GTIR( { reg, a, b, c -> reg.store(c, if (a > reg[b]) 1 else 0) } ),
         GTRI( { reg, a, b, c -> reg.store(c, if (reg[a] > b) 1 else 0) } ),
@@ -29,7 +28,7 @@ class Y2018D16(private val input: String) {
     }
     
     private val pattern =
-        """Before: \[(\d+), (\d+), (\d+), (\d+)]\r\n(\d+) (\d+) (\d+) (\d+)\r\nAfter: {2}\[(\d+), (\d+), (\d+), (\d+)]""".toRegex()
+        """Before: \[(\d+), (\d+), (\d+), (\d+)]\n(\d+) (\d+) (\d+) (\d+)\nAfter: {2}\[(\d+), (\d+), (\d+), (\d+)]""".toRegex()
 
     private data class Trainer(val before: List<Int>, val after: List<Int>, val opcode: Int,
                                val a: Int, val b: Int, val c: Int) {
@@ -44,10 +43,10 @@ class Y2018D16(private val input: String) {
             val after = listOf(gvi[8], gvi[9], gvi[10], gvi[11])
             Trainer(before, after, gvi[4], gvi[5], gvi[6], gvi[7])
         }
-    
-    fun part1() = trainers.count { it.validOps().size >= 3 }
 
-    fun part2(): Int {
+    override fun part1() = trainers.count { it.validOps().size >= 3 }
+
+    override fun part2(): Int {
         var trainers = this.trainers
         val ops = Ops.values().toMutableSet()
         val translator = mutableMapOf<Int, Ops>()
@@ -74,12 +73,9 @@ class Y2018D16(private val input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2018D16(readRawInput("y2018/d16"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 529
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 573
-}
+fun main() = Day.runDay(Y2018D16::class)
+
+//    Class creation: 34ms
+//    Part 1: 529 (19ms)
+//    Part 2: 573 (32ms)
+//    Total time: 85ms
