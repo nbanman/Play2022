@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2020.d24
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Hexagon
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2020D24(input: String) {
+class Y2020D24(input: String) : Day {
 
     val pattern = "(nw|ne|sw|se|w|e)".toRegex()
     private val rules = input
@@ -32,9 +31,9 @@ class Y2020D24(input: String) {
         }
     }
 
-    fun part1() = flipped.count { it.value }
+    override fun part1() = flipped.count { it.value }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         fun hexRing(n: Int): List<Hexagon> = buildList {
             for (r in 0..n) add(Hexagon(-n, r))
             for (q in -(n - 1)..0) {
@@ -68,12 +67,9 @@ class Y2020D24(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D24(readRawInput("y2020/d24"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 244
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 3665
-}
+fun main() = Day.runDay(Y2020D24::class)
+
+//    Class creation: 39ms
+//    Part 1: 244 (2ms)
+//    Part 2: 3665 (1101ms)
+//    Total time: 1142ms

@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2021.d21
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.max
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2021D21(input: String) {
+class Y2021D21(input: String) : Day {
 
     class DeterministicDie {
         private var die = 0
@@ -59,7 +58,7 @@ class Y2021D21(input: String) {
     private val p1Start = matchValues.first()
     private val p2Start = matchValues.last()
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val game = Game(10)
         return game.play(p1Start, p2Start).solve()
     }
@@ -79,15 +78,12 @@ class Y2021D21(input: String) {
         return w1 to w2
     }
 
-    fun part2() = wins(p1Start - 1, 21, p2Start - 1, 21).max()
+    override fun part2() = wins(p1Start - 1, 21, p2Start - 1, 21).max()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D21(readRawInput("y2021/d21"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 605070
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 218433063958910
-}
+fun main() = Day.runDay(Y2021D21::class)
+
+//    Class creation: 17ms
+//    Part 1: 605070 (2ms)
+//    Part 2: 218433063958910 (1004ms)
+//    Total time: 1024ms

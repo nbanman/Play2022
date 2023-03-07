@@ -57,4 +57,4 @@ class Y2016D14(private val input: String) : Day {
     override fun part2() = solve { it.stretchedMd5() }
 }
 
-fun main() = Day.runDay(14, 2016, Y2016D14::class) // 18626 (124ms), 20092 (11571ms)
+fun main() = Day.runDay(Y2016D14::class) // 18626 (124ms), 20092 (11571ms)

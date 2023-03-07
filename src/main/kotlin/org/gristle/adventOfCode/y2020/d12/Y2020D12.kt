@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2020.d12
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2020D12(input: String) {
+class Y2020D12(input: String) : Day {
 
     // Holds instruction info
     data class Instruction(val action: Char, val amount: Int)
@@ -59,17 +58,14 @@ class Y2020D12(input: String) {
         .fold(initialShipState, ShipState::nextState)
         .manhattanDistance()
 
-    fun part1() = solve(DirShipState(Coord.ORIGIN, Nsew.EAST))
+    override fun part1() = solve(DirShipState(Coord.ORIGIN, Nsew.EAST))
 
-    fun part2() = solve(WaypointShipState(Coord.ORIGIN, Coord(10, -1)))
+    override fun part2() = solve(WaypointShipState(Coord.ORIGIN, Coord(10, -1)))
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D12(readRawInput("y2020/d12"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2280
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 38693
-}
+fun main() = Day.runDay(Y2020D12::class)
+
+//    Class creation: 26ms
+//    Part 1: 2280 (4ms)
+//    Part 2: 38693 (3ms)
+//    Total time: 35ms

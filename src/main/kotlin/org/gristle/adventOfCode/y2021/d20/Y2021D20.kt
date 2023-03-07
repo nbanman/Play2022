@@ -1,6 +1,10 @@
 package org.gristle.adventOfCode.y2021.d20
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.stripCarriageReturns
+import org.gristle.adventOfCode.utilities.toGrid
 
 /*
 This one broke my brain, needed help. You will notice a resemblance to /u/jkpr's solution. 
@@ -9,7 +13,7 @@ Mine is essentially the same as his but uses my Grid/Coord objects instead of Li
 and nested for loops.
 */
 
-class Y2021D20(input: String) {
+class Y2021D20(input: String) : Day {
     private val data = input.stripCarriageReturns()
     private val inputSplit = data.split("\n\n")
     private val algorithm = inputSplit[0].map { it == '#' }
@@ -49,17 +53,14 @@ class Y2021D20(input: String) {
         return result.count { it }
     }
 
-    fun part1() = enhance(2)
+    override fun part1() = enhance(2)
 
-    fun part2() = enhance(50)
+    override fun part2() = enhance(50)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D20(readRawInput("y2021/d20"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 5786
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 16757
-}
+fun main() = Day.runDay(Y2021D20::class)
+
+//    Class creation: 24ms
+//    Part 1: 5786 (79ms)
+//    Part 2: 16757 (924ms)
+//    Total time: 1027ms

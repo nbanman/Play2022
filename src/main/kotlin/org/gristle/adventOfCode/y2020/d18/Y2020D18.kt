@@ -1,19 +1,20 @@
 package org.gristle.adventOfCode.y2020.d18
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.stripCarriageReturns
 
-class Y2020D18(input: String) {
+class Y2020D18(input: String) : Day {
 
     sealed class SubExpression(val length: Int) {
 
         object Plus : SubExpression(1) {
             override fun toString() = "+"
         }
+
         object Times : SubExpression(1) {
             override fun toString() = "*"
         }
+
         class Parens(val components: List<SubExpression>, length: Int) : SubExpression(length) {
             companion object {
                 fun fromString(s: String): Parens {
@@ -114,17 +115,14 @@ class Y2020D18(input: String) {
         return (ml.first() as SubExpression.Num).value
     }
 
-    fun part1() = expressions.sumOf { it.p1Eval() }
+    override fun part1() = expressions.sumOf { it.p1Eval() }
 
-    fun part2() = expressions.sumOf { it.p2Eval() }
+    override fun part2() = expressions.sumOf { it.p2Eval() }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D18(readRawInput("y2020/d18"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 510009915468
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 321176691637769
-}
+fun main() = Day.runDay(Y2020D18::class)
+
+//    Class creation: 35ms
+//    Part 1: 510009915468 (3ms)
+//    Part 2: 321176691637769 (3ms)
+//    Total time: 42ms

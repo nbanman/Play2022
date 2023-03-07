@@ -40,4 +40,4 @@ class Y2016D16(private val input: String) : Day {
 
 // String-based times: (creation, 9ms; pt1, 1ms; pt2, 4321ms)
 // BooleanArray-based times: (creation, 5ms; pt1, 0ms; pt2, 252ms)
-fun main() = Day.runDay(16, 2016, Y2016D16::class) // 10010101010011101, 01100111101101111 
+fun main() = Day.runDay(Y2016D16::class) // 10010101010011101, 01100111101101111 

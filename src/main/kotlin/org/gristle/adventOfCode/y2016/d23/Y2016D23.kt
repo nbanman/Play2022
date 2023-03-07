@@ -21,7 +21,7 @@ class Y2016D23(input: String) : Day {
     override fun part2() = (1..12).reduce { acc, i -> acc * i } + 94 * 82
 }
 
-fun main() = Day.runDay(23, 2016, Y2016D23::class)
+fun main() = Day.runDay(Y2016D23::class)
 
 //Class creation: 19ms
 //Part 1: 12748 (19ms)

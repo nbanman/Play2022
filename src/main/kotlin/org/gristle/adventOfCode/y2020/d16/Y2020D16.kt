@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2020.d16
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.transpose
 
-class Y2020D16(input: String) {
+class Y2020D16(input: String) : Day {
 
     data class Rule(val name: String, val lowRange: IntRange, val hiRange: IntRange) {
         fun validFor(values: Iterable<Int>) = values.all { it in lowRange || it in hiRange }
@@ -24,14 +23,14 @@ class Y2020D16(input: String) {
         .toList()
         .map { result -> result.value.split(',').map { it.toInt() } }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         return tickets
             .flatten()
             .filter { value -> rules.all { value !in it.lowRange && value !in it.hiRange } }
             .sum()
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val validTickets = tickets
             .filter { ticket ->
                 ticket.all { value -> rules.any { value in it.lowRange || value in it.hiRange } }
@@ -52,16 +51,13 @@ class Y2020D16(input: String) {
         return rules
             .filter { it.name.startsWith("departure") }
             .map { validTickets.first()[register[it]!!] }
-            .fold (1L) { acc, i -> acc * i }
+            .fold(1L) { acc, i -> acc * i }
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D16(readRawInput("y2020/d16"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 29878
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 855438643439
-}
+fun main() = Day.runDay(Y2020D16::class)
+
+//    Class creation: 32ms
+//    Part 1: 29878 (2ms)
+//    Part 2: 855438643439 (8ms)
+//    Total time: 42ms

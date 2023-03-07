@@ -21,7 +21,7 @@ class Y2017D10(private val input: String) : Day {
     override fun part2() = denseHash(input.map { it.code } + listOf(17, 31, 73, 47, 23))
 }
 
-fun main() = Day.runDay(10, 2017, Y2017D10::class)
+fun main() = Day.runDay(Y2017D10::class)
 
 //    Class creation: 11ms
 //    Part 1: 23874 (1ms)

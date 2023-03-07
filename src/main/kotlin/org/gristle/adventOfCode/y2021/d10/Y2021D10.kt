@@ -62,7 +62,7 @@ class Y2021D10(input: String) : Day {
         .let { it[it.size / 2] } // returns the middle score
 }
 
-fun main() = Day.runDay(10, 2021, Y2021D10::class)
+fun main() = Day.runDay(Y2021D10::class)
 
 //    Class creation: 23ms
 //    Part 1: 167379 (3ms)

@@ -39,7 +39,7 @@ class Y2016D8(input: String) : Day {
     override fun part2() = screen.ocr()
 }
 
-fun main() = Day.runDay(8, 2016, Y2016D8::class)
+fun main() = Day.runDay(Y2016D8::class)
 
 //    Class creation: 24ms
 //    Part 1: 123 (0ms)

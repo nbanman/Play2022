@@ -11,4 +11,4 @@ class Y2016D6(input: String) : Day {
     override fun part2() = columns.map { column -> column.minBy { it.value }.key }.joinToString("")
 }
 
-fun main() = Day.runDay(6, 2016, Y2016D6::class) // asvcbhvg, odqnikqv
+fun main() = Day.runDay(Y2016D6::class) // asvcbhvg, odqnikqv

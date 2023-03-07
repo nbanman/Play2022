@@ -1,13 +1,12 @@
 package org.gristle.adventOfCode.y2020.d9
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import kotlin.math.max
 
-class Y2020D9(input: String) {
+class Y2020D9(input: String) : Day {
 
     private val numbers = input.lines().map { it.toLong() }
-    fun part1(): Long {
+    override fun part1(): Long {
         val preamble = 25
         // Prep cache
         val cache = mutableMapOf<Long, Int>()
@@ -30,7 +29,7 @@ class Y2020D9(input: String) {
         return -1L
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val weakness = part1()
         var l = 0
         var u = 1
@@ -57,12 +56,9 @@ class Y2020D9(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D9(readRawInput("y2020/d9"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 552655238
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 70672245
-}
+fun main() = Day.runDay(Y2020D9::class)
+
+//    Class creation: 28ms
+//    Part 1: 552655238 (9ms)
+//    Part 2: 70672245 (8ms)
+//    Total time: 46ms

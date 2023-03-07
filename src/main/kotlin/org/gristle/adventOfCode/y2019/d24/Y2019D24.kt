@@ -1,8 +1,9 @@
 package org.gristle.adventOfCode.y2019.d24
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 
-class Y2019D24(input: String) {
+class Y2019D24(input: String) : Day {
 
     private val erisOriginal = input.toGrid().mapToGrid { it == '#' }
 
@@ -46,14 +47,14 @@ class Y2019D24(input: String) {
         adjacentBugs == 1 || (!b && adjacentBugs == 2)
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val ratings = mutableSetOf<Int>() // tracks ratings so that sequence can stop when rating appears twice 
         return generateSequence(erisOriginal) { it.advance() } // base GoL sequence 
             .map { it.toInt() } // converted to biodiversity rating
             .first { !ratings.add(it) } // add rating to ratings and return the first rating that is a repeat
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val iterations = 200
         var eris = List(301) { i -> if (i == 150) erisOriginal.toInt() else 0 }
         var lowerBound = 149
@@ -133,12 +134,9 @@ class Y2019D24(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D24(readRawInput("y2019/d24"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 18852849
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1948
-}
+fun main() = Day.runDay(Y2019D24::class)
+
+//    Class creation: 20ms
+//    Part 1: 18852849 (8ms)
+//    Part 2: 1948 (58ms)
+//    Total time: 87ms

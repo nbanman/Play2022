@@ -1,15 +1,14 @@
 package org.gristle.adventOfCode.y2019.d23
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-class Y2019D23(private val input: String) {
+class Y2019D23(private val input: String) : Day {
 
     data class Nat(val x: Long, val y: Long)
 
-    fun solve(): Pair<Long, Long> {
+    private fun solve(): Pair<Long, Long> {
         val initialState = input.split(',').map { it.toLong() }
         val inputs = List(50) { LinkedList<Long>() }
         val outputs = List(50) { LinkedList<Long>() }
@@ -46,14 +45,17 @@ class Y2019D23(private val input: String) {
         }
         return nat.first().y to lastYSent
     }
+
+    private val solution = solve()
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D23(readRawInput("y2019/d23"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    val (p1, p2) = c.solve()
-    println("Part 1: $p1") // 23701
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 17225
-}
+fun main() = Day.runDay(Y2019D23::class)
+
+//    Class creation: 99ms
+//    Part 1: 23701 (0ms)
+//    Part 2: 17225 (0ms)
+//    Total time: 99ms

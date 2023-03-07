@@ -26,4 +26,4 @@ class Y2016D13(input: String) : Day {
     override fun part2() = distances.count { it.weight <= 50 }
 }
 
-fun main() = Day.runDay(13, 2016, Y2016D13::class) // 92, 124
+fun main() = Day.runDay(Y2016D13::class) // 92, 124

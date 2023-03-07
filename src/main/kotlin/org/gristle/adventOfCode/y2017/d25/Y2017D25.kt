@@ -90,7 +90,7 @@ class Y2017D25(input: String) : Day {
     override fun part2() = "Merry Xmas!!!"
 }
 
-fun main() = Day.runDay(25, 2017, Y2017D25::class)
+fun main() = Day.runDay(Y2017D25::class)
 
 //    Class creation: 10ms
 //    Part 1: 3745 (150ms)

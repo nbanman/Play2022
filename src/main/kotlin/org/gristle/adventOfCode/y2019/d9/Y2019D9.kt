@@ -1,34 +1,30 @@
 package org.gristle.adventOfCode.y2019.d9
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 
-class Y2019D9(input: String) {
+class Y2019D9(input: String) : Day {
 
     private val initialState = input
         .split(',')
         .map { it.toLong() }
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val computer = IntCode("A", initialState, 1L)
         computer.run()
         return computer.output.peekLast()
-    } 
+    }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val computer = IntCode("B", initialState, 2L)
         computer.run()
         return computer.output.peekLast()
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D9(readRawInput("y2019/d9"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2870072642
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 58534
-}
+fun main() = Day.runDay(Y2019D9::class)
+
+//    Class creation: 19ms
+//    Part 1: 2870072642 (2ms)
+//    Part 2: 58534 (84ms)
+//    Total time: 105ms

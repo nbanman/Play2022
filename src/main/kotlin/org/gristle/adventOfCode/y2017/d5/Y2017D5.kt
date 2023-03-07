@@ -24,7 +24,7 @@ class Y2017D5(input: String) : Day {
     override fun part2() = solve { jumps -> if (jumps >= 3) -1 else 1 }
 }
 
-fun main() = Day.runDay(5, 2017, Y2017D5::class)
+fun main() = Day.runDay(Y2017D5::class)
 
 //    Class creation: 22ms
 //    Part 1: 373160 (29ms)

@@ -52,7 +52,7 @@ class Y2021D12(private val input: String) : Day {
     override fun part2() = findPaths(true)
 }
 
-fun main() = Day.runDay(12, 2021, Y2021D12::class)
+fun main() = Day.runDay(Y2021D12::class)
 
 //    (417ms old, 130ms new)
 

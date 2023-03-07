@@ -38,7 +38,7 @@ class Y2017D9(private val input: String) : Day {
 }
 
 
-fun main() = Day.runDay(9, 2017, Y2017D9::class)
+fun main() = Day.runDay(Y2017D9::class)
 
 //    Class creation: 15ms
 //    Part 1: 9251 (0ms)

@@ -43,7 +43,7 @@ class Y2021D11(input: String) : Day {
     override fun part2() = flashSequence.indexOfFirst { it == grid.size } + 1
 }
 
-fun main() = Day.runDay(11, 2021, Y2021D11::class)
+fun main() = Day.runDay(Y2021D11::class)
 
 //    Class creation: 15ms
 //    Part 1: 1669 (28ms)

@@ -68,4 +68,4 @@ class Y2016D9(private val input: String) : Day {
     override fun part2() = p2Decompress(input)
 }
 
-fun main() = Day.runDay(9, 2016, Y2016D9::class) // 110346, 10774309173 
+fun main() = Day.runDay(Y2016D9::class) // 110346, 10774309173 

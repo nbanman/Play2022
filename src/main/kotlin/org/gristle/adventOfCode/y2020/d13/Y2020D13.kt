@@ -43,4 +43,4 @@ class Y2020D13(input: String) : Day {
     override fun part2() = crt(buses).let { it.id - it.offset }
 }
 
-fun main() = Day.runDay(13, 2020, Y2020D13::class) // 115, 756261495958122
+fun main() = Day.runDay(Y2020D13::class) // 115, 756261495958122

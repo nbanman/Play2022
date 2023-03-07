@@ -1,10 +1,14 @@
 package org.gristle.adventOfCode.y2019.d11
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.ocr
+import org.gristle.adventOfCode.utilities.toGrid
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-class Y2019D11(input: String) {
+class Y2019D11(input: String) : Day {
 
     private val initialData = input.split(',').map { it.toLong() }
 
@@ -36,7 +40,7 @@ class Y2019D11(input: String) {
         }
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val grid = mutableMapOf<Coord, Panel>()
         val fromRobot = LinkedList<Long>()
         val fromComputer = LinkedList<Long>()
@@ -48,9 +52,9 @@ class Y2019D11(input: String) {
             robot.run()
         }
         return grid.values.count { it.numPainted >= 1 }
-    } 
+    }
 
-    fun part2(): String {
+    override fun part2(): String {
         val grid = mutableMapOf<Coord, Panel>()
         grid[Coord(0, 0)] = Panel(Paint.WHITE)
         val fromRobot = LinkedList<Long>()
@@ -70,19 +74,19 @@ class Y2019D11(input: String) {
         val width = maxX - minX + 1
         val height = maxY - minY + 1
 
-        val printGrid = List(width * height) { i->
+        val printGrid = List(width * height) { i ->
             if (grid[Coord(i % width + minX, i / width + minY)]?.paint == Paint.WHITE) '#' else '.'
         }.toGrid(width)
         return printGrid.ocr()
-    } 
+    }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D11(readRawInput("y2019/d11"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2720
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // JZPJRAGJ
-}
+fun main() = Day.runDay(Y2019D11::class)
+//    var time = System.nanoTime()
+//    val c = Y2019D11(readRawInput("y2019/d11"))
+//    println("Class creation: ${elapsedTime(time)}ms")
+//    time = System.nanoTime()
+//    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2720
+//    time = System.nanoTime()
+//    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // JZPJRAGJ
+//}

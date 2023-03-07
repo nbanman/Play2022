@@ -17,9 +17,9 @@ class Y[[YEAR]]D[[DAY]](input: String) {
     private val parsed = input
         .groupValues(pattern)
 
-    fun part1() = parsed
+    override fun part1() = parsed
 
-    fun part2() = parsed
+    override fun part2() = parsed
 }
 
 fun main() {

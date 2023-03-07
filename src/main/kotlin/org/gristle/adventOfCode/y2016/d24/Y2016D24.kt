@@ -61,7 +61,7 @@ class Y2016D24(input: String) : Day {
     override fun part2() = solve { it.location == '0' && it.numbersVisited.size == numbers.size }
 }
 
-fun main() = Day.runDay(24, 2016, Y2016D24::class)
+fun main() = Day.runDay(Y2016D24::class)
 
 //Class creation: 95ms
 //Part 1: 470 (9ms)

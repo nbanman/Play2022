@@ -118,7 +118,7 @@ class Y2021D18(input: String) : Day {
         }.max()
 }
 
-fun main() = Day.runDay(18, 2021, Y2021D18::class)
+fun main() = Day.runDay(Y2021D18::class)
 
 //    Class creation: 26ms
 //    Part 1: 3806 (153ms)

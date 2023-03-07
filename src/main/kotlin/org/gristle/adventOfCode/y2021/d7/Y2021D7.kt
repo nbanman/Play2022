@@ -31,7 +31,7 @@ class Y2021D7(input: String) : Day {
     override fun part2() = crabs.optimalAlignmentCost { (1..it).sum() }
 }
 
-fun main() = Day.runDay(7, 2021, Y2021D7::class)
+fun main() = Day.runDay(Y2021D7::class)
 
 //    Class creation: 7ms
 //    Part 1: 343468 (6ms)

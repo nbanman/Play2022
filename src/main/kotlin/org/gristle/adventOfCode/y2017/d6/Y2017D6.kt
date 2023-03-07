@@ -29,7 +29,7 @@ class Y2017D6(input: String) : Day {
         .let { (set, last) -> set.size - set.indexOf(last) }
 }
 
-fun main() = Day.runDay(6, 2017, Y2017D6::class)
+fun main() = Day.runDay(Y2017D6::class)
 
 //    Class creation: 5ms
 //    Part 1: 12841 (20ms)

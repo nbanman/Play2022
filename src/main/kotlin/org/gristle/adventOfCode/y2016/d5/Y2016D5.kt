@@ -33,4 +33,4 @@ class Y2016D5(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(5, 2016, Y2016D5::class) // 4543c154, 1050cbbd
+fun main() = Day.runDay(Y2016D5::class) // 4543c154, 1050cbbd

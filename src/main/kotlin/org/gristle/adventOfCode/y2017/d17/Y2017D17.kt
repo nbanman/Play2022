@@ -30,4 +30,4 @@ class Y2017D17(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(17, 2017, Y2017D17::class)
+fun main() = Day.runDay(Y2017D17::class)

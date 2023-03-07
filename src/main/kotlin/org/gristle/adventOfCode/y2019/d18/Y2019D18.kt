@@ -1,11 +1,15 @@
 package org.gristle.adventOfCode.y2019.d18
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.toGrid
+import org.gristle.adventOfCode.utilities.toMutableGrid
 
 // Refactored: much slower but much cleaner code. Not as fast because the previous version relied on 
 // a custom Dijkstra algorithm that had a more effective cache to eliminate possible paths.
 
-class Y2019D18(input: String) {
+class Y2019D18(input: String) : Day {
     class Edge(val node: Node, val weight: Int) {
         override fun toString(): String {
             return "E1918(node=${node.locator}, weight=$weight)"
@@ -137,9 +141,9 @@ class Y2019D18(input: String) {
         return solveDistance.last().weight.toInt()
     }
 
-    fun part1() = solve(tunnels, listOf('@'))
+    override fun part1() = solve(tunnels, listOf('@'))
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val quadrants = tunnels.toMutableGrid().apply {
             val originalStart = indexOf('@')
             val wallIndices = getNeighborIndices(originalStart)
@@ -152,12 +156,9 @@ class Y2019D18(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D18(readRawInput("y2019/d18"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 3918
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2004
-}
+fun main() = Day.runDay(Y2019D18::class)
+
+//    Class creation: 24ms
+//    Part 1: 3918 (665ms)
+//    Part 2: 2004 (3487ms)
+//    Total time: 4176ms

@@ -1,9 +1,13 @@
 package org.gristle.adventOfCode.y2019.d20
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Graph.steps
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2019D20(input: String) {
+class Y2019D20(input: String) : Day {
 
     class E1920(val node: N1920, val weight: Int) {
         override fun toString(): String {
@@ -120,7 +124,7 @@ class Y2019D20(input: String) {
 
     }
 
-    private val maze = input.toGrid()
+    private val maze = "$input                                     ".toGrid()
     private val nodes = maze.mapIndexed { index, c -> N1920(c, index, maze) }.toGrid(maze.width).apply {
         forEach { it.getEdges(this) }
         forEach(N1920::safeDelete)
@@ -128,7 +132,7 @@ class Y2019D20(input: String) {
     private val start = nodes.find { it.name == "start" }!!
     private val end = nodes.find { it.name == "end" }!!
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val p1Nodes = nodes
             .filter { !it.safeToDelete }
             .map {
@@ -143,13 +147,14 @@ class Y2019D20(input: String) {
         val distance = Graph.dijkstra(start.locator, { u -> u == end.locator }, p1Nodes)
         return distance.steps()
     }
-    
-    fun part2(): Int {
+
+    override fun part2(): Int {
         data class DId1920(val index: Int, val name: String, val level: Int = 0) {
             override fun toString(): String {
                 return "DId1920(index=$index, coord=${nodes.coordOf(index)}, name='$name', level=$level)"
             }
         }
+
         val distance = Graph.dijkstra(
             DId1920(start.locator, start.name),
             { u -> u == DId1920(end.locator, end.name) }
@@ -182,12 +187,9 @@ class Y2019D20(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D20(readRawInput("y2019/d20"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 528
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 6214
-}
+fun main() = Day.runDay(Y2019D20::class)
+
+//    Class creation: 87ms
+//    Part 1: 528 (4ms)
+//    Part 2: 6214 (52ms)
+//    Total time: 144ms

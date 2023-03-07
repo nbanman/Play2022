@@ -1,9 +1,10 @@
 package org.gristle.adventOfCode.y2020.d20
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 import kotlin.math.sqrt
 
-class Y2020D20(input: String) {
+class Y2020D20(input: String) : Day {
 
     data class TileOrient(val tile: Tile, val nsew: Nsew = Nsew.NORTH, val flipped: Boolean = false) {
 
@@ -92,13 +93,13 @@ class Y2020D20(input: String) {
             Tile(id, image)
         }
 
-    fun part1(): Long {
+    override fun part1(): Long {
         return tiles
             .filter { it.matchingTiles.size == 4 }
             .fold(1L) { acc, tile -> acc * tile.id }
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         // form grid
         val width = sqrt(tiles.size.toFloat()).toInt()
         val matchFour = tiles
@@ -150,12 +151,10 @@ class Y2020D20(input: String) {
         return -1
     }
 }
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D20(readRawInput("y2020/d20"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 19955159604613
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1639
-}
+
+fun main() = Day.runDay(Y2020D20::class)
+
+//    Class creation: 51ms
+//    Part 1: 19955159604613 (7ms)
+//    Part 2: 1639 (64ms)
+//    Total time: 123ms

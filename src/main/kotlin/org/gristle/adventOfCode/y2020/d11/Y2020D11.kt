@@ -1,8 +1,9 @@
 package org.gristle.adventOfCode.y2020.d11
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 
-class Y2020D11(input: String) {
+class Y2020D11(input: String) : Day {
     /**
      * Represents the states of each potential seat.
      */
@@ -59,7 +60,7 @@ class Y2020D11(input: String) {
             .count(Seat::isOccupied)
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         // pt1 algo for finding occupied neighbors looks at seats immediately adjacent and counts those occupied 
         val getNeighbors = { grid: Grid<Seat>, index: Int ->
             grid.getNeighbors(index, true).count { seat -> seat.isOccupied() }
@@ -67,7 +68,7 @@ class Y2020D11(input: String) {
         return solve(4, getNeighbors)
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         // pt2 algo for finding occupied neighbors, looks in all directions and returns the number of directions
         // where an occupied seat is found before an unoccupied seat.
         val getNeighbors = { grid: Grid<Seat>, index: Int ->
@@ -100,12 +101,10 @@ class Y2020D11(input: String) {
         return solve(5, getNeighbors)
     }
 }
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D11(readRawInput("y2020/d11"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2243
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2027
-}
+
+fun main() = Day.runDay(Y2020D11::class)
+
+//    Class creation: 27ms
+//    Part 1: 2243 (303ms)
+//    Part 2: 2027 (603ms)
+//    Total time: 935ms

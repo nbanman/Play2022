@@ -50,7 +50,7 @@ class Y2017D8(input: String) : Day {
     override fun part2() = solution.second
 }
 
-fun main() = Day.runDay(8, 2017, Y2017D8::class)
+fun main() = Day.runDay(Y2017D8::class)
 
 //    Class creation: 35ms
 //    Part 1: 6343 (0ms)

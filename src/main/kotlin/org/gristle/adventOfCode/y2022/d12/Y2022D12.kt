@@ -53,12 +53,12 @@ class Y2022D12(input: String) : Day {
 //                ).steps()
 //        }
 //
-//        fun part1(): Int {
+//        override fun part1(): Int {
 //            val target = area.coordOf(area.indexOf('S'))
 //            return solve(heuristic = { pos -> pos.manhattanDistance(target).toDouble() })
 //        }
 //
-//        fun part2() = solve(heuristic = { pos -> pos.x.toDouble() })
+//        override fun part2() = solve(heuristic = { pos -> pos.x.toDouble() })
 
 }
 

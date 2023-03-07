@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2020.d22
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.stripCarriageReturns
 import kotlin.math.min
 
-class Y2020D22(input: String) {
+class Y2020D22(input: String) : Day {
 
     private val cardNos = input
         .stripCarriageReturns()
@@ -21,7 +20,7 @@ class Y2020D22(input: String) {
 
     private fun List<Int>.score() = foldIndexed(0) { index, acc, i -> acc + (size - index) * i }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         tailrec fun play(p1: List<Int>, p2: List<Int>): List<Int> {
             return when {
                 p1.isEmpty() -> p2
@@ -40,7 +39,7 @@ class Y2020D22(input: String) {
         return play(p1, p2).score()
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
 
         fun play(p1: List<Int>, p2: List<Int>): Pair<String, List<Int>> {
             val cache = mutableSetOf<Pair<List<Int>, List<Int>>>()
@@ -89,12 +88,9 @@ class Y2020D22(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D22(readRawInput("y2020/d22"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 32824
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 36515
-}
+fun main() = Day.runDay(Y2020D22::class)
+
+//    Class creation: 16ms
+//    Part 1: 32824 (2ms)
+//    Part 2: 36515 (731ms)
+//    Total time: 750ms

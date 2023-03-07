@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2019.d4
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2019D4(input: String) {
+class Y2019D4(input: String) : Day {
 
     // passwords for part 1 are calculated in advance because used for both parts
     private val part1Passwords = input // take input
@@ -17,9 +16,9 @@ class Y2019D4(input: String) {
                     && zippedPassString.any { it.first == it.second } // at least one is the same
         }
 
-    fun part1() = part1Passwords.size // return number of passwords
+    override fun part1() = part1Passwords.size // return number of passwords
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val pattern = Regex("""(\d)\1+""") // Regex looks for repeated digits of any length
         return part1Passwords
             // For each password, find all sequences of repeated digits and keep those that have at least one
@@ -29,12 +28,9 @@ class Y2019D4(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D4(readRawInput("y2019/d4"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 466
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 292
-}
+fun main() = Day.runDay(Y2019D4::class)
+
+//    Class creation: 159ms
+//    Part 1: 466 (0ms)
+//    Part 2: 292 (4ms)
+//    Total time: 164ms

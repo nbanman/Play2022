@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2020.d25
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2020D25(input: String) {
+class Y2020D25(input: String) : Day {
 
     private val divisor = 20201227
 
@@ -11,7 +10,7 @@ class Y2020D25(input: String) {
     private val cardKey = keys[0]
     private val doorKey = keys[1]
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val loopSize = generateSequence(0 to 1L) { (count, value) -> (count + 1) to (value * 7) % divisor }
             .first { (_, value) -> value == cardKey }
             .first
@@ -19,12 +18,12 @@ class Y2020D25(input: String) {
             .take(loopSize)
             .last()
     }
+
+    override fun part2() = "Merry XMas!!!"
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D25(readRawInput("y2020/d25"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 296776
-}
+fun main() = Day.runDay(Y2020D25::class)
+
+//    Class creation: 18ms
+//    Part 1: 296776 (50ms)
+//    Total time: 68ms

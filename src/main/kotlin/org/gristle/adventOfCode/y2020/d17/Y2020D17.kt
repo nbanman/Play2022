@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2020.d17
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.MCoord
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2020D17(input: String) {
+class Y2020D17(input: String) : Day {
     private val startGrid = input.toGrid()
 
     private fun getCubes(dimensions: Int): Int {
@@ -56,17 +55,14 @@ class Y2020D17(input: String) {
         return space.size
     }
 
-    fun part1() = getCubes(3)
+    override fun part1() = getCubes(3)
 
-    fun part2() = getCubes(4)
+    override fun part2() = getCubes(4)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D17(readRawInput("y2020/d17"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 346
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1632
-}
+fun main() = Day.runDay(Y2020D17::class)
+
+//    Class creation: 20ms
+//    Part 1: 346 (83ms)
+//    Part 2: 1632 (1244ms)
+//    Total time: 1348ms

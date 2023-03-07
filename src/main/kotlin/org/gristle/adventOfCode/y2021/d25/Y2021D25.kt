@@ -1,8 +1,10 @@
 package org.gristle.adventOfCode.y2021.d25
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.stabilized
 
-class Y2021D25(input: String) {
+class Y2021D25(input: String) : Day {
     private val lines = input.lines()
 
     data class Cucumbers(val east: Set<Coord>, val south: Set<Coord>, val size: Coord) {
@@ -26,19 +28,21 @@ class Y2021D25(input: String) {
         return Cucumbers(east, south, size)
     }
 
-    tailrec fun part1(steps: Int = 1, prev: Cucumbers = makeCucumbers()): Int {
+    tailrec fun solve(steps: Int = 1, prev: Cucumbers = makeCucumbers()): Int {
         val next = prev.step()
-        return if (prev == next) steps else part1(steps + 1, next)
+        return if (prev == next) steps else solve(steps + 1, next)
     }
+
+    override fun part1() = solve()
+
+    override fun part2() = "Merry Xmas, you filthy animal!"
 
     fun part1b() = generateSequence(makeCucumbers(), Cucumbers::step).withIndex().stabilized().index + 1
 }
 
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D25(readRawInput("y2021/d25"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 528 (547ms)
-}
+fun main() = Day.runDay(Y2021D25::class)
+
+//    Class creation: 30ms
+//    Part 1: 528 (563ms)
+//    Total time: 594ms

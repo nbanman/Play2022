@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2020.d15
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2020D15(input: String) {
+class Y2020D15(input: String) : Day {
 
     val start = input.split(',').map { it.toInt() }
 
@@ -43,17 +42,14 @@ class Y2020D15(input: String) {
         return lastNumberSpoken
     }
 
-    fun part1() = lastNumberSpoken(2020)
+    override fun part1() = lastNumberSpoken(2020)
 
-    fun part2() = lastNumberSpoken(30_000_000)
+    override fun part2() = lastNumberSpoken(30_000_000)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D15(readRawInput("y2020/d15"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 929
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 16671510
-}
+fun main() = Day.runDay(Y2020D15::class)
+
+//    Class creation: 17ms
+//    Part 1: 929 (2ms)
+//    Part 2: 16671510 (5581ms)
+//    Total time: 5601ms

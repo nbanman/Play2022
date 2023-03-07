@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2020.d10
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2020D10(input: String) {
+class Y2020D10(input: String) : Day {
     // parse adapters from outlet, sort from lowest rating. Then add charging outlet and end devices.
     // Finally convert to a list of the joltage differences between devices.
     private val joltageDifferences = input // raw String
@@ -13,7 +12,7 @@ class Y2020D10(input: String) {
         .let { adapters -> listOf(0) + adapters + (adapters.last() + 3) } // add charging outlet and end device to List
         .zipWithNext { a, b -> b - a } // map to List of delta from previous device
 
-    fun part1() = joltageDifferences
+    override fun part1() = joltageDifferences
         .count { it == 3 } // count number of 3-jolt differences
         .let { jolt3s ->
             val jolt1s = joltageDifferences.size - jolt3s // derive number of 1-jolt differences
@@ -25,7 +24,7 @@ class Y2020D10(input: String) {
     // differences. You then have a bunch of sublists with 1-jolt differences. The maximum number of 1s you see is
     // 4, so you can use a lookup table to count the number of possible permutations in each sublist. Multiply them all 
     // together and you get your answer.
-    fun part2() = joltageDifferences
+    override fun part2() = joltageDifferences
         .joinToString("") // join differences to one string before splitting in a different way
         .split('3') // both devices 3 apart must be in chain so don't permute
         .map { // each string of 1s represents devices one away from each other.
@@ -39,10 +38,9 @@ class Y2020D10(input: String) {
         }.fold(1L, Long::times) // multiply them by each other to get answer to pt 2
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2020D10(readRawInput("y2020/d10"))
-    println("Class creation: ${timer.lap()}ms") // (44ms)
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 1890
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 49607173328384
-}
+fun main() = Day.runDay(Y2020D10::class)
+
+//    Class creation: 19ms
+//    Part 1: 1890 (0ms)
+//    Part 2: 49607173328384 (0ms)
+//    Total time: 19ms

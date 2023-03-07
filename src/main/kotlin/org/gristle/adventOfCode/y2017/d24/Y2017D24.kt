@@ -39,7 +39,7 @@ class Y2017D24(input: String) : Day {
     override fun part2() = buildBridge(compareBy(Bridge::size) then compareByStrength).strength()
 }
 
-fun main() = Day.runDay(24, 2017, Y2017D24::class)
+fun main() = Day.runDay(Y2017D24::class)
 
 //    Class creation: 17ms
 //    Part 1: 1868 (602ms)

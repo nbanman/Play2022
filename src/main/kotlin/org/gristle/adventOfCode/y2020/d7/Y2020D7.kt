@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2020.d7
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 import java.util.*
 
-class Y2020D7(input: String) {
+class Y2020D7(input: String) : Day {
 
     class HeldBag(val color: String, private val amount: Int) {
         fun bagsInside(): Long {
@@ -49,17 +48,14 @@ class Y2020D7(input: String) {
             Rule(gv[0], heldBags)
         }
 
-    fun part1() = rules.count { it.contains("shiny gold") }
+    override fun part1() = rules.count { it.contains("shiny gold") }
 
-    fun part2() = Rule.bagMap.getValue("shiny gold").bagsInside()
+    override fun part2() = Rule.bagMap.getValue("shiny gold").bagsInside()
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D7(readRawInput("y2020/d7"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 252
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 35487
-}
+fun main() = Day.runDay(Y2020D7::class)
+
+//    Class creation: 56ms
+//    Part 1: 252 (17ms)
+//    Part 2: 35487 (0ms)
+//    Total time: 74ms

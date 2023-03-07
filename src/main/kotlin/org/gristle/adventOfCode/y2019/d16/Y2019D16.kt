@@ -1,14 +1,14 @@
 package org.gristle.adventOfCode.y2019.d16
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.abs
 
-class Y2019D16(private val input: String) {
+class Y2019D16(private val input: String) : Day {
     private val nos = input.map { Character.getNumericValue(it) }
     private val phases = 100
 
-    fun part1(): String {
+    override fun part1(): String {
 
         val startPattern = listOf(0, 1, 0, -1)
         return (1..phases).fold(nos) { acc, _ ->
@@ -22,7 +22,7 @@ class Y2019D16(private val input: String) {
         .joinToString("")
     }
 
-    fun part2(): String {
+    override fun part2(): String {
         val offset = input.take(7).toInt()
         val arraySize = nos.size * 10_000 - offset
         val offsetMod = offset % nos.size
@@ -36,12 +36,11 @@ class Y2019D16(private val input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D16(readRawInput("y2019/d16"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 52611030
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 52541026
-}
+fun main() = Day.runDay(Y2019D16::class)
+var time = System.nanoTime()
+val c = Y2019D16(readRawInput("y2019/d16"))
+
+//    Class creation: 11ms
+//    Part 1: 52611030 (206ms)
+//    Part 2: 52541026 (174ms)
+//    Total time: 391ms

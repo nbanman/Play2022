@@ -133,7 +133,7 @@ class Y2016D11(private val input: String) : Day {
     override fun part2() = solveFloors(parseFloors(true))
 }
 
-fun main() = Day.runDay(11, 2016, Y2016D11::class)
+fun main() = Day.runDay(Y2016D11::class)
 
 // (680ms custom BFS) (210ms library BFS)
 // (9776ms custom BFS) (409ms library BFS)

@@ -30,7 +30,7 @@ class Y2016D20(input: String) : Day {
     override fun part2() = ipSequence.count() // counts total unblocked ips
 }
 
-fun main() = Day.runDay(20, 2016, Y2016D20::class)
+fun main() = Day.runDay(Y2016D20::class)
 
 //Class creation: 34ms
 //Part 1: 19449262 (2ms)

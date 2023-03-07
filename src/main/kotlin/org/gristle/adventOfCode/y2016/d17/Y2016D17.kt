@@ -70,4 +70,4 @@ class Y2016D17(private val input: String) : Day {
         .toInt()
 }
 
-fun main() = Day.runDay(17, 2016, Y2016D17::class) // DDRUDLRRRD, 398
+fun main() = Day.runDay(Y2016D17::class) // DDRUDLRRRD, 398

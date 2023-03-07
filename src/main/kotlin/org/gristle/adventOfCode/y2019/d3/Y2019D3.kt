@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2019.d3
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2019D3(input: String) {
+class Y2019D3(input: String) : Day {
 
     private fun List<String>.wireUp(): List<Coord> = fold(mutableListOf()) { acc, instruction ->
         val last = if (acc.isNotEmpty()) acc.last() else Coord.ORIGIN
@@ -24,21 +23,18 @@ class Y2019D3(input: String) {
 
     private val intersections = wiresInstructions[0].intersect(wiresInstructions[1].toSet())
 
-    fun part1() = intersections.minOf(Coord::manhattanDistance)
+    override fun part1() = intersections.minOf(Coord::manhattanDistance)
 
-    fun part2(): Int {
+    override fun part2(): Int {
         return intersections.minOf { coord ->
             wiresInstructions.sumOf { it.indexOf(coord) + 1 }
         }
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D3(readRawInput("y2019/d3"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 266
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 19242
-}
+fun main() = Day.runDay(Y2019D3::class)
+
+//    Class creation: 106ms
+//    Part 1: 266 (0ms)
+//    Part 2: 19242 (31ms)
+//    Total time: 137ms

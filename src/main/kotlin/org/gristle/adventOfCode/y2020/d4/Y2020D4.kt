@@ -1,10 +1,10 @@
 package org.gristle.adventOfCode.y2020.d4
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.blankSplit
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2020D4(input: String) {
+class Y2020D4(input: String) : Day {
 
     sealed class PassportField {
         abstract fun isValid(): Boolean
@@ -62,7 +62,7 @@ class Y2020D4(input: String) {
     }
 
     private val passports = input
-        .split("\r\n\r\n")
+        .blankSplit()
         .map { rawPassportData ->
             rawPassportData
                 .groupValues("""([a-z]{3}):([^ \r\n]+)""")
@@ -70,17 +70,14 @@ class Y2020D4(input: String) {
                 .filter { it !is PassportField.Cid }
         }
 
-    fun part1() = passports.count { it.size == 7 }
+    override fun part1() = passports.count { it.size == 7 }
 
-    fun part2() = passports.count { it.size == 7 && it.all(PassportField::isValid) }
+    override fun part2() = passports.count { it.size == 7 && it.all(PassportField::isValid) }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D4(readRawInput("y2020/d4"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 242
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 186
-}
+fun main() = Day.runDay(Y2020D4::class)
+
+//    Class creation: 38ms
+//    Part 1: 242 (0ms)
+//    Part 2: 186 (8ms)
+//    Total time: 47ms

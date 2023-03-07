@@ -32,4 +32,4 @@ class Y2016D4(input: String) : Day {
     override fun part2() = rooms.find { it.name == "northpole object storage" }?.id?.toString() ?: "not found"
 }
 
-fun main() = Day.runDay(4, 2016, Y2016D4::class) // 158835, 993
+fun main() = Day.runDay(Y2016D4::class) // 158835, 993

@@ -26,7 +26,7 @@ class Y2018D1(input: String) : Day {
     override fun part2() = calibrate()
 }
 
-fun main() = Day.runDay(1, 2018, Y2018D1::class)
+fun main() = Day.runDay(Y2018D1::class)
 
 //    Class creation: 22ms
 //    Part 1: 433 (0ms)

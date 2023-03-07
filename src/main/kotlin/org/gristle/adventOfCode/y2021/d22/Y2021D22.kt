@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2021.d22
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2021D22(input: String) {
+class Y2021D22(input: String) : Day {
 
     val pattern = """(on|off) x=(-?\d+)\.\.(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)""".toRegex()
 
@@ -69,17 +68,14 @@ class Y2021D22(input: String) {
         return visited.sumOf { if (it.turnOn) it.volume() else 0L }
     }
 
-    fun part1() = findCubes(cuboids.filter { it.inRange(-50..50) })
+    override fun part1() = findCubes(cuboids.filter { it.inRange(-50..50) })
 
-    fun part2() = findCubes(cuboids)
+    override fun part2() = findCubes(cuboids)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D22(readRawInput("y2021/d22"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 587097
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1359673068597669
-}
+fun main() = Day.runDay(Y2021D22::class)
+
+//    Class creation: 32ms
+//    Part 1: 587097 (5ms)
+//    Part 2: 1359673068597669 (109ms)
+//    Total time: 147ms

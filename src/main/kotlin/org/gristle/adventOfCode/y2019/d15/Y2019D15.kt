@@ -1,5 +1,6 @@
 package org.gristle.adventOfCode.y2019.d15
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.*
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
@@ -7,7 +8,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.properties.Delegates
 
-class Y2019D15(private val input: String) {
+class Y2019D15(private val input: String) : Day {
 
     enum class Sector { UNEXPLORED, WALL, PATH, O2 }
 
@@ -161,22 +162,24 @@ class Y2019D15(private val input: String) {
             return steppes to d2.maxOf { it.weight }.toInt()
         }
     }
-    
-    fun solve(): Pair<Int, Int> {
+
+    private fun solve(): Pair<Int, Int> {
         val initialState = input.split(',').map { it.toLong() }
         val grid = List(1_000_000) { Sector.UNEXPLORED }.toMutableGrid(1_000)
         val droid = Droid(grid, initialState)
         return droid.explore()
     }
-    
+
+    private val solution = solve()
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D15(readRawInput("y2019/d15"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    val (p1, p2) = c.solve()
-    println("Part 1: $p1") // 250
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 332
-}
+fun main() = Day.runDay(Y2019D15::class)
+
+//    Class creation: 102ms
+//    Part 1: 250 (0ms)
+//    Part 2: 332 (0ms)
+//    Total time: 103ms

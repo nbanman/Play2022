@@ -78,7 +78,7 @@ class Y2021D17(input: String) : Day {
         .size
 }
 
-fun main() = Day.runDay(17, 2021, Y2021D17::class)
+fun main() = Day.runDay(Y2021D17::class)
 
 //    Class creation: 15ms
 //    Part 1: 17766 (0ms)

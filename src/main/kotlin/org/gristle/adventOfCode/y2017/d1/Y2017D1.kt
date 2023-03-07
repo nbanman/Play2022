@@ -18,4 +18,4 @@ class Y2017D1(private val input: String) : Day {
         }.sum()
 }
 
-fun main() = Day.runDay(1, 2017, Y2017D1::class) // 1182, 1152
+fun main() = Day.runDay(Y2017D1::class) // 1182, 1152

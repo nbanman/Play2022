@@ -1,12 +1,16 @@
 package org.gristle.adventOfCode.y2019.d17
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.toMutableGrid
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-class Y2019D17(input: String) {
+class Y2019D17(input: String) : Day {
     private val initialState = input.split(',').map { it.toLong() }
-    
+
     fun solve(): Pair<Int, Long> {
 
         val toDroid: Deque<Long> = LinkedList()
@@ -66,14 +70,17 @@ class Y2019D17(input: String) {
         val prospect = dir.forward(coord)
         return (prospect.x in 0 until grid.width && prospect.y in 0 until grid.height) && grid[prospect] == 35L
     }
+
+    private val solution = solve()
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D17(readRawInput("y2019/d17"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    val (p1, p2) = c.solve()
-    println("Part 1: $p1") // 10632
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 1356191
-}
+fun main() = Day.runDay(Y2019D17::class)
+
+//    Class creation: 115ms
+//    Part 1: 10632 (0ms)
+//    Part 2: 1356191 (0ms)
+//    Total time: 116ms

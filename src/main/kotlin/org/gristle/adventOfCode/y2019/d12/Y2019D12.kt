@@ -1,8 +1,12 @@
 package org.gristle.adventOfCode.y2019.d12
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.MCoord
+import org.gristle.adventOfCode.utilities.Xyz
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.lcm
 
-class Y2019D12(input: String) {
+class Y2019D12(input: String) : Day {
 
     data class Moon(val pos: MCoord, val vel: MCoord = MCoord(0, 0, 0)) {
         private val potentialEnergy = pos.manhattanDistance(MCoord(0, 0, 0))
@@ -20,8 +24,8 @@ class Y2019D12(input: String) {
         .map { Moon(Xyz(it[0], it[1], it[2])) }
 
     private fun applyForce(a: Int, b: Int) = (a - b).let { if (it < 0) 1 else if (it > 0) -1 else 0 }
-    
-    fun part1(): Int {
+
+    override fun part1(): Int {
         // Part 1
         val steps = 1000
         return (1..steps).fold(moons) { acc, _ ->
@@ -40,12 +44,17 @@ class Y2019D12(input: String) {
         }.sumOf(Moon::totalEnergy)
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         // Part 2
         val xMap = mutableMapOf<String, Boolean>()
         val yMap = mutableMapOf<String, Boolean>()
         val zMap = mutableMapOf<String, Boolean>()
-        tailrec fun periodOf(id: String, positions: List<Pair<Int, Int>>, register: MutableMap<String, Boolean>, counter: Int = 0): Int {
+        tailrec fun periodOf(
+            id: String,
+            positions: List<Pair<Int, Int>>,
+            register: MutableMap<String, Boolean>,
+            counter: Int = 0
+        ): Int {
             return if (register[id] != null) {
                 counter - 1
             } else {
@@ -88,12 +97,9 @@ class Y2019D12(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D12(readRawInput("y2019/d12"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 10028
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 314610635824376
-}
+fun main() = Day.runDay(Y2019D12::class)
+
+//    Class creation: 20ms
+//    Part 1: 10028 (38ms)
+//    Part 2: 314610635824376 (701ms)
+//    Total time: 759ms

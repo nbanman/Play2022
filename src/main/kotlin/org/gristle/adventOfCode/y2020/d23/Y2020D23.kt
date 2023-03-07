@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2020.d23
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.IndexedLinkedList
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.shift
 
-class Y2020D23(private val input: String) {
+class Y2020D23(private val input: String) : Day {
 
     fun IndexedLinkedList<Int>.move(moves: Int, largest: Int) {
         var current = header
@@ -24,7 +23,7 @@ class Y2020D23(private val input: String) {
         }
     }
 
-    fun part1(): String {
+    override fun part1(): String {
         val moves = 100
         val elements = input.map { Character.getNumericValue(it) }
         val circle = IndexedLinkedList(elements, true)
@@ -37,7 +36,7 @@ class Y2020D23(private val input: String) {
             .joinToString("")
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val moves = 10_000_000
         val size = 1_000_000
         val elements = List(size) { i ->
@@ -51,12 +50,9 @@ class Y2020D23(private val input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D23(readRawInput("y2020/d23"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 94238657
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 3072905352
-}
+fun main() = Day.runDay(Y2020D23::class)
+
+//    Class creation: 16ms
+//    Part 1: 94238657 (1ms)
+//    Part 2: 3072905352 (2999ms)
+//    Total time: 3018ms

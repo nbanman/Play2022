@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2020.d19
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2020D19(input: String) {
+class Y2020D19(input: String) : Day {
 
     sealed class Rule(val name: Int) {
 
@@ -84,9 +83,9 @@ class Y2020D19(input: String) {
         return messages.count { matchPattern.matches(it) }
     }
 
-    fun part1() = solve(rules)
+    override fun part1() = solve(rules)
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val newRules = rules
             .sortedBy { it.name }
             .mapIndexed { index, rule ->
@@ -100,12 +99,9 @@ class Y2020D19(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D19(readRawInput("y2020/d19"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 151
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 386
-}
+fun main() = Day.runDay(Y2020D19::class)
+
+//    Class creation: 32ms
+//    Part 1: 151 (16ms)
+//    Part 2: 386 (35ms)
+//    Total time: 84ms

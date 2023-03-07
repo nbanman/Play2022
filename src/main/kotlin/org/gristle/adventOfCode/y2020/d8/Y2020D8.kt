@@ -1,18 +1,25 @@
 package org.gristle.adventOfCode.y2020.d8
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2020D8(input: String) {
+class Y2020D8(input: String) : Day {
 
     data class Instruction(val operation: String, val argument: Int)
 
     fun Instruction.execute() {
         when (operation) {
-            "acc" -> { acc += argument; parser++ }
-            "jmp" -> { parser += argument }
-            else -> { parser++ }
+            "acc" -> {
+                acc += argument; parser++
+            }
+
+            "jmp" -> {
+                parser += argument
+            }
+
+            else -> {
+                parser++
+            }
         }
     }
 
@@ -28,7 +35,7 @@ class Y2020D8(input: String) {
         .groupValues("""([a-z]{3}) \+?(-?\d+)""")
         .map { Instruction(it[0], it[1].toInt()) }
 
-    fun part1(flippedIndex: Int = -1): Int {
+    fun solvePart1(flippedIndex: Int = -1): Int {
         val pastStates = mutableSetOf<Int>()
 
         while (parser in instructions.indices) {
@@ -48,23 +55,23 @@ class Y2020D8(input: String) {
         return -acc // no infinite loop, so return negative number to denote that
     }
 
-    fun part2(): Int {
+    override fun part1() = solvePart1()
+
+    override fun part2(): Int {
         for (flippedInstruction in instructions.indices) {
             if (instructions[flippedInstruction].operation == "acc") continue
             reset()
-            val answer = -part1(flippedInstruction) // inverse means negative answer means infinite loop encountered
+            val answer =
+                -solvePart1(flippedInstruction) // inverse means negative answer means infinite loop encountered
             if (answer >= 0) return answer
         }
         return -1
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D8(readRawInput("y2020/d8"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1915
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 944
-}
+fun main() = Day.runDay(Y2020D8::class)
+
+//    Class creation: 29ms
+//    Part 1: 1915 (0ms)
+//    Part 2: 944 (10ms)
+//    Total time: 39ms

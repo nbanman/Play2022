@@ -21,4 +21,4 @@ class Y2016D3(input: String) : Day {
         .count { it.isValid() }
 }
 
-fun main() = Day.runDay(3, 2016, Y2016D3::class) // 1032, 1838 
+fun main() = Day.runDay(Y2016D3::class) // 1032, 1838 

@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2021.d24
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
-class Y2021D24(input: String) {
+class Y2021D24(input: String) : Day {
     /**
      * Input boils down to an 18 line function run 14 times. The function has two parameters, x and y, and
      * the algorithm depends on whether x is positive. 7 of these have a positive x value and 7 have a
@@ -91,17 +90,17 @@ class Y2021D24(input: String) {
         return modelNumber.joinToString("")
     }
 
-    fun part1() = solve { pushMax, popMax -> min(pushMax, popMax) }
+    override fun part1() = solve { pushMax, popMax -> min(pushMax, popMax) }
 
-    fun part2() = solve { pushMax, popMax -> max(pushMax, popMax) - 8 }
+    override fun part2() = solve { pushMax, popMax -> max(pushMax, popMax) - 8 }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D24(readRawInput("y2021/d24"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 92969593497992
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 81514171161381
-}
+fun main() = Day.runDay(Y2021D24::class)
+//    var time = System.nanoTime()
+//    val c = Y2021D24(readRawInput("y2021/d24"))
+//    println("Class creation: ${elapsedTime(time)}ms")
+//    time = System.nanoTime()
+//    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 92969593497992
+//    time = System.nanoTime()
+//    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 81514171161381
+//}

@@ -1,19 +1,18 @@
 package org.gristle.adventOfCode.y2019.d14
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.d14.Y2019D14.Chemical.Companion.lookup
 import kotlin.math.max
 
-class Y2019D14(private val input: String) {
+class Y2019D14(private val input: String) : Day {
     private val pattern = """(\d+) ([A-Z]+)""".toRegex()
 
     data class Chemical(val name: String, val quantity: Long) {
         companion object {
             val lookup = mutableMapOf<String, MutableSet<Chemical>>()
         }
+
         val upstream: Set<Chemical> by lazy {
             val upSet = mutableSetOf<Chemical>()
             val immediateUp = lookup[name] ?: return@lazy emptySet<Chemical>()
@@ -81,6 +80,7 @@ class Y2019D14(private val input: String) {
             }
             return ore
         }
+
         val oneFuel = calculateOre(1)
 
         // Part 2
@@ -91,14 +91,16 @@ class Y2019D14(private val input: String) {
         return oneFuel to guess
     }
 
+    private val solution = solve()
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D14(readRawInput("y2019/d14"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    val (p1, p2) = c.solve()
-    println("Part 1: $p1") // 751038
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 2074843
-}
+fun main() = Day.runDay(Y2019D14::class)
+
+//    Class creation: 40ms
+//    Part 1: 751038 (0ms)
+//    Part 2: 2074843 (0ms)
+//    Total time: 41ms

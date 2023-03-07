@@ -79,7 +79,7 @@ class Y2016D10(input: String) : Day {
     override fun part2() = output.filter { it.bin < 3 }.map { it.value }.reduce { acc, i -> acc * i }
 }
 
-fun main() = Day.runDay(10, 2016, Y2016D10::class)
+fun main() = Day.runDay(Y2016D10::class)
 
 //    Class creation: 29ms
 //    Part 1: 101 (0ms)

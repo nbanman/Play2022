@@ -34,7 +34,7 @@ class Y2021D6(input: String) : Day {
     override fun part2() = solve(256)
 }
 
-fun main() = Day.runDay(6, 2021, Y2021D6::class)
+fun main() = Day.runDay(Y2021D6::class)
 
 //    Class creation: 16ms
 //    Part 1: 361169 (0ms)

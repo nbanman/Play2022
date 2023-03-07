@@ -27,7 +27,7 @@ class Y2017D13(input: String) : Day {
         .first { index -> layers.none { it.isTriggered(index) } }
 }
 
-fun main() = Day.runDay(13, 2017, Y2017D13::class)
+fun main() = Day.runDay(Y2017D13::class)
 
 //    Class creation: 13ms
 //    Part 1: 1528 (0ms)

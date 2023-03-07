@@ -1,10 +1,8 @@
 package org.gristle.adventOfCode.y2020.d14
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2020D14(input: String) {
+class Y2020D14(input: String) : Day {
 
     sealed class Instruction {
 
@@ -71,7 +69,7 @@ class Y2020D14(input: String) {
         .lines()
         .map(Instruction::fromString)
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val registers = mutableMapOf<Long, Long>()
         var oneMask = 0L
         var zeroMask = 0L
@@ -81,6 +79,7 @@ class Y2020D14(input: String) {
                     oneMask = instruction.oneMask
                     zeroMask = instruction.zeroMask
                 }
+
                 is Instruction.Mem -> {
                     registers[instruction.register] = instruction.maskedValue(oneMask, zeroMask)
                 }
@@ -89,7 +88,7 @@ class Y2020D14(input: String) {
         return registers.values.sum()
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val registers = mutableMapOf<Long, Long>()
         var oneMask = 0L
         var xMask = 0L
@@ -99,6 +98,7 @@ class Y2020D14(input: String) {
                     oneMask = instruction.oneMask
                     xMask = instruction.xMask
                 }
+
                 is Instruction.Mem -> {
                     instruction.maskedRegisters(oneMask, xMask).forEach {
                         registers[it] = instruction.value
@@ -110,12 +110,9 @@ class Y2020D14(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D14(readRawInput("y2020/d14"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 11926135976176
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 4330547254348
-}
+fun main() = Day.runDay(Y2020D14::class)
+
+//    Class creation: 34ms
+//    Part 1: 11926135976176 (0ms)
+//    Part 2: 4330547254348 (83ms)
+//    Total time: 119ms

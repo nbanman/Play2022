@@ -1,13 +1,16 @@
 package org.gristle.adventOfCode.y2019.d13
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.MutableGrid
+import org.gristle.adventOfCode.utilities.toMutableGrid
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-class Y2019D13(input: String) {
+class Y2019D13(input: String) : Day {
 
     private val initialState = input.split(',').map { it.toLong() }
-    
+
     data class Cabinet(
         val grid: MutableGrid<Int>,
         val input: Deque<Long>,
@@ -39,7 +42,7 @@ class Y2019D13(input: String) {
         }
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val inp: Deque<Long> = LinkedList()
         val output: Deque<Long> = LinkedList()
         val intCode = IntCode("A", initialState, 2L, null, output)
@@ -50,7 +53,7 @@ class Y2019D13(input: String) {
         return grid.count { it == 2 }
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val inp: Deque<Long> = LinkedList()
         val output: Deque<Long> = LinkedList()
         val intCode = IntCode("B", listOf(2L) + initialState.drop(1), null, inp, output)
@@ -64,12 +67,9 @@ class Y2019D13(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D13(readRawInput("y2019/d13"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 348
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 16999
-}
+fun main() = Day.runDay(Y2019D13::class)
+
+//    Class creation: 25ms
+//    Part 1: 348 (30ms)
+//    Part 2: 16999 (140ms)
+//    Total time: 195ms

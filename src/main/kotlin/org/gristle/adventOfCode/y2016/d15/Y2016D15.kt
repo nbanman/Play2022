@@ -34,4 +34,4 @@ class Y2016D15(input: String) : Day {
     override fun part2() = solve(discs + (11L to -7L))
 }
 
-fun main() = Day.runDay(15, 2016, Y2016D15::class) // 122318, 3208583 (11ms creation, 5ms pt 1, 1ms pt 2)
+fun main() = Day.runDay(Y2016D15::class) // 122318, 3208583 (11ms creation, 5ms pt 1, 1ms pt 2)

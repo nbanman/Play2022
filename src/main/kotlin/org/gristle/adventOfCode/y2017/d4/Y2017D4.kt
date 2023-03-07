@@ -16,7 +16,7 @@ class Y2017D4(input: String) : Day {
         .countUnique()
 }
 
-fun main() = Day.runDay(4, 2017, Y2017D4::class)
+fun main() = Day.runDay(Y2017D4::class)
 
 //    Class creation: 24ms
 //    Part 1: 455 (2ms)

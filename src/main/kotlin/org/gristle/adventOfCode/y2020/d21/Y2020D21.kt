@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2020.d21
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2020D21(input: String) {
+class Y2020D21(input: String) : Day {
 
-    data class Food (val ingredients: Set<String>, val allergens: Set<String>) {
+    data class Food(val ingredients: Set<String>, val allergens: Set<String>) {
         companion object {
             private val lookup = mutableMapOf<String, MutableSet<String>>()
 
@@ -41,17 +40,14 @@ class Y2020D21(input: String) {
             Food(ingredients, allergens)
         }
 
-    fun part1() = foods.flatMap(Food::ingredients).filterNot(Food.allergenMap.values::contains).size
+    override fun part1() = foods.flatMap(Food::ingredients).filterNot(Food.allergenMap.values::contains).size
 
-    fun part2() = Food.allergenMap.entries.sortedBy { it.key }.joinToString(",") { it.value }
+    override fun part2() = Food.allergenMap.entries.sortedBy { it.key }.joinToString(",") { it.value }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2020D21(readRawInput("y2020/d21"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2493
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // kqv,jxx,zzt,dklgl,pmvfzk,tsnkknk,qdlpbt,tlgrhdh
-}
+fun main() = Day.runDay(Y2020D21::class)
+
+//    Class creation: 26ms
+//    Part 1: 2493 (1ms)
+//    Part 2: kqv,jxx,zzt,dklgl,pmvfzk,tsnkknk,qdlpbt,tlgrhdh (1ms)
+//    Total time: 29ms

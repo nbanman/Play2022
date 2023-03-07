@@ -1,10 +1,13 @@
 package org.gristle.adventOfCode.y2019.d10
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.IndexedHeap
+import org.gristle.adventOfCode.utilities.gcd
 import kotlin.math.PI
 import kotlin.math.atan2
 
-class Y2019D10(private val input: String) {
+class Y2019D10(private val input: String) : Day {
 
     private val asteroids: List<Coord>
     private val station: Coord
@@ -30,9 +33,9 @@ class Y2019D10(private val input: String) {
         this.detectableFromStation = detectableFromStation
     }
 
-    fun part1() = detectableFromStation
+    override fun part1() = detectableFromStation
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val angles = (asteroids - station)
             .map { asteroid ->
                 val relativeCoord = station - asteroid
@@ -57,13 +60,13 @@ class Y2019D10(private val input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D10(readRawInput("y2019/d10"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 286
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 504
-
-}
+fun main() = Day.runDay(Y2019D10::class)
+//    var time = System.nanoTime()
+//    val c = Y2019D10(readRawInput("y2019/d10"))
+//    println("Class creation: ${elapsedTime(time)}ms")
+//    time = System.nanoTime()
+//    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 286
+//    time = System.nanoTime()
+//    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 504
+//
+//}

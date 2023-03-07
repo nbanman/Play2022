@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2019.d22
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2019D22(private val input: String) {
+class Y2019D22(private val input: String) : Day {
 
     private val pattern = """(cut|deal)[^-\d\n]+(-?\d+)?""".toRegex()
 
@@ -91,7 +90,7 @@ class Y2019D22(private val input: String) {
         fun numberInPosition(pos: Long) = techniques.fold(pos) { acc, tech -> tech.nextPositionForCard(acc, deckSize) }
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val cardsInDeck = 10_007
         val techniques = input.groupValues(pattern)
         var deck = IntArray(cardsInDeck) { it }
@@ -115,7 +114,7 @@ class Y2019D22(private val input: String) {
         return deck.indexOf(2019)
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val p2CardsInDeck = 119_315_717_514_047
         val numberOfTimes = 101_741_582_076_661
 
@@ -130,12 +129,9 @@ class Y2019D22(private val input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D22(readRawInput("y2019/d22"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 6129
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 71345377301237
-}
+fun main() = Day.runDay(Y2019D22::class)
+
+//    Class creation: 18ms
+//    Part 1: 6129 (13ms)
+//    Part 2: 71345377301237 (9ms)
+//    Total time: 41ms

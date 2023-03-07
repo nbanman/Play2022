@@ -1,12 +1,13 @@
 package org.gristle.adventOfCode.y2019.d25
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.y2019.IntCode.ICSave
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.io.IOException
 import java.util.*
 
-class Y2019D25(private val input: String) {
+class Y2019D25(private val input: String) : Day {
 
     fun play() {
         val initialState = input.split(',').map { it.toLong() }
@@ -44,8 +45,12 @@ class Y2019D25(private val input: String) {
         println(output)
         clear()
     }
+
+    override fun part1() = "need to write a player"
+
+    override fun part2() = "Merry Xmas!!!"
 }
 
 fun main() {
-    Y2019D25(readRawInput("y2019/d25")).play() 
+    Y2019D25(readRawInput("y2019/d25")).play()
 }

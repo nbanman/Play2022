@@ -77,7 +77,7 @@ class Y2021D13(input: String) : Day {
         .ocr()
 }
 
-fun main() = Day.runDay(13, 2021, Y2021D13::class)
+fun main() = Day.runDay(Y2021D13::class)
 
 //    Class creation: 70ms
 //    Part 1: 740 (173ms)

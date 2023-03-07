@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2021.d23
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2021D23(input: String) {
+class Y2021D23(input: String) : Day {
 
     companion object {
         fun <T> List<T>.swapElementAt(index: Int, newElement: T?): List<T> =
@@ -219,9 +218,9 @@ class Y2021D23(input: String) {
         .split('\n')
         .filter { it.isNotBlank() }
 
-    fun part1() = totalEnergy(getState(strings))
+    override fun part1() = totalEnergy(getState(strings))
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val expandedStrings = strings
             .let {
                 val last = it.last()
@@ -231,12 +230,9 @@ class Y2021D23(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2021D23(readRawInput("y2021/d23"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 14148
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 43814
-}
+fun main() = Day.runDay(Y2021D23::class)
+
+//    Class creation: 17ms
+//    Part 1: 14148 (467ms)
+//    Part 2: 43814 (900ms)
+//    Total time: 1385ms

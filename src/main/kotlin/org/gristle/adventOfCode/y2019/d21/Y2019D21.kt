@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2019.d21
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.toMutableGrid
 import org.gristle.adventOfCode.y2019.IntCode.IntCode
 import java.util.*
 
-class Y2019D21(private val input: String) {
+class Y2019D21(private val input: String) : Day {
 
     fun execute(commands: String): Long {
         val initialState = input.split(',').map { it.toLong() }
@@ -35,7 +34,7 @@ class Y2019D21(private val input: String) {
         println(grid.representation { it.toInt().toChar() })
     }
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val commands = """NOT A T
 NOT C J
 OR T J
@@ -44,7 +43,7 @@ WALK"""
         return execute(commands)
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val commands = """OR A J
 AND B J  
 AND C J  
@@ -58,12 +57,9 @@ RUN"""
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D21(readRawInput("y2019/d21"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 19349530
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1142805439
-}
+fun main() = Day.runDay(Y2019D21::class)
+
+//    Class creation: 19ms
+//    Part 1: 19349530 (18ms)
+//    Part 2: 1142805439 (99ms)
+//    Total time: 137ms

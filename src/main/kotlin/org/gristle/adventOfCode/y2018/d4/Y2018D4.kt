@@ -80,7 +80,7 @@ class Y2018D4(input: String) : Day {
         ?.let { it.first.drop(1).toInt() * it.second.index }
 }
 
-fun main() = Day.runDay(4, 2018, Y2018D4::class)
+fun main() = Day.runDay(Y2018D4::class)
 
 //    Class creation: 43ms
 //    Part 1: 19025 (7ms)

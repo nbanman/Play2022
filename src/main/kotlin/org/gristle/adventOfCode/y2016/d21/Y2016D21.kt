@@ -99,7 +99,7 @@ class Y2016D21(input: String) : Day {
     override fun part2() = commands.foldRight(passcode2) { command, acc -> command.execute(acc, reversed = true) }
 }
 
-fun main() = Day.runDay(21, 2016, Y2016D21::class)
+fun main() = Day.runDay(Y2016D21::class)
 
 //Class creation: 40ms
 //Part 1: bfheacgd (11ms)

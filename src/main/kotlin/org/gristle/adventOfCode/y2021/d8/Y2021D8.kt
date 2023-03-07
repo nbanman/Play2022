@@ -55,7 +55,7 @@ class Y2021D8(input: String) : Day {
     override fun part2() = displays.sumOf(Display::outputValue)
 }
 
-fun main() = Day.runDay(8, 2021, Y2021D8::class)
+fun main() = Day.runDay(Y2021D8::class)
 
 //    Class creation: 51ms
 //    Part 1: 397 (0ms)

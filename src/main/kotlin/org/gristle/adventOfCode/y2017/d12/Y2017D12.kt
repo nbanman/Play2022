@@ -37,7 +37,7 @@ class Y2017D12(input: String) : Day {
     }.indexOfFirst { it.isEmpty() }
 }
 
-fun main() = Day.runDay(12, 2017, Y2017D12::class)
+fun main() = Day.runDay(Y2017D12::class)
 
 //    Class creation: 66ms
 //    Part 1: 115 (2ms)

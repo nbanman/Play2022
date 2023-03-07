@@ -23,7 +23,7 @@ class Y2016D12(input: String) : Day {
     override fun part2() = runInstructions(instructions, p2Registers).a
 }
 
-fun main() = Day.runDay(12, 2016, Y2016D12::class)
+fun main() = Day.runDay(Y2016D12::class)
 
 //Class creation: 15ms
 //Part 1: 318117 (64ms)

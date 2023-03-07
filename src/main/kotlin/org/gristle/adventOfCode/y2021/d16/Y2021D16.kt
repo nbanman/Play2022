@@ -144,7 +144,7 @@ class Y2021D16(input: String) : Day {
     override fun part2() = packet.value()
 }
 
-fun main() = Day.runDay(16, 2021, Y2021D16::class)
+fun main() = Day.runDay(Y2021D16::class)
 
 //    Class creation: 21ms
 //    Part 1: 979 (0ms)

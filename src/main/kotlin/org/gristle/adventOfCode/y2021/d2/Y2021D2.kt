@@ -31,7 +31,7 @@ class Y2021D2(input: String) : Day {
         }.let { (pos, _) -> pos.x * pos.y }
 }
 
-fun main() = Day.runDay(2, 2021, Y2021D2::class)
+fun main() = Day.runDay(Y2021D2::class)
 
 //    Class creation: 32ms
 //    Part 1: 2117664 (3ms)

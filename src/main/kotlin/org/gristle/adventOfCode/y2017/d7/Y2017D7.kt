@@ -78,7 +78,7 @@ class Y2017D7(input: String) : Day {
     override fun part2() = bottomProgram.rebalance()
 }
 
-fun main() = Day.runDay(7, 2017, Y2017D7::class)
+fun main() = Day.runDay(Y2017D7::class)
 
 //    Class creation: 35ms
 //    Part 1: airlri (0ms)

@@ -1,19 +1,19 @@
 package org.gristle.adventOfCode.y2019.d6
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2019D6(input: String) {
+class Y2019D6(input: String) : Day {
 
     data class CelestialBody(val name: String, private val parentName: String) {
         companion object {
             // register is a mutable hashmap shared by all instances used to get a parent from the parent's name
             private val register = mutableMapOf<String, CelestialBody>()
+
             // public getter of register
             operator fun get(name: String): CelestialBody = register[name]
                 ?: throw IllegalArgumentException("No CelestialBody in register with name '$name.'")
         }
+
         // init registers the instance to the shared register.
         init { register[name] = this }
         private val parent: CelestialBody? get() = register[parentName]
@@ -32,9 +32,9 @@ class Y2019D6(input: String) {
             .let { CelestialBody(it.last(), it.first()) }
         } + CelestialBody("COM", "")
 
-    fun part1() = celestialBodies.sumOf(CelestialBody::orbits)
+    override fun part1() = celestialBodies.sumOf(CelestialBody::orbits)
 
-    fun part2(): Int {
+    override fun part2(): Int {
         // Part 2. Get paths from the two objects, find how much of a path they share, sum the lengths
         // of the two paths, subtract the shared lengths from the sum.
         val me = CelestialBody["YOU"].path.dropLast(1)
@@ -45,12 +45,9 @@ class Y2019D6(input: String) {
 }
 
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2019D6(readRawInput("y2019/d6"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 315757
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 481
-}
+fun main() = Day.runDay(Y2019D6::class)
+
+//    Class creation: 35ms
+//    Part 1: 315757 (1ms)
+//    Part 2: 481 (0ms)
+//    Total time: 37ms

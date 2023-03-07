@@ -1,9 +1,12 @@
 package org.gristle.adventOfCode.y2021.d19
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.MCoord
+import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.stripCarriageReturns
 import kotlin.math.abs
 
-class Y2021D19(input: String) {
+class Y2021D19(input: String) : Day {
     companion object {
         private fun <T> List<T>.elementPairs(): Sequence<Pair<T, T>> = sequence {
             for (i in 0 until size - 1)
@@ -139,15 +142,22 @@ class Y2021D19(input: String) {
             mScan.remove(sharedSet.b)
         }
 
-        val furthestDistance = master.scannerLocations.elementPairs().toList().maxOf { it.first.manhattanDistance(it.second) }
+        val furthestDistance =
+            master.scannerLocations.elementPairs().toList().maxOf { it.first.manhattanDistance(it.second) }
 
         return master.beacons.size to furthestDistance
     }
+
+    private val solution = solve()
+
+    override fun part1() = solution.first
+
+    override fun part2() = solution.second
 }
-    
-fun main() {
-    val time = System.nanoTime()
-    val (p1, p2) = Y2021D19(readStrippedInput("y2021/d19")).solve()
-    println("Part 1: $p1") // 378
-    println("Part 2: $p2 (${elapsedTime(time)}ms)") // 13148
-}
+
+fun main() = Day.runDay(Y2021D19::class)
+
+//    Class creation: 3863ms
+//    Part 1: 370 (0ms)
+//    Part 2: 13148 (0ms)
+//    Total time: 3863ms

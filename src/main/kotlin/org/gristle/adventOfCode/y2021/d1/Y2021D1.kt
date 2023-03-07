@@ -14,7 +14,7 @@ class Y2021D1(input: String) : Day {
         .countIncreased()
 }
 
-fun main() = Day.runDay(1, 2021, Y2021D1::class)
+fun main() = Day.runDay(Y2021D1::class)
 
 //    Class creation: 30ms
 //    Part 1: 1342 (0ms)
