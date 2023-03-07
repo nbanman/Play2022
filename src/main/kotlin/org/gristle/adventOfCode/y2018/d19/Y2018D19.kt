@@ -3,15 +3,8 @@ package org.gristle.adventOfCode.y2018.d19
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.y2018.shared.Ops
 
-fun List<Long>.store(pointer: Int, location: Int, result: Long): List<Long> {
-    val newReg = mapIndexed { index, i ->
-        if (index == location) result else i
-    }
-    return newReg.mapIndexed { index, l ->  if (index == pointer) l + 1 else l }
-}
-
 data class Command(val op: Ops, val p: Int, val a: Int, val b: Int, val c: Int) {
-    fun execute(reg: List<Long>) = op.fn(reg, p, a, b, c)
+    fun execute(reg: LongArray) = op.fn(reg, p, a, b, c)
 }
 
 class Y2018D19(input: String) : Day {
@@ -30,9 +23,9 @@ class Y2018D19(input: String) : Day {
                     }
             }
 
-        var register = List(6) { 0L }
+        val register = LongArray(6)
         while (register[p] in commands.indices) {
-            register = commands[register[p].toInt()].execute(register)
+            commands[register[p].toInt()].execute(register)
         }
         return register[0]
     }
@@ -50,7 +43,7 @@ class Y2018D19(input: String) : Day {
 
 fun main() = Day.runDay(Y2018D19::class)
 
-//    Class creation: 19ms
-//    Part 1: 1764 (1259ms)
-//    Part 2: 18992484 (83ms)
-//    Total time: 1362ms
+//    Class creation: 14ms
+//    Part 1: 1764 (128ms)
+//    Part 2: 18992484 (104ms)
+//    Total time: 247ms

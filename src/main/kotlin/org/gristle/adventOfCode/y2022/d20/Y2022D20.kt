@@ -30,4 +30,4 @@ class Y2022D20(private val input: String) : Day {
 
 // pt 1: 4151 (87ms) (original 216ms) 
 // pt 2: 7848878698663 (488ms) (original 1006ms)
-fun main() = Day.runDay(20, 2022, Y2022D20::class)
+fun main() = Day.runDay(Y2022D20::class)

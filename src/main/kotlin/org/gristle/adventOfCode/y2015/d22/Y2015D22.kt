@@ -1,16 +1,15 @@
 package org.gristle.adventOfCode.y2015.d22
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import java.util.*
 
-class Y2015D22(input: String) {
+class Y2015D22(input: String) : Day {
 
     private val stats = input.lines().map { line -> line.takeLastWhile { it.isDigit() }.toInt() }
-        
+
     private val bossHP = stats[0]
     private val damage = stats[1]
+
     class Effect(val name: String, val mana: Int, val duration: Int)
 
     data class State(
@@ -105,17 +104,14 @@ class Y2015D22(input: String) {
         return lowestManaWin
     }
 
-    fun part1() = solve(false)
+    override fun part1() = solve(false)
 
-    fun part2() = solve(true)
+    override fun part2() = solve(true)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D22(readRawInput("y2015/d22"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1824
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1937
-}
+fun main() = Day.runDay(Y2015D22::class)
+
+//    Class creation: 18ms
+//    Part 1: 1824 (379ms)
+//    Part 2: 1937 (80ms)
+//    Total time: 478ms

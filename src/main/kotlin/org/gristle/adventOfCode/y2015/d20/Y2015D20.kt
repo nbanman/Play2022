@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2015.d20
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 import kotlin.math.sqrt
 
-class Y2015D20(input: String) {
+class Y2015D20(input: String) : Day {
 
     private val minimumPresents = input.toInt()
     private fun primeFactors(number: Int): List<Int> {
@@ -51,17 +50,14 @@ class Y2015D20(input: String) {
         } + 1
 
 
-    fun part1() = solve(10) { _, _ -> true }
+    override fun part1() = solve(10) { _, _ -> true }
 
-    fun part2() = solve(11) { houseNumber, elf -> elf * 50 > houseNumber }
+    override fun part2() = solve(11) { houseNumber, elf -> elf * 50 > houseNumber }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D20(readRawInput("y2015/d20"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 776160
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 786240
-}
+fun main() = Day.runDay(Y2015D20::class)
+
+//    Class creation: 16ms
+//    Part 1: 776160 (4049ms)
+//    Part 2: 786240 (3216ms)
+//    Total time: 7282ms

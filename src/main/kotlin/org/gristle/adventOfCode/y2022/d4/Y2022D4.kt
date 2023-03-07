@@ -21,4 +21,4 @@ class Y2022D4(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(4, 2022, Y2022D4::class) // 605, 914
+fun main() = Day.runDay(Y2022D4::class) // 605, 914

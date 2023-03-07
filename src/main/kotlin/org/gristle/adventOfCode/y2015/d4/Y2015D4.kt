@@ -11,4 +11,9 @@ class Y2015D4(private val input: String) : Day {
     override fun part2() = solve(6)
 }
 
-fun main() = Day.runDay(4, 2015, Y2015D4::class) // 117946, 3938038
+fun main() = Day.runDay(Y2015D4::class)
+
+//    Class creation: 16ms
+//    Part 1: 117946 (103ms)
+//    Part 2: 3938038 (1343ms)
+//    Total time: 1463ms

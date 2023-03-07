@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2015.d8
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2015D8(input: String) {
+class Y2015D8(input: String) : Day {
     private val lines = input.lines()
 
     private fun String.charsInMemory(): Int {
@@ -14,17 +13,14 @@ class Y2015D8(input: String) {
 
     private val totalLength = lines.sumOf(String::length)
 
-    fun part1() = totalLength - lines.sumOf { it.charsInMemory() }
+    override fun part1() = totalLength - lines.sumOf { it.charsInMemory() }
 
-    fun part2() = lines.sumOf { it.encodedLength() } - totalLength
+    override fun part2() = lines.sumOf { it.encodedLength() } - totalLength
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D8(readRawInput("y2015/d8"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1333
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 2046
-}
+fun main() = Day.runDay(Y2015D8::class)
+
+//    Class creation: 23ms
+//    Part 1: 1333 (10ms)
+//    Part 2: 2046 (1ms)
+//    Total time: 36ms

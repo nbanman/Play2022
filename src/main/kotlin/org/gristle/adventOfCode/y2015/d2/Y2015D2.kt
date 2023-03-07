@@ -24,4 +24,9 @@ class Y2015D2(input: String) : Day {
     override fun part2() = boxes.sumOf(Box::ribbonNeeded)
 }
 
-fun main() = Day.runDay(2, 2015, Y2015D2::class) // 1588178, 3783758
+fun main() = Day.runDay(Y2015D2::class)
+
+//    Class creation: 20ms
+//    Part 1: 1588178 (16ms)
+//    Part 2: 3783758 (3ms)
+//    Total time: 39ms

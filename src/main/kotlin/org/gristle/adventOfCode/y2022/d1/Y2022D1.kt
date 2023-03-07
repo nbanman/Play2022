@@ -16,4 +16,4 @@ class Y2022D1(input: String) : Day {
     override fun part2(): Int = calories.sum() // sum those three
 }
 
-fun main() = Day.runDay(1, 2022, Y2022D1::class) // 71300, 209691
+fun main() = Day.runDay(Y2022D1::class) // 71300, 209691

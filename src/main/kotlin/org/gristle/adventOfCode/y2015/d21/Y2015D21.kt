@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2015.d21
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2015D21(input: String) {
-    
+class Y2015D21(input: String) : Day {
+
     companion object {
         private const val WEAPONS = """Dagger        8     4       0
 Shortsword   10     5       0
@@ -70,23 +69,20 @@ Defense +3   80     0       3"""
         Item("combined", combo.sumOf { it.cost }, combo.sumOf { it.damage }, combo.sumOf { it.armor })
     }
 
-    fun part1() = combined
+    override fun part1() = combined
         .sortedBy(Item::cost)
         .find { boss.roundsToDie(it.damage) <= boss.roundsToKill(it.armor, 100) }
         ?.cost
 
-    fun part2() = combined
+    override fun part2() = combined
         .sortedByDescending(Item::cost)
         .find { boss.roundsToDie(it.damage) > boss.roundsToKill(it.armor, 100) }
         ?.cost
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D21(readRawInput("y2015/d21"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 91
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 158
-}
+fun main() = Day.runDay(Y2015D21::class)
+
+//    Class creation: 26ms
+//    Part 1: 91 (3ms)
+//    Part 2: 158 (2ms)
+//    Total time: 33ms

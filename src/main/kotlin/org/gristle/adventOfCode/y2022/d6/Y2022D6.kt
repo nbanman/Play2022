@@ -27,4 +27,4 @@ class Y2022D6(private val input: String) : Day {
     override fun part2() = slowSolve(14)
 }
 
-fun main() = Day.runDay(6, 2022, Y2022D6::class) // 1361, 3263
+fun main() = Day.runDay(Y2022D6::class) // 1361, 3263

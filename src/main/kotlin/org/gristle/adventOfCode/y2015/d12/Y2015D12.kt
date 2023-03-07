@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2015.d12
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
 // refactor candidate: lots of vars, while loops, may as well be js
-class Y2015D12(private val input: String) {
+class Y2015D12(private val input: String) : Day {
 
     data class Block(val value: Int, val length: Int)
 
@@ -42,20 +41,17 @@ class Y2015D12(private val input: String) {
         return if (isRed) Block(0, input.lastIndex) else Block(numValue, input.lastIndex)
     }
 
-    fun part1() = pattern
+    override fun part1() = pattern
         .findAll(input)
         .map { it.value.toInt() }
         .sum()
 
-    fun part2() = getBlockValue(input).value
+    override fun part2() = getBlockValue(input).value
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D12(readRawInput("y2015/d12"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 111754
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 65402
-}
+fun main() = Day.runDay(Y2015D12::class)
+
+//    Class creation: 20ms
+//    Part 1: 111754 (8ms)
+//    Part 2: 65402 (12ms)
+//    Total time: 41ms

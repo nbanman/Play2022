@@ -28,5 +28,9 @@ class Y2015D3(private val input: String) : Day {
         .size
 }
 
-fun main() = Day.runDay(3, 2015, Y2015D3::class) // 2081, 2341
-    
+fun main() = Day.runDay(Y2015D3::class)
+
+//    Class creation: 21ms
+//    Part 1: 2081 (8ms)
+//    Part 2: 2341 (6ms)
+//    Total time: 36ms

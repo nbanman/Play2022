@@ -8,4 +8,9 @@ class Y2015D1(input: String) : Day {
     override fun part2(): Int = floorChanges.runningFold(0, Int::plus).indexOfFirst { it == -1 }
 }
 
-fun main() = Day.runDay(1, 2015, Y2015D1::class) // 280, 1797
+fun main() = Day.runDay(Y2015D1::class)
+
+//    Class creation: 20ms
+//    Part 1: 280 (2ms)
+//    Part 2: 1797 (5ms)
+//    Total time: 28ms

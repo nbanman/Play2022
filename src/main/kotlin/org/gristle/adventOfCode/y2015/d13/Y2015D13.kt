@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2015.d13
 
-import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getPermutations
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2015D13(input: String) {
+class Y2015D13(input: String) : Day {
 
     private val arrangements = buildMap<String, MutableMap<String, Int>> {
         val pattern = """(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+).""".toRegex()
@@ -32,15 +31,14 @@ class Y2015D13(input: String) {
             }
         }
 
-    fun part1() = solve(people)
+    override fun part1() = solve(people)
 
-    fun part2() = solve(people + "me")
+    override fun part2() = solve(people + "me")
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2015D13(readRawInput("y2015/d13"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)")
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)")
-}
+fun main() = Day.runDay(Y2015D13::class)
+
+//    Class creation: 23ms
+//    Part 1: 664 (47ms)
+//    Part 2: 640 (138ms)
+//    Total time: 209ms

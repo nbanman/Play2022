@@ -113,4 +113,4 @@ class Y2022D24(input: String) : Day {
 // Pt 1: 277 (1. 140ms) (2. 251ms) (3. 410ms)
 // Pt 2: 877 (1. 235ms) (2. 469ms) (3. 929ms)
 // Total: (1. 520ms) (2. 755ms) (3. 1375ms)
-fun main() = Day.runDay(24, 2022, Y2022D24::class)
+fun main() = Day.runDay(Y2022D24::class)

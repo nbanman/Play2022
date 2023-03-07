@@ -62,4 +62,9 @@ class Y2022D12(input: String) : Day {
 
 }
 
-fun main() = Day.runDay(12, 2022, Y2022D12::class) // 361, 354
+fun main() = Day.runDay(Y2022D12::class) // 361, 354
+
+//    Class creation: 24ms
+//    Part 1: 361 (19ms)
+//    Part 2: 354 (6ms)
+//    Total time: 50ms

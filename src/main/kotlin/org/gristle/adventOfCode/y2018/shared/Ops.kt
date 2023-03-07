@@ -1,8 +1,6 @@
 package org.gristle.adventOfCode.y2018.shared
 
-import org.gristle.adventOfCode.y2018.d19.store
-
-enum class Ops(val fn: (reg: List<Long>, p: Int, a: Int, b: Int, c: Int) -> List<Long>) {
+enum class Ops(val fn: (reg: LongArray, p: Int, a: Int, b: Int, c: Int) -> Unit) {
     ADDR({ reg, p, a, b, c -> reg.store(p, c, reg[a] + reg[b]) }),
     ADDI({ reg, p, a, b, c -> reg.store(p, c, reg[a] + b) }),
     MULR({ reg, p, a, b, c -> reg.store(p, c, reg[a] * reg[b]) }),
@@ -40,4 +38,9 @@ enum class Ops(val fn: (reg: List<Long>, p: Int, a: Int, b: Int, c: Int) -> List
             else -> EQRR
         }
     }
+}
+
+private fun LongArray.store(pointer: Int, location: Int, result: Long) {
+    this[location] = result
+    this[pointer]++
 }

@@ -78,5 +78,22 @@ interface SuspendedDay {
             if (day != 25) println("\tPart 2: ${c.part2()} (${timer.lap()}ms)")
             println("Total time: ${timer.elapsed()}ms")
         }
+
+        fun <T : Any> runDay(
+            kClass: KClass<T>,
+            sampleInput: String? = null,
+        ) = runBlocking {
+            val constructor = kClass.constructors.first()
+            val timer = Stopwatch(true)
+            val (year, day) = kClass.simpleName?.getIntList()
+                ?: throw IllegalArgumentException("Class does not have a name")
+            println("[$year Day $day]")
+            val input = sampleInput ?: getInput(day, year)
+            val c = constructor.call(input) as SuspendedDay
+            println("Class creation: ${timer.lap()}ms")
+            println("\tPart 1: ${c.part1()} (${timer.lap()}ms)")
+            if (day != 25) println("\tPart 2: ${c.part2()} (${timer.lap()}ms)")
+            println("Total time: ${timer.elapsed()}ms")
+        }
     }
 }

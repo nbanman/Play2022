@@ -38,4 +38,4 @@ class Y2022D10(input: String) : Day {
         .ocr()
 }
 
-fun main() = Day.runDay(10, 2022, Y2022D10::class) // 12840, ZKJFBJFZ
+fun main() = Day.runDay(Y2022D10::class) // 12840, ZKJFBJFZ

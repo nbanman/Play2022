@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2015.d18
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Grid
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
 import org.gristle.adventOfCode.utilities.toGrid
 
-class Y2015D18(input: String) {
+class Y2015D18(input: String) : Day {
 
     private val lights = input.toGrid { it == '#' }
 
@@ -31,17 +30,14 @@ class Y2015D18(input: String) {
         .last()
         .count { it }
 
-    fun part1() = solve(false)
+    override fun part1() = solve(false)
 
-    fun part2() = solve(true)
+    override fun part2() = solve(true)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D18(readRawInput("y2015/d18"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1061
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1006
-}
+fun main() = Day.runDay(Y2015D18::class)
+
+//    Class creation: 24ms
+//    Part 1: 1061 (338ms)
+//    Part 2: 1006 (218ms)
+//    Total time: 581ms

@@ -208,4 +208,9 @@ class Y2022D19(input: String) : SuspendedDay {
 // Pt 1: 1427 (500ms) (629ms) (146ms hardcoded)
 // Pt 2: 4400 (614ms) (807ms) (238ms hardcoded)
 // Total: (1173ms) (1490ms) (408ms hardcoded)
-fun main() = SuspendedDay.runDay(19, 2022, Y2022D19::class)
+fun main() = SuspendedDay.runDay(Y2022D19::class)
+
+//    Class creation: 32ms
+//    Part 1: 1427 (565ms)
+//    Part 2: 4400 (777ms)
+//    Total time: 1376ms

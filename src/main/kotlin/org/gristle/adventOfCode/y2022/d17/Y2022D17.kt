@@ -168,4 +168,4 @@ class Y2022D17(private val jetPattern: String) : Day {
     }
 }
 
-fun main() = Day.runDay(17, 2022, Y2022D17::class) // 3055, 1507692307690
+fun main() = Day.runDay(Y2022D17::class) // 3055, 1507692307690

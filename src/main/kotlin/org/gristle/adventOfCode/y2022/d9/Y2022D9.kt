@@ -53,4 +53,4 @@ class Y2022D9(input: String) : Day {
     override fun part2() = solve(10)
 }
 
-fun main() = Day.runDay(9, 2022, Y2022D9::class) // 6175, 2578
+fun main() = Day.runDay(Y2022D9::class) // 6175, 2578

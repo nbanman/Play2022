@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2015.d17
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2015D17(input: String) {
+class Y2015D17(input: String) : Day {
 
     private val lines = input.lines()
     private fun getCombos(): List<List<Int>> {
@@ -33,18 +32,14 @@ class Y2015D17(input: String) {
     private val combos = getCombos()
     private val minimumContainers = combos.minOf(List<Int>::size)
 
-    fun part1() = combos.size
+    override fun part1() = combos.size
 
-    fun part2() = combos.filter { it.size == minimumContainers }.size
+    override fun part2() = combos.filter { it.size == minimumContainers }.size
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D17(readRawInput("y2015/d17"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 1638
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 17
-}
+fun main() = Day.runDay(Y2015D17::class)
 
+//    Class creation: 75ms
+//    Part 1: 1638 (0ms)
+//    Part 2: 17 (0ms)
+//    Total time: 76ms

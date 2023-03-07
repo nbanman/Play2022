@@ -56,4 +56,4 @@ class Y2022D8(input: String) : Day {
     override fun part2(): Int = treeHeights.keys.maxOf(::scenicScore)
 }
 
-fun main() = Day.runDay(8, 2022, Y2022D8::class) // 1708, 504000
+fun main() = Day.runDay(Y2022D8::class) // 1708, 504000

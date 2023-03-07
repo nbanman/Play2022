@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2015.d10
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2015D10(private val input: String) {
+class Y2015D10(private val input: String) : Day {
 
     private fun lookAndSay(s: String) = buildString {
         var digit = s[0]
@@ -25,16 +24,14 @@ class Y2015D10(private val input: String) {
         .last()
         .length
 
-    fun part1() = solve(40)
+    override fun part1() = solve(40)
 
-    fun part2() = solve(50)
+    override fun part2() = solve(50)
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2015D10(readRawInput("y2015/d10"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // 492982
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // 6989950
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(Y2015D10::class)
+
+//    Class creation: 16ms
+//    Part 1: 492982 (60ms)
+//    Part 2: 6989950 (410ms)
+//    Total time: 487ms

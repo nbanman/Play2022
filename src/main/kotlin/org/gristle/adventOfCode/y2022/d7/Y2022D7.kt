@@ -52,4 +52,4 @@ class Y2022D7(input: String) : Day {
         }.minOf(Directory::fileSize)
 }
 
-fun main() = Day.runDay(7, 2022, Y2022D7::class) // 1477771, 3579501
+fun main() = Day.runDay(Y2022D7::class) // 1477771, 3579501

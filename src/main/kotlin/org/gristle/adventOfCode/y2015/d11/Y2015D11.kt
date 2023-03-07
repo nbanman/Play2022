@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2015.d11
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2015D11(input: String) {
+class Y2015D11(input: String) : Day {
     private fun isValid(s: String) = hasStraight(s) && noConfusion(s) && twoPairs(s)
 
     private fun increment(s: String): String {
@@ -38,15 +37,13 @@ class Y2015D11(input: String) {
     // Answer to part 1 is reused for part 2, so make it lazy so that the calculation counts towards part 1 time.
     private val firstPassword: String by lazy { nextPassword(input) }
 
-    fun part1() = firstPassword
-    fun part2() = nextPassword(firstPassword)
+    override fun part1() = firstPassword
+    override fun part2() = nextPassword(firstPassword)
 }
 
-fun main() {
-    val timer = Stopwatch(true)
-    val c = Y2015D11(readRawInput("y2015/d11"))
-    println("Class creation: ${timer.lap()}ms")
-    println("Part 1: ${c.part1()} (${timer.lap()}ms)") // hxbxxyzz
-    println("Part 2: ${c.part2()} (${timer.lap()}ms)") // hxcaabcc
-    println("Total time: ${timer.elapsed()}ms")
-}
+fun main() = Day.runDay(Y2015D11::class)
+
+//    Class creation: 17ms
+//    Part 1: hxbxxyzz (25ms)
+//    Part 2: hxcaabcc (276ms)
+//    Total time: 319ms

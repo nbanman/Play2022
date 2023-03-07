@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2015.d16
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2015D16(input: String) {
+class Y2015D16(input: String) : Day {
     data class Sue(
         val number: Int,
         val children: Int,
@@ -105,17 +104,14 @@ class Y2015D16(input: String) {
         .groupValues("""(\w+): (\d+)""")
         .map { gv -> gv[0] to gv[1].toInt() }
 
-    fun part1() = sues.find { it.compatible(criteria) }?.number
+    override fun part1() = sues.find { it.compatible(criteria) }?.number
 
-    fun part2() = sues.find { it.compatible(criteria, true) }?.number
+    override fun part2() = sues.find { it.compatible(criteria, true) }?.number
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D16(readRawInput("y2015/d16"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 40
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 241
-}
+fun main() = Day.runDay(Y2015D16::class)
+
+//    Class creation: 32ms
+//    Part 1: 40 (0ms)
+//    Part 2: 241 (0ms)
+//    Total time: 32ms

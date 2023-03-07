@@ -1,12 +1,15 @@
 package org.gristle.adventOfCode.y2015.d6
 
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.MutableGrid
+import org.gristle.adventOfCode.utilities.groupValues
 import kotlin.math.max
 
-class Y2015D6(input: String) {
-    
+class Y2015D6(input: String) : Day {
+
     /**
-     * Defines the suite of  three functions that alter the lights. Defined as an interface because the functions  
+     * Defines the suite of  three functions that alter the lights. Defined as an interface because the functions
      * for part 1 and part 2 work differently, so will plug in different implementations for each part. They work
      * on a MutableList so all return Unit.
      */
@@ -72,7 +75,7 @@ class Y2015D6(input: String) {
     /**
      * Runs solve algo with part 1-specific adjustment functions.
      */
-    fun part1() = solve(
+    override fun part1() = solve(
         object : LightAdjustment {
             override fun on(lights: MutableGrid<Int>, location: Coord) {
                 lights[location] = 1
@@ -91,7 +94,7 @@ class Y2015D6(input: String) {
     /**
      * Runs solve algo with part 2-specific adjustment functions.
      */
-    fun part2() = solve(
+    override fun part2() = solve(
         object : LightAdjustment {
             override fun on(lights: MutableGrid<Int>, location: Coord) {
                 lights[location]++
@@ -108,12 +111,9 @@ class Y2015D6(input: String) {
     )
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D6(readRawInput("y2015/d6"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 569999
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 17836115
-}
+fun main() = Day.runDay(Y2015D6::class)
+
+//    Class creation: 29ms
+//    Part 1: 569999 (520ms)
+//    Part 2: 17836115 (465ms)
+//    Total time: 1015ms

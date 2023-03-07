@@ -63,4 +63,4 @@ class Y2022D5(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(5, 2022, Y2022D5::class) // ZSQVCCJLL, QZFJRWHGS
+fun main() = Day.runDay(Y2022D5::class) // ZSQVCCJLL, QZFJRWHGS

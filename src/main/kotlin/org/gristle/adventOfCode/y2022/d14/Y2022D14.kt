@@ -42,4 +42,4 @@ class Y2022D14(input: String) : Day {
     override fun part2() = solve { it == Coord(500, 0) } + 1
 }
 
-fun main() = Day.runDay(14, 2022, Y2022D14::class) // 825, 26729
+fun main() = Day.runDay(Y2022D14::class) // 825, 26729

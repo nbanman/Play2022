@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2015.d24
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2015D24(input: String) {
+class Y2015D24(input: String) : Day {
 
     private val lines = input.lines()
 
@@ -91,17 +90,14 @@ class Y2015D24(input: String) {
     }
 
 
-    fun part1() = solve(3)
+    override fun part1() = solve(3)
 
-    fun part2() = solve(4)
+    override fun part2() = solve(4)
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D24(readRawInput("y2015/d24"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 11846773891
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 80393059
-}
+fun main() = Day.runDay(Y2015D24::class)
+
+//    Class creation: 19ms
+//    Part 1: 11846773891 (230ms)
+//    Part 2: 80393059 (2ms)
+//    Total time: 253ms

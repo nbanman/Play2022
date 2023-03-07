@@ -27,4 +27,10 @@ class Y2015D5(input: String) : Day {
     override fun part2() = strings.count { it.isNicePart2() }
 }
 
-fun main() = Day.runDay(5, 2015, Y2015D5::class) // 255, 55
+fun main() = Day.runDay(Y2015D5::class)
+
+//    Class creation: 31ms
+//    Part 1: 255 (8ms)
+//    Part 2: 55 (7ms)
+//    Total time: 47ms
+

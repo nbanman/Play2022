@@ -1,10 +1,9 @@
 package org.gristle.adventOfCode.y2015.d19
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2015D19(private val input: String) {
+class Y2015D19(private val input: String) : Day {
     data class Rule(val element: String, val replacement: String) {
         val size = replacement.count { it in 'A'..'Z' }
     }
@@ -19,7 +18,7 @@ class Y2015D19(private val input: String) {
         .map { Rule(it[0], it[1]) }
         .sortedByDescending { it.size }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val elements = """[A-Z][a-z]?"""
             .toRegex()
             .findAll(molecule)
@@ -36,7 +35,7 @@ class Y2015D19(private val input: String) {
             .size
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val elementPattern = """e => (\w+)""".toRegex()
         val starts = input
             .groupValues(elementPattern)
@@ -50,12 +49,9 @@ class Y2015D19(private val input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D19(readRawInput("y2015/d19"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 535
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 212
-}
+fun main() = Day.runDay(Y2015D19::class)
+
+//    Class creation: 22ms
+//    Part 1: 535 (6ms)
+//    Part 2: 212 (3ms)
+//    Total time: 32ms

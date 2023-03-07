@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2015.d7
 
-import org.gristle.adventOfCode.utilities.elapsedTime
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 import kotlin.math.pow
 
 // Refactor candidate: uses global mutable "register"; stateful, would give different answer if run twice
-class Y2015D7(input: String) {
+class Y2015D7(input: String) : Day {
     sealed class Instruction(val arg1: String, val wire: String) {
         companion object {
             val register = mutableMapOf<String, Int>()
@@ -88,7 +87,7 @@ class Y2015D7(input: String) {
             }
         }
 
-    fun part1(ignoreB: Boolean = false): Int {
+    private fun solve(ignoreB: Boolean = false): Int {
         val insts = instructions
             .filter { if (!ignoreB) true else it.wire != "b" }
             .toMutableList()
@@ -102,20 +101,19 @@ class Y2015D7(input: String) {
         return Instruction.register["a"] ?: -1
     }
 
-    fun part2(): Int {
+    override fun part1() = solve()
+
+    override fun part2(): Int {
         val a = Instruction.register["a"] ?: -1
         Instruction.register.clear()
         Instruction.register["b"] = a
-        return part1(true)
+        return solve(true)
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D7(readRawInput("y2015/d7"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 46065
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 14134
-}
+fun main() = Day.runDay(Y2015D7::class)
+
+//    Class creation: 28ms
+//    Part 1: 46065 (9ms)
+//    Part 2: 14134 (5ms)
+//    Total time: 43ms

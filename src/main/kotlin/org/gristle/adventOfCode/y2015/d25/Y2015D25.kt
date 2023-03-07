@@ -1,9 +1,8 @@
 package org.gristle.adventOfCode.y2015.d25
 
-import org.gristle.adventOfCode.utilities.elapsedTime
-import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.Day
 
-class Y2015D25(input: String) {
+class Y2015D25(input: String) : Day {
 
     private val pattern = """(\d+)""".toRegex()
 
@@ -22,13 +21,12 @@ class Y2015D25(input: String) {
         return (1 until row).reduce(Int::plus) + 1 + extra
     }
 
-    fun part1() = (2..getPlace()).fold(20151125L) { acc, _ -> (acc * 252533) % 33554393 }
+    override fun part1() = (2..getPlace()).fold(20151125L) { acc, _ -> (acc * 252533) % 33554393 }
+    override fun part2() = "Mry Xms"
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D25(readRawInput("y2015/d25"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 8997277
-}
+fun main() = Day.runDay(Y2015D25::class)
+
+//    Class creation: 16ms
+//    Part 1: 8997277 (167ms)
+//    Total time: 183ms

@@ -28,4 +28,4 @@ class Y2022D25(private val input: String) : Day {
     override fun part2() = "Damn interfaces!"
 }
 
-fun main() = Day.runDay(25, 2022, Y2022D25::class) // 2-=2-0=-0-=0200=--21 (29ms)
+fun main() = Day.runDay(Y2022D25::class) // 2-=2-0=-0-=0200=--21 (29ms)

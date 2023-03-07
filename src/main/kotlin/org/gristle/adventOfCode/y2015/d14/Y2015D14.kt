@@ -1,15 +1,15 @@
 package org.gristle.adventOfCode.y2015.d14
 
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.eachCount
-import org.gristle.adventOfCode.utilities.elapsedTime
 import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.readRawInput
 
-class Y2015D14(input: String) {
+class Y2015D14(input: String) : Day {
 
     companion object {
         private const val SECONDS = 2503
     }
+
     data class Reindeer(val name: String, val speed: Int, val duration: Int, val rest: Int) {
         fun distanceRaced(seconds: Int): Int {
             val interval = duration + rest
@@ -23,9 +23,9 @@ class Y2015D14(input: String) {
         .groupValues("""(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds\.""")
         .map { gv -> Reindeer(gv[0], gv[1].toInt(), gv[2].toInt(), gv[3].toInt()) }
 
-    fun part1() = racers.maxOf { it.distanceRaced(SECONDS) }
+    override fun part1() = racers.maxOf { it.distanceRaced(SECONDS) }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         return (1..SECONDS)
             .fold(mutableListOf<Reindeer>()) { acc, second ->
                 val maxDistance = racers.maxOf { it.distanceRaced(second) }
@@ -35,12 +35,9 @@ class Y2015D14(input: String) {
     }
 }
 
-fun main() {
-    var time = System.nanoTime()
-    val c = Y2015D14(readRawInput("y2015/d14"))
-    println("Class creation: ${elapsedTime(time)}ms")
-    time = System.nanoTime()
-    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 2640
-    time = System.nanoTime()
-    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 1102
-}
+fun main() = Day.runDay(Y2015D14::class)
+
+//    Class creation: 20ms
+//    Part 1: 2640 (0ms)
+//    Part 2: 1102 (9ms)
+//    Total time: 30ms

@@ -2,51 +2,7 @@ package org.gristle.adventOfCode.y2018.d21
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-
-enum class Ops(val fn: (reg: LongArray, p: Int, a: Int, b: Int, c: Int) -> Unit) {
-    ADDR({ reg, p, a, b, c -> reg.store(p, c, reg[a] + reg[b]) }),
-    ADDI({ reg, p, a, b, c -> reg.store(p, c, reg[a] + b) }),
-    MULR({ reg, p, a, b, c -> reg.store(p, c, reg[a] * reg[b]) }),
-    MULI({ reg, p, a, b, c -> reg.store(p, c, reg[a] * b) }),
-    BANR({ reg, p, a, b, c -> reg.store(p, c, reg[a] and reg[b]) }),
-    BANI({ reg, p, a, b, c -> reg.store(p, c, reg[a] and b.toLong()) }),
-    BORR({ reg, p, a, b, c -> reg.store(p, c, reg[a] or reg[b]) }),
-    BORI({ reg, p, a, b, c -> reg.store(p, c, reg[a] or b.toLong()) }),
-    SETR({ reg, p, a, _, c -> reg.store(p, c, reg[a]) }),
-    SETI({ reg, p, a, _, c -> reg.store(p, c, a.toLong()) }),
-    GTIR({ reg, p, a, b, c -> reg.store(p, c, if (a > reg[b]) 1 else 0) }),
-    GTRI({ reg, p, a, b, c -> reg.store(p, c, if (reg[a] > b) 1 else 0) }),
-    GTRR({ reg, p, a, b, c -> reg.store(p, c, if (reg[a] > reg[b]) 1 else 0) }),
-    EQIR({ reg, p, a, b, c -> reg.store(p, c, if (a.toLong() == reg[b]) 1 else 0) }),
-    EQRI({ reg, p, a, b, c -> reg.store(p, c, if (reg[a] == b.toLong()) 1 else 0) }),
-    EQRR({ reg, p, a, b, c -> reg.store(p, c, if (reg[a] == reg[b]) 1 else 0) });
-
-    companion object {
-        fun from(s: String) = when (s) {
-            "addr" -> ADDR
-            "addi" -> ADDI
-            "mulr" -> MULR
-            "muli" -> MULI
-            "banr" -> BANR
-            "bani" -> BANI
-            "borr" -> BORR
-            "bori" -> BORI
-            "setr" -> SETR
-            "seti" -> SETI
-            "gtir" -> GTIR
-            "gtri" -> GTRI
-            "gtrr" -> GTRR
-            "eqir" -> EQIR
-            "eqri" -> EQRI
-            else -> EQRR
-        }
-    }
-}
-
-private fun LongArray.store(pointer: Int, location: Int, result: Long) {
-    this[location] = result
-    this[pointer]++
-}
+import org.gristle.adventOfCode.y2018.shared.Ops
 
 class Y2018D21(private val input: String) : Day {
     private val pattern = """([a-z]{4}) (\d+) (\d+) (\d+)""".toRegex()
@@ -93,7 +49,7 @@ class Y2018D21(private val input: String) : Day {
 
 fun main() = Day.runDay(Y2018D21::class)
 
-//    Class creation: 341513ms
-//    Part 1: 3345459 (0ms)
-//    Part 2: 5857354 (0ms)
-//    Total time: 341513ms
+//    Class creation: 16ms
+//    Part 1: 3345459 (90ms)
+//    Part 2: 5857354 (34814ms)
+//    Total time: 34921ms
