@@ -57,8 +57,8 @@ class Y2019D25(private val input: String) : Day {
     }
 
     private val locationRx = Regex("""== ((?:\w+ ?)+) ==""")
-    private val doorsRx = Regex("""Doors here lead:\n((?:- (?:\w+)\n)+)""")
-    private val itemizedRx = Regex("""Items here:\n((?:- (?:[a-z ]+)\n)+)""")
+    private val doorsRx = Regex("""Doors here lead:\n((?:- \w+\n)+)""")
+    private val itemizedRx = Regex("""Items here:\n((?:- [a-z ]+\n)+)""")
     private val splitRx = Regex("""\w+(?: \w+)?""")
 
     private fun Deque<Long>.parse(clear: Boolean = true): Readout {
@@ -82,7 +82,7 @@ class Y2019D25(private val input: String) : Day {
     }
 
     private fun Deque<Long>.print() {
-        val output = buildString {
+        buildString {
             this@print.forEach {
                 append(it.toInt().toChar())
             }
@@ -192,13 +192,13 @@ class Y2019D25(private val input: String) : Day {
     override fun part1(): String {
 
         val initialState = input.getLongList()
-        val output: Deque<Long> = java.util.ArrayDeque()
-        val toComp: Deque<Long> = java.util.ArrayDeque()
+        val output: Deque<Long> = ArrayDeque()
+        val toComp: Deque<Long> = ArrayDeque()
         val intCode = IntCode("A", initialState, null, toComp, output)
 
         intCode.run()
 
-        val outputCopy = (output as java.util.ArrayDeque).clone()
+        val outputCopy = (output as ArrayDeque).clone()
 
         explore(false, "", "Outer Space", intCode, toComp, output)
 
@@ -227,11 +227,11 @@ class Y2019D25(private val input: String) : Day {
         return getPasscode(inventory, plateDirection, 0, intCode, toComp, output)
     }
 
-    override fun part2() = "Merry Xmas!!!"
+    override fun part2() = play()
 }
 
 fun main() {
-//    Y2019D25(readRawInput("y2019/d25")).play()
+//    Y2019D25(readRawInput("y2019/d25")).part2()
     Day.runDay(Y2019D25::class)
 }
 
