@@ -18,7 +18,7 @@ class IntCode(
     private var relativeBase = 0L
 
     fun reset() {
-        program = mutableMapOf<Int, Long>(*initialState.mapIndexed { index, l ->  index to l }.toTypedArray())
+        program = mutableMapOf(*initialState.mapIndexed { index, l -> index to l }.toTypedArray())
         parser = 0
         isDone = false
         initialInputSupplied = initialInput == null
@@ -26,10 +26,10 @@ class IntCode(
         relativeBase = 0L
     }
 
-    fun save() = ICSave(program.toMutableMap(), parser, isDone, initialInputSupplied, startWithZero, relativeBase)
+    fun save() = ICSave(program.toMap(), parser, isDone, initialInputSupplied, startWithZero, relativeBase)
 
     fun restore(save: ICSave) {
-        program = save.program
+        program = save.program.toMutableMap()
         parser = save.parser
         isDone = save.isDone
         initialInputSupplied = save.initialInputSupplied
@@ -37,17 +37,19 @@ class IntCode(
         relativeBase = save.relativeBase
     }
 
-    fun run() {
-        if (isDone) return
-        while (true) {
+    fun run(maxCount: Int = -1): Boolean {
+        var count = 0
+        if (isDone) return true
+        while (maxCount < 0 || count++ < maxCount) {
             val instruction = program.getValue(parser).toInt()
             val opCode = instruction % 100
             when (opCode) {
                 99 -> {
-                    if(verbose) println("$opCode: Exiting")
+                    if (verbose) println("$opCode: Exiting")
                     isDone = true
                     break
                 }
+
                 1 -> {
                     if (verbose) getVerbose(instruction, 3, "add")
                     program[getWrite(3)] = getVal(1) + getVal(2)
@@ -73,7 +75,7 @@ class IntCode(
                                 startWithZero = false
                                 0
                             } else {
-                                input?.poll() ?: return
+                                input?.poll() ?: return true
                             }
                         }
                     }
@@ -118,8 +120,8 @@ class IntCode(
                     parser += 2
                 }
             }
-
         }
+        return true
     }
 
     private fun getVerbose(instruction: Int, parameters: Int, name: String) {
@@ -160,7 +162,7 @@ class IntCode(
 }
 
 data class ICSave(
-    val program: MutableMap<Int, Long>,
+    val program: Map<Int, Long>,
     val parser: Int,
     val isDone: Boolean,
     val initialInputSupplied: Boolean,
