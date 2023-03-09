@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
 import org.gristle.adventOfCode.utilities.ocr
 import org.gristle.adventOfCode.utilities.toGrid
-import org.gristle.adventOfCode.y2019.IntCode.IntCode
+import org.gristle.adventOfCode.y2019.ic.IntCode
 import java.util.*
 
 class Y2019D11(input: String) : Day {

@@ -1,7 +1,8 @@
 package org.gristle.adventOfCode.y2019.d2
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.y2019.IntCode.IntCode
+import org.gristle.adventOfCode.y2019.ic.IntCode
+
 import java.util.*
 
 class Y2019D2(input: String) : Day {

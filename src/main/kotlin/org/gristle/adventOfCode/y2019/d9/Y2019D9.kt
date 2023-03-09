@@ -1,25 +1,20 @@
 package org.gristle.adventOfCode.y2019.d9
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.y2019.IntCode.IntCode
+import org.gristle.adventOfCode.y2019.ic.FintCode
 
-class Y2019D9(input: String) : Day {
+
+class Y2019D9(private val input: String) : Day {
 
     private val initialState = input
         .split(',')
         .map { it.toLong() }
 
-    override fun part1(): Long {
-        val computer = IntCode("A", initialState, 1L)
-        computer.run()
-        return computer.output.peekLast()
-    }
+    private val intcode = FintCode(input)
 
-    override fun part2(): Long {
-        val computer = IntCode("B", initialState, 2L)
-        computer.run()
-        return computer.output.peekLast()
-    }
+    override fun part1() = FintCode(input).run(listOf(1L))[0]
+
+    override fun part2() = FintCode(input).run(listOf(2L))[0]
 }
 
 fun main() = Day.runDay(Y2019D9::class)

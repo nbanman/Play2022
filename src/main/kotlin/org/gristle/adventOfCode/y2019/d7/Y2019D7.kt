@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2019.d7
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getPermutations
-import org.gristle.adventOfCode.y2019.IntCode.IntCode
+import org.gristle.adventOfCode.y2019.ic.IntCode
 
 class Y2019D7(input: String) : Day {
     val initialState = input

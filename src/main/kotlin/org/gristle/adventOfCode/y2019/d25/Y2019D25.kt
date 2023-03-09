@@ -3,8 +3,8 @@ package org.gristle.adventOfCode.y2019.d25
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.getLongList
-import org.gristle.adventOfCode.y2019.IntCode.ICSave
-import org.gristle.adventOfCode.y2019.IntCode.IntCode
+import org.gristle.adventOfCode.y2019.ic.ICSave
+import org.gristle.adventOfCode.y2019.ic.IntCode
 import java.io.IOException
 import java.util.*
 
@@ -12,17 +12,29 @@ private typealias Readout = Triple<String, List<String>, List<String>>
 
 class Y2019D25(private val input: String) : Day {
 
+    /**
+     * Unused function that plays the game.
+     */
     fun play() {
+        // Set up Intcode with program
         val initialState = input.getLongList()
         val output: Deque<Long> = LinkedList()
         val toComp: Deque<Long> = LinkedList()
         val intCode = IntCode("A", initialState, null, toComp, output)
         intCode.run()
+        // support saves
         val saves = mutableMapOf<String, ICSave>()
+
+        // game loop
         while (true) {
-            output.print()
+            // read output and print it
+            println(output.read())
+            output.clear()
+
+            // get input from terminal
             val input = readLine() ?: throw IOException("Failed to read from console")
 
+            // parse and expand shorthand, then recombine input
             val firstWord = input.takeWhile { it != ' ' }
             val remainder = input.dropWhile { it != ' ' }
 
@@ -38,6 +50,7 @@ class Y2019D25(private val input: String) : Day {
                 else -> firstWord
             } + remainder
 
+            // handle save, load, and quit
             if (expandedInput.contains("save ")) {
                 saves[expandedInput.takeLastWhile { it != ' ' }] = intCode.save()
                 continue
@@ -50,9 +63,8 @@ class Y2019D25(private val input: String) : Day {
 
             if (expandedInput.contains("quit")) break
 
-            toComp.addAll(expandedInput.map { it.code.toLong() })
-            toComp.add(10L)
-            intCode.run(10_000)
+            // Otherwise, pass the command to
+            execute(expandedInput, intCode, toComp)
         }
     }
 
@@ -81,19 +93,17 @@ class Y2019D25(private val input: String) : Day {
         return Readout(location, doors, items)
     }
 
-    private fun Deque<Long>.print() {
-        buildString {
-            this@print.forEach {
-                append(it.toInt().toChar())
-            }
-        }
-        clear()
-    }
-
+    /**
+     * Utility function for converting string input to Intcode input.
+     */
     private fun String.toCode() = map { it.code.toLong() }
 
+    /**
+     * Utility function for reading output.
+     */
     private fun Iterable<Long>.read() = map { it.toInt().toChar() }.joinToString("")
 
+    // Map used to backtrack.
     private val reverse = mapOf(
         "north" to "south",
         "south" to "north",
@@ -101,14 +111,20 @@ class Y2019D25(private val input: String) : Day {
         "west" to "east",
     )
 
+    /**
+     * Utility function for sending commands to IntCode.
+     */
     private fun execute(command: String, intCode: IntCode, toComp: Deque<Long>) {
         toComp.addAll(command.toCode())
         toComp.add(10L)
         intCode.run(100_000)
     }
 
+    /**
+     * Recursive DFS for traversing the ship.
+     */
     private fun explore(
-        endCondition: Boolean,
+        stopAtSecurity: Boolean,
         command: String,
         previousLocation: String,
         intCode: IntCode,
@@ -120,11 +136,11 @@ class Y2019D25(private val input: String) : Day {
 
         // returns early if hits pressure plate
         if (previousLocation == currentLocation) {
-            return if (endCondition) command else ""
+            return if (stopAtSecurity) command else ""
         }
 
         // picks up items, undos action if fatal
-        if (!endCondition) items.forEach { item ->
+        if (!stopAtSecurity) items.forEach { item ->
             val save = intCode.save()
             execute("take $item", intCode, toComp)
             output.clear()
@@ -136,7 +152,7 @@ class Y2019D25(private val input: String) : Day {
 
         // moves to next spot
         doors.filter { it != reverse[command] }.forEach { door ->
-            val endCommand = explore(endCondition, door, currentLocation, intCode, toComp, output)
+            val endCommand = explore(stopAtSecurity, door, currentLocation, intCode, toComp, output)
             if (endCommand.isNotBlank()) return endCommand
         }
 
@@ -149,6 +165,10 @@ class Y2019D25(private val input: String) : Day {
         return ""
     }
 
+    /**
+     * DFS that runs through all the item combinations and tests them on the pressure plate, ultimately returning
+     * the passcode.
+     */
     private fun getPasscode(
         inventory: List<String>,
         direction: String,
@@ -157,10 +177,15 @@ class Y2019D25(private val input: String) : Day {
         toComp: Deque<Long>,
         output: Deque<Long>,
     ): String {
+        // first step on plate and get report
         val step = step(direction, intCode, toComp, output)
 
+        // if "heavy" or the answer, return it. otherwise continue
         if (step != "light") return step
 
+        // go through all items in the list and pick them up, then call the function recursively. if the result 
+        // of the recursive call is too heavy, drop that item. If the result of the recursive all is the answer,
+        // return it.
         for (i in index until inventory.size) {
             execute("take ${inventory[i]}", intCode, toComp)
             output.clear()
@@ -168,14 +193,18 @@ class Y2019D25(private val input: String) : Day {
             if (innerStep == "heavy") {
                 execute("drop ${inventory[i]}", intCode, toComp)
                 output.clear()
-            } else if (innerStep != "light") {
+            } else if (innerStep.toIntOrNull() != null) {
                 return innerStep
             }
         }
-
+        // if all the item combinations don't work, then the current loadout does not work. Report "heavy" so that
+        // the outer recursive function drops the last item.
         return "heavy"
     }
 
+    /**
+     * Steps on the plate, returning whether the droid should be lighter, heavier, or the passcode if just right.
+     */
     private fun step(direction: String, intCode: IntCode, toComp: Deque<Long>, output: Deque<Long>): String {
         toComp.addAll(direction.toCode())
         toComp.add(10L)
@@ -190,20 +219,24 @@ class Y2019D25(private val input: String) : Day {
     }
 
     override fun part1(): String {
-
+        // Set up the IntCode program
         val initialState = input.getLongList()
         val output: Deque<Long> = ArrayDeque()
         val toComp: Deque<Long> = ArrayDeque()
         val intCode = IntCode("A", initialState, null, toComp, output)
 
+        // Initial Hull breach information needed to start the second pathfinding, so run the program and save
+        // a copy of the output.
         intCode.run()
-
         val outputCopy = (output as ArrayDeque).clone()
 
+        // Run a DFS that traverses entire map, picking up all items, savescumming to avoid fatal items.
         explore(false, "", "Outer Space", intCode, toComp, output)
 
+        // Reset the output for the second traversal, now that all items have been picked up.
         output.addAll(outputCopy)
 
+        // Second DFS to get to Security
         val plateDirection = explore(
             true,
             "",
@@ -211,8 +244,10 @@ class Y2019D25(private val input: String) : Day {
             intCode, toComp, output
         )
 
+        // Get list of all items...
         execute("inv", intCode, toComp)
 
+        // ...and parse them.
         val inventory = output
             .read()
             .lineSequence()
@@ -220,10 +255,12 @@ class Y2019D25(private val input: String) : Day {
             .map { line -> line.drop(2) }
             .toList()
 
+        // drop all items
         inventory.forEach { item ->
             execute("drop $item", intCode, toComp)
         }
 
+        // DFS tries all combinations until the answer is provided.
         return getPasscode(inventory, plateDirection, 0, intCode, toComp, output)
     }
 
