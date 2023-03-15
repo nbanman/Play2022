@@ -7,7 +7,7 @@ class Y2021D7(input: String) : Day {
 
     private val crabs = input.split(',').map { it.toInt() }
 
-    private val crabRange = crabs.minOf { it }..crabs.maxOf { it }
+    private val crabRange = crabs.min()..crabs.max()
 
     private tailrec fun List<Int>.optimalAlignmentCost(range: IntRange = crabRange, fuelCost: (Int) -> Int): Int {
 
