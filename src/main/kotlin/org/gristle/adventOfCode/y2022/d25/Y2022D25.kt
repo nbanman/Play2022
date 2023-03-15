@@ -21,11 +21,11 @@ class Y2022D25(private val input: String) : Day {
     }
 
     override fun part1() = input
-        .lines()
+        .lineSequence()
         .sumOf { it.toBase10() }
         .toSnafu()
-    
-    override fun part2() = "Damn interfaces!"
+
+    override fun part2() = "Damned interfaces!"
 }
 
 fun main() = Day.runDay(Y2022D25::class) // 2-=2-0=-0-=0200=--21 (29ms)
