@@ -21,7 +21,7 @@ class Y2022D24(input: String) : Day {
     // Parse Blizzards into a map with one coordinate as the key and a list of Blizzards moving along that coordinate
     // on the other. The north/south blizzards use an offset the size of the valley's width so that one map can be
     // used for both coordinates.
-    private val blizzards = buildMap<Int, MutableList<Blizzard>> {
+    private val blizzards: Map<Int, List<Blizzard>> = buildMap<Int, MutableList<Blizzard>> {
         valley.forEachIndexed { index, c ->
             val pos = Coord.fromIndex(index, valley.width)
             val (movement, eastWest) = when (c) {
@@ -33,13 +33,15 @@ class Y2022D24(input: String) : Day {
             }
             if (movement != null) {
                 if (eastWest) {
-                    this.getOrPut(pos.y) { mutableListOf() }.add(Blizzard(pos.x, movement, valleySize.x))
+                    this.getOrPut(pos.y) { mutableListOf() }
+                        .add(Blizzard(pos.x, movement, valleySize.x))
                 } else {
-                    this.getOrPut(pos.x + valley.width) { mutableListOf() }.add(Blizzard(pos.y, movement, valleySize.y))
+                    this.getOrPut(pos.x + valley.width) { mutableListOf() }
+                        .add(Blizzard(pos.y, movement, valleySize.y))
                 }
             }
         }
-    } as Map<Int, List<Blizzard>>
+    }
 
     // State is custom rather than just the position because we have to do logic related to the minute as well to
     // calculate Blizzard locations. 
