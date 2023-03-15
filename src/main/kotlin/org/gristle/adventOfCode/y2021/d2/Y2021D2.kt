@@ -2,13 +2,12 @@ package org.gristle.adventOfCode.y2021.d2
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.getInts
 
 class Y2021D2(input: String) : Day {
 
     val commands = input
-        .lines()
-        .map { line -> line[0] to line.getInts().first() }
+        .lineSequence()
+        .map { line -> line[0] to line.takeLastWhile { it.isDigit() }.toInt() }
 
     override fun part1(): Int = commands
         .fold(Coord.ORIGIN) { pos, (dir, amt) ->
@@ -33,7 +32,7 @@ class Y2021D2(input: String) : Day {
 
 fun main() = Day.runDay(Y2021D2::class)
 
-//    Class creation: 32ms
-//    Part 1: 2117664 (3ms)
-//    Part 2: 2073416724 (1ms)
-//    Total time: 37ms
+//    Class creation: 14ms
+//    Part 1: 2117664 (9ms)
+//    Part 2: 2073416724 (4ms)
+//    Total time: 28ms
