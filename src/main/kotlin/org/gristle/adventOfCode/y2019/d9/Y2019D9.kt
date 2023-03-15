@@ -6,12 +6,6 @@ import org.gristle.adventOfCode.y2019.ic.FintCode
 
 class Y2019D9(private val input: String) : Day {
 
-    private val initialState = input
-        .split(',')
-        .map { it.toLong() }
-
-    private val intcode = FintCode(input)
-
     override fun part1() = FintCode(input).run(listOf(1L))[0]
 
     override fun part2() = FintCode(input).run(listOf(2L))[0]

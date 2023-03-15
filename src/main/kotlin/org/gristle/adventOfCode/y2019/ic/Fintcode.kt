@@ -91,7 +91,7 @@ class FintCode constructor(
                 3 -> {
                     verbose.print(getVerbose(instruction, 1, "input"))
                     program[getWrite(1)] = input.nextOrNull()
-                        ?: throw IllegalArgumentException("No input to read.") // todo consider returning 0 like old IntCode
+                        ?: throw IllegalArgumentException("No input to read.")
                     cursor += 2
                 }
 

@@ -3,9 +3,7 @@ package org.gristle.adventOfCode.y2019.d13
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.MutableGrid
-import org.gristle.adventOfCode.utilities.toMutableGrid
 import org.gristle.adventOfCode.y2019.ic.IntCode
-
 import java.util.*
 
 class Y2019D13(input: String) : Day {
@@ -48,7 +46,7 @@ class Y2019D13(input: String) : Day {
         val output: Deque<Long> = LinkedList()
         val intCode = IntCode("A", initialState, 2L, null, output)
         intCode.run()
-        val grid = List(50_000) { 0 }.toMutableGrid(100)
+        val grid = MutableGrid(100, 500) { 0 }
         val cabinet = Cabinet(grid, output, inp)
         cabinet.runSimple()
         return grid.count { it == 2 }
@@ -58,7 +56,7 @@ class Y2019D13(input: String) : Day {
         val inp: Deque<Long> = LinkedList()
         val output: Deque<Long> = LinkedList()
         val intCode = IntCode("B", listOf(2L) + initialState.drop(1), null, inp, output)
-        val grid = List(50_000) { 0 }.toMutableGrid(100)
+        val grid = MutableGrid(100, 500) { 0 }
         val cabinet = Cabinet(grid, output, inp)
         while (!intCode.isDone) {
             intCode.run()

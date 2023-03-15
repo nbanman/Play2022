@@ -12,7 +12,7 @@ class Y2022D7(input: String) : Day {
 
         // Provides a list of all directories in and under this directory.
         fun inclusiveDirectories(): List<Directory> =
-            directories.values.toList() + directories.values.flatMap(Directory::inclusiveDirectories)
+            listOf(this) + directories.values.flatMap(Directory::inclusiveDirectories)
     }
 
     // Parsing input to create file structure
@@ -42,14 +42,18 @@ class Y2022D7(input: String) : Day {
     private val root = createFileStructure(input)
     private val allDirectories = root.inclusiveDirectories()
 
-    override fun part1() = allDirectories.filter { it.fileSize <= 100000 }.sumOf(Directory::fileSize)
+    override fun part1() = allDirectories
+        .filter { it.fileSize <= 100_000 }
+        .sumOf(Directory::fileSize)
 
-    override fun part2() = allDirectories
-        .filter {
-            val spaceAvailable = 70000000L - root.fileSize
-            val minDirSize = 30000000L - spaceAvailable
-            it.fileSize >= minDirSize // predicate
-        }.minOf(Directory::fileSize)
+    override fun part2(): Int {
+        val spaceAvailable = 70_000_000 - root.fileSize
+        val minDirSize = 30_000_000 - spaceAvailable
+
+        return allDirectories
+            .filter { it.fileSize >= minDirSize }
+            .minOf(Directory::fileSize)
+    }
 }
 
 fun main() = Day.runDay(Y2022D7::class) // 1477771, 3579501
