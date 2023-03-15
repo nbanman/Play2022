@@ -18,11 +18,11 @@ class Y2022D9(input: String) : Day {
     }
 
     // Sequence of positions that the head occupies, including any repeats
-    private val headPositions: Sequence<Coord> = Regex("""([UDLR]) (\d+)""")
-        .findAll(input)
-        .flatMap { match -> // parse into a Sequence of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
-            val direction = match.groupValues[1][0].toDirection()
-            val times = match.groupValues[2].toInt()
+    private val headPositions: Sequence<Coord> = input
+        .lineSequence()
+        .flatMap { line -> // parse into a Sequence of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
+            val direction = line[0].toDirection()
+            val times = line.takeLastWhile(Char::isDigit).toInt()
             generateSequence { direction }.take(times)
         }
         // take directions and turn them into a Sequence of positions that the head visits
@@ -53,4 +53,9 @@ class Y2022D9(input: String) : Day {
     override fun part2() = solve(10)
 }
 
-fun main() = Day.runDay(Y2022D9::class) // 6175, 2578
+fun main() = Day.runDay(Y2022D9::class)
+
+//    Class creation: 23ms
+//    Part 1: 6175 (36ms)
+//    Part 2: 2578 (13ms)
+//    Total time: 73ms
