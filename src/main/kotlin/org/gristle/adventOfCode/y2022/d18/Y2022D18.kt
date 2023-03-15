@@ -11,23 +11,16 @@ class Y2022D18(input: String) : Day {
     // set of all cubes in the droplet
     private val cubes: Set<Xyz> = input
         .getInts()
-        .chunked(3)
-        .map { (x, y, z) ->
-            Xyz(x, y, z)
-        }.toSet()
-
-    // bounds are IntRanges, one for each of three dimensions, giving the boundaries of the droplet with
-    // a 1-space buffer on each side
-    private val bounds = cubes.getBounds(padding = 1)
+        .chunked(3) { (x, y, z) -> Xyz(x, y, z) }
+        .toSet()
 
     // utility function that returns the 6 spaces adjacent to a given cube
     private fun Xyz.adjacent() = Xyz.CROSS.map { it + this }
 
     // for every cube in the droplet, count the number of adjacent spaces that match a given predicate, then
     // sum that count. 
-    private inline fun surfaceArea(predicate: (Xyz) -> Boolean): Int = cubes.sumOf { cube ->
-        cube.adjacent().count { predicate(it) }
-    }
+    private inline fun surfaceArea(predicate: (Xyz) -> Boolean): Int = cubes
+        .sumOf { cube -> cube.adjacent().count(predicate) }
 
     // Predicate returns true when the space isn't occupied by a cube in the droplet. This fulfils the surface area 
     // rules of Part 1.
@@ -37,6 +30,11 @@ class Y2022D18(input: String) : Day {
     // The predicate returns true when the space is one of those exterior spaces. This fulfils the surface area rules
     // of Part 2.
     override fun part2(): Int {
+
+        // bounds are IntRanges, one for each of three dimensions, giving the boundaries of the droplet with
+        // a 1-space buffer on each side
+        val bounds = cubes.getBounds(padding = 1)
+
         // Use a BFS flood fill starting from outside the droplet. Since the bounds ranges allow a space of at least
         // one in every dimension, the BFS will go around the entire droplet and try to penetrate it.
         // Returns a set of points in and around the droplet that are part of the exterior.
@@ -58,4 +56,9 @@ class Y2022D18(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2022D18::class) // 4332 (40ms), 2524 (80ms) (1286ms original)
+fun main() = Day.runDay(Y2022D18::class) // (1286ms original)
+
+//    Class creation: 47ms
+//    Part 1: 4332 (33ms)
+//    Part 2: 2524 (64ms)
+//    Total time: 146ms
