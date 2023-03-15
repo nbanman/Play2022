@@ -88,8 +88,9 @@ class Y2022D23(input: String) : Day {
     }
 
     // Sequence delivering subsequent versions of the grove, with shifting winds.
-    private val movement =
-        generateSequence(grove to Direction.N) { (current, dir) -> current.move(dir) to dir.advance(1) }
+    private val movement = generateSequence(grove to Direction.N) { (current, dir) ->
+        current.move(dir) to dir.advance(1)
+    }
 
     override fun part1(): Int = movement
         .take(11) // iterate 10 times from initial
