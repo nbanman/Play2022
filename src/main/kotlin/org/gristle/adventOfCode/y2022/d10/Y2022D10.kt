@@ -38,4 +38,9 @@ class Y2022D10(input: String) : Day {
         .ocr()
 }
 
-fun main() = Day.runDay(Y2022D10::class) // 12840, ZKJFBJFZ
+fun main() = Day.runDay(Y2022D10::class)
+
+//    Class creation: 21ms
+//    Part 1: 16406 (5ms)
+//    Part 2: ZKJFBJFZ (12ms)
+//    Total time: 38ms
