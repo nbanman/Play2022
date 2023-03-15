@@ -26,12 +26,10 @@ class Y2022D12(input: String) : Day {
     }
 
     private val vertices = Graph
-        .bfsSequence(
-            startId = startId,
-            defaultEdges = getEdges
-        ).takeUntil { area[it.id] == 'S' }
+        .bfsSequence(startId = startId, defaultEdges = getEdges)
+        .takeUntil { area[it.id] == 'S' }
 
-    override fun part1() = vertices.toList().steps()
+    override fun part1() = vertices.steps()
     override fun part2() = vertices.first { area[it.id] in "Sa" }.weight.toInt()
 
 //    Alternate solution uses A* and is slightly faster, works for all known puzzle inputs but part 2 relies on quirk of
@@ -62,7 +60,7 @@ class Y2022D12(input: String) : Day {
 
 }
 
-fun main() = Day.runDay(Y2022D12::class) // 361, 354
+fun main() = Day.runDay(Y2022D12::class)
 
 //    Class creation: 24ms
 //    Part 1: 361 (19ms)
