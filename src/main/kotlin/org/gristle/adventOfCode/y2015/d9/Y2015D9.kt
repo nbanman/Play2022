@@ -29,7 +29,7 @@ class Y2015D9(private val input: String) : Day {
 
     private fun tour(city: String) = Graph.dijkstraSequence(startId = listOf(city), defaultEdges = defaultEdges)
 
-    // Part one finds the shortest path so the end condition is specified with takeUntil. It runs from each city
+    // Part one finds the shortest path so the end condition is specified with first. It runs from each city
     // (hmm... Floyd-Warshall?) then takes the minimum of each city.
     override fun part1() = cities
         .minOf { city ->
@@ -38,8 +38,8 @@ class Y2015D9(private val input: String) : Day {
                 .weight
         }.toInt()
 
-    // Part two is the same as Part one except that it finds the longest path so no end condition is specified.
-    // Instead, it runs until there are no more nodes to visit, then grabs the largest weight.
+    // Part two is the same as Part one except that it finds the longest path so the end condition is specified with
+    // last. It runs until there are no more nodes to visit, then grabs the largest weight.
     override fun part2() = cities
         .maxOf { city ->
             tour(city)
