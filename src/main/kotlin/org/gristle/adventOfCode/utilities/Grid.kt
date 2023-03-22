@@ -123,7 +123,8 @@ class ArrayGrid<E> private constructor(
 
     override fun lastCoord(): Coord = coordOf(lastIndex)
 
-    override fun coords(): List<Coord> = indices.map(::coordOf)
+    override fun coords(): List<Coord> =
+        (0 until height).flatMap { y -> (0 until width).map { x -> Coord(x, y) } }
 
     override fun indexOf(x: Int, y: Int): Int = y * width + x
 
