@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2015.d7
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
-import kotlin.math.pow
+import org.gristle.adventOfCode.utilities.pow
 
 // Refactor candidate: uses global mutable "register"; stateful, would give different answer if run twice
 class Y2015D7(input: String) : Day {
@@ -29,7 +29,7 @@ class Y2015D7(input: String) : Day {
                 if (arg1Value == -1) return -1
                 return (0..15).fold(0) { acc, i ->
                     val complement = (arg1Value.shr(i) and 1).let { if (it == 1) 0 else 1 }
-                    acc + complement * 2.0.pow(i).toInt()
+                    acc + complement * 2.pow(i).toInt()
                 }
             }
         }
