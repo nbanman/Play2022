@@ -22,7 +22,7 @@ class Y2015D25(input: String) : Day {
     }
 
     override fun part1() = (2..getPlace()).fold(20151125L) { acc, _ -> (acc * 252533) % 33554393 }
-    override fun part2() = "Mry Xms"
+    override fun part2() = true
 }
 
 fun main() = Day.runDay(Y2015D25::class)
