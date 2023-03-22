@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.utilities
 
 import java.util.*
 import kotlin.math.min
+import kotlin.math.pow
 
 /**
  * Returns elapsed time in ms.
@@ -55,7 +56,11 @@ fun Int.isOdd(): Boolean = this % 2 == 1
 /**
  * pow implementation for Int
  */
-fun Int.pow(n: Int): Long = (1..n).fold(1L) { acc, _ -> acc * this }
+fun Int.pow(n: Int): Long = if (n >= 0) {
+    (1..n).fold(1L) { acc, _ -> acc * this }
+} else {
+    this.toFloat().pow(n).toLong()
+}
 
 /**
  * Reverse the bits in an integer
@@ -172,7 +177,11 @@ fun <E> List<List<E>>.transpose(): List<List<E>> {
 /**
  * pow implementation for Long
  */
-fun Long.pow(n: Int): Long = (1..n).fold(1L) { acc, _ -> acc * this }
+fun Long.pow(n: Int): Long = if (n >= 0) {
+    (1..n).fold(1L) { acc, _ -> acc * this }
+} else {
+    this.toFloat().pow(n).toLong()
+}
 
 /**
  * Used in algorithms that have multiple nodes with different weights representing the same location.
