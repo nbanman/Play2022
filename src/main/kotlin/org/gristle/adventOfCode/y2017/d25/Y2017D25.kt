@@ -87,7 +87,7 @@ class Y2017D25(input: String) : Day {
         return startNode.sumList()
     }
 
-    override fun part2() = "Merry Xmas!!!"
+    override fun part2() = true
 }
 
 fun main() = Day.runDay(Y2017D25::class)
