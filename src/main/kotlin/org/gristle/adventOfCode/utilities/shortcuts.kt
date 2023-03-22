@@ -53,6 +53,11 @@ fun Int.isEven(): Boolean = this % 2 == 0
 fun Int.isOdd(): Boolean = this % 2 == 1
 
 /**
+ * pow implementation for Int
+ */
+fun Int.pow(n: Int): Long = (1..n).fold(1L) { acc, _ -> acc * this }
+
+/**
  * Reverse the bits in an integer
  */
 fun Int.reversed(bits: Int): Int {
@@ -163,6 +168,11 @@ fun <E> List<List<E>>.transpose(): List<List<E>> {
         }
     }
 }
+
+/**
+ * pow implementation for Long
+ */
+fun Long.pow(n: Int): Long = (1..n).fold(1L) { acc, _ -> acc * this }
 
 /**
  * Used in algorithms that have multiple nodes with different weights representing the same location.
