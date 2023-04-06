@@ -528,13 +528,12 @@ fun Grid<Char>.rep() = representation { it }
 fun Grid<Char>.getEdgeMapIndexed(ignore: String = "#. "): Map<IndexedValue<Char>, List<Graph.Edge<IndexedValue<Char>>>> {
     val edgeMap = mutableMapOf<IndexedValue<Char>, List<Graph.Edge<IndexedValue<Char>>>>()
 
-    val getEdges: (IndexedValue<Char>) -> List<Graph.Edge<IndexedValue<Char>>> = { node ->
+    val getEdges: (IndexedValue<Char>) -> List<IndexedValue<Char>> = { node ->
         getNeighborsIndexedValue(node.index)
             .filter { it.value != '#' }
-            .map { Graph.Edge(it, 1.0) }
     }
     withIndex().filter { it.value !in ignore }.forEach { node ->
-        edgeMap[node] = Graph.dijkstra(node, edges = edgeMap, defaultEdges = getEdges)
+        edgeMap[node] = Graph.bfs(node, defaultEdges = getEdges)
             .filter { it.id.value !in ignore }
             .drop(1)
             .map { Graph.Edge(it.id, it.weight) }
