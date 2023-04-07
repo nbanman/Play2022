@@ -4,17 +4,20 @@ import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Graph.steps
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2018D22(input: String) : Day {
 
-    private val pattern = Regex("""depth: (\d+)\r?\ntarget: (\d+),(\d+)""")
-
-    private val gv = input.groupValues(pattern, String::toInt).first()
-
-    private val depth = gv[0]
     private val start = Coord.ORIGIN
-    private val target = Coord(gv[1], gv[2])
+
+    private val depth: Int
+    private val target: Coord
+
+    init {
+        val (d, x, y) = input.getIntList()
+        depth = d
+        target = Coord(x, y)
+    }
 
     // the type of terrain found in each location of the cavern
     enum class Terrain { ROCKY, WET, NARROW }
@@ -28,6 +31,7 @@ class Y2018D22(input: String) : Day {
      * in a Map object.
      */
     class Cavern(start: Coord, target: Coord, private val depth: Int) {
+
         // helper functions used to convert geologic index to erosion level
         private fun Int.erosionLevel() = (this + depth) % 20183
         private fun Long.erosionLevel() = ((this + depth) % 20183).toInt()
@@ -38,21 +42,22 @@ class Y2018D22(input: String) : Day {
         // map to hold the erosion level of the cavern. From this, the terrain for any location can be
         // calculated. It remains mutable because the values are calculated lazily as needed using the getErosion
         // function. It starts with start and target values provided in the instructions.
-        private val erosionMap = mutableMapOf<Coord, Int>().apply {
-            put(start, 0.erosionLevel())
-            put(target, 0.erosionLevel())
-        }
+        private val erosionMap = mutableMapOf<Coord, Int>()
+            .apply {
+                put(start, 0.erosionLevel())
+                put(target, 0.erosionLevel())
+            }
 
-        private fun getErosion(pos: Coord): Int {
-            return erosionMap[pos] ?: let { // if value stored in map, return value. Otherwise...
-                erosionMap[pos] = when { // ...calculate value and assign it to the map using provided rules
+        // returns the erosion for a given position, using the erosionMap if a value is already found, otherwise
+        // calculating it and putting it in the erosionMap
+        private fun getErosion(pos: Coord): Int = erosionMap
+            .getOrPut(pos) { // if value stored in map, return value. Otherwise...
+                when { // ...calculate value and assign it to the map using provided rules
                     pos.y == 0 -> (pos.x * 16807L).erosionLevel()
                     pos.x == 0 -> (pos.y * 48271L).erosionLevel()
                     else -> (getErosion(pos.west()) * getErosion(pos.north())).erosionLevel() // recursive!
                 }
-                erosionMap.getValue(pos) // provide the newly assigned value
             }
-        }
 
         // sole public getter provides the terrain for a given position
         operator fun get(pos: Coord): Terrain = getErosion(pos).terrain()
@@ -112,7 +117,7 @@ class Y2018D22(input: String) : Day {
 
 fun main() = Day.runDay(Y2018D22::class)
 
-//    Class creation: 19ms (98ms grid)
-//    Part 1: 5637 (14ms) (1ms grid)
-//    Part 2: 969 (1251ms) (491ms grid)
-//    Total time: 1285ms
+//    Class creation: 13ms
+//    Part 1: 5637 (13ms)
+//    Part 2: 969 (983ms)
+//    Total time: 1010ms
