@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2017.d23
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.isPrime
 import org.gristle.adventOfCode.y2017.d18.Y2017D18
 
 // not refactored! ugly!
@@ -54,14 +55,14 @@ class Y2017D23(input: String) : Day {
         // Part 2
         val b = commands.first().arg2.toInt() * 100 + 100_000
         return (b..b + 17_000 step 17).count {
-            !it.toBigInteger().isProbablePrime(2)
+            !it.isPrime()
         }
     }
 }
 
 fun main() = Day.runDay(Y2017D23::class)
 
-//    Class creation: 20ms
+//    Class creation: 15ms
 //    Part 1: 3025 (12ms)
-//    Part 2: 915 (15ms)
-//    Total time: 47ms
+//    Part 2: 915 (4ms)
+//    Total time: 32ms
