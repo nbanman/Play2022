@@ -2,8 +2,9 @@ package org.gristle.adventOfCode.y2022.d19
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.gristle.adventOfCode.SuspendedDay
+import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.gvs
 import kotlin.math.ceil
@@ -25,7 +26,7 @@ import kotlin.math.ceil
 // This version is also significantly shorter because I do not need to handle special cases for my hard-coded types. 
 
 @Suppress("SameParameterValue")
-class Y2022D19(input: String) : SuspendedDay {
+class Y2022D19(input: String) : Day {
 
     data class Blueprint(
         val id: Int,
@@ -186,18 +187,22 @@ class Y2022D19(input: String) : SuspendedDay {
         )
     )
 
-    override suspend fun part1() = withContext(Dispatchers.Default) {
-        blueprints.map { blueprint ->
-            async {
-                blueprint.id * findResource(blueprint, "geode", initialState, 24)
-            }
-        }.sumOf { it.await() }
+    override fun part1() = runBlocking {
+        withContext(Dispatchers.Default) {
+            blueprints.map { blueprint ->
+                async {
+                    blueprint.id * findResource(blueprint, "geode", initialState, 24)
+                }
+            }.sumOf { it.await() }
+        }
     }
 
-    override suspend fun part2() = withContext(Dispatchers.Default) {
-        blueprints.take(3).map { blueprint ->
-            async { findResource(blueprint, "geode", initialState, 32) }
-        }.fold(1) { acc, deferred -> acc * deferred.await() }
+    override fun part2() = runBlocking {
+        withContext(Dispatchers.Default) {
+            blueprints.take(3).map { blueprint ->
+                async { findResource(blueprint, "geode", initialState, 32) }
+            }.fold(1) { acc, deferred -> acc * deferred.await() }
+        }
     }
 
     companion object {
@@ -208,7 +213,7 @@ class Y2022D19(input: String) : SuspendedDay {
 // Pt 1: 1427 (500ms) (629ms) (146ms hardcoded)
 // Pt 2: 4400 (614ms) (807ms) (238ms hardcoded)
 // Total: (1173ms) (1490ms) (408ms hardcoded)
-fun main() = SuspendedDay.runDay(Y2022D19::class)
+fun main() = Day.runDay(Y2022D19::class)
 
 //    Class creation: 32ms
 //    Part 1: 1427 (565ms)
