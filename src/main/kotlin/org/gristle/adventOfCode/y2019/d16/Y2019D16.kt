@@ -8,7 +8,7 @@ class Y2019D16(private val input: String) : Day {
     private val nos = input.map { Character.getNumericValue(it) }
     private val phases = 100
 
-    override fun part1(): String {
+    override fun part1(): Int {
 
         val startPattern = listOf(0, 1, 0, -1)
         return (1..phases).fold(nos) { acc, _ ->
@@ -19,10 +19,11 @@ class Y2019D16(private val input: String) : Day {
                 }.let { abs(it % 10) }
             }
         }.take(8)
-        .joinToString("")
+            .joinToString("")
+            .toInt()
     }
 
-    override fun part2(): String {
+    override fun part2(): Int {
         val offset = input.take(7).toInt()
         val arraySize = nos.size * 10_000 - offset
         val offsetMod = offset % nos.size
@@ -32,7 +33,10 @@ class Y2019D16(private val input: String) : Day {
                 nosi[i] = (nosi[i] + nosi[i + 1]) % 10
             }
         }
-        return nosi.take(8).joinToString("")
+        return nosi
+            .take(8)
+            .joinToString("")
+            .toInt()
     }
 }
 
