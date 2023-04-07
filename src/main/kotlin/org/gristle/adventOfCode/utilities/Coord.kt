@@ -79,21 +79,38 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
                 }
             }
     }
-    fun north(distance: Int = 1, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
+
+    fun north() = copy(y = y - 1)
+    fun northwest() = Coord(x - 1, y - 1)
+    fun northeast() = Coord(x + 1, y - 1)
+    fun south() = copy(y = y + 1)
+    fun southwest() = Coord(x - 1, y + 1)
+    fun southeast() = Coord(x + 1, y + 1)
+    fun west() = copy(x = x - 1)
+    fun east() = copy(x = x + 1)
+
+    fun north(distance: Int, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
         move(distance, size, wrapAround) { Coord(0, -1) }
-    fun northwest(distance: Int = 1, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
+
+    fun northwest(distance: Int, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
         move(distance, size, wrapAround) { Coord(-1, -1) }
-    fun northeast(distance: Int = 1, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
+
+    fun northeast(distance: Int, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
         move(distance, size, wrapAround) { Coord(1, -1) }
-    fun south(distance: Int = 1, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
+
+    fun south(distance: Int, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
         move(distance, size, wrapAround) { Coord(0, 1) }
-    fun southwest(distance: Int = 1, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
+
+    fun southwest(distance: Int, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
         move(distance, size, wrapAround) { Coord(-1, 1) }
-    fun southeast(distance: Int = 1, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
+
+    fun southeast(distance: Int, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
         move(distance, size, wrapAround) { Coord(1, 1) }
-    fun west(distance: Int = 1, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
+
+    fun west(distance: Int, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
         move(distance, size, wrapAround) { Coord(-1, 0) }
-    fun east(distance: Int = 1, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
+
+    fun east(distance: Int, size: Coord = Coord(0, 0), wrapAround: Boolean = false) =
         move(distance, size, wrapAround) { Coord(1, 0) }
 
     fun getNeighbors(includeDiagonals: Boolean = false): List<Coord> {
