@@ -94,25 +94,29 @@ class Y2018D22(input: String) : Day {
      * tool. The heuristic is the manhattan distance to the target. Edges are found by looking at neighboring
      * positions and calculating what tool change, if necessary, needs to be made.
      */
-    override fun part2() = Graph
-        .aStar(
-            startId = State(start, Tool.TORCH),
-            heuristic = { state -> state.pos.manhattanDistance(target).toDouble() },
-            defaultEdges = { state ->
-                state.pos
-                    .getNeighbors() // get four neighbors of the location as grid indices
-                    .filter { it.x >= 0 && it.y >= 0 } // avoid negative positions
-                    .map { neighbor -> // for each neighbor index...
-                        val newTool = changeTool(cavern[neighbor], state) // ...get the new tool if necessary 
-                        val weight = if (state.tool != newTool) 8.0 else 1.0 // calculate weight incl tool change
-                        // add 7 weight if the neighbor is the target and the target is not Torch, to account for
-                        // ending up as torch
-                        val endMod = if (neighbor == target && newTool != Tool.TORCH) 7 else 0
-                        // wrap together in an Edge object
-                        Graph.Edge(State(neighbor, newTool), weight + endMod)
-                    }
-            }
-        ).steps()
+    override fun part2(): Int {
+        val findEdges: (State) -> List<Graph.Edge<State>> = { state ->
+            state.pos
+                .getNeighbors() // get four neighbors of the location as grid indices
+                .filter { it.x >= 0 && it.y >= 0 } // avoid negative positions
+                .map { neighbor -> // for each neighbor index...
+                    val newTool = changeTool(cavern[neighbor], state) // ...get the new tool if necessary 
+                    val weight = if (state.tool != newTool) 8.0 else 1.0 // calculate weight incl tool change
+                    // add 7 weight if the neighbor is the target and the target is not Torch, to account for
+                    // ending up as torch
+                    val endMod = if (neighbor == target && newTool != Tool.TORCH) 7 else 0
+                    // wrap together in an Edge object
+                    Graph.Edge(State(neighbor, newTool), weight + endMod)
+                }
+        }
+
+        return Graph
+            .aStar(
+                startId = State(start, Tool.TORCH),
+                heuristic = { state -> state.pos.manhattanDistance(target).toDouble() },
+                defaultEdges = findEdges
+            ).steps()
+    }
 }
 
 fun main() = Day.runDay(Y2018D22::class)
