@@ -27,6 +27,22 @@ interface Day {
             if (day != 25) println("\tPart 2: ${c.part2()} (${timer.lap()}ms)")
             println("Total time: ${timer.elapsed()}ms")
         }
+
+        fun <T : Any> testDay(
+            kClass: KClass<T>,
+            sampleInput: String? = null,
+            skipPartOne: Boolean = false,
+            skipPartTwo: Boolean = false
+        ): Any {
+            val constructor = kClass.constructors.first()
+            val (year, day) = kClass.simpleName?.getIntList()
+                ?: throw IllegalArgumentException("Class does not have a name")
+            val input = sampleInput ?: getInput(day, year)
+            val c = constructor.call(input) as Day
+            val part1 = if (skipPartOne) false else c.part1()
+            val part2 = if (skipPartTwo) false else c.part2()
+            return part1 to part2
+        }
     }
 }
 
