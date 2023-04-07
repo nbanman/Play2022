@@ -20,8 +20,8 @@ import org.gristle.adventOfCode.utilities.toGrid
  * that into a Dijkstra search. The "location" tracked not only the current position, but all numbers visited.
  * This was enough information to provide appropriate end conditions for both parts 1 and 2.
  *
- * My latest solution uses the Grid<Char>getEdgeMap function, which uses a bootstrapping Dijkstra to generate the
- * weighted edge map for all important locations. It is the same speed, but it is hopefully useful in the future.
+ * My latest solution uses the Grid<Char>getEdgeMap function, which uses BFS to generate the
+ * weighted edge map for all important locations.
  */
 
 class Y2016D24(input: String) : Day {
