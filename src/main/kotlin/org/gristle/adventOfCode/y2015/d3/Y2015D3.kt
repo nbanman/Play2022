@@ -9,7 +9,8 @@ class Y2015D3(private val input: String) : Day {
         '^' -> north()
         '>' -> east()
         'v' -> south()
-        else -> west()
+        '<' -> west()
+        else -> throw IllegalArgumentException("Invalid input.")
     }
 
     override fun part1() = input
