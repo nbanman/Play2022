@@ -19,15 +19,16 @@ class Y2015D11(input: String) : Day {
                     && trip[2] - trip[1] == 1
         }
 
-    private fun noConfusion(s: String): Boolean = !"""[iol]"""
-        .toRegex()
-        .containsMatchIn(s)
+    private val confusionRx = """[iol]""".toRegex()
 
-    private fun twoPairs(s: String): Boolean = """([a-z])\1"""
-        .toRegex()
+    private fun noConfusion(s: String): Boolean = !confusionRx.containsMatchIn(s)
+
+    private val twoPairsRx = """([a-z])\1""".toRegex()
+
+    private fun twoPairs(s: String): Boolean = twoPairsRx
         .findAll(s)
-        .count()
-        .let { it > 1 }
+        .take(2)
+        .count() > 1
 
     private fun nextPassword(password: String) =
         generateSequence(password, ::increment) // sequence starts with password and increments by one
