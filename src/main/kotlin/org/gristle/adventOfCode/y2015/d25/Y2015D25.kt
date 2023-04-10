@@ -1,16 +1,19 @@
 package org.gristle.adventOfCode.y2015.d25
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2015D25(input: String) : Day {
 
-    private val pattern = """(\d+)""".toRegex()
+    private val row: Int
+    private val col: Int
 
-    private val matches = pattern.findAll(input)
-
-    private val row = matches.first().value.toInt()
-
-    private val col = matches.last().value.toInt()
+    init {
+        input.getIntList().let {
+            row = it[0]
+            col = it[1]
+        }
+    }
 
     private fun getPlace(): Int {
         val extra = if (col == 1) {
