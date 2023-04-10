@@ -2,27 +2,30 @@ package org.gristle.adventOfCode.y2018.d25
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.MCoord
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getInts
 
 class Y2018D25(private val input: String) : Day {
-    private val pattern = """(-?\d+),(-?\d+),(-?\d+),(-?\d+)""".toRegex()
     private fun MCoord.inRange(other: MCoord) = manhattanDistance(other) <= 3
 
     override fun part1(): Int {
         val points = input
-            .groupValues(pattern) { it.toInt() }
-            .map { MCoord(it[0], it[1], it[2], it[3]) }
+            .getInts()
+            .chunked(4)
+            .map { MCoord(it) }
 
-        val constellations = mutableListOf<MutableList<MCoord>>()
+        val constellations = mutableListOf<List<MCoord>>()
 
         for (point in points) {
             val inRange = constellations
                 .filter { constellation -> constellation.any { it.inRange(point) } }
-                .toMutableList()
-            if (inRange.size == 0) {
-                constellations.add(mutableListOf(point))
+            if (inRange.isEmpty()) {
+                constellations.add(listOf(point))
             } else {
-                val newConstellation = inRange.flatten().toMutableList().apply { add(point) }
+                val stars = inRange.sumOf { it.size } + 1
+                val newConstellation = ArrayList<MCoord>(stars).apply {
+                    add(point)
+                    inRange.forEach { addAll(it) }
+                }
                 constellations.removeAll(inRange)
                 constellations.add(newConstellation)
             }
