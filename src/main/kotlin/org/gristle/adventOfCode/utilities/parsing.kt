@@ -12,12 +12,34 @@ fun String.getIntList(omitDashes: Boolean = false) = getInts(omitDashes).toList(
 /**
  * Finds all numbers in a string and returns them as a Sequence of Int.
  */
-fun String.getInts(omitDashes: Boolean = false): Sequence<Int> {
-    val pattern = if (omitDashes) """\d+""" else """-?\d+"""
-    return pattern
-        .toRegex()
-        .findAll(this)
-        .mapNotNull { it.value.toIntOrNull() }
+//fun String.getInts(omitDashes: Boolean = false): Sequence<Int> {
+//    val pattern = if (omitDashes) """\d+""" else """-?\d+"""
+//    return pattern
+//        .toRegex()
+//        .findAll(this)
+//        .mapNotNull { it.value.toIntOrNull() }
+//}
+
+fun String.getInts(omitDashes: Boolean = false): Sequence<Int> = sequence {
+    var startPosition = -1
+    for (position in indices) {
+        val c = this@getInts[position]
+        if (c.isDigit() || (!omitDashes && c == '-' && startPosition == -1)) {
+            if (startPosition == -1) startPosition = position
+        } else {
+            if (startPosition != -1) {
+                substring(startPosition, position)
+                    .toIntOrNull()
+                    ?.let { yield(it) }
+                startPosition = -1
+            }
+        }
+    }
+    if (startPosition != -1) {
+        substring(startPosition)
+            .toIntOrNull()
+            ?.let { yield(it) }
+    }
 }
 
 /**
