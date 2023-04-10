@@ -1,22 +1,28 @@
 package org.gristle.adventOfCode.y2015.d19
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.blankSplit
 import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2015D19(private val input: String) : Day {
+
     data class Rule(val element: String, val replacement: String) {
         val size = replacement.count { it in 'A'..'Z' }
     }
 
-    private val moleculePattern = """^[A-z]+${'$'}""".toRegex(RegexOption.MULTILINE)
-    private val molecule = moleculePattern.find(input)?.value
-        ?: throw Exception("No molecule found in input string")
+    private val molecule: String
+    private val rules: List<Rule>
 
-    private val rulePattern = """([A-Z][a-z]?) => (\w+)""".toRegex()
-    private val rules = input
-        .groupValues(rulePattern)
-        .map { Rule(it[0], it[1]) }
-        .sortedByDescending { it.size }
+    init {
+        val (ruleLines, moleculeLine) = input.blankSplit()
+        molecule = moleculeLine
+        rules = ruleLines
+            .lines()
+            .map { line ->
+                val (element, replacement) = line.split(" => ")
+                Rule(element, replacement)
+            }.sortedByDescending { it.size }
+    }
 
     override fun part1(): Int {
         val elements = """[A-Z][a-z]?"""
