@@ -1,7 +1,8 @@
 package org.gristle.adventOfCode.y2015.d15
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getIntList
+import org.gristle.adventOfCode.utilities.lines
 
 class Y2015D15(input: String) : Day {
 
@@ -14,14 +15,11 @@ class Y2015D15(input: String) : Day {
         val calories: Int
     )
 
-    private val pattern =
-        """(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (\d+)"""
-
     private val ingredients = input
-        .groupValues(pattern)
-        .map { gv ->
-            val ints = gv.drop(1).map { it.toInt() }
-            Ingredient(gv[0], ints[0], ints[1], ints[2], ints[3], ints[4])
+        .lines { line ->
+            val name = line.takeWhile { it != ' ' }
+            val (capacity, durability, flavor, texture, calories) = line.getIntList()
+            Ingredient(name, capacity, durability, flavor, texture, calories)
         }
 
     private val total = 100
