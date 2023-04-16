@@ -6,8 +6,8 @@ import org.gristle.adventOfCode.utilities.groupValues
 class Y2020D2(input: String) : Day {
 
     data class PassPolicy(val letter: Char, val range: IntRange, val password: String) {
-        val isValidUnderOldJobPolicy = password.count { it == letter } in range
-        val isValidUnderCurrentPolicy =
+        fun isValidUnderOldJobPolicy() = password.count { it == letter } in range
+        fun isValidUnderCurrentPolicy() =
             (password[range.first - 1] == letter) xor (password[range.last - 1] == letter)
     }
 
