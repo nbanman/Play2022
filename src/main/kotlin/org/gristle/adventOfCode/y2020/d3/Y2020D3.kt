@@ -6,11 +6,11 @@ import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2020D3(input: String) : Day {
 
-    val grid = input.toGrid()
+    val grid = input.toGrid { it == '#' }
 
     fun solve(right: Int = 3, down: Int = 1) =
         (down until grid.height step down).foldIndexed(0) { i, acc, y ->
-            acc + if (grid[Coord(((i + 1) * right) % grid.width, y)] == '#') 1 else 0
+            acc + if (grid[Coord(((i + 1) * right) % grid.width, y)]) 1 else 0
         }
 
     override fun part1() = solve()

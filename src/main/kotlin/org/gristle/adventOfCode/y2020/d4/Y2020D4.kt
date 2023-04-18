@@ -53,7 +53,7 @@ class Y2020D4(input: String) : Day {
         }
 
         class Pid(private val info: String) : PassportField() {
-            override fun isValid()= """\d{9}""".toRegex().matches(info)
+            override fun isValid() = info.length == 9 && info.all(Char::isDigit)
         }
 
         object Cid : PassportField() {

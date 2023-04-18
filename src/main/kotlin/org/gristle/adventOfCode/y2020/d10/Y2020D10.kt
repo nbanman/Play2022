@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.Day
 class Y2020D10(input: String) : Day {
     // parse adapters from outlet, sort from lowest rating. Then add charging outlet and end devices.
     // Finally convert to a list of the joltage differences between devices.
-    private val joltageDifferences = input // raw String
+    private val joltageDifferences: List<Int> = input // raw String
         .lines() // to List of String broken up by line
         .map(String::toInt) // convert List<String> to List<Int> 
         .sorted() // sort List lowest to highest

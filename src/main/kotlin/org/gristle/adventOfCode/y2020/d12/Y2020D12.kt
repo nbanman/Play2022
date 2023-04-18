@@ -13,7 +13,6 @@ class Y2020D12(input: String) : Day {
     // solve function.
     interface ShipState {
         val pos: Coord
-        fun manhattanDistance() = pos.manhattanDistance()
         fun nextState(instruction: Instruction): ShipState
     }
 
@@ -56,6 +55,7 @@ class Y2020D12(input: String) : Day {
     // final location and find the distance from the origin.
     private fun solve(initialShipState: ShipState): Int = instructions
         .fold(initialShipState, ShipState::nextState)
+        .pos
         .manhattanDistance()
 
     override fun part1() = solve(DirShipState(Coord.ORIGIN, Nsew.EAST))

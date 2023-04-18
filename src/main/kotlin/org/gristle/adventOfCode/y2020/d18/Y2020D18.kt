@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2020.d18
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.stripCarriageReturns
 
 class Y2020D18(input: String) : Day {
 
@@ -54,9 +53,8 @@ class Y2020D18(input: String) : Day {
     }
 
     private val expressions = input
-        .stripCarriageReturns()
         .replace(" ", "")
-        .split('\n')
+        .lines()
         .map { SubExpression.Parens.fromString(it).components }
 
     private fun List<SubExpression>.p1Eval(): Long {

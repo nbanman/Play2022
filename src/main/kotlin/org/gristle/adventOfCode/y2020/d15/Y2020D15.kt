@@ -4,7 +4,7 @@ import org.gristle.adventOfCode.Day
 
 class Y2020D15(input: String) : Day {
 
-    val start = input.split(',').map { it.toInt() }
+    val start = input.split(',').map(String::toInt)
 
     data class Spokenses(val first: Int? = null, val last: Int? = null) {
 

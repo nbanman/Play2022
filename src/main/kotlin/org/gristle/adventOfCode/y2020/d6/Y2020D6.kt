@@ -14,7 +14,7 @@ class Y2020D6(input: String) : Day {
     // problem.
     private inline fun solve(count: (String) -> Set<Char>) = groups
         .map(count)
-        .sumOf(Set<Char>::size)
+        .sumOf { it.size }
 
     // For each group, count the number of questions to which *anyone* answered "yes."
     // Simply converting to set removes duplicates, providing p1 answer

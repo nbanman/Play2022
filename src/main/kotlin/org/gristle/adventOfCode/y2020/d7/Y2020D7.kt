@@ -7,23 +7,16 @@ import java.util.*
 class Y2020D7(input: String) : Day {
 
     class HeldBag(val color: String, private val amount: Int) {
-        fun bagsInside(): Long {
-            return amount + amount * Rule.bagMap.getValue(color).heldBags.sumOf(HeldBag::bagsInside)
+        fun bagsInside(bagMap: Map<String, Rule>): Int {
+            return amount + amount * bagMap.getValue(color).heldBags.sumOf { it.bagsInside(bagMap) }
         }
     }
 
-    class Rule(private val color: String, val heldBags: List<HeldBag>) {
-        companion object {
-            val bagMap = mutableMapOf<String, Rule>()
-        }
+    class Rule(val color: String, val heldBags: List<HeldBag>) {
 
-        init {
-            bagMap[color] = this
-        }
-
-        fun contains(other: String): Boolean {
+        fun contains(other: String, bagMap: Map<String, Rule>): Boolean {
             val visited = mutableSetOf(color)
-            val q: Deque<HeldBag> = LinkedList()
+            val q: Deque<HeldBag> = ArrayDeque()
             q.addAll(heldBags)
             while (q.isNotEmpty()) {
                 val current = q.poll().color
@@ -34,12 +27,12 @@ class Y2020D7(input: String) : Day {
             return false
         }
 
-        fun bagsInside(): Long {
-            return HeldBag(color, 1).bagsInside() - 1
+        fun bagsInside(bagMap: Map<String, Rule>): Int {
+            return HeldBag(color, 1).bagsInside(bagMap) - 1
         }
     }
 
-    private var rules = input
+    private val rules = input
         .groupValues("""(\w+ \w+) bags contain ([^.]+).""")
         .map { gv ->
             val heldBags = gv[1]
@@ -48,9 +41,15 @@ class Y2020D7(input: String) : Day {
             Rule(gv[0], heldBags)
         }
 
-    override fun part1() = rules.count { it.contains("shiny gold") }
+    private val bagMap = buildMap {
+        rules.forEach { rule ->
+            put(rule.color, rule)
+        }
+    }
 
-    override fun part2() = Rule.bagMap.getValue("shiny gold").bagsInside()
+    override fun part1() = rules.count { it.contains("shiny gold", bagMap) }
+
+    override fun part2() = bagMap.getValue("shiny gold").bagsInside(bagMap)
 }
 
 fun main() = Day.runDay(Y2020D7::class)

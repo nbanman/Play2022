@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2021D9(input: String) : Day {
-    private val heightMap = input.toGrid(Character::getNumericValue)
+    private val heightMap = input.toGrid(Char::digitToInt)
 
     private val lowIndices = heightMap
         .indices

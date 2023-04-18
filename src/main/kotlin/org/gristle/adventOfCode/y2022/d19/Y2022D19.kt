@@ -1,9 +1,6 @@
 package org.gristle.adventOfCode.y2022.d19
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.gvs
@@ -199,9 +196,12 @@ class Y2022D19(input: String) : Day {
 
     override fun part2() = runBlocking {
         withContext(Dispatchers.Default) {
-            blueprints.take(3).map { blueprint ->
-                async { findResource(blueprint, "geode", initialState, 32) }
-            }.fold(1) { acc, deferred -> acc * deferred.await() }
+            blueprints
+                .take(3)
+                .map { blueprint ->
+                    async { findResource(blueprint, "geode", initialState, 32) }
+                }.awaitAll()
+                .reduce(Int::times)
         }
     }
 

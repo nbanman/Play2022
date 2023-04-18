@@ -16,7 +16,8 @@ class Y2020D11(input: String) : Day {
                 return when (char) {
                     '#' -> OCCUPIED
                     'L' -> UNOCCUPIED
-                    else -> EMPTY_SPACE
+                    '.' -> EMPTY_SPACE
+                    else -> throw IllegalArgumentException("Input contains unrecognized char: $char")
                 }
             }
         }
@@ -27,7 +28,7 @@ class Y2020D11(input: String) : Day {
     }
 
     // Parse initial seating layout
-    private val layout = input.toGrid().mapToGrid(Seat::of)
+    private val layout = input.toGrid(Seat::of)
 
     /**
      * Solves both parts using different tolerance levels and different algorithms to determine seat occupation

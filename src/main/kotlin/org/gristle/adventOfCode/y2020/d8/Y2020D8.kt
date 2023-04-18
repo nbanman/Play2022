@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2020.d8
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2020D8(input: String) : Day {
 
@@ -13,13 +12,8 @@ class Y2020D8(input: String) : Day {
                 acc += argument; parser++
             }
 
-            "jmp" -> {
-                parser += argument
-            }
-
-            else -> {
-                parser++
-            }
+            "jmp" -> parser += argument
+            else -> parser++
         }
     }
 
@@ -32,10 +26,13 @@ class Y2020D8(input: String) : Day {
     }
 
     val instructions = input
-        .groupValues("""([a-z]{3}) \+?(-?\d+)""")
-        .map { Instruction(it[0], it[1].toInt()) }
+        .lineSequence()
+        .map {
+            val (operation, amt) = it.split(' ')
+            Instruction(operation, amt.toInt())
+        }.toList()
 
-    fun solvePart1(flippedIndex: Int = -1): Int {
+    private fun solve(flippedIndex: Int = -1): Int {
         val pastStates = mutableSetOf<Int>()
 
         while (parser in instructions.indices) {
@@ -55,14 +52,14 @@ class Y2020D8(input: String) : Day {
         return -acc // no infinite loop, so return negative number to denote that
     }
 
-    override fun part1() = solvePart1()
+    override fun part1() = solve()
 
     override fun part2(): Int {
         for (flippedInstruction in instructions.indices) {
             if (instructions[flippedInstruction].operation == "acc") continue
             reset()
             val answer =
-                -solvePart1(flippedInstruction) // inverse means negative answer means infinite loop encountered
+                -solve(flippedInstruction) // inverse means negative answer means infinite loop encountered
             if (answer >= 0) return answer
         }
         return -1

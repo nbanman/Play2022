@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.Day
 class Y2018D14(input: String) : Day {
     private val inputNum = input.toInt()
 
-    private val solution: Pair<String, Int> = let {
+    private val solution: Pair<Long, Int> = let {
         var size = 2
         val recipes = MutableList(30_000_000) { -1 }
         recipes[0] = 3
@@ -26,7 +26,7 @@ class Y2018D14(input: String) : Day {
                 (elf + (recipes[elf] + 1)) % size
             }
         }
-        recipes.subList(inputNum, inputNum + 10).joinToString("") to size - 7
+        recipes.subList(inputNum, inputNum + 10).joinToString("").toLong() to size - 7
     }
 
     override fun part1() = solution.first

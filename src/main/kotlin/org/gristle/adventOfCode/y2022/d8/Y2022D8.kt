@@ -3,13 +3,14 @@ package org.gristle.adventOfCode.y2022.d8
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.toDigit
 import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2022D8(input: String) : Day {
 
     // Representations of the positions and heights of all the trees in the forest.
     private val treeHeights = let {
-        val forest = input.toGrid()
+        val forest = input.toGrid(Char::toDigit)
         forest.coords().associateWith { forest[it] }
     }
 
@@ -57,9 +58,9 @@ class Y2022D8(input: String) : Day {
     override fun part2(): Int = treeHeights.keys.maxOf(::scenicScore)
 }
 
-fun main() = Day.runDay(Y2022D8::class) // 1708, 504000
+fun main() = Day.runDay(Y2022D8::class)
 
-//    Class creation: 141ms
-//    Part 1: 1708 (106ms)
-//    Part 2: 504000 (59ms)
-//    Total time: 307ms
+//    Class creation: 31ms
+//    Part 1: 1708 (31ms)
+//    Part 2: 504000 (30ms)
+//    Total time: 93ms

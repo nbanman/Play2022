@@ -5,7 +5,8 @@ import kotlin.math.max
 
 class Y2020D9(input: String) : Day {
 
-    private val numbers = input.lines().map { it.toLong() }
+    private val numbers = input.lines().map(String::toLong).toList()
+
     override fun part1(): Long {
         val preamble = 25
         // Prep cache

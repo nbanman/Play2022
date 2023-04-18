@@ -1,7 +1,8 @@
 package org.gristle.adventOfCode.y2020.d19
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.blankSplit
+import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2020D19(input: String) : Day {
 
@@ -49,35 +50,33 @@ class Y2020D19(input: String) : Day {
         }
     }
 
-    private val rulePattern = """(\d+): (?:("[a-b]")|(\d+(?: \d+)*)(?: \| (\d+(?: \d+)*))?)""".toRegex()
-    private val messagePattern = """^[a-b]+""".toRegex(RegexOption.MULTILINE)
+    private val rules: List<Rule>
+    private val messages: List<String>
 
-    private val rules = input.groupValues(rulePattern).map { gv ->
-        val name = gv[0].toInt()
-        val letter = gv[1].drop(1).dropLast(1)
-        val left = if (gv[2] == "") null else gv[2].split(' ').map { it.toInt() }
-        val right = if (gv[3] == "") null else gv[3].split(' ').map { it.toInt() }
+    init {
+        val (ruleLines, messageLines) = input.blankSplit().map { it.lines() }
+        rules = ruleLines
+            .map { ruleString ->
+                val ints = ruleString.getIntList()
+                when (ints.size) {
+                    1 -> Rule.Value(ints[0], ruleString[ruleString.lastIndex - 1])
+                    2 -> Rule.Seq(ints[0], ints.drop(1))
+                    3 -> {
+                        if ('|' in ruleString) {
+                            Rule.Fork(ints[0], ints.slice(1..1), ints.slice(2..2))
+                        } else {
+                            Rule.Seq(ints[0], ints.drop(1))
+                        }
+                    }
 
-        when {
-            letter == "a" -> Rule.Value(name, letter[0])
-            letter == "b" -> Rule.Value(name, letter[0])
-            right == null -> Rule.Seq(name, left!!)
-            else -> Rule.Fork(name, left!!, right)
-        }
+                    else -> Rule.Fork(ints[0], ints.slice(1..2), ints.slice(3..4))
+                }
+            }
+        messages = messageLines
     }
 
-    private val messages = messagePattern
-        .findAll(input)
-        .toList()
-        .map { it.value }
-        .toSet()
-
     fun solve(rules: List<Rule>): Int {
-        val register = buildMap {
-            rules.forEach { rule ->
-                put(rule.name, rule)
-            }
-        }
+        val register = rules.associateBy { it.name }
         val matchPattern = register.getValue(0).expand(register).toRegex()
 
         return messages.count { matchPattern.matches(it) }

@@ -31,9 +31,10 @@ class Y2018D19(input: String) : Day {
     }
 
     override fun part2(): Int {
-//     Loop is such that R3 starts as 1, R5 goes up by 1. R2 is R3 * R5. When R2 equals 105k, R0+= R3 and R3++, R5 resets
-//     If R2 goes past 105K w/o equaling it (not divisible), then R3++ and R5 resets w/o RO going up. Thus, RO adds all
-//     the numbers that divide evenly into 105k.
+
+        // Loop is such that R3 starts as 1, R5 goes up by 1. R2 is R3 * R5. When R2 equals 105k, R0+= R3 and R3++, R5 resets
+        // If R2 goes past 105K w/o equaling it (not divisible), then R3++ and R5 resets w/o RO going up. Thus, RO adds all
+        // the numbers that divide evenly into 105k.
         val targetNum = 10_551_370
         return (1..targetNum).fold(0) { acc, i ->
             if (targetNum % i == 0) acc + i else acc

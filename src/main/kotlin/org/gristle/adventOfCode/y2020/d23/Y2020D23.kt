@@ -23,7 +23,7 @@ class Y2020D23(private val input: String) : Day {
         }
     }
 
-    override fun part1(): String {
+    override fun part1(): Int {
         val moves = 100
         val elements = input.map { Character.getNumericValue(it) }
         val circle = IndexedLinkedList(elements, true)
@@ -34,6 +34,7 @@ class Y2020D23(private val input: String) : Day {
                 it.shift(it.indexOf(1))
             }.drop(1)
             .joinToString("")
+            .toInt()
     }
 
     override fun part2(): Long {

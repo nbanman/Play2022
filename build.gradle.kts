@@ -1,9 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.8.20-RC2"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.8.0-Beta"
     id("org.jetbrains.kotlinx.benchmark") version "0.4.6"
+}
+
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            languageVersion = "2.0"
+        }
+    }
 }
 
 repositories {

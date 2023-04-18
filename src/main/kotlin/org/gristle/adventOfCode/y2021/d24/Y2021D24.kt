@@ -47,7 +47,7 @@ class Y2021D24(input: String) : Day {
             }
         }
 
-    fun solve(findIntersection: (pushMax: Int, popMax: Int) -> Int): String {
+    fun solve(findIntersection: (pushMax: Int, popMax: Int) -> Int): Long {
         var z = 0L
 
         // The steps are paired and are run in the order that the "push" steps occur. This presents a problem
@@ -87,7 +87,7 @@ class Y2021D24(input: String) : Day {
             lastIncrease = step.push.order
         }
 
-        return modelNumber.joinToString("")
+        return modelNumber.joinToString("").toLong()
     }
 
     override fun part1() = solve { pushMax, popMax -> min(pushMax, popMax) }
