@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2019.d18
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Graph.steps
 import org.gristle.adventOfCode.utilities.Grid
 import org.gristle.adventOfCode.utilities.toGrid
 import org.gristle.adventOfCode.utilities.toMutableGrid
@@ -10,155 +11,107 @@ import org.gristle.adventOfCode.utilities.toMutableGrid
 // a custom Dijkstra algorithm that had a more effective cache to eliminate possible paths.
 
 class Y2019D18(input: String) : Day {
-    class Edge(val node: Node, val weight: Int) {
-        override fun toString(): String {
-            return "E1918(node=${node.locator}, weight=$weight)"
-        }
-    }
 
-    class Node(val locator: Int, val grid: Grid<Char>) {
-        var safeToDelete = grid[locator] == '#'
-        val edges = mutableListOf<Edge>()
-        fun getEdges(nodes: List<Node>) {
-            if (!safeToDelete) {
-                grid.getNeighborIndices(locator)
-                    .filter { grid[it] != '#' }
-                    .map { Edge(nodes[it], 1) }
-                    .apply { edges.addAll(this) }
-            }
-        }
-
-        private fun replaceEdge(index: Int, edge: Edge) {
-            val edgeIndex = edges.indexOfFirst { it.node.locator == index }
-            val oldWeight = edges[edgeIndex].weight
-            val newEdge = Edge(edge.node, edge.weight + oldWeight)
-            edges[edgeIndex] = newEdge
-        }
-
-        private fun deleteEdge(index: Int) {
-            val edgeIndex = edges.indexOfFirst { it.node.locator == index }
-            edges.removeAt(edgeIndex)
-        }
-
-        fun safeDelete(): Boolean {
-            if (safeToDelete) return true
-            if (grid[locator] == '.') {
-                return when (edges.size) {
-                    1 -> {
-                        edges[0].node.deleteEdge(locator)
-                        safeToDelete = true
-                        true
-                    }
-                    2 -> {
-                        edges[0].node.replaceEdge(locator, edges[1])
-                        edges[1].node.replaceEdge(locator, edges[0])
-                        safeToDelete = true
-                        true
-                    }
-                    else -> {
-                        false
-                    }
-                }
-            }
-            return false
-        }
-
-        override fun toString(): String {
-            return "Node(\'${grid[locator]}\', locator=$locator, safeToDelete=$safeToDelete, edges=${edges})"
-        }
-    }
-
-    data class KeyEdge(val id: Char, val weight: Double, val keys: Set<Char>)
+    data class Key(val currentKey: Char, val precedingKeys: Set<Char>)
 
     data class State(val location: List<Char>, val keys: Set<Char>)
 
-    private fun getNodes(grid: Grid<Char>): List<Node> {
-        val unprunedNodes = List(grid.size) { index -> Node(index, grid) }
-        with(unprunedNodes) {
-            forEach { it.getEdges(this) }
-            forEach { it.safeDelete() }
-        }
-        return unprunedNodes.filter { !it.safeToDelete }
-    }
-
     private val tunnels = input.toGrid()
 
-    private val robots = "@$%^"
-
-    fun Grid<Char>.id(index: Int) = if (get(index) == '.') {
-        index.toString()
-    } else {
-        get(index).toString()
-    }
-
     fun solve(tunnels: Grid<Char>, starts: List<Char>): Int {
-        // First step is to shrink the graph down, removing all vertices that are simply corridors with only 
-        // two edges along the way to points of interest.
-        val nodes = getNodes(tunnels)
-        // Create a map of edges with this shrunken graph.
-        val edges: Map<String, List<Graph.Edge<String>>> = buildMap {
-            nodes.forEach { node ->
-                put(
-                    tunnels.id(node.locator),
-                    node.edges.map { edge -> Graph.Edge(tunnels.id(edge.node.locator), edge.weight.toDouble()) })
-            }
+        // Intermediate edge map used to later make the keyEdges edge map used for the final solution.
+        val edges: Map<Char, List<Graph.Edge<Char>>> = buildMap {
+            tunnels // take input...
+                .withIndex() // associate each value with its index...
+                .filter { (_, value) -> value.isLetter() || value in starts } // only run for important positions
+                .forEach { (index, start) ->
+
+                    // lambda for getting edges from the grid
+                    val getEdges: (IndexedValue<Char>) -> List<IndexedValue<Char>> = { (index, _) ->
+                        tunnels
+                            .getNeighborsIndexedValue(index) // get adjacent values
+                            .filter { it.value != '#' } // remove walls
+                    }
+
+                    // populate edge map with all key and door locations that do not require passing through a 
+                    // different key or door to get to
+                    this[start] = Graph.bfs(IndexedValue(index, start), defaultEdges = getEdges)
+                        .drop(1)
+                        .filter { it.id.value.isLetter() } // only look at keys or doors
+                        .filter { destination -> // this checks that there are no other keys or doors in between
+                            destination
+                                .path()
+                                .let { path -> path.subList(1, path.lastIndex) }
+                                .all { it.id.value == '.' }
+                        }
+                        .map { Graph.Edge(it.id.value, it.weight) } // convert to an Edge
+                }
         }
+
         // Transform the map of edges to a form suitable for searching, with only keys being valid places to move
         // and each edge storing the keys needed to have been collected before.
-        val keyEdges = edges
+        val keyEdges: Map<Char, List<Graph.Edge<Key>>> = edges
             .keys
-            .filter { it[0].isLowerCase() || it[0] in robots }.associate { id ->
-                id[0] to Graph
-                    .dijkstra(id, edges = edges)
-                    .filter { it.id[0].isLowerCase() }
+            .filter { it.isLowerCase() || it in starts }
+            .associateWith { key ->
+                Graph
+                    .dijkstra(key, edges = edges)
+                    .filter { it.id.isLowerCase() }
                     .mapNotNull { distance ->
-                        val path = distance.path().drop(1).filter { !it.id[0].isDigit() }
-                        if (path.count { it.id[0].isLowerCase() } == 1) {
+                        val path = distance.path().drop(1).filter { it.id.isLetter() }
+                        if (path.count { it.id.isLowerCase() } == 1) {
                             val keys = path
-                                .filter { it.id[0].isUpperCase() }
-                                .map { it.id[0].lowercaseChar() }
+                                .filter { it.id.isUpperCase() }
+                                .map { it.id.lowercaseChar() }
                                 .toSet()
-                            KeyEdge(path.last().id[0], path.last().weight, keys)
+                            Graph.Edge(Key(path.last().id, keys), path.last().weight)
                         } else {
                             null
                         }
                     }
             }
+
         val startState = State(starts, emptySet())
         val endCondition = { state: State -> state.keys.size == 26 }
+
+        // lambda finds edges by looking at each robot position, looking where each could move, and generating
+        // new states for each possible move
         val findEdges = { state: State ->
-            state.location.flatMapIndexed { index, robot ->
-                (keyEdges[robot] ?: emptyList())
-                    .filter { state.keys.containsAll(it.keys) }
-                    .map {
-                        val newLocations = state.location.toMutableList().apply { this[index] = it.id }
-                        val newState = State(newLocations, state.keys + it.id)
-                        Graph.Edge(newState, it.weight)
+            state.location.flatMapIndexed { robot, location ->
+                keyEdges
+                    .getValue(location)
+                    .filter { state.keys.containsAll(it.vertexId.precedingKeys) }
+                    .map { edge ->
+                        val newLocations: List<Char> =
+                            state.location.toMutableList().apply { this[robot] = edge.vertexId.currentKey }
+                        val newState = State(newLocations, state.keys + edge.vertexId.currentKey)
+                        Graph.Edge(newState, edge.weight)
                     }
             }
         }
-        val solveDistance = Graph.dijkstra(startState, endCondition, defaultEdges = findEdges)
-        return solveDistance.last().weight.toInt()
+        return Graph.dijkstra(startState, endCondition, defaultEdges = findEdges).steps()
     }
 
     override fun part1() = solve(tunnels, listOf('@'))
 
     override fun part2(): Int {
-        val quadrants = tunnels.toMutableGrid().apply {
+        val robots = "@$%^".toList()
+        val quadrants: Grid<Char> = tunnels.toMutableGrid().apply {
             val originalStart = indexOf('@')
             val wallIndices = getNeighborIndices(originalStart)
             val newStartIndices = getNeighborIndices(originalStart, true) - wallIndices.toSet()
             this[originalStart] = '#'
             wallIndices.forEach { this[it] = '#' }
             newStartIndices.forEachIndexed { index, i -> this[i] = robots[index] }
-        }.toGrid()
-        return solve(quadrants, listOf('@', '$', '%', '^'))
+        }
+        return solve(quadrants, robots)
     }
 }
 
 fun main() = Day.runDay(Y2019D18::class)
 
-//    Class creation: 24ms
-//    Part 1: 3918 (665ms)
-//    Part 2: 2004 (3487ms)
-//    Total time: 4176ms
+//    [2019 Day 18]
+//    Class creation: 18ms
+//    Part 1: 3918 (940ms)
+//    Part 2: 2004 (3453ms)
+//    Total time: 4412ms
