@@ -96,6 +96,8 @@ class Y2019D18(input: String) : Day {
 
     override fun part2(): Int {
         val robots = "@$%^".toList()
+
+        // Change the grid so that there are 4 quadrants
         val quadrants: Grid<Char> = tunnels.toMutableGrid().apply {
             val originalStart = indexOf('@')
             val wallIndices = getNeighborIndices(originalStart)
