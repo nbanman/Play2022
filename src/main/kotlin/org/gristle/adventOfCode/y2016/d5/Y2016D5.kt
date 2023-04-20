@@ -5,12 +5,10 @@ import org.gristle.adventOfCode.utilities.Md5
 import org.gristle.adventOfCode.utilities.Md5.toHex
 
 class Y2016D5(input: String) : Day {
-
     private val md5Sequence = generateSequence(0) { it + 1 }
         .map { Md5.getDigest(input + it) }
-        .filter { it[0] == 0.toByte() && it[1] == 0.toByte() }
+        .filter { it[0] == 0.toByte() && it[1] == 0.toByte() && ((it[2].toInt() shr 4) == 0) }
         .map { it.toHex() }
-        .filter { it[4] == '0' }
 
     override fun part1() = md5Sequence
         .map { it[5] }
