@@ -33,4 +33,10 @@ class Y2016D5(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2016D5::class) // 4543c154, 1050cbbd
+fun main() = Day.runDay(Y2016D5::class)
+
+//    [2016 Day 5]
+//    Class creation: 16ms
+//    Part 1: 4543c154 (2525ms)
+//    Part 2: 1050cbbd (6370ms)
+//    Total time: 8912ms
