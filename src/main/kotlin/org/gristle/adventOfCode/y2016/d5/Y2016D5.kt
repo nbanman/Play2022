@@ -16,20 +16,13 @@ class Y2016D5(input: String) : Day {
         .take(8)
         .joinToString("")
 
-    override fun part2(): String {
-        val password = CharArray(8) { '.' }
-        return md5Sequence
-            .mapNotNull { hash ->
-                val place = hash[5].digitToIntOrNull() ?: -1
-                if (place in 0..7 && password[place] == '.') {
-                    password[place] = hash[6]
-                    password
-                } else {
-                    null
-                }
-            }.first { password.all { it != '.' } }
-            .joinToString("")
-    }
+    override fun part2() = md5Sequence
+        .filter { it[5] in '0'..'7' }
+        .distinctBy { it[5] }
+        .take(8)
+        .sortedBy { it[5] }
+        .map { it[6] }
+        .joinToString("")
 }
 
 fun main() = Day.runDay(Y2016D5::class)
