@@ -24,4 +24,9 @@ class Y2022D3(input: String) : Day {
         .sumOf { it.reduce(Long::and).countTrailingZeroBits() } // find common bit and convert to priority
 }
 
-fun main() = Day.runDay(Y2022D3::class) // 7428, 2650
+fun main() = Day.runDay(Y2022D3::class)
+
+//    Class creation: 18ms
+//    Part 1: 7428 (8ms)
+//    Part 2: 2650 (4ms)
+//    Total time: 31ms
