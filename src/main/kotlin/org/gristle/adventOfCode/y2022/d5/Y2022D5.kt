@@ -8,20 +8,22 @@ import org.gristle.adventOfCode.utilities.transpose
 private typealias Instruction = Triple<Int, Int, Int>
 
 class Y2022D5(input: String) : Day {
-    // Split the input into two strings, the first describing the crate arrangement, and the second giving
-    // rearrangement instructions.
-    private val splitInputLines = input.lines().splitOnBlank()
 
-    // Build crate stacks
-    private val crateStacks = splitInputLines[0]
-        .dropLast(1) // gets rid of line labeling the stack numbers
-        .transpose() // flip the strings vertically
-        .filter { it.last().isLetter() } // get rid of strings that don't have crate information
-        .map { it.trimStart().toList() } // create and load up stacks
+    private val crates: List<List<Char>>
+    private val instructions: List<Instruction>
 
-    // Get instructions
-    val instructions = splitInputLines[1].map {
-        it.getIntList().let { intList -> Instruction(intList[0], intList[1] - 1, intList[2] - 1) }
+    init {
+        // Split the input into two strings, the first describing the crate arrangement, and the second giving
+        // rearrangement instructions.
+        val (crateStrings, instructionsStrings) = input.lines().splitOnBlank()
+        crates = crateStrings
+            .dropLast(1) // gets rid of line labeling the stack numbers
+            .transpose() // flip the strings vertically
+            .filter { it.last().isLetter() } // get rid of strings that don't have crate information
+            .map { it.trimStart().toList() } // create and load up stacks
+        instructions = instructionsStrings.map {
+            it.getIntList().let { intList -> Instruction(intList[0], intList[1] - 1, intList[2] - 1) }
+        }
     }
 
     /**
@@ -32,7 +34,7 @@ class Y2022D5(input: String) : Day {
      */
     fun solve(rearrange: (amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) -> Unit): String {
         // create arrayDeques for mutation
-        val stacks = crateStacks.map { ArrayDeque(it) }
+        val stacks = crates.map { ArrayDeque(it) }
         instructions.forEach { (amount, fromIndex, toIndex) ->
             rearrange(amount, stacks[fromIndex], stacks[toIndex])
         }
@@ -63,4 +65,9 @@ class Y2022D5(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2022D5::class) // ZSQVCCJLL, QZFJRWHGS
+fun main() = Day.runDay(Y2022D5::class)
+
+//    Class creation: 34ms
+//    Part 1: ZSQVCCJLL (4ms)
+//    Part 2: QZFJRWHGS (1ms)
+//    Total time: 40ms
