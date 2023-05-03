@@ -8,12 +8,14 @@ import kotlin.math.abs
 
 class Y2022D15(input: String) : Day {
 
-    data class Sensor(val pos: Coord, val beaconPos: Coord) {
+    class Sensor(val pos: Coord, private val beaconPos: Coord) {
         fun toRangeOrNull(y: Int): IntRange? {
             val xDistance = pos.manhattanDistance(beaconPos) - abs(pos.y - y)
-            if (xDistance < 0) return null
-            val absDist = abs(xDistance)
-            return pos.x - absDist..pos.x + absDist
+            return if (xDistance >= 0) {
+                pos.x - xDistance..pos.x + xDistance
+            } else {
+                null
+            }
         }
     }
 
@@ -72,4 +74,9 @@ class Y2022D15(input: String) : Day {
         }
 }
 
-fun main() = Day.runDay(Y2022D15::class) // 5073496 (16ms), 13081194638237 (2411ms)
+fun main() = Day.runDay(Y2022D15::class)
+
+//    Class creation: 25ms
+//    Part 1: 5073496 (0ms)
+//    Part 2: 13081194638237 (2585ms)
+//    Total time: 2611ms
