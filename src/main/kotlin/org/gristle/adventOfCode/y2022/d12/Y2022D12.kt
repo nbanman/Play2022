@@ -2,35 +2,34 @@ package org.gristle.adventOfCode.y2022.d12
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
-import org.gristle.adventOfCode.utilities.Graph.steps
-import org.gristle.adventOfCode.utilities.takeUntil
 import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2022D12(input: String) : Day {
 
     private val area = input.toGrid()
 
-    private fun Char.height() = when (this) {
+    private fun Char.height(): Int = when (this) {
         'S' -> 'a'
         'E' -> 'z'
         else -> this
     }.code
 
-    private val startId = area.indexOf('E')
-
-    private val getEdges = { pos: Int ->
+    private val getEdges: (Int) -> List<Int> = { pos ->
+        val posHeight = area[pos].height() - 1
         area
             .getNeighborsIndexedValue(pos)
-            .filter { (_, c) -> c.height() >= area[pos].height() - 1 }
-            .map { (index, _) -> index }
+            .mapNotNull { (index, c) -> if (c.height() >= posHeight) index else null }
     }
 
-    private val vertices = Graph
-        .bfsSequence(startId = startId, defaultEdges = getEdges)
-        .takeUntil { area[it.id] == 'S' }
+    private val vertices = Graph.bfsSequence(startId = area.indexOf('E'), defaultEdges = getEdges)
 
-    override fun part1() = vertices.steps()
-    override fun part2() = vertices.first { area[it.id] in "Sa" }.weight.toInt()
+    fun solve(targets: String) = vertices
+        .first { area[it.id] in targets }
+        .weight
+        .toInt()
+
+    override fun part1() = solve("S")
+    override fun part2() = solve("Sa")
 
 //    Alternate solution uses A* and is slightly faster, works for all known puzzle inputs but part 2 relies on quirk of
 //    inputs that has all possible end points on the far left column of the grid. So the BFS solution above is more
