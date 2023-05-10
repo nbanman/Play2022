@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2020.d21
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2020D21(input: String) : Day {
 
@@ -33,12 +32,13 @@ class Y2020D21(input: String) : Day {
     }
 
     private val foods = input
-        .groupValues("""((?:[a-z]+ )+)\(contains ([^)]+)\)""")
-        .map { gv ->
-            val ingredients = gv[0].split(' ').dropLast(1).toSet()
-            val allergens = gv[1].split(", ").toSet()
+        .lineSequence()
+        .map {
+            val (ingredientString, allergenString) = it.split(" (contains ")
+            val ingredients = ingredientString.split(' ').toSet()
+            val allergens = allergenString.dropLast(1).split(", ").toSet()
             Food(ingredients, allergens)
-        }
+        }.toList()
 
     override fun part1() = foods.flatMap(Food::ingredients).filterNot(Food.allergenMap.values::contains).size
 

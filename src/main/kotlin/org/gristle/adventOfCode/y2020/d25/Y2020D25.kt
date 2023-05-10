@@ -6,20 +6,25 @@ class Y2020D25(input: String) : Day {
 
     private val divisor = 20201227
 
-    private val keys = input.lines().map(String::toLong)
-    private val cardKey = keys[0]
-    private val doorKey = keys[1]
+    private val cardKey: Long
+    private val doorKey: Long
+
+    init {
+        val (cardKey, doorKey) = input.lines().map(String::toLong)
+        this.cardKey = cardKey
+        this.doorKey = doorKey
+    }
 
     override fun part1(): Long {
-        val loopSize = generateSequence(0 to 1L) { (count, value) -> (count + 1) to (value * 7) % divisor }
-            .first { (_, value) -> value == cardKey }
-            .first
+        val loopSize = generateSequence(1L) { value -> (value * 7) % divisor }
+            .indexOfFirst { value -> value == cardKey }
+
         return generateSequence(doorKey % divisor) { (it * doorKey) % divisor }
             .take(loopSize)
             .last()
     }
 
-    override fun part2() = "Merry XMas!!!"
+    override fun part2() = "Merry Xmas!!!"
 }
 
 fun main() = Day.runDay(Y2020D25::class)

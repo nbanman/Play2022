@@ -13,15 +13,11 @@ class Y2016D22(input: String) : Day {
         val available = size - used
     }
 
-    private val nodes = let {
-        val pattern = Regex("""(\d+)-y(\d+) +(\d+)T +(\d+)""")
-        input
-            .gvs(pattern) { it.toInt() }
-            .map {
-                val coord = Coord(it[0], it[1])
-                Node(coord, it[2], it[3])
-            }.toList()
-    }
+    private val nodes = input
+        .getInts()
+        .chunked(6) { (x, y, size, used, _) ->
+            Node(Coord(x, y), size, used)
+        }.toList()
 
     override fun part1() = nodes
         .filter { it.used != 0 }

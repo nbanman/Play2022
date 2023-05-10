@@ -7,16 +7,16 @@ import org.gristle.adventOfCode.utilities.gcd
 import kotlin.math.PI
 import kotlin.math.atan2
 
-class Y2019D10(private val input: String) : Day {
+class Y2019D10(input: String) : Day {
 
     private val asteroids: List<Coord>
     private val station: Coord
     private val detectableFromStation: Int
 
     init {
-        val width = input.takeWhile { it != '\r' }.length
+        val width = input.takeWhile { it != '\n' }.length
         asteroids = input
-            .replace("\r\n", "")
+            .replace("\n", "")
             .mapIndexedNotNull { index, c -> if (c == '.') null else Coord(index % width, index / width) }
         val (detectableFromStation, station) = asteroids
             .map { asteroid ->
@@ -61,12 +61,9 @@ class Y2019D10(private val input: String) : Day {
 }
 
 fun main() = Day.runDay(Y2019D10::class)
-//    var time = System.nanoTime()
-//    val c = Y2019D10(readRawInput("y2019/d10"))
-//    println("Class creation: ${elapsedTime(time)}ms")
-//    time = System.nanoTime()
-//    println("Part 1: ${c.part1()} (${elapsedTime(time)}ms)") // 286
-//    time = System.nanoTime()
-//    println("Part 2: ${c.part2()} (${elapsedTime(time)}ms)") // 504
-//
-//}
+
+//    [2019 Day 10]
+//    Class creation: 89ms
+//    Part 1: 286 (0ms)
+//    Part 2: 504 (9ms)
+//    Total time: 99ms

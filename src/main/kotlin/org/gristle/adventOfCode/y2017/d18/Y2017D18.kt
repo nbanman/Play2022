@@ -1,13 +1,10 @@
 package org.gristle.adventOfCode.y2017.d18
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
 import java.util.*
 
 // Not refactored. Ugly but fast enough.
 class Y2017D18(input: String) : Day {
-
-    private val pattern = """([a-z]{3}) ([-a-z\d]+)(?: ([-a-z\d]+))?""".toRegex()
 
     data class Command(val name: String, val arg1: String, val arg2: String)
 
@@ -82,8 +79,12 @@ class Y2017D18(input: String) : Day {
     }
 
     private val commands = input
-        .groupValues(pattern)
-        .map { Command(it[0], it[1], it[2]) }
+        .lineSequence()
+        .map { it.split(' ') }
+        .map {
+            val arg2 = if (it.size == 3) it[2] else ""
+            Command(it[0], it[1], arg2)
+        }.toList()
 
     override fun part1(): Long {
         val registers = mutableMapOf<String, Long>()

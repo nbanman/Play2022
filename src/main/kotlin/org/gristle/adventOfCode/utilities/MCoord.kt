@@ -119,7 +119,7 @@ class Xyz(val x: Int, val y: Int, val z: Int) : MCoord(listOf(x, y, z)) {
 
 fun Iterable<MCoord>.getBounds(padding: Int = 0): List<IntRange> {
     val first = first().coordinates
-    val bounds = MutableList<Int>(first.size * 2) { first[it / 2] }
+    val bounds = MutableList(first.size * 2) { first[it / 2] }
     forEach { mCoord ->
         mCoord.coordinates.forEachIndexed { index, i ->
             val lowerIndex = index * 2

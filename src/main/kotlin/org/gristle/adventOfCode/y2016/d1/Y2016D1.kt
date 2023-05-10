@@ -11,7 +11,8 @@ class Y2016D1(input: String) : Day {
     data class State(val dir: Nsew = Nsew.NORTH, val coord: Coord = Coord.ORIGIN) {
         fun move(instruction: Instruction): State = when (instruction.turn) {
             'L' -> State(dir.left(), coord.move(dir.left(), instruction.distance))
-            else -> State(dir.right(), coord.move(dir.right(), instruction.distance))
+            'R' -> State(dir.right(), coord.move(dir.right(), instruction.distance))
+            else -> throw IllegalArgumentException("Invalid turn: ${instruction.turn}")
         }
 
         fun manhattanDistance() = coord.manhattanDistance()

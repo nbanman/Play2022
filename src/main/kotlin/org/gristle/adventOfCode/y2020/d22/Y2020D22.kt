@@ -1,30 +1,29 @@
 package org.gristle.adventOfCode.y2020.d22
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.stripCarriageReturns
+import org.gristle.adventOfCode.utilities.blankSplit
 import kotlin.math.min
 
 class Y2020D22(input: String) : Day {
 
-    private val cardNos = input
-        .stripCarriageReturns()
-        .split("\n\n")
-        .map { half ->
-            half
-                .split('\n')
-                .mapNotNull(String::toIntOrNull)
-        }
+    val p1: List<Int>
+    val p2: List<Int>
 
-    val p1 = cardNos.first()
-    val p2 = cardNos.last()
+    init {
+        val (p1, p2) = input
+            .blankSplit()
+            .map { it.lines().mapNotNull(String::toIntOrNull) }
+        this.p1 = p1
+        this.p2 = p2
+    }
 
     private fun List<Int>.score() = foldIndexed(0) { index, acc, i -> acc + (size - index) * i }
 
     override fun part1(): Int {
-        tailrec fun play(p1: List<Int>, p2: List<Int>): List<Int> {
+        tailrec fun play(p1: List<Int>, p2: List<Int>): Int {
             return when {
-                p1.isEmpty() -> p2
-                p2.isEmpty() -> p1
+                p1.isEmpty() -> p2.score()
+                p2.isEmpty() -> p1.score()
                 else -> {
                     val short = min(p1.size, p2.size)
                     val (p1Wins, p2Wins) = (p1 zip p2).partition { ab -> ab.first > ab.second }
@@ -36,7 +35,7 @@ class Y2020D22(input: String) : Day {
             }
         }
 
-        return play(p1, p2).score()
+        return play(p1, p2)
     }
 
     override fun part2(): Int {

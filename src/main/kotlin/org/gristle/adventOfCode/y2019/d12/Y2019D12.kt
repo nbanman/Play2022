@@ -3,25 +3,26 @@ package org.gristle.adventOfCode.y2019.d12
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.MCoord
 import org.gristle.adventOfCode.utilities.Xyz
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.lcm
 
 class Y2019D12(input: String) : Day {
 
     data class Moon(val pos: MCoord, val vel: MCoord = MCoord(0, 0, 0)) {
-        private val potentialEnergy = pos.manhattanDistance(MCoord(0, 0, 0))
-        private val kineticEnergy = vel.manhattanDistance(MCoord(0, 0, 0))
+        private val potentialEnergy = pos.manhattanDistance(MCoord.ORIGIN)
+        private val kineticEnergy = vel.manhattanDistance(MCoord.ORIGIN)
         val totalEnergy = potentialEnergy * kineticEnergy
 
         override fun toString(): String {
             return "Moon(pos=$pos, vel=$vel, totalEnergy=$totalEnergy)"
         }
     }
-    private val pattern = """<x=(-?\d+), y=(-?\d+), z=(-?\d+)>""".toRegex()
 
     private val moons = input
-        .groupValues(pattern, String::toInt)
-        .map { Moon(Xyz(it[0], it[1], it[2])) }
+        .getInts()
+        .chunked(3)
+        .map { (x, y, z) -> Moon(Xyz(x, y, z)) }
+        .toList()
 
     private fun applyForce(a: Int, b: Int) = (a - b).let { if (it < 0) 1 else if (it > 0) -1 else 0 }
 

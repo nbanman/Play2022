@@ -56,12 +56,10 @@ class Y2022D19(input: String) : Day {
         blueprints = input.lines().map { spec ->
             val id = spec.getInts().first() // id is the first number in the spec
             val robotCosts: Map<String, Map<String, Int>> = buildMap {
-                spec.gvs(pattern).forEach { gv ->
-                    val robotType = gv[0]
+                spec.gvs(pattern).forEach { (robotType, cost1, resource1, cost2, resource2) ->
                     val resourceMap: Map<String, Int> = buildMap {
-                        gv.drop(1).chunked(2).forEach { (cost, resource) ->
-                            if (resource != "") put(resource, cost.toInt())
-                        }
+                        put(resource1, cost1.toInt())
+                        if (resource2.isNotBlank()) put(resource2, cost2.toInt())
                     }
                     put(robotType, resourceMap)
                 }

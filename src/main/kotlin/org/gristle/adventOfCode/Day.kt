@@ -1,5 +1,6 @@
 package org.gristle.adventOfCode
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
@@ -54,7 +55,7 @@ interface SuspendedDay {
         fun <T : Any> runDay(
             kClass: KClass<T>,
             sampleInput: String? = null,
-        ) = runBlocking {
+        ) = runBlocking(Dispatchers.Default) {
             val constructor = kClass.constructors.first()
             val timer = Stopwatch(true)
             val (year, day) = kClass.simpleName?.getIntList()

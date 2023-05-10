@@ -47,27 +47,32 @@ class Y2016D17(private val input: String) : Day {
         }
     }
 
+    // BFS used to explore the vault
+    private val explore = Graph
+        .bfsSequence(
+            startId = Room(Coord.ORIGIN, input),
+            defaultEdges = openDoors
+        )
+
     // Part one wants the fastest path, so BFS with an endCondition of reaching endPos finds it. The answer is the
     // passcode of the first node at the endPos, minus the prelude.
-    override fun part1() = Graph
-        .bfs(
-            startId = Room(Coord.ORIGIN, input),
-            endCondition = { (pos, _) -> pos == endPos },
-            defaultEdges = { room -> openDoors(room) }
-        ).last()
+    override fun part1() = explore
+        .first { it.id.pos == endPos }
         .id
         .passCode
         .drop(input.length)
 
     // Part two wants the longest path, so BFS until no more edges are found. The answer is the weight of the last
     // Node found at endPos.
-    override fun part2() = Graph
-        .bfs(
-            startId = Room(Coord.ORIGIN, input),
-            defaultEdges = { room -> openDoors(room) }
-        ).last { it.id.pos == endPos }
+    override fun part2() = explore
+        .last { it.id.pos == endPos }
         .weight
         .toInt()
 }
 
-fun main() = Day.runDay(Y2016D17::class) // DDRUDLRRRD, 398
+fun main() = Day.runDay(Y2016D17::class)
+
+//    Class creation: 14ms
+//    Part 1: DDRUDLRRRD (14ms)
+//    Part 2: 398 (180ms)
+//    Total time: 209ms

@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2022.d11
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getIntList
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.gvs
 import kotlin.collections.fold as luv
 
 /*
@@ -24,7 +24,7 @@ class Y2022D11(val input: String) : Day {
     """.trimIndent()
 
     private val monkeys = input
-        .groupValues(pattern)
+        .gvs(pattern)
         .map { gv ->
             Monkey(
                 startingItems = gv[0].getIntList().map(Int::toLong).toMutableList(),
@@ -34,8 +34,9 @@ class Y2022D11(val input: String) : Day {
                 ifFalse = gv[4].toInt()
             )
         }.withIndex()
+        .toList()
 
-    private fun solve(rounds: Int, worryReduction: Long.() -> Long): Long {
+    private inline fun solve(rounds: Int, worryReduction: Long.() -> Long): Long {
         val items = monkeys.associate { (index, monkey) -> index to monkey.startingItems.toMutableList() }
         val inspections = MutableList(items.size) { 0 }
         repeat(rounds) {
@@ -99,4 +100,10 @@ class Y2022D11(val input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2022D11::class) // 88208, 21115867968
+fun main() = Day.runDay(Y2022D11::class)
+
+//    [2022 Day 11]
+//    Class creation: 21ms
+//    Part 1: 88208 (4ms)
+//    Part 2: 21115867968 (94ms)
+//    Total time: 121ms

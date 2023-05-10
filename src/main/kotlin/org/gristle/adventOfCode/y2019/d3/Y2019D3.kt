@@ -19,7 +19,7 @@ class Y2019D3(input: String) : Day {
         acc
     }
 
-    private val wiresInstructions = input.lines().map { it.split(',') }.map { it.wireUp() }
+    private val wiresInstructions = input.lines().map { it.split(',').wireUp() }
 
     private val intersections = wiresInstructions[0].intersect(wiresInstructions[1].toSet())
 

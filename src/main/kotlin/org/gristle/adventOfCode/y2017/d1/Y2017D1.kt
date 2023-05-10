@@ -18,4 +18,9 @@ class Y2017D1(private val input: String) : Day {
         }.sum()
 }
 
-fun main() = Day.runDay(Y2017D1::class) // 1182, 1152
+fun main() = Day.runDay(Y2017D1::class)
+
+//    Class creation: 20ms
+//    Part 1: 1182 (1ms)
+//    Part 2: 1152 (0ms)
+//    Total time: 22ms

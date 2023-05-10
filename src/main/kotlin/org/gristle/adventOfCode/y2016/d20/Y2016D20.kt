@@ -1,7 +1,7 @@
 package org.gristle.adventOfCode.y2016.d20
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.gvs
+import org.gristle.adventOfCode.utilities.getLongList
 import kotlin.math.max
 
 class Y2016D20(input: String) : Day {
@@ -9,8 +9,8 @@ class Y2016D20(input: String) : Day {
     // parse input into ranges and sort the ranges by the start of the range. Using Long instead of UInt to 
     // avoid overflow issues.
     private val ranges = input
-        .gvs("""(\d+)-(\d+)""", String::toLong)
-        .map { it[0]..it[1] }
+        .getLongList(omitDashes = true)
+        .chunked(2) { it[0]..it[1] }
         .sortedBy(LongRange::first)
 
     // delivers a sequence of ips not blocked by the whitelist by starting at 0

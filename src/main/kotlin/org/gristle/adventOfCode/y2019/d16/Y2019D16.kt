@@ -2,14 +2,14 @@ package org.gristle.adventOfCode.y2019.d16
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.readRawInput
+import org.gristle.adventOfCode.utilities.toDigit
 import kotlin.math.abs
 
 class Y2019D16(private val input: String) : Day {
-    private val nos = input.map { Character.getNumericValue(it) }
+    private val nos = input.map(Char::toDigit)
     private val phases = 100
 
     override fun part1(): Int {
-
         val startPattern = listOf(0, 1, 0, -1)
         return (1..phases).fold(nos) { acc, _ ->
             List(acc.size) { index ->

@@ -85,11 +85,12 @@ class Y2020D20(input: String) : Day {
     }
 
     private val tiles = input
-        .stripCarriageReturns()
         .split("\n\n")
         .map { s ->
-            val id = s.takeWhile { it != ':' }.drop(5).toInt()
-            val image = s.dropWhile { it != '\n'}.drop(1).toMutableGrid()
+            val id = s.getInts().first()
+            val image = s
+                .substring(s.indexOf('\n') + 1)
+                .toMutableGrid()
             Tile(id, image)
         }
 

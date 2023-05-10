@@ -6,7 +6,7 @@ class Y2019D6(input: String) : Day {
 
     data class CelestialBody(val name: String, private val parentName: String) {
         companion object {
-            // register is a mutable hashmap shared by all instances used to get a parent from the parent's name
+            // register is a mutable hashmap shared by all instances used to get a CelestialBody from its name
             private val register = mutableMapOf<String, CelestialBody>()
 
             // public getter of register
@@ -16,7 +16,9 @@ class Y2019D6(input: String) : Day {
 
         // init registers the instance to the shared register.
         init { register[name] = this }
-        private val parent: CelestialBody? get() = register[parentName]
+
+        private val parent: CelestialBody? by lazy { register[parentName] }
+
         // orbits and path are recursive, adding information provided by their parent until the parent is null.
         // But rather than functions, they are lazy variables, so each instance only calculates once, and their
         // calculation is deferred until all the instances are created.

@@ -14,6 +14,7 @@ class Y2021D9(input: String) : Day {
     override fun part1() = lowIndices.sumOf { heightMap[it] + 1 }
 
     override fun part2(): Int {
+
         // Edge finder for below BFS
         val neighbors = { id: Int ->
             heightMap

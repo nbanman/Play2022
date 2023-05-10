@@ -21,4 +21,9 @@ class Y2016D3(input: String) : Day {
         .count { it.isValid() }
 }
 
-fun main() = Day.runDay(Y2016D3::class) // 1032, 1838 
+fun main() = Day.runDay(Y2016D3::class)
+
+//    Class creation: 17ms
+//    Part 1: 1032 (10ms)
+//    Part 2: 1838 (5ms)
+//    Total time: 33ms

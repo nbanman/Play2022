@@ -3,20 +3,21 @@ package org.gristle.adventOfCode.y2017.d2
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getIntList
 import org.gristle.adventOfCode.utilities.getPairs
+import org.gristle.adventOfCode.utilities.minMax
 
 class Y2017D2(input: String) : Day {
 
     private val spreadsheet = input
         .lineSequence()
-        .map { it.getIntList() }
+        .map(String::getIntList)
         .toList()
 
     override fun part1() = spreadsheet
-        .sumOf { (it.maxOrNull()?.minus(it.minOrNull() ?: 0) ?: 0) }
+        .sumOf { it.max() - it.min() }
 
     override fun part2() = spreadsheet.sumOf { row ->
         row.getPairs().sumOf { combo ->
-            val (lesser, greater) = if (combo[0] < combo[1]) combo[0] to combo[1] else combo[1] to combo[0]
+            val (lesser, greater) = combo.minMax()
             if (greater % lesser == 0) greater / lesser else 0
         }
     }

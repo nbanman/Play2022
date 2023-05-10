@@ -77,7 +77,7 @@ class Test2019 {
 
     @Test
     internal fun y2019d10() {
-        assertEquals(2 to 44800, Day.testDay(Y2019D10::class))
+        assertEquals(286 to 504, Day.testDay(Y2019D10::class))
     }
 
     @Test

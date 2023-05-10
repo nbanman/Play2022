@@ -8,7 +8,7 @@ import java.util.*
 
 class Y2019D13(input: String) : Day {
 
-    private val initialState = input.split(',').map { it.toLong() }
+    private val initialState = input.split(',').map(String::toLong)
 
     data class Cabinet(
         val grid: MutableGrid<Int>,

@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2019D24(input: String) : Day {
 
-    private val erisOriginal = input.toGrid().mapToGrid { it == '#' }
+    private val erisOriginal = input.toGrid { it == '#' }
 
     private fun Int.bitOn(pos: Int) = shr(pos).and(1)
 

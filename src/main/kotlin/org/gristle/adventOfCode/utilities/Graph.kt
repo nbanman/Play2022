@@ -192,8 +192,7 @@ object Graph {
         val visited = mutableMapOf(startId to start)
         while (q.isNotEmpty()) {
             val current = q.removeFirst()
-            val test = edgeMap[current.id] ?: defaultEdges(current.id)
-            test
+            edgeMap[current.id] ?: defaultEdges(current.id)
                 .filter { it !in visited }
                 .map { StdVertex(it, current.weight + 1.0, current) }
                 .forEach { neighbor ->

@@ -32,7 +32,7 @@ class Y2016D8(input: String) : Day {
         return screen
     }
 
-    private val screen = lightScreen()
+    private val screen: Grid<Boolean> by lazy { lightScreen() }
 
     override fun part1() = screen.count { it }
 

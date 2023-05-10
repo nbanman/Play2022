@@ -33,20 +33,20 @@ class Y2022D18(input: String) : Day {
 
         // bounds are IntRanges, one for each of three dimensions, giving the boundaries of the droplet with
         // a 1-space buffer on each side
-        val bounds = cubes.getBounds(padding = 1)
+        val (xBounds, yBounds, zBounds) = cubes.getBounds(padding = 1)
 
         // Use a BFS flood fill starting from outside the droplet. Since the bounds ranges allow a space of at least
         // one in every dimension, the BFS will go around the entire droplet and try to penetrate it.
         // Returns a set of points in and around the droplet that are part of the exterior.
         val exterior: Set<Xyz> = Graph
             .bfsSequence(
-                startId = Xyz(bounds[0].first, bounds[1].first, bounds[2].first),
+                startId = Xyz(xBounds.first, yBounds.first, zBounds.first),
                 defaultEdges = { pos ->
                     pos.adjacent().filter {
                         !cubes.contains(it) // the space is not a cube
-                                && it.x in bounds[0] // is in-bounds on x-axis
-                                && it.y in bounds[1] // y-axis
-                                && it.z in bounds[2] // z-axis
+                                && it.x in xBounds // is in-bounds on x-axis
+                                && it.y in yBounds // y-axis
+                                && it.z in zBounds // z-axis
                     }
                 }
             ).map { it.id }

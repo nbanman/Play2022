@@ -13,9 +13,8 @@ class Y2019D8(input: String) : Day {
     private val layers = input.chunked(width * height) // Split the data into a list of equal sized layers
 
     override fun part1() = layers
-        .minByOrNull { layer -> layer.count { it == '0' } }  // Get the layer with the fewest 0s
-        ?.let { layer -> layer.count { it == '1' } * layer.count { it == '2' } } // Get product of # of 1s and 2s
-        ?: throw IllegalArgumentException("'layers' has no elements")
+        .minBy { layer -> layer.count { it == '0' } }  // Get the layer with the fewest 0s
+        .let { layer -> layer.count { it == '1' } * layer.count { it == '2' } } // Get product of # of 1s and 2s
 
     override fun part2(): String {
         // Takes the layers and an index value representing a specific pixel. For that index, it looks

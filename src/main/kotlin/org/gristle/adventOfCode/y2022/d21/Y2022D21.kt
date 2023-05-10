@@ -108,6 +108,7 @@ class Y2022D21(private val input: String) : Day {
             private val right: Equation,
             private val operation: Operation
         ) : Equation() {
+
             // Very clumsy backwards hack to find the operation used. Could not get reflection working.
             private fun opString() = when (operation(6, 2)) {
                 8L -> "+"
