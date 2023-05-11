@@ -32,19 +32,19 @@ class Y2020D7(input: String) : Day {
         }
     }
 
-    private val rules = input
+    private val bagRx = """(\d+) (\w+ \w+) bag""".toRegex()
+
+    private val rules: List<Rule> = input
         .groupValues("""(\w+ \w+) bags contain ([^.]+).""")
         .map { gv ->
             val heldBags = gv[1]
-                .groupValues("""(\d+) (\w+ \w+) bag""")
+                .groupValues(bagRx)
                 .map { HeldBag(it[1], it[0].toInt()) }
             Rule(gv[0], heldBags)
         }
 
-    private val bagMap = buildMap {
-        rules.forEach { rule ->
-            put(rule.color, rule)
-        }
+    private val bagMap: Map<String, Rule> by lazy {
+        buildMap { rules.forEach { rule -> put(rule.color, rule) } }
     }
 
     override fun part1() = rules.count { it.contains("shiny gold", bagMap) }
