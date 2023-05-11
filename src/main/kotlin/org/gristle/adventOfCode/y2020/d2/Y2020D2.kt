@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2020.d2
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2020D2(input: String) : Day {
 
@@ -12,10 +11,10 @@ class Y2020D2(input: String) : Day {
     }
 
     private val policies = input
-        .groupValues("""(\d+)-(\d+) ([a-z]): ([a-z]+)""")
-        .map { gv ->
-            val range = gv[0].toInt()..gv[1].toInt()
-            PassPolicy(gv[2].first(), range, gv[3])
+        .lines()
+        .map {
+            val (lower, upper, letter, password) = it.split('-', ' ')
+            PassPolicy(letter.first(), lower.toInt()..upper.toInt(), password)
         }
 
     override fun part1() = policies.count(PassPolicy::isValidUnderOldJobPolicy)
