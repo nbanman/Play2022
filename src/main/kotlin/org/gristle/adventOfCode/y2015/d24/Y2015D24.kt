@@ -6,7 +6,7 @@ class Y2015D24(input: String) : Day {
 
     private val lines = input.lines()
 
-    private fun List<Int>.qE() = this.fold(1L, Long::times)
+    private fun List<Int>.product() = this.fold(1L, Long::times)
 
     private fun uniqueCombos(validCombos: List<List<Int>>, taken: List<List<Int>>, uniqueGroups: Int): List<Int>? {
         if (validCombos.isEmpty()) {
@@ -79,10 +79,10 @@ class Y2015D24(input: String) : Day {
             }
             combos = newCombos
             if (validCombos.size >= numberOfGroups - 1) {
-                validCombos = validCombos.sortedBy { it.qE() }.toMutableList()
+                validCombos = validCombos.sortedBy { it.product() }.toMutableList()
                 val unique = uniqueCombos(validCombos.drop(1), listOf(validCombos.first()), 3)
                 if (unique != null) {
-                    return unique.qE()
+                    return unique.product()
                 }
             }
         }

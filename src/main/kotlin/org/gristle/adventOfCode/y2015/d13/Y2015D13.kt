@@ -6,20 +6,20 @@ import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2015D13(input: String) : Day {
 
-    private val arrangements = buildMap<String, MutableMap<String, Int>> {
+    private val arrangements: Map<String, Map<String, Int>> = buildMap<String, MutableMap<String, Int>> {
         val pattern = """(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+).""".toRegex()
         input
             .groupValues(pattern)
-            .forEach { gv ->
-                val happinessUnits = gv[2].toInt().let { if (gv[1] == "gain") it else -it }
-                getOrPut(gv[0]) { mutableMapOf() }[gv[3]] = happinessUnits
+            .forEach { (p1, gainOrLose, units, p2) ->
+                val happinessUnits = units.toInt().let { if (gainOrLose == "gain") it else -it }
+                getOrPut(p1) { mutableMapOf() }[p2] = happinessUnits
             }
-    } as Map<String, Map<String, Int>>
+    }
 
-    private val people = arrangements.keys
+    private val people: Set<String> = arrangements.keys
 
     fun solve(people: Set<String>): Int = people
-        .drop(1) // remove first person because all permutations have to start somewhere
+        .drop(1) // remove first person because the arrangement has to start somewhere
         .getPermutations() // get all permutations of remaining people
         .map { it + people.first() } // re-add the first person to all permutations
         .maxOf { peopleList -> // calculate the happiness units for each permutation and return the maximum

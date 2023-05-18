@@ -1,8 +1,7 @@
 package org.gristle.adventOfCode.y2015.d14
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.eachCount
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getInts
 
 class Y2015D14(input: String) : Day {
 
@@ -10,7 +9,7 @@ class Y2015D14(input: String) : Day {
         private const val SECONDS = 2503
     }
 
-    data class Reindeer(val name: String, val speed: Int, val duration: Int, val rest: Int) {
+    data class Reindeer(val speed: Int, val duration: Int, val rest: Int) {
         fun distanceRaced(seconds: Int): Int {
             val interval = duration + rest
             val wholeIntervals = seconds / interval
@@ -20,24 +19,27 @@ class Y2015D14(input: String) : Day {
     }
 
     private val racers = input
-        .groupValues("""(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds\.""")
-        .map { gv -> Reindeer(gv[0], gv[1].toInt(), gv[2].toInt(), gv[3].toInt()) }
+        .getInts()
+        .chunked(3)
+        .map { (speed, duration, rest) -> Reindeer(speed, duration, rest) }
+        .toList()
 
     override fun part1() = racers.maxOf { it.distanceRaced(SECONDS) }
 
     override fun part2(): Int {
-        return (1..SECONDS)
-            .fold(mutableListOf<Reindeer>()) { acc, second ->
-                val maxDistance = racers.maxOf { it.distanceRaced(second) }
-                acc.apply { addAll(racers.filter { it.distanceRaced(second) == maxDistance }) }
-            }.eachCount()
-            .maxOf { it.value }
+        val leaderboard = IntArray(racers.size)
+        for (t in 1..SECONDS) {
+            val distances = racers.map { it.distanceRaced(t) }
+            val maxDistance = distances.max()
+            distances.forEachIndexed { racer, distance -> if (distance == maxDistance) leaderboard[racer]++ }
+        }
+        return leaderboard.max()
     }
 }
 
 fun main() = Day.runDay(Y2015D14::class)
 
-//    Class creation: 20ms
+//    Class creation: 14ms
 //    Part 1: 2640 (0ms)
-//    Part 2: 1102 (9ms)
-//    Total time: 30ms
+//    Part 2: 1102 (8ms)
+//    Total time: 23ms

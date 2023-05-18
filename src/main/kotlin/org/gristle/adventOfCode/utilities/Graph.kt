@@ -28,6 +28,8 @@ object Graph {
             return returnPath
         }
 
+        fun steps(): Int = weight.toInt()
+
         override fun compareTo(other: Vertex<E>) = weight.compareTo(other.weight)
     }
 

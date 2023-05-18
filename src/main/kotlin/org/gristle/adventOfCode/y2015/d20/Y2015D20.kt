@@ -10,7 +10,7 @@ class Y2015D20(input: String) : Day {
         val factors = mutableListOf<Int>()
         var n = number
 
-        while (n % 2 == 0) {
+        while (n and 1 == 0) {
             factors.add(2)
             n /= 2
         }

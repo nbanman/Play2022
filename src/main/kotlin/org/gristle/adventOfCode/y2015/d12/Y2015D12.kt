@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2015.d12
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
 
-// refactor candidate: lots of vars, while loops, may as well be js
 class Y2015D12(private val input: String) : Day {
 
     data class Block(val value: Int, val length: Int)
@@ -14,7 +13,7 @@ class Y2015D12(private val input: String) : Day {
         var isRed = false
 
         while (index < input.length) {
-            val blockIndex = input.substring(index).indexOfFirst { "[]{}".contains(it) } + index
+            val blockIndex = input.substring(index).indexOfFirst { it in "[]{}" } + index
             val snippet = if (blockIndex == -1) {
                 input.substring(index)
             } else {

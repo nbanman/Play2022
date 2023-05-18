@@ -9,9 +9,9 @@ class Y2015D25(input: String) : Day {
     private val col: Int
 
     init {
-        input.getIntList().let {
-            row = it[0]
-            col = it[1]
+        input.getIntList().let { (a, b) ->
+            row = a
+            col = b
         }
     }
 

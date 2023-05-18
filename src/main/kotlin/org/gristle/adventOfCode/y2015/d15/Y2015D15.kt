@@ -75,7 +75,7 @@ class Y2015D15(input: String) : Day {
             }
         }
 
-        val seed = (0..total).map(::listOf)
+        val seed: List<List<Int>> = (0..total).map(::listOf)
         return gC(seed)
     }
 

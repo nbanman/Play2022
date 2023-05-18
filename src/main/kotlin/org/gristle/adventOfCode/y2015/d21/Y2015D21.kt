@@ -1,7 +1,8 @@
 package org.gristle.adventOfCode.y2015.d21
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getIntList
+import org.gristle.adventOfCode.utilities.gvs
 
 class Y2015D21(input: String) : Day {
 
@@ -30,30 +31,32 @@ Defense +3   80     0       3"""
     data class Boss(val hp: Int = 100, val damage: Int = 8, val armor: Int = 2) {
         fun roundsToDie(playerDamage: Int): Int {
             val adjustedDamage = maxOf(1, playerDamage - armor)
-            return hp / adjustedDamage + if (hp % adjustedDamage ==0) 0 else 1
+            return hp / adjustedDamage + if (hp % adjustedDamage == 0) 0 else 1
         }
+
         fun roundsToKill(playerArmor: Int, playerHp: Int): Int {
             val adjustedDamage = maxOf(1, damage - playerArmor)
-            return playerHp / adjustedDamage + if (playerHp % adjustedDamage ==0) 0 else 1
+            return playerHp / adjustedDamage + if (playerHp % adjustedDamage == 0) 0 else 1
         }
     }
 
-    data class Item(val name: String, val cost: Int, val damage: Int, val armor: Int)
-    
+    data class Item(val cost: Int, val damage: Int, val armor: Int)
 
-    private val itemPattern = """(\w+(?: \+\d)?) +(\d+) +(\d) +(\d)""".toRegex()
-    private val weaponList =
-        WEAPONS.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
-    private val armorList =
-        ARMOR.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
-    private val ringList =
-        RINGS.groupValues(itemPattern).map { Item(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
-    
+    private val itemPattern = """\w+(?: \+\d)? +(\d+) +(\d) +(\d)""".toRegex()
+
+    private fun getItemList(items: String): List<Item> = items
+        .gvs(itemPattern, String::toInt)
+        .map { (cost, damage, armor) -> Item(cost, damage, armor) }
+        .toList()
+
+    private val weaponList = getItemList(WEAPONS)
+    private val armorList = getItemList(ARMOR)
+    private val ringList = getItemList(RINGS)
+
     // Generate boss from input stats
     private val boss = input
-        .lines()
-        .map { line -> line.takeLastWhile { it.isDigit() }.toInt() }
-        .let { Boss(it[0], it[1], it[2]) }
+        .getIntList()
+        .let { (hp, damage, armor) -> Boss(hp, damage, armor) }
 
     // equip character
     private val combos = weaponList
@@ -66,18 +69,18 @@ Defense +3   80     0       3"""
         }.distinct()
 
     private val combined = combos.map { combo ->
-        Item("combined", combo.sumOf { it.cost }, combo.sumOf { it.damage }, combo.sumOf { it.armor })
+        Item(combo.sumOf { it.cost }, combo.sumOf { it.damage }, combo.sumOf { it.armor })
     }
 
     override fun part1() = combined
         .sortedBy(Item::cost)
-        .find { boss.roundsToDie(it.damage) <= boss.roundsToKill(it.armor, 100) }
-        ?.cost
+        .first { boss.roundsToDie(it.damage) <= boss.roundsToKill(it.armor, 100) }
+        .cost
 
     override fun part2() = combined
         .sortedByDescending(Item::cost)
-        .find { boss.roundsToDie(it.damage) > boss.roundsToKill(it.armor, 100) }
-        ?.cost
+        .first { boss.roundsToDie(it.damage) > boss.roundsToKill(it.armor, 100) }
+        .cost
 }
 
 fun main() = Day.runDay(Y2015D21::class)

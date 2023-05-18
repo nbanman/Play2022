@@ -19,9 +19,7 @@ class Y2015D11(input: String) : Day {
                     && trip[2] - trip[1] == 1
         }
 
-    private val confusionRx = """[iol]""".toRegex()
-
-    private fun noConfusion(s: String): Boolean = !confusionRx.containsMatchIn(s)
+    private fun noConfusion(s: String): Boolean = s !in "iol"
 
     private val twoPairsRx = """([a-z])\1""".toRegex()
 

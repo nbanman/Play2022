@@ -14,10 +14,10 @@ class Y2015D23(input: String) : Day {
         }
     }
 
-    private val pattern = """(hlf|tpl|inc|jmp|jie|jio) ([ab])?(?:(?:, )?([-+]\d+))?""".toRegex()
+    private val pattern = """([a-z]{3}) ([ab])?(?:(?:, )?([-+]\d+))?""".toRegex()
     private val instructions = input
         .groupValues(pattern)
-        .map { Instruction.of(it[0], it[1], it[2]) }
+        .map { (name, register, offset) -> Instruction.of(name, register, offset) }
 
     fun solve(aStart: Int = 0): Int {
         var a = aStart

@@ -11,12 +11,14 @@ class Y2015D10(private val input: String) : Day {
             if (s[i] == digit) {
                 count++
             } else {
-                append("$count$digit")
+                append(count)
+                append(digit)
                 digit = s[i]
                 count = 1
             }
         }
-        append("$count$digit")
+        append(count)
+        append(digit)
     }
 
     private fun solve(n: Int) = generateSequence(input) { lookAndSay(it) }
