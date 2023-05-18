@@ -161,12 +161,12 @@ inline fun <E> MutableList<E>.mapInPlaceIndexed(transform: (index: Int, E) -> E)
 }
 
 /**
- * Transposes a list of lists to become a <I>list</I> of <I>lists</I>
+ * Transposes a list of lists to become a <I>list</I> of <I>lists</I>. If the lists are of unequal length it uses the
+ * length of the shortest list.
  */
 fun <E> List<List<E>>.transpose(): List<List<E>> {
-    val width = first().size
+    val width = minOf { it.size }
     val height = size
-    require(all { it.size == width }) { "The rows are not of equal size." }
     return List(width) { w ->
         List(height) { h ->
             this[h][w]
