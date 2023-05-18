@@ -15,16 +15,20 @@ class Y2016D8(input: String) : Day {
                     .column(arg1)
                     .shift(-arg2)
                     .forEachIndexed { index, b -> screen[arg1 + index * screen.width] = b }
+
                 "rotate row" -> screen
                     .row(arg1)
                     .shift(-arg2)
                     .forEachIndexed { index, b -> screen[arg1 * screen.width + index] = b }
+
                 else -> throw IllegalArgumentException()
             }
         }
     }
 
-    val instructions = input.groupValues(pattern).map { Instruction(it[0], it[1].toInt(), it[2].toInt()) }
+    val instructions = input.groupValues(pattern).map { (mode, arg1, arg2) ->
+        Instruction(mode, arg1.toInt(), arg2.toInt())
+    }
 
     private fun lightScreen(): Grid<Boolean> {
         val screen = MutableGrid(50, 6) { false }
