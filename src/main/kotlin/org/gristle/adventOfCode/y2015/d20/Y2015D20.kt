@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2015.d20
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.isEven
 import kotlin.math.sqrt
 
 class Y2015D20(input: String) : Day {
@@ -10,7 +11,7 @@ class Y2015D20(input: String) : Day {
         val factors = mutableListOf<Int>()
         var n = number
 
-        while (n and 1 == 0) {
+        while (n.isEven()) {
             factors.add(2)
             n /= 2
         }

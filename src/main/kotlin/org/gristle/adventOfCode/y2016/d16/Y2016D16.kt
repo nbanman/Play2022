@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2016.d16
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.isOdd
 
 class Y2016D16(private val input: String) : Day {
 
@@ -8,7 +9,7 @@ class Y2016D16(private val input: String) : Day {
         val sum = BooleanArray(a.size / 2) { idx ->
             !(a[idx * 2] xor a[idx * 2 + 1])
         }
-        return if (sum.size % 2 == 1) {
+        return if (sum.size.isOdd()) {
             val answer = buildString { sum.forEach { append(if (it) '1' else '0') } }
             answer
         } else {

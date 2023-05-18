@@ -1,10 +1,7 @@
 package org.gristle.adventOfCode.y2021.d20
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.Grid
-import org.gristle.adventOfCode.utilities.stripCarriageReturns
-import org.gristle.adventOfCode.utilities.toGrid
+import org.gristle.adventOfCode.utilities.*
 
 /*
 This one broke my brain, needed help. You will notice a resemblance to /u/jkpr's solution. 
@@ -28,7 +25,7 @@ class Y2021D20(input: String) : Day {
     private fun enhance(steps: Int): Int {
         val result = (1..steps).fold(image) { acc, step ->
             // flashes the lights outside the finite grid on and off depending on the turn
-            val outside = step % 2 == 0
+            val outside = step.isEven()
 
             // Each step, the finite grid becomes one larger on every side. The offset is used
             // to refer to the equivalent point on the previous, smaller grid.

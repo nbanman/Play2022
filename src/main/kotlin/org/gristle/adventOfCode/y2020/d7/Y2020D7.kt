@@ -35,12 +35,12 @@ class Y2020D7(input: String) : Day {
     private val bagRx = """(\d+) (\w+ \w+) bag""".toRegex()
 
     private val rules: List<Rule> = input
-        .groupValues("""(\w+ \w+) bags contain ([^.]+).""")
-        .map { gv ->
-            val heldBags = gv[1]
+        .groupValues("""(\w+ \w+) bags contain ([^.]+)\.""")
+        .map { (container, contained) ->
+            val heldBags = contained
                 .groupValues(bagRx)
-                .map { HeldBag(it[1], it[0].toInt()) }
-            Rule(gv[0], heldBags)
+                .map { (amountString, bag) -> HeldBag(bag, amountString.toInt()) }
+            Rule(container, heldBags)
         }
 
     private val bagMap: Map<String, Rule> by lazy {

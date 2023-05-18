@@ -4,6 +4,8 @@ import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Graph.steps
+import org.gristle.adventOfCode.utilities.isEven
+import org.gristle.adventOfCode.utilities.isOdd
 
 class Y2016D13(input: String) : Day {
     private val favoriteNumber = input.toInt()
@@ -13,8 +15,8 @@ class Y2016D13(input: String) : Day {
         val num = (x * x) + (3 * x) + (2 * x * y) + y + (y * y) + favoriteNumber
         val ones = generateSequence(num) { it.shr(1) }
             .takeWhile { it > 0 }
-            .count { it and 1 == 1 }
-        return ones and 1 == 0
+            .count(Int::isOdd)
+        return ones.isEven()
     }
 
     private val distances: List<Graph.Vertex<Coord>> by lazy {

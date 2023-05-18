@@ -14,7 +14,7 @@ fun Sequence<Pair<Long, Long>>.crt(): Long {
 fun Int.isPrime(): Boolean = when {
     this <= 1 -> false
     this <= 3 -> true
-    this % 2 == 0 || this % 3 == 0 -> false
+    this.isEven() || this % 3 == 0 -> false
     else -> {
         val limit = sqrt(this.toFloat()).toInt()
         generateSequence(5) { it + 6 }

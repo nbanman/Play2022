@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2016.d21
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.isOdd
 
 // Not refactored, but not horrible. Maybe I'm getting better!
 class Y2016D21(input: String) : Day {
@@ -64,7 +65,7 @@ class Y2016D21(input: String) : Day {
                 "rotate based" -> {
                     val index = s.indexOf(pos1)
                     val rotations = if (reversed) {
-                        (index / 2 + (if (index % 2 == 1 || index == 0) 1 else 5))
+                        (index / 2 + (if (index.isOdd() || index == 0) 1 else 5))
                     } else {
                         -(index + 1 + (if (index >= 4) 1 else 0))
                     }
@@ -101,6 +102,7 @@ class Y2016D21(input: String) : Day {
 
 fun main() = Day.runDay(Y2016D21::class)
 
-//Class creation: 40ms
-//Part 1: bfheacgd (11ms)
-//Part 2: gcehdbfa (0ms)
+//    Class creation: 20ms
+//    Part 1: bfheacgd (1ms)
+//    Part 2: gcehdbfa (1ms)
+//    Total time: 23ms

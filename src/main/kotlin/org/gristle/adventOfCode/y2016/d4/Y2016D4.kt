@@ -24,7 +24,7 @@ class Y2016D4(input: String) : Day {
 
     private val rooms = input
         .groupValues("""([a-z-]+)-(\d+)\[([a-z]+)\]""")
-        .map { Room(it[0], it[1].toInt(), it[2]) }
+        .map { (encryptedName, idString, checkSum) -> Room(encryptedName, idString.toInt(), checkSum) }
         .filter(Room::isReal)
 
     override fun part1() = rooms.sumOf(Room::id)
@@ -32,4 +32,9 @@ class Y2016D4(input: String) : Day {
     override fun part2() = rooms.find { it.name == "northpole object storage" }?.id?.toString() ?: "not found"
 }
 
-fun main() = Day.runDay(Y2016D4::class) // 158835, 993
+fun main() = Day.runDay(Y2016D4::class)
+
+//    Class creation: 61ms
+//    Part 1: 158835 (0ms)
+//    Part 2: 993 (2ms)
+//    Total time: 63ms

@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2015.d23
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.isEven
 
 class Y2015D23(input: String) : Day {
 
@@ -40,9 +41,9 @@ class Y2015D23(input: String) : Day {
                 }
                 "jmp" -> index += instruction.offset
                 "jie" -> if (instruction.register == "a") {
-                    if (a % 2 == 0) index += instruction.offset else index++
+                    if (a.isEven()) index += instruction.offset else index++
                 } else {
-                    if (b % 2 == 0) index += instruction.offset else index++
+                    if (b.isEven()) index += instruction.offset else index++
                 }
                 "jio" -> if (instruction.register == "a") {
                     if (a == 1) index += instruction.offset else index++

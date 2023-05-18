@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.gristle.adventOfCode.utilities.GridTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-04-15T18:48:47" hostname="GLORIOUSALLRED" time="0.001">
-  <properties/>
-  <testcase name="getNeighborsTest$Play2022_test()" classname="org.gristle.adventOfCode.utilities.GridTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

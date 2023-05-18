@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2015.d3
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.isOdd
 
 class Y2015D3(private val input: String) : Day {
 
@@ -20,7 +21,7 @@ class Y2015D3(private val input: String) : Day {
 
     override fun part2() = input
         .foldIndexed(mutableListOf(Coord(0, 0)) to mutableListOf(Coord(0, 0))) { index, acc, c ->
-            val roboSanta = index % 2 == 1
+            val roboSanta = index.isOdd()
             val listToAdd = if (roboSanta) acc.second else acc.first
             listToAdd.add(listToAdd.last().move(c))
             if (roboSanta) acc.first to listToAdd else listToAdd to acc.second

@@ -31,7 +31,7 @@ class Y2017D21(private val input: String) : Day {
     }
 
     private fun expandGrid(grid: Grid<Boolean>): Grid<Boolean> {
-        val length = if (grid.width and 1 == 0) 2 else 3
+        val length = if (grid.width.isEven()) 2 else 3
         val subGrids = buildList {
             for (y in 0 until grid.height step length) {
                 for (x in 0 until grid.width step length) {
