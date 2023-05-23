@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2021.d17
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.getIntList
 import org.gristle.adventOfCode.utilities.minMax
 import kotlin.math.abs
 
@@ -51,19 +52,13 @@ class Y2021D17(input: String) : Day {
         }
     }
 
-    private val intermediate = """(-?\d+)\.\.(-?\d+), y=(-?\d+)\.\.(-?\d+)"""
-        .toRegex()
-        .find(input)
-        ?.groupValues
-        ?.drop(1)
-        ?.map(String::toInt)
-        ?: throw IllegalArgumentException("Regex does not match input")
-
-    private val box = intermediate.let {
-        val (x1, x2) = minMax(it[0], it[1])
-        val (y1, y2) = minMax(it[2], it[3])
-        Box(Coord(x1, y2), Coord(x2, y1))
-    }
+    private val box = input
+        .getIntList()
+        .let { (x1, x2, y1, y2) ->
+            val (xa, xb) = minMax(x1, x2)
+            val (ya, yb) = minMax(y1, y2)
+            Box(Coord(xa, yb), Coord(xb, ya))
+        }
 
     override fun part1() = box.maxY
 
@@ -80,7 +75,7 @@ class Y2021D17(input: String) : Day {
 
 fun main() = Day.runDay(Y2021D17::class)
 
-//    Class creation: 15ms
+//    Class creation: 14ms
 //    Part 1: 17766 (0ms)
-//    Part 2: 1733 (79ms)
-//    Total time: 95ms
+//    Part 2: 1733 (70ms)
+//    Total time: 85ms
