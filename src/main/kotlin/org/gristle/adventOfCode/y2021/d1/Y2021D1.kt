@@ -1,11 +1,12 @@
 package org.gristle.adventOfCode.y2021.d1
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getInts
 
 class Y2021D1(input: String) : Day {
-    private val measurements = input.lines().map(String::toInt)
+    private val measurements = input.getInts()
 
-    private fun List<Int>.countIncreased() = zipWithNext().count { (a, b) -> a < b }
+    private fun Sequence<Int>.countIncreased() = zipWithNext().count { (a, b) -> a < b }
 
     override fun part1() = measurements.countIncreased()
 
