@@ -26,9 +26,9 @@ class Y2016D8(input: String) : Day {
         }
     }
 
-    val instructions = input.groupValues(pattern).map { (mode, arg1, arg2) ->
-        Instruction(mode, arg1.toInt(), arg2.toInt())
-    }
+    val instructions = input
+        .groupValues(pattern)
+        .map { (mode, arg1, arg2) -> Instruction(mode, arg1.toInt(), arg2.toInt()) }
 
     private fun lightScreen(): Grid<Boolean> {
         val screen = MutableGrid(50, 6) { false }

@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2017.d25
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2017D25(input: String) : Day {
@@ -54,7 +55,8 @@ class Y2017D25(input: String) : Day {
     private val data = input.replace("\r", "")
 
     override fun part1(): Int {
-        val steps = data.groupValues(stepPattern)[0][0].toInt()
+        val steps = data.getInts().first()
+
         val states = data
             .groupValues(pattern)
             .map {

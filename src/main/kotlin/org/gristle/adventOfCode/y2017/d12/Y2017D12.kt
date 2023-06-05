@@ -1,8 +1,7 @@
 package org.gristle.adventOfCode.y2017.d12
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.getInts
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2017D12(input: String) : Day {
 
@@ -24,11 +23,10 @@ class Y2017D12(input: String) : Day {
         }
     }
 
-    private val pattern = """(\d+) <-> (\d+(?:, \d+)*)""".toRegex()
-
-    private val links = input
-        .groupValues(pattern)
-        .associate { it[0].toInt() to it[1].getInts().toList() }
+    private val links: Map<Int, List<Int>> = input
+        .lineSequence()
+        .map { it.getIntList() }
+        .associate { it.first() to it.drop(1) }
 
     override fun part1() = allLinks(links, 0).size
 

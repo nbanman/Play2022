@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2018.d23
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Xyz
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.pollUntil
 import java.util.*
 import kotlin.math.ceil
@@ -75,11 +75,11 @@ class Y2018D23(input: String) : Day {
         }
     }
 
-    private val pattern = """pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)""".toRegex()
-
     private val nanobots = input
-        .groupValues(pattern, String::toInt)
-        .map { Nanobot(Xyz(it[0], it[1], it[2]), it[3]) }
+        .getInts()
+        .chunked(4)
+        .map { (x, y, z, radius) -> Nanobot(Xyz(x, y, z), radius) }
+        .toList()
 
     override fun part1(): Int {
         val strongest = nanobots.maxByOrNull(Nanobot::radius) ?: return -1

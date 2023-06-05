@@ -93,7 +93,7 @@ class Y2016D21(input: String) : Day {
 
     val commands = input
         .groupValues(pattern)
-        .map { Command(it[0], it[1], it[2]) }
+        .map { (name, pos1, pos2) -> Command(name, pos1, pos2) }
 
     override fun part1() = commands.fold(passcode) { acc, command -> command.execute(acc) }
 
