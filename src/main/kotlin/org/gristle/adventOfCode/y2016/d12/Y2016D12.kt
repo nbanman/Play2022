@@ -12,7 +12,7 @@ class Y2016D12(input: String) : Day {
         val pattern = """(\w+) (-?\w+)(?: (-?\w+))?""".toRegex()
         input
             .groupValues(pattern)
-            .map { Assembunny(it[0], it[1], it[2]) }
+            .map { (type, arg1, arg2) -> Assembunny(type, arg1, arg2) }
     }
 
     private val p1Registers = Registers()
