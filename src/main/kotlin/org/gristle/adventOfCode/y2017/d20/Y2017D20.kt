@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2017.d20
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Xyz
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getInts
 import kotlin.math.abs
 
 // not refactored
@@ -34,19 +34,18 @@ class Y2017D20(input: String) : Day {
         }
     }
 
-    private val pattern = """p=<(-?\d+),(-?\d+),(-?\d+)>, v=<(-?\d+),(-?\d+),(-?\d+)>, a=<(-?\d+),(-?\d+),(-?\d+)>"""
-        .toRegex()
-
     private val particles = input
-        .groupValues(pattern)
-        .mapIndexed { index, gv ->
+        .getInts()
+        .chunked(9)
+        .mapIndexed { index, ints ->
             Particle(
                 index,
-                Xyz(gv[0].toInt(), gv[1].toInt(), gv[2].toInt()),
-                Xyz(gv[3].toInt(), gv[4].toInt(), gv[5].toInt()),
-                Xyz(gv[6].toInt(), gv[7].toInt(), gv[8].toInt())
+                Xyz(ints[0], ints[1], ints[2]),
+                Xyz(ints[3], ints[4], ints[5]),
+                Xyz(ints[6], ints[7], ints[8]),
             )
         }.sortedBy { it.a.manhattanDistance() }
+        .toList()
 
     override fun part1(): Int {
         val selectParticles = particles.filter {
