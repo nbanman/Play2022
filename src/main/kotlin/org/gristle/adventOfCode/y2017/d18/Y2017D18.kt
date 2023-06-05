@@ -19,11 +19,10 @@ class Y2017D18(input: String) : Day {
         var sends = 0
         private val reg = mutableMapOf("p" to p)
 
-        private fun valueOf(arg: String) = if (arg.last().isDigit()) {
-            arg.toLong()
-        } else {
-            reg[arg] ?: 0
-        }
+        private fun valueOf(arg: String) = arg
+            .toLongOrNull()
+            ?: reg[arg]
+            ?: 0
 
         fun execute() {
             if (index !in commands.indices) {
