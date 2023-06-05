@@ -7,13 +7,13 @@ class Y2018D10(input: String) : Day {
 
     data class MovingPoint(val pos: Coord, val vel: Coord)
 
-    private val pattern = """position=< ?(-?\d+), +(-?\d+)> velocity=< ?(-?\d+), +(-?\d+)>""".toRegex()
-
     private val points = input
-        .groupValues(pattern, String::toInt)
-        .map { MovingPoint(Coord(it[0], it[1]), Coord(it[2], it[3])) }
+        .getInts()
+        .chunked(4)
+        .map { (px, py, vx, vy) -> MovingPoint(Coord(px, py), Coord(vx, vy)) }
+        .toList()
 
-    private fun List<MovingPoint>.move() = map { point -> point.copy(pos = point.pos + point.vel) }
+    private fun Iterable<MovingPoint>.move() = map { point -> point.copy(pos = point.pos + point.vel) }
 
     private val answer = generateSequence(points) { it.move() }
         .withIndex()
