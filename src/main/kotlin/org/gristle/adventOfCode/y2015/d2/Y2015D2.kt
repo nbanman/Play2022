@@ -2,22 +2,26 @@ package org.gristle.adventOfCode.y2015.d2
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
+import org.gristle.adventOfCode.utilities.getPairs
 
 class Y2015D2(input: String) : Day {
 
-    private data class Box(val l: Int, val w: Int, val h: Int) {
-        private fun cubicVolume() = l * w * h
-        private fun surfaceArea() = 2 * l * w + 2 * w * h + 2 * h * l
-        private fun smallestSideArea() = cubicVolume() / maxOf(l, w, h)
+    private class Box(dimensions: List<Int>) {
+        private val dimensions = dimensions.sorted()
+
+        private fun surfaceArea() = dimensions.getPairs().sumOf { (a, b) -> 2 * a * b }
+        private fun smallestSideArea() = dimensions[0] * dimensions[1]
         fun paperNeeded() = surfaceArea() + smallestSideArea()
-        private fun ribbonToWrap() = (l + w + h - maxOf(l, w, h)) * 2
+
+        private fun cubicVolume() = dimensions.reduce(Int::times)
+        private fun ribbonToWrap() = 2 * (dimensions[0] + dimensions[1])
         fun ribbonNeeded() = cubicVolume() + ribbonToWrap()
     }
 
     private val boxes = input
         .getInts()
         .chunked(3)
-        .map { (l, w, h) -> Box(l, w, h) }
+        .map { dimensions -> Box(dimensions) }
 
     override fun part1() = boxes.sumOf(Box::paperNeeded)
 
