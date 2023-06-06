@@ -1,11 +1,9 @@
 package org.gristle.adventOfCode.y2021.d22
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2021D22(input: String) : Day {
-
-    val pattern = """(on|off) x=(-?\d+)\.\.(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)""".toRegex()
 
     data class Cuboid(val turnOn: Boolean, val x: IntRange, val y: IntRange, val z: IntRange) {
 
@@ -52,12 +50,12 @@ class Y2021D22(input: String) : Day {
     }
 
     private val cuboids = input
-        .groupValues(pattern)
-        .map { gv ->
-            val turnOff = gv[0] == "on"
-            val nv = gv.mapNotNull { it.toIntOrNull() }
+        .lineSequence()
+        .map { line ->
+            val turnOff = line.startsWith("on")
+            val nv = line.getIntList()
             Cuboid(turnOff, nv[0]..nv[1], nv[2]..nv[3], nv[4]..nv[5])
-        }
+        }.toList()
 
     private fun findCubes(cuboids: List<Cuboid>): Long {
         var visited = mutableListOf<Cuboid>()
