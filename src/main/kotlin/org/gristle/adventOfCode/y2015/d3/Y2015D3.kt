@@ -2,30 +2,31 @@ package org.gristle.adventOfCode.y2015.d3
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.isOdd
+import org.gristle.adventOfCode.utilities.isEven
 
 class Y2015D3(private val input: String) : Day {
 
-    fun Coord.move(c: Char) = when (c) {
+    private fun Coord.move(dir: Char) = when (dir) {
         '^' -> north()
-        '>' -> east()
         'v' -> south()
+        '>' -> east()
         '<' -> west()
-        else -> throw IllegalArgumentException("Invalid input.")
+        else -> throw IllegalArgumentException("Invalid character in input")
     }
 
     override fun part1() = input
-        .runningFold(Coord.ORIGIN) { acc, c -> acc.move(c) }
+        .runningFold(Coord.ORIGIN) { santa, dir -> santa.move(dir) }
         .toSet()
         .size
 
     override fun part2() = input
-        .foldIndexed(mutableListOf(Coord(0, 0)) to mutableListOf(Coord(0, 0))) { index, acc, c ->
-            val roboSanta = index.isOdd()
-            val listToAdd = if (roboSanta) acc.second else acc.first
-            listToAdd.add(listToAdd.last().move(c))
-            if (roboSanta) acc.first to listToAdd else listToAdd to acc.second
-        }.let { it.first + it.second }
+        .runningFoldIndexed(Coord.ORIGIN to Coord.ORIGIN) { index, (santa, robot), dir ->
+            if (index.isEven()) {
+                santa.move(dir) to robot
+            } else {
+                santa to robot.move(dir)
+            }
+        }.flatMap { (santa, robot) -> listOf(santa, robot) }
         .toSet()
         .size
 }
