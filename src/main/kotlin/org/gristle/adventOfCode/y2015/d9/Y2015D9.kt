@@ -2,15 +2,15 @@ package org.gristle.adventOfCode.y2015.d9
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
-import org.gristle.adventOfCode.utilities.groupValues
 
-class Y2015D9(private val input: String) : Day {
+class Y2015D9(input: String) : Day {
 
     // Parse input into adjacency map for Dijkstra search.
     private val edgeMap: Map<String, List<Graph.Edge<String>>> = buildMap<String, MutableList<Graph.Edge<String>>> {
-        input.groupValues("""(\w+) to (\w+) = (\d+)""").forEach { gv ->
-            getOrPut(gv[0]) { mutableListOf() }.add(Graph.Edge(gv[1], gv[2].toDouble()))
-            getOrPut(gv[1]) { mutableListOf() }.add(Graph.Edge(gv[0], gv[2].toDouble()))
+        input.lineSequence().forEach { line ->
+            val (cityA, _, cityB, _, distance) = line.split(' ')
+            getOrPut(cityA) { mutableListOf() }.add(Graph.Edge(cityB, distance.toDouble()))
+            getOrPut(cityB) { mutableListOf() }.add(Graph.Edge(cityA, distance.toDouble()))
         }
     }
 
@@ -24,7 +24,7 @@ class Y2015D9(private val input: String) : Day {
         edgeMap[id.last()] // grabs edges connected to last city visited
             ?.filter { !id.contains(it.vertexId) } // filters out adjacent cities that have already been visited
             ?.map { Graph.Edge(id + it.vertexId, it.weight) } // provides an edge using the adjacency list data
-            ?: throw IllegalStateException("City does not exist.")
+            ?: throw IllegalStateException("City does not exist: ${id.last()}")
     }
 
     private fun tour(city: String): Sequence<Graph.Vertex<List<String>>> =
@@ -40,7 +40,9 @@ class Y2015D9(private val input: String) : Day {
         }
 
     // Part two is the same as Part one except that it finds the longest path so the end condition is specified with
-    // last. It runs until there are no more nodes to visit, then grabs the largest weight.
+    // last. It runs until there are no more nodes to visit, then grabs the largest weight. This works because the
+    // state object tracks the order that cities are visited, so no shortest path optimization is done. All paths are
+    // checked.
     override fun part2() = cities
         .maxOf { city ->
             tour(city)
