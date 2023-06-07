@@ -21,7 +21,7 @@ class Y2015D10(private val input: String) : Day {
         append(digit)
     }
 
-    private fun solve(n: Int) = generateSequence(input) { lookAndSay(it) }
+    private fun solve(n: Int) = generateSequence(input, ::lookAndSay)
         .take(n + 1)
         .last()
         .length
