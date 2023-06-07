@@ -1,119 +1,101 @@
 package org.gristle.adventOfCode.y2015.d7
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.pow
 
-// Refactor candidate: uses global mutable "register"; stateful, would give different answer if run twice
 class Y2015D7(input: String) : Day {
-    sealed class Instruction(val arg1: String, val wire: String) {
-        companion object {
-            val register = mutableMapOf<String, Int>()
-        }
+    
+    // each instruction stored as a list of arguments
+    private val instructions = input.lines().map { it.split(' ') }
 
-        class Assign(arg1: String, wire: String) : Instruction(arg1, wire) {
-            override fun execute() = valueOf(arg1)
-        }
+    // global register of wire values
+    private val register = mutableMapOf<String, Int>()
 
-        class And(arg1: String, private val arg2: String, wire: String) : Instruction(arg1, wire) {
-            override fun execute(): Int {
-                val a1 = valueOf(arg1)
-                val a2 = valueOf(arg2)
-                return if (a1 == -1 || a2 == -1) -1 else a1 and a2
+    // utility function that takes an argument and returns an Int. Converts digits to an int; failing that, looks
+    // up the wire value in the register. Otherwise, returns null. 
+    private fun String.value(): Int? = toIntOrNull() ?: register[this]
+
+    // tries to execute the instruction, returning true if successful and false if one of the constituent wires is
+    // not yet defined
+    private fun List<String>.runInstruction(): Boolean {
+        when (size) {
+            3 -> this[0].value()
+                ?.let { register[this[2]] = it } // ASSIGN
+                ?: return false
+
+            4 -> this[1].value()
+                ?.let { register[this[3]] = it xor Int.MAX_VALUE and 65535 } // NOT
+                ?: return false
+
+            else -> when (this[1]) {
+                "AND" -> this[0].value()?.let { arg1 ->
+                    this[2].value()?.let { arg2 ->
+                        register[this[4]] = arg1 and arg2
+                    } ?: return false
+                } ?: return false
+
+                "OR" -> this[0].value()?.let { arg1 ->
+                    this[2].value()?.let { arg2 ->
+                        register[this[4]] = arg1 or arg2
+                    } ?: return false
+                } ?: return false
+
+                "LSHIFT" -> this[0].value()?.let {
+                    register[this[4]] = it shl this[2].toInt() and 65535
+                } ?: return false
+
+                "RSHIFT" -> this[0].value()?.let {
+                    register[this[4]] = it shr this[2].toInt()
+                } ?: return false
+
+                else -> throw IllegalArgumentException("Command not recognized: ${this[1]}")
             }
         }
-
-        class Not(arg1: String, wire: String) : Instruction(arg1, wire) {
-            override fun execute(): Int {
-                val arg1Value = valueOf(arg1)
-                if (arg1Value == -1) return -1
-                return (0..15).fold(0) { acc, i ->
-                    val complement = (arg1Value.shr(i) and 1).let { if (it == 1) 0 else 1 }
-                    acc + complement * 2.pow(i).toInt()
-                }
-            }
-        }
-
-        class Or(arg1: String, private val arg2: String, wire: String) : Instruction(arg1, wire) {
-            override fun execute(): Int {
-                val a1 = valueOf(arg1)
-                val a2 = valueOf(arg2)
-                return if (a1 == -1 || a2 == -1) -1 else a1 or a2
-            }
-        }
-
-        class LShift(arg1: String, private val shift: Int, wire: String) : Instruction(arg1, wire) {
-            override fun execute(): Int {
-                val a1 = valueOf(arg1)
-                return if (a1 == -1) -1 else a1 shl shift
-            }
-        }
-
-        class RShift(arg1: String, private val shift: Int, wire: String) : Instruction(arg1, wire) {
-            override fun execute(): Int {
-                val a1 = valueOf(arg1)
-                return if (a1 == -1) -1 else a1 shr shift
-            }
-        }
-
-        abstract fun execute(): Int
-
-        fun registerWire(): Boolean {
-            val execution = execute()
-            return if (execution == -1) false else {
-                register[wire] = execution
-                true
-            }
-        }
-
-        fun valueOf(s: String): Int {
-            val numericValue = s.toIntOrNull()
-            return numericValue ?: register[s] ?: -1
-        }
+        return true
     }
 
-    private val pattern = """(?:(\w+) )?(?:(AND|NOT|OR|LSHIFT|RSHIFT) )?(\w+) -> ([a-z]+)""".toRegex()
+    // executes instructions in a loop until all are executed
+    fun solve(instructions: List<List<String>>): Int {
 
-    private val instructions = input
-        .groupValues(pattern)
-        .map { gv ->
-            when {
-                gv[1] == "AND" -> Instruction.And(gv[0], gv[2], gv[3])
-                gv[0] == "NOT" -> Instruction.Not(gv[2], gv[3])
-                gv[1] == "OR" -> Instruction.Or(gv[0], gv[2], gv[3])
-                gv[1] == "LSHIFT" -> Instruction.LShift(gv[0], gv[2].toInt(), gv[3])
-                gv[1] == "RSHIFT" -> Instruction.RShift(gv[0], gv[2].toInt(), gv[3])
-                else -> Instruction.Assign(gv[2], gv[3])
-            }
+        // not all instructions can be immediately executed, so use a var to be able to revise the instruction list
+        var instructionList = instructions
+
+        // use a mutable list to track instuctions that were not executed
+        val unexecutedInstructions = mutableListOf<List<String>>()
+
+        // run until all instructions have been executed
+        while (instructionList.isNotEmpty()) {
+
+            // try to execute every instruction; add any failures to unexecutedInstructions
+            instructions.forEach { if (!it.runInstruction()) unexecutedInstructions.add(it) }
+
+            // after each pass, transfer the failures to the instructionList to try again
+            instructionList = unexecutedInstructions.toList()
+            unexecutedInstructions.clear() // cleanup
         }
-
-    private fun solve(ignoreB: Boolean = false): Int {
-        val insts = instructions
-            .filter { if (!ignoreB) true else it.wire != "b" }
-            .toMutableList()
-
-        val executed = mutableListOf<Instruction>()
-        while (insts.isNotEmpty()) {
-            insts.forEach { if (it.registerWire()) executed.add(it) }
-            insts.removeAll(executed)
-            executed.clear()
-        }
-        return Instruction.register["a"] ?: -1
+        return register.getValue("a")
     }
 
-    override fun part1() = solve()
+    override fun part1(): Int {
+        register.clear()
+        return solve(instructions)
+    }
 
     override fun part2(): Int {
-        val a = Instruction.register["a"] ?: -1
-        Instruction.register.clear()
-        Instruction.register["b"] = a
-        return solve(true)
+        // run solve once to get value for 'b'
+        register.clear()
+        val b = solve(instructions)
+
+        // rerun solve, this time adding the value for 'b' and ignoring the instruction assigning a value to 'b'
+        register.clear()
+        register["b"] = b
+        val instructions = instructions.filter { it.last() != "b" }
+        return solve(instructions)
     }
 }
 
 fun main() = Day.runDay(Y2015D7::class)
 
-//    Class creation: 28ms
-//    Part 1: 46065 (9ms)
-//    Part 2: 14134 (5ms)
-//    Total time: 43ms
+//    Class creation: 20ms
+//    Part 1: 46065 (15ms)
+//    Part 2: 14134 (13ms)
+//    Total time: 49ms
