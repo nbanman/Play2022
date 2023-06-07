@@ -13,20 +13,17 @@ class Y2015D11(input: String) : Day {
 
     private fun hasStraight(s: String): Boolean = s
         .windowed(3)
-        .any { trip ->
-            trip[0].isLowerCase()
-                    && trip[1] - trip[0] == 1
-                    && trip[2] - trip[1] == 1
-        }
+        .any { trip -> trip[1] - trip[0] == 1 && trip[2] - trip[1] == 1 }
 
-    private fun noConfusion(s: String): Boolean = s !in "iol"
+    private val confusingLetters = "iol".toSet()
+    private fun noConfusion(s: String): Boolean = s.map { it }.intersect(confusingLetters).isEmpty()
 
     private val twoPairsRx = """([a-z])\1""".toRegex()
 
     private fun twoPairs(s: String): Boolean = twoPairsRx
         .findAll(s)
         .take(2)
-        .count() > 1
+        .count() == 2
 
     private fun nextPassword(password: String) =
         generateSequence(password, ::increment) // sequence starts with password and increments by one
