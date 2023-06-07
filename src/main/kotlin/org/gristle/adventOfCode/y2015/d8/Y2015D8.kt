@@ -5,8 +5,10 @@ import org.gristle.adventOfCode.Day
 class Y2015D8(input: String) : Day {
     private val lines = input.lines()
 
+    private val replaceRx = """\\\\|\\"|\\x[\da-f]{2}""".toRegex()
+
     private fun String.charsInMemory(): Int {
-        return drop(1).dropLast(1).replace("""\\\\|\\"|\\x[\da-f]{2}""".toRegex(), "X").length
+        return drop(1).dropLast(1).replace(replaceRx, "X").length
     }
 
     private fun String.encodedLength() = length + 2 + count { it in """\"""" }
