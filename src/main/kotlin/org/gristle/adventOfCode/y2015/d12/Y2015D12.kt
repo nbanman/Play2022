@@ -5,46 +5,74 @@ import org.gristle.adventOfCode.utilities.getInts
 
 class Y2015D12(private val input: String) : Day {
 
-    data class Block(val value: Int, val length: Int)
+    // stores information about a particular object or array
+    data class JsonBlock(val value: Int, val end: Int)
 
-    private fun getBlockValue(input: String): Block {
-        var numValue = 0
-        var index = 0
-        var isRed = false
+    private val dividers = charArrayOf('[', ']', '{', '}')
 
-        while (index < input.length) {
-            val blockIndex = input.substring(index).indexOfFirst { it in "[]{}" } + index
-            val snippet = if (blockIndex == -1) {
-                input.substring(index)
-            } else {
-                input.substring(index, blockIndex)
-            }
-            if (snippet.contains("\"red\"")) {
-                isRed = true
-            }
-            numValue += snippet.getInts().sum()
-            if (blockIndex >= 0) {
-                if (input[blockIndex] == ']') return Block(numValue, blockIndex + 2)
-                if (input[blockIndex] == '}') {
-                    return if (isRed) Block(0, blockIndex + 2) else Block(numValue, blockIndex + 2)
+    // given a start index, return the next block
+    private fun nextBlock(start: Int, alreadyRed: Boolean = false): JsonBlock {
+        var index = start
+        if (alreadyRed) {
+
+            // if it's already red, run a simplified algorithm that counts nesting blocks without worrying about
+            // numbers, outputting a Block with value 0
+            var depth = 0
+            while (depth >= 0) {
+                index++
+                when (input[index]) {
+                    '[', '{' -> depth++
+                    ']', '}' -> depth--
                 }
-                val newBlock = getBlockValue(input.substring(blockIndex + 1))
-                numValue += newBlock.value
-                index = blockIndex + newBlock.length
             }
+            return JsonBlock(0, index)
+        } else {
 
+            // if it's not already red, run standard algorithm
+            var isRed = false
+            var value = 0
+
+            // loop continues forever, but since input is well-formed it is guaranteed to return. The purpose is to
+            // keep looping until the block's closing bracket is found.
+            while (true) {
+
+                // get index of closing bracket 
+                val endIndex = input.indexOfAny(dividers, index + 1)
+
+                // get snippet of block before any nesting or closing bracket
+                val snippet = input.substring(index, endIndex)
+
+                // logic to add value of any numbers in snippet, or to flag as red if :"Red" is found in snippet
+                if (!isRed) {
+                    if (snippet.contains(":\"red\"")) {
+                        isRed = true
+                        value = 0
+                    } else {
+                        value += snippet.getInts().sum()
+                    }
+                }
+
+                if (input[endIndex] in "]}") { // if block closes...
+                    return JsonBlock(value, endIndex) // ..return it
+                } else { // ..else if a nesting block exists
+                    val innerBlock = nextBlock(endIndex, isRed) // ..get the inner block by recursion 
+                    value += innerBlock.value // update the value
+                    index = innerBlock.end // move the index to after the nested block
+                }
+            }
         }
-        return if (isRed) Block(0, input.lastIndex) else Block(numValue, input.lastIndex)
     }
 
+    // finds all the numbers in the string and adds them
     override fun part1() = input.getInts().sum()
 
-    override fun part2() = getBlockValue(input).value
+    // finds the value of the main block
+    override fun part2() = nextBlock(0).value
 }
 
 fun main() = Day.runDay(Y2015D12::class)
 
-//    Class creation: 20ms
-//    Part 1: 111754 (8ms)
-//    Part 2: 65402 (12ms)
-//    Total time: 41ms
+//    Class creation: 15ms
+//    Part 1: 111754 (4ms)
+//    Part 2: 65402 (7ms)
+//    Total time: 27ms
