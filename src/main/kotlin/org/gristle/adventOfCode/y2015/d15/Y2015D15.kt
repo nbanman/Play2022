@@ -3,11 +3,11 @@ package org.gristle.adventOfCode.y2015.d15
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getIntList
 import org.gristle.adventOfCode.utilities.lines
+import kotlin.math.max
 
 class Y2015D15(input: String) : Day {
 
     data class Ingredient(
-        val name: String,
         val capacity: Int,
         val durability: Int,
         val flavor: Int,
@@ -17,15 +17,14 @@ class Y2015D15(input: String) : Day {
 
     private val ingredients = input
         .lines { line ->
-            val name = line.takeWhile { it != ' ' }
             val (capacity, durability, flavor, texture, calories) = line.getIntList()
-            Ingredient(name, capacity, durability, flavor, texture, calories)
+            Ingredient(capacity, durability, flavor, texture, calories)
         }
 
     private val total = 100
     private val ingredientNum = ingredients.size
     private val calories = 500
-    private val combos = getCombos()
+    private val combos: List<List<Int>> by lazy { getCombinations() }
 
     private fun meetsCalories(combo: List<Int>): Boolean {
         var calorieCount = 0
@@ -47,15 +46,15 @@ class Y2015D15(input: String) : Day {
             flavor += combo[i] * ingredients[i].flavor
             texture += combo[i] * ingredients[i].texture
         }
-        capacity = maxOf(capacity, 0)
-        durability = maxOf(durability, 0)
-        flavor = maxOf(flavor, 0)
-        texture = maxOf(texture, 0)
+        capacity = max(capacity, 0)
+        durability = max(durability, 0)
+        flavor = max(flavor, 0)
+        texture = max(texture, 0)
 
         return capacity * durability * flavor * texture
     }
 
-    private fun getCombos(): List<List<Int>> {
+    private fun getCombinations(): List<List<Int>> {
         tailrec fun gC(combos: List<List<Int>>): List<List<Int>> {
             return if (combos.first().size < ingredientNum) {
                 val newCombos = buildList {
