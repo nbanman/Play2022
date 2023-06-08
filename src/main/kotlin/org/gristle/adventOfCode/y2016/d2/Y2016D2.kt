@@ -3,28 +3,14 @@ package org.gristle.adventOfCode.y2016.d2
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import kotlin.math.abs
+import kotlin.math.sign
 
 class Y2016D2(input: String) : Day {
     private val codes = input.lines()
 
     private fun Coord.toNumpad1() = (y * 3 + x + 1).toString()
 
-    private fun Coord.toNumpad2() = when (this) {
-        Coord(2, 0) -> "1"
-        Coord(1, 1) -> "2"
-        Coord(2, 1) -> "3"
-        Coord(3, 1) -> "4"
-        Coord(0, 2) -> "5"
-        Coord(1, 2) -> "6"
-        Coord(2, 2) -> "7"
-        Coord(3, 2) -> "8"
-        Coord(4, 2) -> "9"
-        Coord(1, 3) -> "A"
-        Coord(2, 3) -> "B"
-        Coord(3, 3) -> "C"
-        Coord(2, 4) -> "D"
-        else -> throw IllegalArgumentException()
-    }
+    private fun Coord.toNumpad2() = (5 + x + (y - 2) * 2 + 2 * (y - 2).sign).toString(16)[0].uppercase()
 
     fun solve(
         start: Coord,
@@ -89,6 +75,11 @@ class Y2016D2(input: String) : Day {
         return solve(start, padTraverse, conversion)
     }
 }
+
+private val test = """ULL
+RRDDD
+LURDL
+UUUUD"""
 
 fun main() = Day.runDay(Y2016D2::class)
 
