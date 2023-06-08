@@ -31,6 +31,10 @@ object Graph {
         fun steps(): Int = weight.toInt()
 
         override fun compareTo(other: Vertex<E>) = weight.compareTo(other.weight)
+
+        operator fun component1() = id
+        operator fun component2() = weight
+        operator fun component3() = parent
     }
 
     /**
