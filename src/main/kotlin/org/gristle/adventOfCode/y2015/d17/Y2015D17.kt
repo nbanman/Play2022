@@ -1,45 +1,52 @@
 package org.gristle.adventOfCode.y2015.d17
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2015D17(input: String) : Day {
 
-    private val lines = input.lines()
-    private fun getCombos(): List<List<Int>> {
-        tailrec fun gC(remaining: List<Int>, combos: List<List<Int>>): List<List<Int>> {
-            return if (remaining.isNotEmpty()) {
-                val latest = remaining.first()
-                val newCombos = combos.fold(mutableListOf<List<Int>>()) { acc, combo ->
-                    if (combo.sum() + latest <= storage) {
-                        acc.addAll(listOf(combo) + listOf(combo + latest))
-                    } else {
-                        acc.addAll(listOf(combo))
-                    }
-                    acc
-                } + listOf(listOf(latest))
+    // List of combinations of containers where the combination fits exactly 150L. Lazy b/c used by both parts
+    private val containers: List<List<Int>> by lazy {
 
-                gC(remaining.drop(1), newCombos)
-            } else {
-                combos
+        // parses the container sizes from input
+        val containers = input.getIntList().toMutableList()
+        val storage = 150
+
+        // combos stores list of all possible container combinations  
+        val combos = mutableListOf<List<Int>>()
+
+        // for each container, for each existing combination, add a new combination that uses the existing 
+        // combination plus the container. The existing combinations remain as well. Then add the container as the
+        // start of a new combination as well.
+        for (container in containers) {
+
+            // I use a for loop with indices because combos grows within the loop, but I only want to loop through 
+            // the combos that were already created before the new container was considered.
+            for (index in combos.indices) {
+                if (combos[index].sum() + container <= storage) {
+                    combos.add(combos[index] + container)
+                }
             }
+
+            // add the new container as a start to a new combination
+            combos.add(listOf(container))
         }
-        return gC(containers, emptyList()).filter { it.sum() == storage }
+
+        // we only want combinations that add up to 150L, so apply a filter and return
+        combos.filter { it.sum() == storage }
     }
 
-    private val containers = lines.map(String::toInt).sortedDescending()
+    override fun part1() = containers.size
 
-    private val storage = 150
-    private val combos = getCombos()
-    private val minimumContainers = combos.minOf(List<Int>::size)
-
-    override fun part1() = combos.size
-
-    override fun part2() = combos.filter { it.size == minimumContainers }.size
+    override fun part2(): Int {
+        val minimumContainers = containers.minOf { it.size }
+        return containers.filter { it.size == minimumContainers }.size
+    }
 }
 
 fun main() = Day.runDay(Y2015D17::class)
 
-//    Class creation: 75ms
-//    Part 1: 1638 (0ms)
+//    Class creation: 13ms
+//    Part 1: 1638 (26ms)
 //    Part 2: 17 (0ms)
-//    Total time: 76ms
+//    Total time: 40ms
