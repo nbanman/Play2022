@@ -1,95 +1,29 @@
 package org.gristle.adventOfCode.y2015.d16
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.gvs
 
 class Y2015D16(input: String) : Day {
-    data class Sue(
-        val number: Int,
-        val children: Int,
-        val cats: Int,
-        val samoyeds: Int,
-        val pomeranians: Int,
-        val akitas: Int,
-        val vizslas: Int,
-        val goldfish: Int,
-        val trees: Int,
-        val cars: Int,
-        val perfumes: Int,
-    ) {
-        private fun compatible(code: String, amount: Int, part2: Boolean = false): Boolean {
-            return when (code) {
-                "children" -> children == -1 || children == amount
-                "cats" -> cats == -1 || (if (part2) cats > amount else cats == amount)
-                "samoyeds" -> samoyeds == -1 || samoyeds == amount
-                "pomeranians" -> pomeranians == -1 || (if (part2) pomeranians < amount else pomeranians == amount)
-                "akitas" -> akitas == -1 || akitas == amount
-                "vizslas" -> vizslas == -1 || vizslas == amount
-                "goldfish" -> goldfish == -1 || (if (part2) goldfish < amount else goldfish == amount)
-                "trees" -> trees == -1 || (if (part2) trees > amount else trees == amount)
-                "cars" -> cars == -1 || cars == amount
-                "perfumes" -> perfumes == -1 || perfumes == amount
-                else -> true
-            }
-        }
 
-        fun compatible(criteria: List<Pair<String, Int>>, part2: Boolean = false): Boolean {
-            for (criterion in criteria) {
-                if (!compatible(criterion.first, criterion.second, part2)) return false
-            }
-            return true
-        }
+    // regex to extract items and amounts from a string
+    private val pattern = Regex("""([a-z]+): (\d+)""")
+
+    // takes a string and makes a "Sue:" items mapped to associated amounts
+    private fun buildSue(s: String): Map<String, Int> = buildMap {
+        s.gvs(pattern).forEach { (item, amt) -> put(item, amt.toInt()) }
     }
 
-    class SueBuilder {
-        private var number = -1
-        private var children = -1
-        private var cats = -1
-        private var samoyeds = -1
-        private var pomeranians = -1
-        private var akitas = -1
-        private var vizslas = -1
-        private var goldfish = -1
-        private var trees = -1
-        private var cars = -1
-        private var perfumes = -1
+    // parses input
+    private val sues: List<Map<String, Int>> = input
+        .lineSequence()
+        .map(::buildSue)
+        .toList()
 
-        fun build() =
-            Sue(number, children, cats, samoyeds, pomeranians, akitas, vizslas, goldfish, trees, cars, perfumes)
+    // the gift-giving sue is defined by the ticker tape given in the puzzle
+    private val auntSue: Map<String, Int>
 
-        fun add(code: String, amount: Int) {
-            when (code) {
-                "Sue" -> number = amount
-                "children" -> children = amount
-                "cats" -> cats = amount
-                "samoyeds" -> samoyeds = amount
-                "pomeranians" -> pomeranians = amount
-                "akitas" -> akitas = amount
-                "vizslas" -> vizslas = amount
-                "goldfish" -> goldfish = amount
-                "trees" -> trees = amount
-                "cars" -> cars = amount
-                "perfumes" -> perfumes = amount
-            }
-        }
-    }
-    
-    private fun buildSue(block: SueBuilder.() -> Unit): Sue = SueBuilder().apply(block).build()
-
-    private val pattern = """(Sue) (\d+): (\w+): (\d+), (\w+): (\d+), (\w+): (\d+)""".toRegex()
-
-    private val sues: List<Sue> = input
-        .groupValues(pattern)
-        .map { gv ->
-            buildSue {
-                add(gv[0], gv[1].toInt())
-                add(gv[2], gv[3].toInt())
-                add(gv[4], gv[5].toInt())
-                add(gv[6], gv[7].toInt())
-            }
-        }
-
-    private val tickerTape = "children: 3\n" +
+    init {
+        val tickerTape = """children: 3\n" +
             "cats: 7\n" +
             "samoyeds: 2\n" +
             "pomeranians: 3\n" +
@@ -98,15 +32,34 @@ class Y2015D16(input: String) : Day {
             "goldfish: 5\n" +
             "trees: 3\n" +
             "cars: 2\n" +
-            "perfumes: 1"
+            "perfumes: 1"""
+        auntSue = buildSue(tickerTape)
+    }
 
-    private val criteria = tickerTape
-        .groupValues("""(\w+): (\d+)""")
-        .map { gv -> gv[0] to gv[1].toInt() }
+    // returns true when for each item that the gift-giving Sue has, the Sue in question either doesn't have
+    // an entry or has the same amount. Otherwise returns false.
+    private fun modernRetroencabulator(sue: Map<String, Int>): Boolean = auntSue.entries
+        .all { (item, amt) -> (sue[item] ?: amt) == amt }
 
-    override fun part1() = sues.find { it.compatible(criteria) }?.number
+    // returns true when for each item that the gift-giving Sue has, the Sue in question either doesn't have
+    // an entry or has the correct amount as defined in part 2 of the puzzle. Otherwise returns false.
+    private fun outdatedRetroencabulator(sue: Map<String, Int>): Boolean = auntSue.entries
+        .all { (item, amt) ->
+            if (sue.contains(item)) { // if Sue in question has an entry for the item, further analysis needed...
+                val sueAmt = sue.getValue(item)
+                when (item) {
+                    "cats", "trees" -> sueAmt > amt
+                    "pomeranians", "goldfish" -> sueAmt < amt
+                    else -> sueAmt == amt
+                }
+            } else { // Sue in question has no entry, so move on to next item
+                true
+            }
+        }
 
-    override fun part2() = sues.find { it.compatible(criteria, true) }?.number
+    override fun part1() = sues.indexOfFirst(::modernRetroencabulator) + 1
+
+    override fun part2() = sues.indexOfFirst(::outdatedRetroencabulator) + 1
 }
 
 fun main() = Day.runDay(Y2015D16::class)
