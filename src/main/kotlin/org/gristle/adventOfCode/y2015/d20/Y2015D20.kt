@@ -43,15 +43,18 @@ class Y2015D20(input: String) : Day {
         }
     }
 
-    fun solve(multiplier: Int, filter: (houseNumber: Int, elf: Int) -> Boolean) = generateSequence(1) { it + 1 }
+    fun solve(
+        multiplier: Int,
+        predicate: (houseNumber: Int, elf: Int) -> Boolean = { _, _ -> true }
+    ) = generateSequence(1) { it + 1 }
         .indexOfFirst { houseNumber ->
-            val elves = expandFactors(primeFactors(houseNumber)).filter { filter(houseNumber, it) }
+            val elves = expandFactors(primeFactors(houseNumber)).filter { predicate(houseNumber, it) }
             val presents = elves.fold(0) { acc, i -> acc + i * multiplier }
             presents >= minimumPresents
         } + 1
 
 
-    override fun part1() = solve(10) { _, _ -> true }
+    override fun part1() = solve(10)
 
     override fun part2() = solve(11) { houseNumber, elf -> elf * 50 > houseNumber }
 }
