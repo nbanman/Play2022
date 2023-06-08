@@ -40,7 +40,7 @@ class Y2015D17(input: String) : Day {
 
     override fun part2(): Int {
         val minimumContainers = containers.minOf { it.size }
-        return containers.filter { it.size == minimumContainers }.size
+        return containers.count { it.size == minimumContainers }
     }
 }
 
