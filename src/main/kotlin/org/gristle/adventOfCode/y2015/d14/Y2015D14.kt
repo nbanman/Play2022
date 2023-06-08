@@ -10,8 +10,8 @@ class Y2015D14(input: String) : Day {
     }
 
     data class Reindeer(val speed: Int, val duration: Int, val rest: Int) {
+        private val interval = duration + rest
         fun distanceRaced(seconds: Int): Int {
-            val interval = duration + rest
             val wholeIntervals = seconds / interval
             val remainder = seconds % interval
             return wholeIntervals * (speed * duration) + minOf(remainder, duration) * speed
