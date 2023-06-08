@@ -6,46 +6,36 @@ import org.gristle.adventOfCode.utilities.Nsew
 
 class Y2016D1(input: String) : Day {
 
-    data class Instruction(val turn: Char, val distance: Int)
+    private val moves: Sequence<Coord>
 
-    data class State(val dir: Nsew = Nsew.NORTH, val coord: Coord = Coord.ORIGIN) {
-        fun move(instruction: Instruction): State = when (instruction.turn) {
-            'L' -> State(dir.left(), coord.move(dir.left(), instruction.distance))
-            'R' -> State(dir.right(), coord.move(dir.right(), instruction.distance))
-            else -> throw IllegalArgumentException("Invalid turn: ${instruction.turn}")
-        }
-
-        fun manhattanDistance() = coord.manhattanDistance()
+    init {
+        var direction = Nsew.NORTH
+        moves = input
+            .splitToSequence(", ")
+            .map { command ->
+                direction = when (command[0]) {
+                    'L' -> direction.left()
+                    'R' -> direction.right()
+                    else -> throw IllegalArgumentException("Direction not recognized: ${command[0]}")
+                }
+                direction to command.drop(1).toInt()
+            }.runningFold(Coord.ORIGIN) { pos, (dir, dist) -> pos.move(dir, dist) }
     }
 
-    val instructions = input
-        .split(", ")
-        .map { Instruction(it[0], it.drop(1).toInt()) }
+    override fun part1() = moves.last().manhattanDistance()
 
-    override fun part1(): Int = instructions
-        .fold(State(), State::move)
-        .manhattanDistance()
-
-    private tailrec fun solvePart2(
-        state: State = State(),
-        visited: Set<Coord> = setOf(Coord.ORIGIN),
-        instructions: List<Instruction> = this.instructions
-    ): Int {
-        val instruction = instructions.first()
-        val newDir = if (instruction.turn == 'L') state.dir.left() else state.dir.right()
-        val newVisited = mutableSetOf<Coord>()
-        for (i in 1..instruction.distance) {
-            val newPos = state.coord.move(newDir, i)
-            if (visited.contains(newPos)) return newPos.manhattanDistance() else newVisited.add(newPos)
-        }
-        return solvePart2(
-            state.move(instruction),
-            visited + newVisited,
-            instructions.drop(1)
-        )
+    override fun part2(): Int {
+        val visited = mutableSetOf(Coord.ORIGIN)
+        moves
+            .zipWithNext()
+            .forEach { (prev, next) ->
+                prev
+                    .lineTo(next)
+                    .drop(1)
+                    .forEach { pos -> if (!visited.add(pos)) return pos.manhattanDistance() }
+            }
+        throw IllegalStateException("Movements completed with no location visited more than once!")
     }
-
-    override fun part2() = solvePart2()
 }
 
 fun main() = Day.runDay(Y2016D1::class)
