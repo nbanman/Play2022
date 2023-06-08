@@ -76,11 +76,6 @@ class Y2016D2(input: String) : Day {
     }
 }
 
-private val test = """ULL
-RRDDD
-LURDL
-UUUUD"""
-
 fun main() = Day.runDay(Y2016D2::class)
 
 //    Class creation: 16ms
