@@ -10,7 +10,7 @@ class Y2016D2(input: String) : Day {
 
     private fun Coord.toNumpad1() = (y * 3 + x + 1).toString()
 
-    private fun Coord.toNumpad2() = (5 + x + (y - 2) * 2 + 2 * (y - 2).sign).toString(16)[0].uppercase()
+    private fun Coord.toNumpad2() = (5 + x + (y - 2) * 2 + 2 * (y - 2).sign).toString(16).uppercase()
 
     fun solve(
         start: Coord,
