@@ -4,21 +4,11 @@ import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.transpose
 
-private typealias Triangle = List<Int>
-
 class Y2016D3(input: String) : Day {
-
-    private val triangles = input.getInts().chunked(3)
-
-    private fun Triangle.isValid() = sum() - max() > max()
-
-    override fun part1(): Int = triangles.count { it.isValid() }
-
-    override fun part2(): Int = triangles
-        .toList()
-        .transpose()
-        .flatMap { lengths -> lengths.chunked(3) }
-        .count { it.isValid() }
+    private val triangles = input.getInts().chunked(3).toList()
+    private fun isValid(triangle: List<Int>) = triangle.sorted().let { (a, b, c) -> a + b > c }
+    override fun part1() = triangles.count(::isValid)
+    override fun part2() = triangles.transpose().flatMap { it.chunked(3) }.count(::isValid)
 }
 
 fun main() = Day.runDay(Y2016D3::class)
