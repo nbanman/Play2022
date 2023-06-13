@@ -1,41 +1,30 @@
 package org.gristle.adventOfCode.y2016.d7
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.lines
+import org.gristle.adventOfCode.utilities.unravel
 
 class Y2016D7(input: String) : Day {
-    private val lines = input.lines()
+    private val ips: List<List<List<String>>> = input.lines { it.split('[', ']').unravel(2) }
+    private fun String.abba(): Boolean = windowed(4).any { it[0] == it[3] && it[0] != it[1] && it[1] == it[2] }
+    private fun String.aba(): List<String> = windowed(3)
+        .filter { it[0] == it[2] && it[0] != it[1] }
+        .map { "${it[1]}${it[0]}${it[1]}" }
 
-    data class IPv7(val supernets: List<String>, val hypernets: List<String>) {
-        private val pattern = """(\w)(?!\1)(\w)\2\1""".toRegex()
-        val supportsTls = supernets.any { pattern.containsMatchIn(it) }
-                && hypernets.none { pattern.containsMatchIn(it) }
-        val supportsSsl = let {
-            val abaPattern = """(?=((\w)(?!\2)(\w)\2))."""
-            val abas = supernets.map { supernet -> supernet.groupValues(abaPattern).map { it[0] } }.flatten()
-            abas.any { aba ->
-                val bab = "${aba[1]}${aba[0]}${aba[1]}"
-                hypernets.any { it.contains(bab) }
-            }
+    override fun part1() = ips
+        .count { (supernets, hypernets) -> supernets.any { it.abba() } && hypernets.none { it.abba() } }
+
+    override fun part2() = ips
+        .count { (supernets, hypernets) ->
+            supernets
+                .flatMap { supernet -> supernet.aba() }
+                .any { aba -> hypernets.any { aba in it } }
         }
-    }
-
-    val pattern = """\[?\w+]?""".toRegex()
-
-    private val addresses = lines.map { line ->
-        val (hyper, standard) = pattern.findAll(line).map { it.value }.partition { it.firstOrNull() == '[' }
-        IPv7(standard, hyper.map { it.drop(1).dropLast(1) })
-    }
-
-    override fun part1() = addresses.count(IPv7::supportsTls)
-
-    override fun part2() = addresses.count(IPv7::supportsSsl)
-
 }
 
 fun main() = Day.runDay(Y2016D7::class)
 
-//    Class creation: 130ms
-//    Part 1: 118 (0ms)
-//    Part 2: 260 (0ms)
-//    Total time: 131ms
+//    Class creation: 51ms
+//    Part 1: 118 (11ms)
+//    Part 2: 260 (17ms)
+//    Total time: 80ms
