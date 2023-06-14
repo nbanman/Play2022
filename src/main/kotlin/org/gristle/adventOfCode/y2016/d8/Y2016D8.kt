@@ -5,38 +5,29 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2016D8(input: String) : Day {
 
-    val pattern = """(rect|rotate (?:row|column)) (?:[xy]=)?(\d+)(?: by |x)(\d+)""".toRegex()
+    private fun MutableGrid<Boolean>.executeInstruction(instruction: String) {
+        val (n1: Int, n2: Int) = instruction.getIntList()
+        when (instruction.replaceFirst("rotate ", "").takeWhile { it != ' ' }) {
+            "rect" -> Coord
+                .rectangleFrom(Coord.ORIGIN, Coord(n1 - 1, n2 - 1))
+                .forEach { this[it] = true }
 
-    data class Instruction(val mode: String, val arg1: Int, val arg2: Int) {
-        fun execute(screen: MutableGrid<Boolean>) {
-            when (mode) {
-                "rect" -> for (y in 0 until arg2) for (x in 0 until arg1) screen[y * screen.width + x] = true
-                "rotate column" -> screen
-                    .column(arg1)
-                    .shift(-arg2)
-                    .forEachIndexed { index, b -> screen[arg1 + index * screen.width] = b }
+            "column" -> this
+                .column(n1)
+                .shift(-n2)
+                .forEachIndexed { y, b -> this[n1, y] = b }
 
-                "rotate row" -> screen
-                    .row(arg1)
-                    .shift(-arg2)
-                    .forEachIndexed { index, b -> screen[arg1 * screen.width + index] = b }
-
-                else -> throw IllegalArgumentException()
-            }
+            "row" -> this
+                .row(n1)
+                .shift(-n2)
+                .forEachIndexed { x, b -> this[x, n1] = b }
         }
     }
 
-    val instructions = input
-        .groupValues(pattern)
-        .map { (mode, arg1, arg2) -> Instruction(mode, arg1.toInt(), arg2.toInt()) }
-
-    private fun lightScreen(): Grid<Boolean> {
-        val screen = MutableGrid(50, 6) { false }
-        instructions.forEach { it.execute(screen) }
-        return screen
+    private val screen: MutableGrid<Boolean> by lazy {
+        MutableGrid(50, 6) { false }
+            .apply { input.lineSequence().forEach { instruction -> executeInstruction(instruction) } }
     }
-
-    private val screen: Grid<Boolean> by lazy { lightScreen() }
 
     override fun part1() = screen.count { it }
 
