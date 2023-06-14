@@ -1,71 +1,61 @@
 package org.gristle.adventOfCode.y2016.d9
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2016D9(private val input: String) : Day {
 
-    data class Marker(val length: Int, val times: Int, val range: IntRange)
+    // regex to find markers in the string
+    private val markerRx = Regex("""\(\d+x\d+\)""")
 
-    private fun nextMarker(stream: String): Marker? {
-        return """\((\d+)x(\d+)\)"""
-            .toRegex()
-            .find(stream)
-            ?.let {
-                Marker(it.groupValues[1].toInt(), it.groupValues[2].toInt(), it.range)
-            }
+    // returns the decompressed length of a string. "recursive" boolean flag used for part 2.
+    private fun String.decompressedLength(recursive: Boolean): Long {
+        var decompressedLength = 0L
+
+        // index advances to parse the string
+        var index = 0
+
+        // keep going until there are no more chars to parse
+        while (index < length) {
+
+            // get the next marker. If none found, return early, adding the length of the remaining unparsed string
+            val marker = markerRx
+                .find(substring(index))
+                ?: return decompressedLength + substring(index).length // return early if no marker found
+
+            // add the length of any characters preceding the marker
+            decompressedLength += substring(index, index + marker.range.first).length
+
+            // get the length and number of repeats in the marker
+            val (sequenceLength, repeats) = marker.value.getIntList()
+
+            // get the length of the sequence affected by the marker
+            val sequence = substring(index + marker.range.last + 1, index + marker.range.last + 1 + sequenceLength)
+                .let {
+
+                    // If part 2, feed the sequence into the function recursively, otherwise just use the length of
+                    // the string.
+                    @Suppress("KotlinConstantConditions")
+                    if (recursive) it.decompressedLength(recursive) else it.length.toLong()
+                }.times(repeats)
+
+            // add this length to the overall decompressed length
+            decompressedLength += sequence
+
+            // advance the index to the character after the sequence
+            index += marker.range.last + sequenceLength + 1
+        }
+        return decompressedLength
     }
 
-    private fun p1Decompress(): Int {
-
-        val potentialMarkers = """\((\d+)x(\d+)\)"""
-            .toRegex()
-            .findAll(input)
-            .map { Marker(it.groupValues[1].toInt(), it.groupValues[2].toInt(), it.range) }
-            .toList()
-
-        var lastMarker = 0
-        val markers = potentialMarkers.filter { marker ->
-            if (marker.range.first < lastMarker) {
-                false
-            } else {
-                lastMarker = marker.range.last + marker.length
-                true
-            }
-        }
-
-        if (markers.isEmpty()) return input.length
-
-        var parser = 0
-
-        val sb = buildString {
-            for (marker in markers) {
-                append(input.substring(parser, marker.range.first))
-                val repeatRange = input.substring(marker.range.last + 1, marker.range.last + 1 + marker.length)
-                append(repeatRange.repeat(marker.times))
-                parser = marker.range.last + 1 + marker.length
-            }
-            append(input.drop(markers.last().range.last + markers.last().length + 1))
-        }
-
-        return sb.length
-    }
-
-    private fun p2Decompress(s: String): Long {
-        var stream = s
-        var count = 0L
-        while (stream.isNotEmpty()) {
-            val nextMarker = nextMarker(stream) ?: return count + stream.length
-            count += nextMarker.range.first
-            val subStream = stream.substring(nextMarker.range.last + 1, nextMarker.range.last + 1 + nextMarker.length)
-            count += nextMarker.times * p2Decompress(subStream)
-            stream = stream.drop(nextMarker.range.last + subStream.length + 1) // add + 1?
-        }
-        return count
-    }
-
-    override fun part1() = p1Decompress()
-
-    override fun part2() = p2Decompress(input)
+    override fun part1() = input.decompressedLength(false)
+    override fun part2() = input.decompressedLength(true)
 }
 
-fun main() = Day.runDay(Y2016D9::class) // 110346, 10774309173 
+fun main() = Day.runDay(Y2016D9::class)
+
+//    Class creation: 13ms
+//    Part 1: 110346 (2ms)
+//    Part 2: 10774309173 (15ms)
+//    Total time: 31ms
+
