@@ -99,6 +99,12 @@ fun IntRange.overlaps(other: IntRange): Boolean = if (first <= other.first) {
  */
 fun <E> Iterable<E>.eachCount() = groupingBy { it }.eachCount()
 
+fun <T> Iterable<T>.unravel(threads: Int): List<List<T>> {
+    val partitions = List(threads) { ArrayList<T>() }
+    forEachIndexed { index, element -> partitions[index % threads].add(element) }
+    return partitions
+}
+
 fun <E : Comparable<E>> Iterable<E>.toPriorityQueue(): PriorityQueue<E> {
     val pq = if (this is Collection<E>) {
         PriorityQueue<E>(size)
