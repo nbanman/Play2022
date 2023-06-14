@@ -2,81 +2,62 @@ package org.gristle.adventOfCode.y2016.d10
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.gvs
 import org.gristle.adventOfCode.utilities.minMax
 
 class Y2016D10(input: String) : Day {
 
-    data class Bot(val name: Int, val high: Gift, val low: Gift, var storage: Int = -1) {
-        companion object {
-            var responsibleBot: Bot? = null
-        }
+    // Parse bots from input and store the instructions in a map.
+    private val bots: Map<String, Pair<String, String>> = input
+        .groupValues("""(bot \d+) gives low to ((?:bot|output) \d+) and high to ((?:bot|output) \d+)""")
+        .associate { (id, low, high) -> id to (low to high) }
 
-        fun take(value: Int, bots: List<Bot>, respTrack: Set<Int>, output: MutableList<Output>): Boolean {
-            return if (storage == -1) {
-                storage = value
-                false
-            } else {
-                val (lowValue, highValue) = minMax(storage, value)
-                val isResp = setOf(storage, value) == respTrack
-                storage = -1
-                if (low.isBot) {
-                    bots
-                        .find { it.name == low.name }
-                        ?.take(lowValue, bots, respTrack, output)
-                        ?: throw Exception("low bot name not found in list of bots")
-                } else {
-                    output.add(Output(lowValue, low.name))
-                }
-                if (high.isBot) {
-                    bots
-                        .find { it.name == high.name }
-                        ?.take(highValue, bots, respTrack, output)
-                        ?: throw Exception("high bot name not found in list of bots")
-                } else {
-                    output.add(Output(highValue, high.name))
-                }
-                if (isResp) responsibleBot = this
-                isResp
+    // Part 1 asks for the number of the bot responsible for comparing 61 and 17. This is incidental to the 
+    // overall chip assignment process, so assign a null variable, and when the two numbers are compared, assign
+    // the bot number to the variable.
+    private var responsibleBot: Int? = null
+
+    // Assigns a chip to a bot or output. If a chip is assigned to a bot already holding a chip, the function is
+    // called recursively to make assignments in accordance with the bot instructions.
+    private fun MutableMap<String, Int>.assign(recipient: String, value: Int) {
+
+        // Gets the chip already assigned to the recipient, or null if none assigned.
+        val current = get(recipient)
+
+        if (current == null) { // if no chip assigned to recipient...
+            put(recipient, value) // assign chip to recipient...
+        } else { // ...otherwise, execute instructions of recipient
+            val (low, high) = minMax(current, value)
+
+            // If the recipient is given both 17 and 61, the recipient number is the answer for part 1. 
+            if (low == 17 && high == 61) {
+                responsibleBot = recipient.takeLastWhile { it.isDigit() }.toInt()
             }
+
+            // Reassign the chips in accordance with the instructions of that bot 
+            val (lowRecipient, highRecipient) = bots.getValue(recipient)
+            assign(lowRecipient, low)
+            assign(highRecipient, high)
+
+            // Remove bot from the registry, as it now holds no chips
+            remove(recipient)
         }
     }
 
-    data class Output(val value: Int, val bin: Int)
-
-    data class Gift(val name: Int, val isBot: Boolean)
-
-    private val respTrack = setOf(61, 17)
-
-    private val botDirections = """bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output) (\d+)""".toRegex()
-
-    private val chipAssignments = """value (\d+) goes to bot (\d+)""".toRegex()
-
-    val output = mutableListOf<Output>()
-
-    // make bots
-    private val bots = input
-        .groupValues(botDirections)
-        .map {
-            Bot(
-                it[0].toInt(),
-                Gift(it[4].toInt(), it[3] == "bot"),
-                Gift(it[2].toInt(), it[1] == "bot"),
-            )
-        }
-
-    init {
+    // Registry of assigned values. Chips are seeded by assignments in the input, but get moved around by the bots
+    // once each bot receives two chips.
+    private val registry: Map<String, Int> = buildMap {
         input
-            .groupValues(chipAssignments)
-            .forEach { gv ->
-                val bot = bots.find { it.name == gv[1].toInt() }
-                    ?: throw Exception("Chip assignment bot name not found in list of bots.")
-                bot.take(gv[0].toInt(), bots, respTrack, output)
-            }
+            .gvs("""value (\d+) goes to (bot \d+)""")
+            .forEach { (value, bot) -> assign(bot, value.toInt()) }
     }
 
-    override fun part1() = Bot.responsibleBot?.name
+    override fun part1() = responsibleBot ?: "Responsible bot not found."
 
-    override fun part2() = output.filter { it.bin < 3 }.map { it.value }.reduce { acc, i -> acc * i }
+    override fun part2() = registry
+        .entries
+        .filter { (id, _) -> id.takeLastWhile { it.isDigit() }.toInt() <= 2 } // only look at bins 0, 1, and 2
+        .fold(1) { acc, (_, value) -> acc * value } // multiply values together
 }
 
 fun main() = Day.runDay(Y2016D10::class)
