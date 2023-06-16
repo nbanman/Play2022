@@ -15,11 +15,11 @@ interface Day {
             sampleInput: String? = null,
         ) {
             val constructor = kClass.constructors.first()
-            val timer = Stopwatch(true)
             val (year, day) = kClass.simpleName?.getIntList()
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
             val input = sampleInput ?: getInput(day, year)
+            val timer = Stopwatch(true)
             val c = constructor.call(input) as Day
             println("Class creation: ${timer.lap()}ms")
             println("\tPart 1: ${c.part1()} (${timer.lap()}ms)")
