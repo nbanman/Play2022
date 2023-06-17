@@ -1,31 +1,26 @@
 package org.gristle.adventOfCode.y2016.d12
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
 import org.gristle.adventOfCode.y2016.shared.Assembunny
-import org.gristle.adventOfCode.y2016.shared.Registers
-import org.gristle.adventOfCode.y2016.shared.runInstructions
 
 class Y2016D12(input: String) : Day {
+    private val instructions = Assembunny.parseInstructions(input)
+    private val assembunny = Assembunny()
 
-    val instructions = let {
-        val pattern = """(\w+) (-?\w+)(?: (-?\w+))?""".toRegex()
-        input
-            .groupValues(pattern)
-            .map { (type, arg1, arg2) -> Assembunny(type, arg1, arg2) }
+    override fun part1(): Int {
+        assembunny.reset()
+        return assembunny.runInstructions(instructions)['a']
     }
 
-    private val p1Registers = Registers()
-    private val p2Registers = Registers().apply { updateValue("c", 1) }
-
-    override fun part1() = runInstructions(instructions, p1Registers).a
-
-    override fun part2() = runInstructions(instructions, p2Registers).a
+    override fun part2(): Int {
+        assembunny.reset()['c'] = 1
+        return assembunny.runInstructions(instructions)['a']
+    }
 }
 
 fun main() = Day.runDay(Y2016D12::class)
 
-//Class creation: 15ms
-//Part 1: 318117 (64ms)
-//Part 2: 9227771 (450ms)
-//Total time: 530ms
+//    Class creation: 5ms
+//    Part 1: 318117 (61ms)
+//    Part 2: 9227771 (433ms)
+//    Total time: 499ms
