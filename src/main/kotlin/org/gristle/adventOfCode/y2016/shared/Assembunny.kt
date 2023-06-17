@@ -1,116 +1,85 @@
 package org.gristle.adventOfCode.y2016.shared
 
-data class Assembunny(val type: String, val arg1: String, val arg2: String, var toggled: Boolean = false) {
-    fun tgl() {
-        toggled = !toggled
-    }
-}
+class Assembunny(private val registers: IntArray = IntArray(4)) {
 
-data class Registers(var a: Int = 0, var b: Int = 0, var c: Int = 0, var d: Int = 0) {
-    fun valueOf(register: String) = when (register) {
-        "a" -> a
-        "b" -> b
-        "c" -> c
-        "d" -> d
-        else -> null
+    companion object {
+        fun parseInstructions(input: String) = input.lineSequence().map { it.split(' ') }.toList()
     }
 
-    fun updateValue(register: String, value: Int) {
-        when (register) {
-            "a" -> a = value
-            "b" -> b = value
-            "c" -> c = value
-            "d" -> d = value
+    init {
+        require(registers.size == 4) { "Invalid registry value." }
+    }
+
+    private fun String.toRegister(): Int = this[0] - 'a'
+
+    private fun Char.toRegister(): Int = this - 'a'
+
+    private fun String.valueOf() = toIntOrNull() ?: registers[toRegister()]
+
+    fun reset(): Assembunny {
+        for (idx in registers.indices) registers[idx] = 0
+        return this
+    }
+
+    operator fun get(register: Char): Int {
+        require(register in "abcd")
+        return registers[register.toRegister()]
+    }
+
+    operator fun set(register: Char, value: Int) {
+        require(register in "abcd")
+        registers[register.toRegister()] = value
+    }
+
+    fun runInstructions(input: String): Assembunny {
+        return runInstructions(parseInstructions(input))
+    }
+
+    fun runInstructions(instructions: List<List<String>>): Assembunny {
+
+        var parser = 0
+        val toggles = BooleanArray(instructions.size)
+
+        fun cpy(instruction: List<String>) {
+            registers[instruction[2].toRegister()] = instruction[1].valueOf()
         }
-    }
 
-    fun incRegister(register: String, multiply: Boolean) {
-        when (register) {
-            "a" -> a = if (multiply) a * 2 else a + 1
-            "b" -> b = if (multiply) b * 2 else b + 1
-            "c" -> c = if (multiply) c * 2 else c + 1
-            "d" -> d = if (multiply) d * 2 else d + 1
+        fun jnz(instruction: List<String>) {
+            if (instruction[1].valueOf() != 0) parser += (instruction[2].valueOf() - 1)
         }
-    }
 
-    fun decRegister(register: String) {
-        when (register) {
-            "a" -> a--
-            "b" -> b--
-            "c" -> c--
-            "d" -> d--
+        fun inc(instruction: List<String>) {
+            registers[instruction[1].toRegister()] = registers[instruction[1].toRegister()] + 1
         }
-    }
 
-}
+        fun dec(instruction: List<String>) {
+            registers[instruction[1].toRegister()] = registers[instruction[1].toRegister()] - 1
+        }
 
-fun runInstructions(
-    instructions: List<Assembunny>,
-    registers: Registers,
-    multiply: Boolean = false
-): Registers {
-    var i = 0
-    while (i in instructions.indices) {
-        val instruction = instructions[i]
-        when (instruction.type) {
-            "cpy" -> {
-                if (instruction.toggled) {
-                    if (registers.valueOf(instruction.arg1) != 0) {
-                        i += registers.valueOf(instruction.arg2) ?: instruction.arg2.toInt()
-                        continue
-                    }
-                } else {
-                    val number = registers.valueOf(instruction.arg1) ?: instruction.arg1.toInt()
-                    registers.updateValue(instruction.arg2, number)
+        while (parser in instructions.indices) {
+            val instruction = instructions[parser]
+            if (toggles[parser]) {
+                when (instruction[0][0]) {
+                    'c' -> jnz(instruction)
+                    'i' -> dec(instruction)
+                    'd' -> inc(instruction)
+                    'j' -> cpy(instruction)
+                    't' -> inc(instruction)
                 }
-            }
-
-            "inc" -> {
-                if (instruction.toggled) {
-                    registers.decRegister(instruction.arg1)
-                } else {
-                    registers.incRegister(instruction.arg1, multiply)
-                }
-
-            }
-
-            "dec" -> {
-                if (instruction.toggled) {
-                    registers.incRegister(instruction.arg1, multiply)
-                } else {
-                    registers.decRegister(instruction.arg1)
-                }
-
-            }
-
-            "jnz" -> {
-                if (instruction.toggled) {
-                    val number = registers.valueOf(instruction.arg1) ?: instruction.arg1.toInt()
-                    registers.updateValue(instruction.arg2, number)
-                } else {
-                    if (registers.valueOf(instruction.arg1) != 0) {
-                        i += registers.valueOf(instruction.arg2) ?: instruction.arg2.toInt()
-                        continue
+            } else {
+                when (instruction[0][0]) {
+                    'c' -> cpy(instruction)
+                    'i' -> inc(instruction)
+                    'd' -> dec(instruction)
+                    'j' -> jnz(instruction)
+                    't' -> {
+                        val tglIndex = parser + instruction[1].valueOf()
+                        if (tglIndex in instructions.indices) toggles[tglIndex] = !toggles[tglIndex]
                     }
                 }
             }
-
-            "tgl" -> {
-                if (instruction.toggled) {
-                    registers.incRegister(instruction.arg1, multiply)
-                } else {
-                    val index = i + (registers.valueOf(instruction.arg1) ?: throw IllegalStateException())
-                    if (index in instructions.indices) instructions[index].tgl()
-                }
-            }
-
-            "out" -> {
-                val number = registers.valueOf(instruction.arg1) ?: instruction.arg1.toInt()
-                // if ((clockZero && number == 0) || (!clockZero && number == 1)) println(number) else break
-                println(number)
-            }
+            parser++
         }
-        i++
+        return this
     }
-    return registers
-}
+} 
