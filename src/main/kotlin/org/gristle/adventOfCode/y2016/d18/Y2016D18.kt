@@ -26,9 +26,9 @@ class Y2016D18(input: String) : Day {
     override fun part2() = solve(400_000)
 }
 
-// Times in parentheses are for previous String-based solution. 
-// Class creation: 5ms (13ms)
-// Part 1: 1987 4ms (7ms)
-// Part 2: 19984714 286ms (2295ms)
-// Total time: 297ms (2315ms)
 fun main() = Day.runDay(Y2016D18::class)
+
+//    Class creation: 2ms
+//    Part 1: 1987 (2ms)
+//    Part 2: 19984714 (283ms)
+//    Total time: 288ms
