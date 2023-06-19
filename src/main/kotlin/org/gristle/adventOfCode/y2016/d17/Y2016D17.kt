@@ -66,8 +66,7 @@ class Y2016D17(private val input: String) : Day {
     // Node found at endPos.
     override fun part2() = explore
         .last { it.id.pos == endPos }
-        .weight
-        .toInt()
+        .steps()
 }
 
 fun main() = Day.runDay(Y2016D17::class)
