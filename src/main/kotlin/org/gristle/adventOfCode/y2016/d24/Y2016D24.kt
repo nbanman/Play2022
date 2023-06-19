@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2016.d24
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
-import org.gristle.adventOfCode.utilities.Graph.steps
 import org.gristle.adventOfCode.utilities.getEdgeMap
 import org.gristle.adventOfCode.utilities.toGrid
 
@@ -50,9 +49,13 @@ class Y2016D24(input: String) : Day {
             ?: throw IllegalStateException("Dijkstra search reached location that is not in the edgemap.")
     }
 
+    private val explore = Graph.dijkstraSequence(start, defaultEdges = getEdges)
+
     // Runs dijkstra and provides weight of the shortest path. Takes in different end conditions to accommodate 
     // parts 1 & 2.
-    fun solve(endCondition: (State) -> Boolean) = Graph.dijkstra(start, endCondition, defaultEdges = getEdges).steps()
+    fun solve(endCondition: (State) -> Boolean) = explore
+        .first { endCondition(it.id) }
+        .steps()
 
     // Part one ends when all numbers have been visited
     override fun part1() = solve { it.numbersVisited.size == numbers.size }
