@@ -6,72 +6,75 @@ import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.contains
 import org.gristle.adventOfCode.utilities.md5
 
-class Y2016D17(private val input: String) : Day {
+class Y2016D17(private val salt: String) : Day {
+    private val endPos: Coord = Coord(3, 3)
 
-    // state object for BFS search
-    private data class Room(val pos: Coord, val passCode: String)
+    // BFS sequence that explores the rooms. Used for both parts in different ways.
+    private val explore: Sequence<Graph.Vertex<Pair<String, Coord>>> = let {
 
-    // used to translate whether a door is open given a specific MD5 hash
-    private val openRange = 'b'..'f'
+        // state for bfs is a pairing of the current passcode and current location
+        val start = salt to Coord.ORIGIN
 
-    // the bottom-right room position
-    private val endPos = Coord(3, 3)
+        // used to translate whether a door is open given a specific MD5 hash
+        val openRange = 'b'..'f'
 
-    // function finds edges for a given Room node
-    private val openDoors = { room: Room ->
+        // used for passIfInRooms fun below, so as not to require rebuilding each time
+        val roomsDimensions = Coord.ORIGIN to endPos
 
-        if (room.pos == endPos) {
+        // takes a Coord, checks whether it's within the rooms, passes it through if so, otherwise returns null
+        fun Coord.passIfInRooms(): Coord? = if (this in roomsDimensions) this else null
+
+        // function that provides edges to the BFS sequence for each vertex
+        fun getEdges(state: Pair<String, Coord>): List<Pair<String, Coord>> {
+            val (passcode, pos) = state
 
             // If the node is at endPos, we do not want to return any neighbors. That path is completed. Relevant for
             // part 2 because we are not done when we first hit endPos.
-            emptyList()
-        } else {
+            return if (pos == endPos) {
+                emptyList()
+            } else {
 
-            // use MD5 on the passcode to determine which doors are open and return list of rooms who have open
-            // doors leading to them.
-            val open = room.passCode.md5().take(4).map { it in openRange }
-            listOf(
-                Room(room.pos.north(), room.passCode + 'U'),
-                Room(room.pos.south(), room.passCode + 'D'),
-                Room(room.pos.west(), room.passCode + 'L'),
-                Room(room.pos.east(), room.passCode + 'R'),
-            ).filter {
-                it.pos in (Coord.ORIGIN to endPos) &&
-                        when (it.passCode.last()) {
-                            'L' -> open[2]
-                            'R' -> open[3]
-                            'U' -> open[0]
-                            else -> open[1]
+                // If the node is not at endPos, use MD5 on the passcode to determine which doors are open and return 
+                // list of rooms that have open doors leading to them.
+                passcode
+                    .md5() // get hash
+                    .take(4) // only look at first four characters
+                    .mapIndexedNotNull { index, door -> // a "filter map" that generates edges for open doors only 
+                        if (door in openRange) { // checks that the door is open
+                            when (index) {
+
+                                // for each door, calculate the position. If the position is out of bounds, return
+                                // null; otherwise, generate new state with the position and corresponding passcode.
+                                0 -> pos.north().passIfInRooms()?.let { passcode + 'U' to it }
+                                1 -> pos.south().passIfInRooms()?.let { passcode + 'D' to it }
+                                2 -> pos.west().passIfInRooms()?.let { passcode + 'L' to it }
+                                3 -> pos.east().passIfInRooms()?.let { passcode + 'R' to it }
+                                else -> throw IllegalStateException("Illegally evaluating hash beyond 4th character.")
+                            }
+                        } else {
+                            null
                         }
+                    }
             }
         }
+
+        Graph.bfsSequence(startId = start, defaultEdges = ::getEdges)
     }
 
-    // BFS used to explore the vault
-    private val explore = Graph
-        .bfsSequence(
-            startId = Room(Coord.ORIGIN, input),
-            defaultEdges = openDoors
-        )
-
-    // Part one wants the fastest path, so BFS with an endCondition of reaching endPos finds it. The answer is the
-    // passcode of the first node at the endPos, minus the prelude.
-    override fun part1() = explore
-        .first { it.id.pos == endPos }
+    override fun part1(): String = explore
+        .first { it.id.second == endPos } // "second" refers to second element in state (pos). Run until == endpos 
         .id
-        .passCode
-        .drop(input.length)
+        .first // "first" here refers to the first element in the state Pair. I.e, the passcode. 
+        .drop(salt.length) // remove the salt from the passcode and return
 
-    // Part two wants the longest path, so BFS until no more edges are found. The answer is the weight of the last
-    // Node found at endPos.
-    override fun part2() = explore
-        .last { it.id.pos == endPos }
+    override fun part2(): Int = explore
+        .last { it.id.second == endPos } // run until every combination has been tried
         .steps()
 }
 
 fun main() = Day.runDay(Y2016D17::class)
 
-//    Class creation: 14ms
-//    Part 1: DDRUDLRRRD (14ms)
-//    Part 2: 398 (180ms)
-//    Total time: 209ms
+//    Class creation: 5ms
+//    Part 1: DDRUDLRRRD (13ms)
+//    Part 2: 398 (117ms)
+//    Total time: 136ms
