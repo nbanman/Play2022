@@ -2,20 +2,16 @@ package org.gristle.adventOfCode.y2017.d1
 
 import org.gristle.adventOfCode.Day
 
-class Y2017D1(private val input: String) : Day {
+class Y2017D1(input: String) : Day {
+    private val numbers = input.map(Char::digitToInt)
 
-    override fun part1(): Int {
-        return (input.windowed(2) + listOf(input.first().toString() + input.last()))
-            .filter { it[0] == it[1] }
-            .sumOf { it[0].digitToInt() }
-    }
+    private inline fun solve(comparisonIndex: List<Int>.(index: Int) -> Int): Int = numbers
+        .filterIndexed { index, i -> numbers[numbers.comparisonIndex(index)] == i }
+        .sum()
 
-    override fun part2() = input
-        .mapIndexed { index, c ->
-            if (c == input[(index + input.length / 2) % input.length]) {
-                c.digitToInt()
-            } else 0
-        }.sum()
+    override fun part1() = solve { (it + 1) % size }
+
+    override fun part2() = solve { (it + size / 2) % size }
 }
 
 fun main() = Day.runDay(Y2017D1::class)
