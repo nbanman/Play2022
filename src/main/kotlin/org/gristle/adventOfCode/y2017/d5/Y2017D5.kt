@@ -1,27 +1,25 @@
 package org.gristle.adventOfCode.y2017.d5
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.lines
 
 class Y2017D5(input: String) : Day {
+    private val jumps = input.lines(String::toInt)
 
-    val instructions = input.lines().map { it.toInt() }
-
-    inline fun solve(incrementBehavior: (Int) -> Int): Int {
-        val jumps = instructions.toMutableList()
-        var pos = 0
-        var counter = 0
-        while (pos in jumps.indices) {
-            counter++
-            val inc = incrementBehavior(jumps[pos])
-            jumps[pos] += inc
-            pos += jumps[pos] - inc
+    private inline fun solve(increment: (Int) -> Int): Int {
+        val offsets = jumps.toIntArray()
+        var i = 0
+        var steps = 0
+        while (i < offsets.size) {
+            steps++
+            i += offsets[i].also { offsets[i] += increment(offsets[i]) }
         }
-        return counter
+        return steps
     }
 
-    override fun part1() = solve { 1 }
+    override fun part1(): Int = solve { 1 }
 
-    override fun part2() = solve { jumps -> if (jumps >= 3) -1 else 1 }
+    override fun part2(): Int = solve { if (it >= 3) -1 else 1 }
 }
 
 fun main() = Day.runDay(Y2017D5::class)
