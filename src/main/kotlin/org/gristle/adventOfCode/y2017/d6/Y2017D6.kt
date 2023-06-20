@@ -16,17 +16,23 @@ class Y2017D6(input: String) : Day {
         return newList
     }
 
-    private fun allocationSequence() =
-        generateSequence(mutableSetOf<List<Int>>() to initialState) { (set, last) ->
-            set.apply { add(last) } to last.reallocate()
+    private val allocations: IndexedValue<Pair<MutableSet<List<Int>>, List<Int>>> by lazy {
+        val allocationSequence =
+            generateSequence(mutableSetOf<List<Int>>() to initialState) { (set, last) ->
+                set.apply { add(last) } to last.reallocate()
+            }
+        allocationSequence
+            .withIndex()
+            .first { (_, value) -> value.second in value.first }
+    }
+
+    override fun part1(): Int = allocations.index
+
+    override fun part2(): Int = allocations
+        .let { (index, value) ->
+            val (set, last) = value
+            index - set.indexOf(last)
         }
-
-    override fun part1(): Int = allocationSequence()
-        .indexOfFirst { (set, last) -> last in set }
-
-    override fun part2(): Int = allocationSequence()
-        .first { (set, last) -> last in set }
-        .let { (set, last) -> set.size - set.indexOf(last) }
 }
 
 fun main() = Day.runDay(Y2017D6::class)
