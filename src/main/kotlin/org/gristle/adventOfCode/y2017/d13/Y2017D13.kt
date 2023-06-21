@@ -5,23 +5,24 @@ import org.gristle.adventOfCode.utilities.getInts
 
 class Y2017D13(input: String) : Day {
 
-    private data class Layer(val depth: Int, val range: Int) {
-        fun severity(): Int {
-            return if ((depth) % ((range - 1) * 2) == 0) {
-                depth * range
-            } else 0
-        }
+    private fun Pair<Int, Int>.severity(): Int {
+        val (depth, range) = this
+        return if (depth % ((range - 1) * 2) == 0) {
+            depth * range
+        } else 0
+    }
 
-        fun isTriggered(offset: Int) = (depth + offset) % ((range - 1) * 2) == 0
+    private fun Pair<Int, Int>.isTriggered(offset: Int): Boolean {
+        val (depth, range) = this
+        return (depth + offset) % ((range - 1) * 2) == 0
     }
 
     private val layers = input
         .getInts()
-        .chunked(2)
-        .map { Layer(it[0], it[1]) }
+        .chunked(2) { (depth, range) -> depth to range }
         .toList()
 
-    override fun part1() = layers.sumOf(Layer::severity)
+    override fun part1() = layers.sumOf { it.severity() }
 
     override fun part2() = generateSequence(0) { it + 1 }
         .first { index -> layers.none { it.isTriggered(index) } }
