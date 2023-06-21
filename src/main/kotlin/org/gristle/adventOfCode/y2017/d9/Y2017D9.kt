@@ -4,7 +4,7 @@ import org.gristle.adventOfCode.Day
 
 class Y2017D9(private val input: String) : Day {
 
-    val solution: Pair<Int, Int> = let {
+    val solution: Pair<Int, Int> by lazy {
         var inGarbage = false
         var garbage = 0
         var depth = 0
@@ -18,6 +18,7 @@ class Y2017D9(private val input: String) : Day {
             } else {
                 when (c) {
                     '<' -> inGarbage = true
+
                     '{' -> {
                         depth++
                         score += depth
@@ -40,7 +41,7 @@ class Y2017D9(private val input: String) : Day {
 
 fun main() = Day.runDay(Y2017D9::class)
 
-//    Class creation: 15ms
-//    Part 1: 9251 (0ms)
+//    Class creation: 2ms
+//    Part 1: 9251 (2ms)
 //    Part 2: 4322 (0ms)
-//    Total time: 15ms
+//    Total time: 5ms
