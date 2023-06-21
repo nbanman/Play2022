@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2022.d19
 
 import kotlinx.coroutines.*
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.get0
 import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.gvs
 import kotlin.math.ceil
@@ -201,10 +202,6 @@ class Y2022D19(input: String) : Day {
                 }.awaitAll()
                 .reduce(Int::times)
         }
-    }
-
-    companion object {
-        fun <K> Map<K, Int>.get0(key: K) = getOrElse(key) { 0 }
     }
 }
 
