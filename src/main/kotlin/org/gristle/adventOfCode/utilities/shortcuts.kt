@@ -192,7 +192,7 @@ fun Long.pow(n: Int): Long = if (n >= 0) {
 /**
  * For maps using Int as a value, get value for key or 0 if no matching key found.
  */
-fun <E> Map<E, Int>.get0(key: E) = get(key) ?: 0
+fun <K> Map<K, Int>.get0(key: K) = get(key) ?: 0
 
 /**
  * Used in algorithms that have multiple nodes with different weights representing the same location.
