@@ -2,10 +2,25 @@ package org.gristle.adventOfCode.y2017.d14
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.toGrid
-import org.gristle.adventOfCode.y2017.d12.Y2017D12.Companion.allLinks
 import org.gristle.adventOfCode.y2017.shared.denseHash
 
 class Y2017D14(input: String) : Day {
+
+    private fun allLinks(links: Map<Int, List<Int>>, seed: Int): List<Int> {
+
+        tailrec fun aL(found: MutableSet<Int>, evaluate: Set<Int>): Set<Int> {
+            return if (evaluate.isEmpty()) {
+                found
+            } else {
+                found.addAll(evaluate)
+                val newRegisters = evaluate.fold(mutableListOf<Int>()) { acc, i ->
+                    acc.apply { addAll(links.getValue(i).filter { it !in found }) }
+                }.toSet()
+                aL(found, newRegisters)
+            }
+        }
+        return aL(mutableSetOf(), setOf(seed)).toList()
+    }
 
     private fun stringRep(input: String): String {
         val preparation = input
