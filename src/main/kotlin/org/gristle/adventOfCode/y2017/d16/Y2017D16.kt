@@ -1,67 +1,91 @@
 package org.gristle.adventOfCode.y2017.d16
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
 
-// not refactored!
 class Y2017D16(input: String) : Day {
 
-    private data class Command(val name: String, val arg1: String, val arg2: String) {
-        fun execute(line: String): String {
-            return when (name) {
-                "s" -> {
-                    val split = line.length - arg1.toInt()
-                    line.substring(split) + line.substring(0, split)
+    sealed interface DanceMove {
+        @JvmInline
+        value class Spin(val value: Int) : DanceMove
+        class Exchange(val a: Int, val b: Int) : DanceMove
+        class Partner(val a: Char, val b: Char) : DanceMove
+    }
+
+    // parsing input to DanceMoves
+    private val danceMoves: List<DanceMove> by lazy {
+        input
+            .split(',')
+            .map {
+                when (it[0]) {
+                    's' -> DanceMove.Spin(it.drop(1).toInt())
+                    'x' -> it.drop(1).split('/').let { (a, b) -> DanceMove.Exchange(a.toInt(), b.toInt()) }
+                    'p' -> it.drop(1).split('/').let { (a, b) -> DanceMove.Partner(a[0], b[0]) }
+                    else -> throw IllegalArgumentException("Cannot parse input: $it")
+                }
+            }
+    }
+
+    // takes a string, runs all dance moves on it, and returns a string
+    private fun danceParty(positions: String): String {
+
+        // convert String to mutable primitive array for performance
+        val pos = positions.toCharArray()
+
+        // rather than reorder entire array after each spin, just keep track of the offset and reverse it at the end 
+        var offset = 0
+
+        // execute each instruction
+        for (danceMove in danceMoves) {
+            when (danceMove) {
+                is DanceMove.Exchange -> {
+                    val a = (danceMove.a - offset).mod(pos.size)
+                    val b = (danceMove.b - offset).mod(pos.size)
+                    pos[a] = pos[b].also { pos[b] = pos[a] }
                 }
 
-                "x" -> {
-                    exchange(line, arg1.toInt(), arg2.toInt())
+                is DanceMove.Partner -> {
+                    val a = pos.indexOf(danceMove.a)
+                    val b = pos.indexOf(danceMove.b)
+                    pos[a] = pos[b].also { pos[b] = pos[a] }
                 }
 
-                "p" -> {
-                    val indexA = line.indexOf(arg1)
-                    val indexB = line.indexOf(arg2)
-                    exchange(line, indexA, indexB)
-                }
-
-                else -> throw IllegalArgumentException("Bad input: $name")
+                is DanceMove.Spin -> offset = (danceMove.value + offset).mod(pos.size)
             }
         }
 
-        private fun exchange(line: String, indexA: Int, indexB: Int): String {
-            return line
-                .replace(line[indexA], 'z')
-                .replace(line[indexB], line[indexA])
-                .replace('z', line[indexB])
-        }
+        // generate a string from the charArray, using the offset information to put the first character first, etc.
+        return unShift(pos, offset)
     }
 
-    private fun danceParty(start: String) =
-        commands.fold(start) { acc, command -> command.execute(acc) }
-
-    private val pattern = """([psx])([a-p\d]+)(?:/([a-p\d]+))?""".toRegex()
-    private val commands = input
-        .groupValues(pattern)
-        .map { Command(it[0], it[1], it[2]) }
+    private fun unShift(pos: CharArray, index: Int) = buildString {
+        pos.indices.forEach { i -> append(pos[(i - index).mod(pos.size)]) }
+    }
 
     private val start = "abcdefghijklmnop"
-    private val part1 = danceParty(start)
 
-    override fun part1() = part1
+    // store results of first round so that it can be reused for part 2
+    private val oneRound: String by lazy { danceParty(start) }
+
+    override fun part1() = oneRound
 
     override fun part2(): String {
-        val register = mutableSetOf(start, part1)
-        while (true) {
-            val new = danceParty(register.last())
-            if (new in register) break else register.add(new)
-        }
-        return register.elementAt(1_000_000_000 % register.size)
+
+        // cache stores strings representing program arrangements that have already occurred  
+        val cache = mutableSetOf(start)
+
+        // run danceParty on its own output over and over again, storing each result to cache, until a duplicate is
+        // found
+        generateSequence(oneRound, ::danceParty)
+            .first { !cache.add(it) }
+
+        // use mod to calculate what would result if the dance party were run 1 billion times
+        return cache.elementAt(1_000_000_000 % cache.size)
     }
 }
 
 fun main() = Day.runDay(Y2017D16::class)
 
-//    Class creation: 57ms
-//    Part 1: hmefajngplkidocb (0ms)
-//    Part 2: fbidepghmjklcnoa (146ms)
-//    Total time: 204ms
+//    Class creation: 16ms
+//    Part 1: hmefajngplkidocb (2ms)
+//    Part 2: fbidepghmjklcnoa (35ms)
+//    Total time: 53ms
