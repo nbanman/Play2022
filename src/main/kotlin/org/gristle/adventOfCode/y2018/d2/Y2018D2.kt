@@ -16,11 +16,11 @@ class Y2018D2(input: String) : Day {
             .zip(last())
             .count { (first, last) -> first != last }
 
-        fun List<String>.shared() = first()
-            .zip(last())
-            .filter { (first, last) -> first == last }
-            .map { (first, _) -> first }
-            .joinToString("")
+        fun List<String>.shared() = buildString {
+            this@shared.first().forEachIndexed { index, a ->
+                if (a == this@shared.last()[index]) append(a)
+            }
+        }
 
         return boxIds.getPairs().first { it.countDifferences() == 1 }.shared()
     }
