@@ -3,10 +3,11 @@ package org.gristle.adventOfCode.y2017.d18
 import org.gristle.adventOfCode.Day
 import java.util.*
 
-// Not refactored. Ugly but fast enough.
 class Y2017D18(input: String) : Day {
 
-    data class Command(val name: String, val arg1: String, val arg2: String)
+    enum class CommandType { SND, SET, ADD, MUL, MOD, RCV, JGZ }
+
+    data class Command(val type: CommandType, val arg1: String, val arg2: String)
 
     data class Program(
         val commands: List<Command>,
@@ -33,29 +34,34 @@ class Y2017D18(input: String) : Day {
             if (deadlock) {
                 rcv(command)
             } else {
-                when (command.name) {
-                    "snd" -> {
+                when (command.type) {
+                    CommandType.SND -> {
                         otherDeque.add(valueOf(command.arg1))
                         sends++
                     }
 
-                    "set" -> {
+                    CommandType.SET -> {
                         reg[command.arg1] = valueOf(command.arg2)
                     }
-                    "add" -> {
+
+                    CommandType.ADD -> {
                         reg[command.arg1] = valueOf(command.arg1) + valueOf(command.arg2)
                     }
-                    "mul" -> {
+
+                    CommandType.MUL -> {
                         reg[command.arg1] = valueOf(command.arg1) * valueOf(command.arg2)
                     }
-                    "mod" -> {
+
+                    CommandType.MOD -> {
                         reg[command.arg1] = valueOf(command.arg1) % valueOf(command.arg2)
                     }
-                    "rcv" -> {
+
+                    CommandType.RCV -> {
                         rcv(command)
                         return
                     }
-                    "jgz" -> {
+
+                    CommandType.JGZ -> {
                         if (valueOf(command.arg1) > 0) {
                             index += this.valueOf(command.arg2).toInt()
                             return
@@ -79,46 +85,57 @@ class Y2017D18(input: String) : Day {
 
     private val commands = input
         .lineSequence()
-        .map { it.split(' ') }
         .map {
-            val arg2 = if (it.size == 3) it[2] else ""
-            Command(it[0], it[1], arg2)
+            val args = it.split(' ')
+            val type = when (args[0]) {
+                "snd" -> CommandType.SND
+                "set" -> CommandType.SET
+                "add" -> CommandType.ADD
+                "mul" -> CommandType.MUL
+                "mod" -> CommandType.MOD
+                "rcv" -> CommandType.RCV
+                "jgz" -> CommandType.JGZ
+                else -> throw IllegalArgumentException("Unrecognized command: ${args[0]}")
+            }
+            val arg2 = if (args.size == 3) args[2] else ""
+            Command(type, args[1], arg2)
         }.toList()
 
     override fun part1(): Long {
         val registers = mutableMapOf<String, Long>()
         var frequency = 0L
 
-        fun valueOf(arg: String) = if (arg.last().isDigit()) {
-            arg.toLong()
-        } else {
-            registers[arg] ?: 0
-        }
+        fun valueOf(arg: String) = arg
+            .toLongOrNull()
+            ?: registers[arg]
+            ?: 0
 
         var i = 0
-        while (i in commands.indices) {
+        while (true) {
             val command = commands[i]
-            when (command.name) {
-                "snd" -> { frequency = valueOf(command.arg1) }
-                "set" -> {
-                    registers[command.arg1] = valueOf(command.arg2)
-                }
-                "add" -> {
+            when (command.type) {
+                CommandType.SND -> frequency = valueOf(command.arg1)
+                CommandType.SET -> registers[command.arg1] = valueOf(command.arg2)
+                CommandType.ADD -> {
                     registers[command.arg1] = valueOf(command.arg1) + valueOf(command.arg2)
                 }
-                "mul" -> {
+
+                CommandType.MUL -> {
                     registers[command.arg1] = valueOf(command.arg1) * valueOf(command.arg2)
                 }
-                "mod" -> {
+
+                CommandType.MOD -> {
                     registers[command.arg1] = valueOf(command.arg1) % valueOf(command.arg2)
                 }
-                "rcv" -> {
+
+                CommandType.RCV -> {
                     if (valueOf(command.arg1) != 0L) {
                         return frequency
                     }
 
                 }
-                "jgz" -> {
+
+                CommandType.JGZ -> {
                     if (valueOf(command.arg1) > 0) {
                         i += valueOf(command.arg2).toInt()
                         continue
@@ -127,12 +144,11 @@ class Y2017D18(input: String) : Day {
             }
             i++
         }
-        return -1
     }
 
     override fun part2(): Int {
-        val dequeA: Deque<Long> = LinkedList()
-        val dequeB: Deque<Long> = LinkedList()
+        val dequeA: Deque<Long> = ArrayDeque()
+        val dequeB: Deque<Long> = ArrayDeque()
 
         val programA = Program(commands, 0L, dequeA, dequeB)
         val programB = Program(commands, 1L, dequeB, dequeA)
