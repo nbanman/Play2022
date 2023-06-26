@@ -5,16 +5,15 @@ import org.gristle.adventOfCode.utilities.Xyz
 import org.gristle.adventOfCode.utilities.getInts
 import kotlin.math.abs
 
-// not refactored
 class Y2017D20(input: String) : Day {
 
     data class Particle(val number: Int, val p: Xyz, val v: Xyz, val a: Xyz) {
         fun stableTime(): Int {
-            return listOf(
+            return maxOf(
                 stableAxis(v.x, a.x),
                 stableAxis(v.y, a.y),
                 stableAxis(v.z, a.z),
-            ).maxOf { it }
+            )
         }
 
         fun particleAt(time: Int): Particle {
