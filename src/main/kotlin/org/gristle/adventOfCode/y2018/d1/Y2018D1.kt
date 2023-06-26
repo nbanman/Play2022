@@ -7,23 +7,15 @@ class Y2018D1(input: String) : Day {
 
     private val changes = input.getIntList()
 
-    private tailrec fun calibrate(
-        freq: Int = 0,
-        states: MutableSet<Int> = mutableSetOf(),
-        index: Int = 0,
-    ): Int {
-        val newState = freq + changes[index]
-        return if (newState in states) {
-            newState
-        } else {
-            states.add(newState)
-            calibrate(newState, states, (index + 1) % changes.size)
-        }
-    }
-
     override fun part1() = changes.sum()
 
-    override fun part2() = calibrate()
+    override fun part2(): Int {
+        val record = mutableSetOf<Int>()
+        return generateSequence(0) { (it + 1) % changes.size }
+            .map { changes[it] }
+            .runningReduce(Int::plus)
+            .first { !record.add(it) }
+    }
 }
 
 fun main() = Day.runDay(Y2018D1::class)
