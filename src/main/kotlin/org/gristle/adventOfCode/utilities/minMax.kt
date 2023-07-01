@@ -11,6 +11,11 @@ fun <E : Comparable<E>> Pair<E, E>.min() = if (first <= second) first else secon
 fun <E : Comparable<E>> Pair<E, E>.max() = if (first >= second) first else second
 
 /**
+ * Returns the minimum and maximum of a pair of the same comparable object in that order
+ */
+fun <E : Comparable<E>> Pair<E, E>.minMax() = if (first <= second) first to second else second to first
+
+/**
  * Efficiently provides the minimum and maximum of a group of comparable objects
  */
 fun <E : Comparable<E>> Iterable<E>.minMax(): Pair<E, E> {
