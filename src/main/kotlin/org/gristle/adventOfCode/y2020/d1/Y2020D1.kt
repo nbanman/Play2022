@@ -13,7 +13,7 @@ class Y2020D1(input: String) : Day {
         .let { it * (2020 - it) } // multiply the two together
 
     override fun part2() = entries
-        .getPairSequence() // convert entries into a list of paired combinations of entries
+        .getPairSequence() // convert entries into a sequence of paired combinations of entries
         // find first pair where there is another entry that adds to 2020
         .first { (first, second) -> entrySet.contains(2020 - first - second) }
         .let { (first, second) -> first * second * (2020 - first - second) } // multiply the three together
