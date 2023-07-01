@@ -33,14 +33,14 @@ fun <T> Iterable<T>.getPermutations(seed: List<T> = emptyList(), pruning: (List<
     return permute(asList.map { if (pruning(emptyList(), it)) seed else seed + it }, asList)
 }
 
-fun <E> List<E>.getPairs(): List<List<E>> {
-    val combos = mutableListOf<List<E>>()
-    for (i in 0 until lastIndex) for (j in i + 1..lastIndex) combos.add(listOf(this[i], this[j]))
+fun <E> List<E>.getPairs(): List<Pair<E, E>> {
+    val combos = mutableListOf<Pair<E, E>>()
+    for (i in 0 until lastIndex) for (j in i + 1..lastIndex) combos.add(this[i] to this[j])
     return combos
 }
 
-fun <E> List<E>.getPairSequence(): Sequence<List<E>> = sequence {
+fun <E> List<E>.getPairSequence(): Sequence<Pair<E, E>> = sequence {
     for (i in 0 until lastIndex) for (j in i + 1..lastIndex) {
-        yield(listOf(this@getPairSequence[i], this@getPairSequence[j]))
+        yield(this@getPairSequence[i] to this@getPairSequence[j])
     }
 }
