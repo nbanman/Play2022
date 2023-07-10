@@ -22,3 +22,5 @@ fun Int.isPrime(): Boolean = when {
             .none { this % it == 0 || this % (it + 2) == 0 }
     }
 }
+
+fun Int.factorial(): Long = (1..this).fold(1L, Long::times) 
