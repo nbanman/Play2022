@@ -34,7 +34,7 @@ fun <T> Iterable<T>.getPermutations(seed: List<T> = emptyList(), pruning: (List<
 }
 
 fun <E> List<E>.getPairs(): List<Pair<E, E>> {
-    val combos = mutableListOf<Pair<E, E>>()
+    val combos = ArrayList<Pair<E, E>>((1 until size).reduce(Int::plus))
     for (i in 0 until lastIndex) for (j in i + 1..lastIndex) combos.add(this[i] to this[j])
     return combos
 }
@@ -43,4 +43,24 @@ fun <E> List<E>.getPairSequence(): Sequence<Pair<E, E>> = sequence {
     for (i in 0 until lastIndex) for (j in i + 1..lastIndex) {
         yield(this@getPairSequence[i] to this@getPairSequence[j])
     }
+}
+
+fun <E> List<E>.getCombinations(r: Int): List<List<E>> {
+    val combos = ArrayList<List<E>>((size.factorial() / (r.factorial() * (size - r).factorial())).toInt())
+    val working = ArrayList<E>(r)
+
+    fun gP(prev: Int = -1) {
+        if (working.size < r) {
+            for (i in (prev + 1..size - r + working.size)) {
+                working.add(get(i))
+                gP(i)
+                working.removeLast()
+            }
+        } else {
+            combos.add(working.toList())
+        }
+    }
+
+    gP()
+    return combos
 }
