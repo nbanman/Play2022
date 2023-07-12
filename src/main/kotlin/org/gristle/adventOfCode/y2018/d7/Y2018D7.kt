@@ -1,99 +1,92 @@
 package org.gristle.adventOfCode.y2018.d7
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import java.util.*
 
 class Y2018D7(input: String) : Day {
 
-    val pattern = """Step ([A-Z]) must be finished before step ([A-Z]) can begin.""".toRegex()
-
-    val instructions = input.groupValues(pattern) { it[0] }
-
-    private val steps = buildMap<Char, MutableList<Char>> {
-        instructions.forEach { instruction ->
-            getOrPut(instruction[0]) { mutableListOf() }.add(instruction[1])
-        }
-    } as Map<Char, List<Char>>
-
-    private val reverseSteps = buildMap<Char, MutableList<Char>> {
-        instructions.forEach { instruction ->
-            getOrPut(instruction[1]) { mutableListOf() }.add(instruction[0])
-        }
-    } as Map<Char, List<Char>>
-
-    private val start = (instructions.map { it[0] }.toSet() - instructions.map { it[1] }.toSet())
-
-    override fun part1(): String {
-        val sb = StringBuilder()
-        val potentials = start.toMutableList()
-        while (potentials.isNotEmpty()) {
-            val c = potentials.first { potential ->
-                val dependencies = reverseSteps[potential]
-                dependencies == null || dependencies.all { it in sb }
-            }
-            potentials.remove(c)
-            sb.append(c)
-            val children = (steps[c] ?: mutableListOf()).filter { it !in sb && it !in potentials }
-            potentials.addAll(children)
-            potentials.sort()
-        }
-        return sb.toString()
+    // Build two maps. nextSteps shows potential steps that may be assigned once a step is completed
+    private val nextSteps: Map<Char, List<Char>> = buildMap<Char, MutableList<Char>> {
+        input.lineSequence().forEach { line -> getOrPut(line[5]) { mutableListOf() }.add(line[36]) }
     }
 
-    fun solvePart2(workers: Int = 5, offset: Int = 60): Int {
-        // done tracks the letters that have been delivered
-        val done = mutableSetOf<Char>()
-        // doneSize used to terminate the sequence. When "done" has all the letters, it will stop.
-        val doneSize = (steps.keys + reverseSteps.keys).size
-        // potentials is the list of letters that are POTENTIALLY available because at least one
-        // dependency has been completed. However, they may not be available because other dependencies
-        // may not yet have been completed.
-        val potentials = start.toMutableList()
+    // precedingSteps shows steps that must be completed before a given step is assigned
+    private val precedingSteps: Map<Char, List<Char>> = buildMap<Char, MutableList<Char>> {
+        input.lineSequence().forEach { line -> getOrPut(line[36]) { mutableListOf() }.add(line[5]) }
+    }
 
-        // Worker tracks what a worker is working on and when they'll finish. Idle workers work on '.'
-        data class Worker(var workingOn: Char, var whenReady: Int)
+    // starts is the list of steps that have no prerequisites, and thus can be assigned immediately
+    private val starts = nextSteps.keys - precedingSteps.keys
 
-        val workerPool = List(workers) { Worker('.', 0) }
+    // Worker represents a worker, what it's working on and when it will be ready.
+    private data class Worker(var workingOn: Char, var ready: Int) {
+        fun isFinished(t: Int) = workingOn.isUpperCase() && ready == t
+        fun isIdle() = workingOn == '.'
+        fun assign(step: Char, t: Int, offset: Int) {
+            workingOn = step
+            ready = t + offset + step.code - 64
+        }
+    }
+
+    // Solve returns both the step sequence and the amount of time required by the workers to compile the sequence.
+    // This way the same function can be used for both parts.
+    private fun solve(numberOfWorkers: Int, timeOffset: Int): Pair<String, Int> {
+
+        // Use a priority queue to continuously feed the available steps in alphabetical order
+        val queue = PriorityQueue<Char>().apply { addAll(starts) }
+
+        // steps tracks the letters that have been delivered
+        val steps = mutableSetOf<Char>()
+
+        // numberOfSteps used to terminate the sequence. When steps has all the letters, it will stop.
+        val numberOfSteps = (nextSteps.keys + precedingSteps.keys).size
+
+        // represents all the workers available to perform  steps. They begin idle.
+        val workerPool = List(numberOfWorkers) { Worker('.', 0) }
 
         // This sequence starts at second 0 and keeps adding one second.
-        // Each second, it harvests completed letters from workers, adding them to the "done" set.
+        // Each second, it harvests completed letters from workers, adding them to the steps
         // It then assigns available letters to idle workers.
-        // It terminates when the "done" set contains all the letters, returning the # of seconds.
-        return generateSequence (0) { it + 1 }
-            .onEach { sec ->
-                // finished workers deliver product and become ready to take on new letter
-                workerPool.forEach { worker ->
-                    if (worker.whenReady == sec && worker.workingOn.isUpperCase()) {
-                        done.add(worker.workingOn)
-                        val children = (steps[worker.workingOn]
-                            ?: mutableListOf()).filter { it !in done && it !in potentials }
-                        potentials.addAll(children)
-                        potentials.sort()
-                        worker.workingOn = '.'
+        // It terminates when steps contains all the letters, returning the # of seconds.        
+        val time = generateSequence(0) { it + 1 }
+            .onEach { t -> // for each second...
+                // finished workers deliver product and are reset. Newly available steps are added to queue.
+                workerPool
+                    .filter { it.isFinished(t) } // exclude workers that are not finished
+                    .forEach { worker -> // for each finished worker...
+                        val product = worker.workingOn
+                        steps.add(product) // add finished step to steps
+                        worker.workingOn = '.' // reset worker to idle
+
+                        // take the steps that are potentially available now that the worker has completed the step
+                        // check that all other preceding steps have already been added, then add to queue
+                        val next = nextSteps[product]
+                            ?.filter { nextChar -> precedingSteps.getValue(nextChar).all { it in steps } }
+                            ?: emptyList()
+                        queue.addAll(next)
                     }
-                }
-                // idle workers take on new projects
-                // find available letters (completed step shows available AND all dependencies completed)
-                val vettedPotentials = potentials.filter { potential ->
-                    val dependencies = reverseSteps[potential]
-                    dependencies == null || dependencies.all { it in done }
-                }
-                // match those letters to idle workers, and start the workers working on them. Remove from
-                // potentials pool
-                workerPool.filter { it.workingOn == '.' }.zip(vettedPotentials).forEach { (worker, c) ->
-                    worker.workingOn = c
-                    worker.whenReady = sec + offset + c.code - 64
-                    potentials.remove(c)
-                }
-            }.first { done.size == doneSize }
+
+                // idle workers are assigned new jobs
+                workerPool
+                    .filter(Worker::isIdle) // exclude workers that are not idle
+                    .forEach { worker -> // for each idle worker...
+                        if (queue.isNotEmpty()) { // ...and if a step is available...
+                            worker.assign(queue.poll(), t, timeOffset) // ...assign that step to the worker
+                        }
+                    }
+            }.first { steps.size == numberOfSteps } // end sequence and return time once steps is full
+
+        return steps.joinToString("") to time
     }
 
-    override fun part2() = solvePart2()
+    override fun part1() = solve(1, 0).first
+
+    override fun part2() = solve(5, 60).second
 }
 
 fun main() = Day.runDay(Y2018D7::class)
-//    
-//    Class creation: 24ms
-//    Part 1: ABGKCMVWYDEHFOPQUILSTNZRJX (2ms)
-//    Part 2: 898 (8ms)
-//    Total time: 34ms
+
+//    Class creation: 12ms
+//    Part 1: ABGKCMVWYDEHFOPQUILSTNZRJX (3ms)
+//    Part 2: 898 (3ms)
+//    Total time: 19ms
