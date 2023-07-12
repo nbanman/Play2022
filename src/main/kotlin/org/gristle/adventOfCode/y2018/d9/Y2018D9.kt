@@ -40,22 +40,20 @@ class Y2018D9(input: String) : Day {
         override fun toString() = "$value"
     }
 
-    data class Score(var amt: Long)
-
     fun solve(multiplier: Int = 1): Long {
         val lastMarble = highestValue * multiplier
-        val scores = List(players) { Score(0) }
+        val scores = LongArray(players) { 0 }
         var currentMarble = Dll(0)
         for (x in 1..lastMarble) {
             if (x % 23 == 0) {
                 currentMarble = currentMarble.goLeft(7)
-                scores[((x - 1) % players)].amt += x + currentMarble.value
+                scores[((x - 1) % players)] = scores[((x - 1) % players)] + x + currentMarble.value
                 currentMarble = currentMarble.remove()
             } else {
                 currentMarble = currentMarble.right.addRight(Dll(x))
             }
         }
-        return scores.maxOf(Score::amt)
+        return scores.max()
     }
 
     override fun part1() = solve()
