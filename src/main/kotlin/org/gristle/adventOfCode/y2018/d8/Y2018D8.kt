@@ -1,66 +1,50 @@
 package org.gristle.adventOfCode.y2018.d8
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getInts
 
 class Y2018D8(input: String) : Day {
 
-    private val licence = input.split(' ').map(String::toInt)
-
+    // Node contains child nodes and metadata.
     data class Node(val children: List<Node>, val metadata: List<Int>) {
-        companion object {
-            fun of(numbers: List<Int>): Node = nodeToLength(numbers).first
 
-            private fun nodeToLength(numbers: List<Int>): Pair<Node, Int> {
-                val nodes = numbers[0]
-                val metadataEntries = numbers[1]
-                var parser = 2
+        private val localMetadataSum = metadata.sum()
 
-                // make nodes
-                val children = List(nodes) {
-                    val (child, length) = nodeToLength(numbers.drop(parser))
-                    parser += length
-                    child
-                }
+        // Using lazy vals instead of fun so that each node only needs to make these calculations once.
+        val totalMetadata: Int by lazy { localMetadataSum + children.sumOf(Node::totalMetadata) }
 
-                // make metadata
-                val metadata = List(metadataEntries) {
-                    parser++
-                    numbers[parser - 1]
-                }
-
-                return Node(children, metadata) to parser
-            }
-        }
-
-        val sumOfMetadata: Int by lazy {
-            metadata.sum() + children.sumOf { it.sumOfMetadata }
-        }
-
-        // Using lazy val instead of fun so that each node only needs to make this calculation once.
         val value: Int by lazy {
-            // If no children...
             if (children.isEmpty()) {
-                // the value is the sum of the metadata entries
-                metadata.sum()
-            } else { // but if there are children...
-                // the metadata entries become indexes for the children, and the value is the sum of the
-                // values of the referenced children. Out of range indexes don't count so return 0.
-                metadata.sumOf { if (it - 1 !in children.indices) 0 else children[it - 1].value }
+                localMetadataSum
+            } else {
+                metadata.sumOf { index -> children.getOrNull(index - 1)?.value ?: 0 }
             }
         }
 
+        companion object {
+
+            // creates a node given a iterator that supplies numbers. Child nodes are created recursively.
+            fun of(numbers: Iterator<Int>): Node {
+                val childQuantity = numbers.next()
+                val metadataQuantity = numbers.next()
+                val children = List(childQuantity) { of(numbers) }
+                val metadata = List(metadataQuantity) { numbers.next() }
+                return Node(children, metadata)
+            }
+        }
     }
 
-    private val licenseTree = Node.of(licence)
+    // create tree
+    private val parent = Node.of(input.getInts().iterator())
 
-    override fun part1() = licenseTree.sumOfMetadata
+    override fun part1() = parent.totalMetadata
 
-    override fun part2() = licenseTree.value
+    override fun part2() = parent.value
 }
 
 fun main() = Day.runDay(Y2018D8::class)
 
-//    Class creation: 96ms
+//    Class creation: 15ms
 //    Part 1: 36027 (1ms)
 //    Part 2: 23960 (0ms)
-//    Total time: 98ms
+//    Total time: 17ms
