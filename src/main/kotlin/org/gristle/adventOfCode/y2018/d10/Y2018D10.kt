@@ -9,8 +9,7 @@ class Y2018D10(input: String) : Day {
 
     private val points = input
         .getInts()
-        .chunked(4)
-        .map { (px, py, vx, vy) -> MovingPoint(Coord(px, py), Coord(vx, vy)) }
+        .chunked(4) { (px, py, vx, vy) -> MovingPoint(Coord(px, py), Coord(vx, vy)) }
         .toList()
 
     private fun Iterable<MovingPoint>.move() = map { point -> point.copy(pos = point.pos + point.vel) }
