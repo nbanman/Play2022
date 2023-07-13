@@ -1,36 +1,68 @@
 package org.gristle.adventOfCode.y2018.d14
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.toDigit
 
 class Y2018D14(input: String) : Day {
-    private val inputNum = input.toInt()
 
-    private val solution: Pair<Long, Int> = let {
-        var size = 2
-        val recipes = MutableList(30_000_000) { -1 }
-        recipes[0] = 3
-        recipes[1] = 7
-        var elves = listOf(0, 1)
-        while (recipes.subList(maxOf(size - 7, 0), size - 1).joinToString("")
-                .toInt() != inputNum && size < recipes.size
-        ) {
-            val (ten, one) = elves.sumOf { recipes[it] }.let { it / 10 to it % 10 }
-            if (ten != 0) {
-                recipes[size] = ten
-                size++
-            }
-            recipes[size] = one
-            size++
+    // elves' plan as an Int for pt1
+    private val plan = input.toInt()
 
-            elves = elves.map { elf ->
-                (elf + (recipes[elf] + 1)) % size
-            }
+    // elves' plan as a List<Int> for pt2
+    private val planList = input.map { it.toDigit() }
+
+    // function to advance the state in the below sequence
+    private fun advance(state: Triple<MutableList<Int>, Int, Int>): Triple<MutableList<Int>, Int, Int> {
+        // deconstructs state
+        val (recipes, elf1, elf2) = state
+
+        // gets ratings from recipes list at each elf's location
+        val elf1Rating = recipes[elf1]
+        val elf2Rating = recipes[elf2]
+
+        // adds new recipes to recipes per rules
+        val sum = elf1Rating + elf2Rating
+        if (sum > 9) {
+            recipes.add(1)
+            recipes.add(sum - 10)
+        } else {
+            recipes.add(sum)
         }
-        recipes.subList(inputNum, inputNum + 10).joinToString("").toLong() to size - 7
+
+        // returns new state
+        return Triple(
+            recipes,
+            (elf1 + 1 + elf1Rating) % recipes.size,
+            (elf2 + 1 + elf2Rating) % recipes.size
+        )
     }
 
-    override fun part1() = solution.first
-    override fun part2() = solution.second
+    // starts with initial recipes and positions and advances until told to stop
+    private fun recipeSequence() = generateSequence(Triple(mutableListOf(3, 7), 0, 1), ::advance)
+
+    override fun part1() = recipeSequence()
+        .first { (recipes) -> recipes.size == plan + 10 } // stop when enough recipes have been generated
+        .let { (recipes) ->
+            recipes.takeLast(10).joinToString("") // return last 10 recipe ratings
+        }
+
+    override fun part2() = recipeSequence()
+        .first { (recipes) -> // stop when plan found at end, or end - 1, of recipes
+
+            // need to make sure that there are at least as many recipes as the plan calls for
+            // also, need to check both the end, and the end - 1, because each step can add 0, 1, or 2 new recipes
+            recipes.size > planList.size + 1 &&
+                    (planList == recipes.subList(recipes.size - planList.size - 1, recipes.size - 1) ||
+                            planList == recipes.subList(recipes.size - planList.size, recipes.size))
+        }.let { (recipes) -> // return the number of recipes to the left
+
+            // check if the plan is found in ultimate or penultimate position, subtract one if penultimate
+            if (planList == recipes.subList(recipes.size - planList.size, recipes.size)) {
+                recipes.size - planList.size
+            } else {
+                recipes.size - planList.size - 1
+            }
+        }
 }
 
 fun main() = Day.runDay(Y2018D14::class)
