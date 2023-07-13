@@ -1,73 +1,88 @@
 package org.gristle.adventOfCode.y2018.d11
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Grid
+import org.gristle.adventOfCode.utilities.toMutableGrid
 
-class Y2018D11(private val input: String) : Day {
+class Y2018D11(input: String) : Day {
 
-    private fun powerLevel(c: Coord): Int {
-        val rackId = c.x + 10
-        return (((rackId * c.y + input.toInt()) * rackId) % 1000) / 100 - 5
+    // used to calculate power level
+    private val serialNumber = input.toInt()
+
+    // size of each side of grid
+    private val length = 300
+
+    // initial power level calculations for the grid
+    private val cells: Grid<Int> = Grid(length, length) { index ->
+        val x = (index % length) + 1
+        val y = (index / length) + 1
+        val rackId = x + 10
+        ((((rackId * y + serialNumber) * rackId) % 1000) / 100) - 5
     }
 
-    private data class Maximum(val c: Coord, val power: Int, val size: Int)
+    // Used to store relevant information for answer and keeping track of max power 
+    data class Square(val x: Int = 0, val y: Int = 0, val size: Int = 0, val power: Int = 0)
 
-    private val grid = List(300) { y ->
-        List(300) { x ->
-            powerLevel(Coord(x + 1, y + 1))
+    // smallest and largest set the minimum and maximum size for the square. So 3,3 for pt1 and 1,300 for pt2
+    private fun solve(smallest: Int, largest: Int): Square {
+        // create a "working" grid that starts as a copy of the "cells" grid. But after each pass of a row, each 
+        // cell in that row is updated to include cells from lower rows in accordance with the size of the squares
+        // being evaluated. This way we can avoid re-summing when evaluating larger squares.
+        val grid = cells.toMutableGrid()
+
+        // Track the square that has the largest power. Default is zero.
+        var max = Square()
+
+        // Outer loop gradually increases the size of the square to be evaluated up to "largest." Starts at 1
+        // rather than "smallest" because even if sums are not calculated, the grid needs to be updated for later 
+        // passes.
+        for (size in 1..largest) {
+
+            // First nested loop runs through all the rows to be evaluated. The grid update process grabs cell 
+            // values from lower rows so this maxes out at the length minus the size.
+            for (y in 0..length - size) {
+
+                // The Grid class stores data in a 1-D array so this grabs all the values in that row for easy access 
+                val row = grid.row(y)
+
+                // Only do summing activity if the square size is at least as large as "smallest."
+                if (size >= smallest) {
+
+                    // start with the left-most cell. Because of grid updating grabbing values from lower rows, 
+                    // this is always the sum of all cells below it that are part of the square
+                    var power = row.take(size).sum()
+
+                    // move right with a "windowed" movement, adding the next to the right and subtracting the last
+                    // from the left
+                    for (x in size until row.size) {
+
+                        // update max if needed 
+                        if (power > max.power) max = Square(x - size + 1, y + 1, size, power)
+
+                        // calculate power for next square in row
+                        power += row[x] - row[x - size]
+                    }
+                }
+
+                // update grid by adding the row with row + size
+                if (y < length - size) {
+                    for (x in row.indices) {
+                        grid[x, y] += cells[x, y + size]
+                    }
+                }
+            }
         }
+        return max
     }
 
-    private fun contractGrid(cGrid: List<List<Int>>, size: Int): List<List<Int>> {
-        return cGrid
-            .dropLast(1)
-            .mapIndexed { index, row ->
-                List(row.size) { i ->
-                    row[i] + grid[index + size - 1][i]
-                }
-            }
-    }
+    override fun part1() = solve(3, 3).let { (x, y) -> "$x,$y" }
 
-
-    override fun part1(): Coord {
-        // Part 1
-        var p1 = Maximum(Coord(0, 0), 0, 3)
-        grid
-            .windowed(3)
-            .map { w ->
-                w[0].zip(w[1]).map { it.first + it.second }.zip(w[2]).map { it.first + it.second }
-            }.forEachIndexed { y, row ->
-                row.windowed(3).forEachIndexed { x, group ->
-                    val sum = group.sum()
-                    if (sum > p1.power) p1 = Maximum(Coord(x + 1, y + 1), sum, 3)
-                }
-            }
-       return p1.c
-    }
-
-    override fun part2(): Pair<Coord, Int> {
-        // Part 2
-        var p2 = Maximum(Coord(0, 0), 0, 0)
-        var cGrid = grid
-        for (size in 1..grid.size) {
-            cGrid.forEachIndexed { y, row ->
-                var power = row.take(size).sum()
-                var x = size
-                while (x < row.size) {
-                    if (power > p2.power) p2 = Maximum(Coord(x + 1 - size, y + 1), power, size)
-                    power = power + row[x] - row[x - size]
-                    x++
-                }
-            }
-            cGrid = contractGrid(cGrid, size + 1)
-        }
-        return p2.c to p2.size
-    }
+    override fun part2() = solve(1, 300).let { (x, y, size) -> "$x,$y,$size" }
 }
 
 fun main() = Day.runDay(Y2018D11::class)
 
-//    Class creation: 25ms
-//    Part 1: (235, 48) (69ms)
-//    Part 2: ((285, 113), 11) (422ms)
-//    Total time: 517ms
+//    Class creation: 11ms
+//    Part 1: 235,48 (40ms)
+//    Part 2: 285,113,11 (316ms)
+//    Total time: 368ms
