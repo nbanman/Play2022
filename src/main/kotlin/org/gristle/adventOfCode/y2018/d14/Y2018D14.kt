@@ -43,7 +43,7 @@ class Y2018D14(input: String) : Day {
     override fun part1() = recipeSequence()
         .first { (recipes) -> recipes.size == plan + 10 } // stop when enough recipes have been generated
         .let { (recipes) ->
-            recipes.takeLast(10).joinToString("") // return last 10 recipe ratings
+            recipes.takeLast(10).joinToString("").toLong() // return last 10 recipe ratings
         }
 
     override fun part2() = recipeSequence()
@@ -67,7 +67,7 @@ class Y2018D14(input: String) : Day {
 
 fun main() = Day.runDay(Y2018D14::class)
 
-//    Class creation: 5844ms
-//    Part 1: 4910101614 (0ms)
-//    Part 2: 20253137 (0ms)
-//    Total time: 5844ms
+//    Class creation: 2ms
+//    Part 1: 4910101614 (61ms)
+//    Part 2: 20253137 (1120ms)
+//    Total time: 1185ms
