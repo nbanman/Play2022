@@ -423,9 +423,11 @@ fun <E> Grid<E>.toGrid(): Grid<E> = ArrayGrid(this, this.width)
 
 fun String.toGrid(width: Int): Grid<Char> = ArrayGrid(this.toList(), width)
 
-fun String.toGrid(): Grid<Char> {
+fun String.toGrid(padding: Char = ' '): Grid<Char> {
     val width = indexOfAny(charArrayOf('\n', '\r')).let { if (it == -1) 1 else it }
-    return replace("[\r\n]+".toRegex(), "").toGrid(width)
+    val noBreaks = replace("[\r\n]+".toRegex(), "")
+    val padWidth = padding.toString().repeat((width - noBreaks.length % width) % width)
+    return (noBreaks + padWidth).toGrid(width)
 }
 
 inline fun <R> String.toGrid(transform: (Char) -> R): Grid<R> {
