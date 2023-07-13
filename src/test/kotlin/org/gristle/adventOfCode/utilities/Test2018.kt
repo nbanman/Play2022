@@ -81,7 +81,7 @@ class Test2018 {
 
     @Test
     internal fun y2018d11() {
-        assertEquals(Coord(235, 48) to (Coord(285, 113) to 11), Day.testDay(Y2018D11::class))
+        assertEquals("235,48" to "285,113,11", Day.testDay(Y2018D11::class))
     }
 
     @Test
