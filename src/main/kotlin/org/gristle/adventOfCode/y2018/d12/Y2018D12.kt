@@ -61,7 +61,7 @@ class Y2018D12(input: String) : Day {
         // solve part 2.
 
         val groupSize = 10
-        val firstStable = generator
+        val firstStable: List<IndexedValue<Int>> = generator
             .withIndex() // pair up rows with their index, which is the number of generations
             // transform rows to their pot sum
             .map { (index, value) -> IndexedValue(index, value.sumOfPotNumbers(index)) }
@@ -78,12 +78,15 @@ class Y2018D12(input: String) : Day {
             }
 
         // the last "chaotic" value obtained by the generator
-        val lastUnstableValue = firstStable.first().value
+        val lastUnstableValue: Int = firstStable.first().value
+
         // the generation of this last chaotic value, so we don't double count generations when applying the stable
         // generation count
-        val repeatIndex = firstStable.first().index
+        val repeatIndex: Int = firstStable.first().index
+
         // the amount that each successive generation adds to the pot number count
         val stableIncrement = firstStable.let { it[1].value - it[0].value }
+
         // putting it all together
         return lastUnstableValue + stableIncrement * (generations - repeatIndex)
     }
