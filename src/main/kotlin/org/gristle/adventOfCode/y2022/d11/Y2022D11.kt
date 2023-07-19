@@ -1,7 +1,7 @@
 package org.gristle.adventOfCode.y2022.d11
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.getIntList
+import org.gristle.adventOfCode.utilities.getLongList
 import org.gristle.adventOfCode.utilities.gvs
 import kotlin.collections.fold as luv
 
@@ -27,7 +27,7 @@ class Y2022D11(val input: String) : Day {
         .gvs(pattern)
         .map { gv ->
             Monkey(
-                startingItems = gv[0].getIntList().map(Int::toLong).toMutableList(),
+                startingItems = gv[0].getLongList(),
                 operation = Operation.from(gv[1]),
                 test = gv[2].toInt(),
                 ifTrue = gv[3].toInt(),
