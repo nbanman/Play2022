@@ -13,6 +13,9 @@ interface Grid<out E> : List<E> {
     operator fun get(x: Int, y: Int): E
     operator fun get(coord: Coord): E
 
+    fun getOrNull(x: Int, y: Int): E?
+    fun getOrNull(coord: Coord): E?
+
     fun coordOf(n: Int): Coord
 
     fun coordOfElement(e: @UnsafeVariance E): Coord
@@ -113,7 +116,11 @@ class ArrayGrid<E> private constructor(
 
     override operator fun get(x: Int, y: Int): E = get(indexOf(x, y))
 
-    override operator fun get(coord: Coord): E = get(coord.x, coord.y)
+    override operator fun get(coord: Coord): E = get(indexOf(coord.x, coord.y))
+
+    override fun getOrNull(x: Int, y: Int): E? = getOrNull(indexOf(x, y))
+
+    override fun getOrNull(coord: Coord): E? = getOrNull(indexOf(coord.x, coord.y))
 
     override fun coordOf(n: Int): Coord = Coord(n % width, n / width)
 
