@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2018.d15
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Graph
-import java.util.*
 
 class Y2018D15(val input: String) : Day {
 
@@ -61,7 +60,7 @@ class Y2018D15(val input: String) : Day {
         }
 
         /**
-         * Finds closest spot adjacent to a target and move one step toward it. Uses BFS
+         * Finds the closest spot adjacent to a target and move one step toward it. Uses BFS.
          */
         fun move(world: World, pos: Coord): Coord {
             val friends = friends(world)
@@ -73,45 +72,26 @@ class Y2018D15(val input: String) : Day {
                 .flatMap { opponentPos -> opponentPos.getNeighbors().filter { world.canMove(it) } }
                 .toSet()
 
-            // BFS queue
-            val q: Deque<Graph.Vertex<Coord>> = ArrayDeque()
-            val start = Graph.StdVertex(pos, 0.0)
-            q.addLast(start)
-            val visited = mutableMapOf<Coord, Graph.StdVertex<Coord>>()
+            // Function to find neighboring coordinates for any given position
+            val edges: (Coord) -> List<Coord> = { it.getNeighbors().filter { neighbor -> world.canMove(neighbor) } }
 
-            // BFS loop
-            while (q.isNotEmpty()) {
-                val current = q.removeFirst()
+            // BFS takes a starting coordinate and spreads out to all legal moving positions, stopping when it
+            // finds a target in range. It then reconstructs the path it took, finds the first step in that path,
+            // and that is the new position.
+            val newPos = Graph.bfsSequence(pos, defaultEdges = edges)
+                .firstOrNull { (pos) -> pos in inRange }
+                ?.path()
+                ?.get(1)
+                ?.id
 
-                // for each vertex find neighbor vertices
-                val neighbors = current
-                    .id
-                    .getNeighbors()
-                    .filter { neighbor -> world.canMove(neighbor) }
-                    .map { Graph.StdVertex(it, current.weight + 1, current) }
-
-                for (neighbor in neighbors) {
-                    if (neighbor.id !in visited) {
-                        q.add(neighbor)
-                        visited[neighbor.id] = neighbor
-
-                        if (neighbor.id in inRange) {
-                            val steps = visited.values.last().weight
-                            val chosen = visited
-                                .values
-                                .filter { it.weight == steps && it.id in inRange }
-                                .minBy { it.id.asIndex(world.width) }
-                            val newPos = chosen
-                                .path()[1]
-                                .id
-                            friends.remove(pos)
-                            friends[newPos] = this
-                            return newPos
-                        }
-                    }
-                }
+            return if (newPos == null) {
+                pos
+            } else {
+                // update the friends map and return the new position
+                friends.remove(pos)
+                friends[newPos] = this
+                newPos
             }
-            return pos
         }
 
         abstract fun damage(world: World): Int
@@ -134,6 +114,8 @@ class Y2018D15(val input: String) : Day {
         override fun damage(world: World) = 3
     }
 
+    // State object for the "World;" ie, where each Elf, Goblin, and wall is, as well as the dimensions of the map.
+    // It also stores how much damage elves do in this world.
     data class World(
         val width: Int,
         val height: Int,
@@ -144,6 +126,9 @@ class Y2018D15(val input: String) : Day {
     ) {
         private val initialElves = elves.size
 
+        /**
+         * Creates a copy of the world with rejuvenated elves and goblins, and with a new elfDamage amount.
+         */
         fun clone(elfDamage: Int): World {
             val newElves: MutableMap<Coord, Player> = elves
                 .entries
@@ -155,6 +140,10 @@ class Y2018D15(val input: String) : Day {
             return World(width, height, walls, newElves, newGoblins, elfDamage)
         }
 
+        /**
+         * Checks whether a coordinate would be a legal move by checking if it's within the dimensions, and whether
+         * there is a wall or player in that position.
+         */
         fun canMove(pos: Coord): Boolean = pos.x in 0 until width
                 && pos.y in 0 until height
                 && pos !in walls
@@ -164,24 +153,39 @@ class Y2018D15(val input: String) : Day {
         fun elfHealth() = elves.values.sumOf { it.health }
         fun goblinHealth() = goblins.values.sumOf { it.health }
 
+        /**
+         * Returns all players in reading order.
+         */
         fun players() = (elves.entries + goblins.entries).sortedBy { (pos) -> pos.asIndex(width) }
 
+        /**
+         * Returns true if elves have lost. Part 2 logic makes elves lose if even one elf dies.
+         */
         fun elvesLose(): Boolean = elves.isEmpty() || (elfDamage > 3 && elves.size < initialElves)
 
+        /**
+         * Returns player at a position.
+         */
         operator fun get(pos: Coord): Player? = elves[pos] ?: goblins[pos]
 
         companion object {
+
+            /**
+             * Parses initial world from input string.
+             */
             fun from(input: String): World {
                 val width = input.indexOf('\n')
-                val noSpace = input.replace("\n", "")
-                val height = noSpace.length / width
+
+                // The string with no newlines. 
+                val flattenedInput = input.replace("\n", "")
+                val height = flattenedInput.length / width
                 val elves = mutableMapOf<Coord, Player>()
                 val goblins = mutableMapOf<Coord, Player>()
                 val walls = mutableSetOf<Coord>()
                 for (y in 0 until height) {
                     for (x in 0 until width) {
                         val pos = Coord(x, y)
-                        when (noSpace[y * width + x]) {
+                        when (flattenedInput[y * width + x]) {
                             '#' -> walls.add(pos)
                             'E' -> elves[pos] = Elf()
                             'G' -> goblins[pos] = Goblin()
@@ -193,39 +197,67 @@ class Y2018D15(val input: String) : Day {
         }
     }
 
+    // The initial world used by both parts.
     private val initialWorld = World.from(input)
 
+    /**
+     * State class holding the final Round info plus opponentHp, used to find the final score.
+     */
     data class Game(val round: Round, val opponentHp: Int) {
         fun score(): Int = round.round * opponentHp
     }
 
+    /**
+     * Enum class says whether the game continues, or elves or goblins won.
+     */
     enum class WinState { ELVES, GOBLINS, CONTINUE }
 
+    /**
+     * Round state class holding the round number and the current winstate.
+     */
     data class Round(val round: Int = 0, val winState: WinState = WinState.CONTINUE)
 
+    /**
+     * Main game loop. Returns a game object that has enough info to determine whether the game needs to be run
+     * again (in part 2) and to calculate the score.
+     */
     fun solve(elfDamage: Int = 3): Game {
+
+        // Make a working copy of the initial world.
         val world = initialWorld.clone(elfDamage)
 
-
+        // Takes a Round state, and plays another Round
         fun playRound(round: Round): Round {
+
+            // get all remaining players in reading order
             val players = world.players()
+
+            // for each player...
             players.forEachIndexed { index, (pos, player) ->
+
+                // ...play a turn
                 player.playTurn(world, pos)
 
+                // determine if there is a winner
                 val winState = when {
                     world.elvesLose() -> WinState.GOBLINS
                     world.goblins.isEmpty() -> WinState.ELVES
                     else -> WinState.CONTINUE
                 }
 
+                // if there is a winner, note that in the return Round. Only advance the round if the last player
+                // won the game
                 if (winState != WinState.CONTINUE) {
                     val winRound = if (index == players.lastIndex) round.round + 1 else round.round
                     return Round(winRound, winState)
                 }
             }
+
+            // otherwise return a continuing round
             return round.copy(round = round.round + 1)
         }
 
+        // sequence runs rounds in succession until a winner is found. When found, returns the game state.
         generateSequence(Round(), ::playRound)
             .first { (_, winState) -> winState != WinState.CONTINUE }
             .let { round ->
@@ -234,8 +266,10 @@ class Y2018D15(val input: String) : Day {
             }
     }
 
+    // Runs the game once and returns the score.
     override fun part1() = solve().score()
 
+    // Sequence runs games with increasing elf damage until there is a game where the elves win. Returns score.
     override fun part2() = generateSequence(4) { elfDamage -> elfDamage + 1 }
         .map { elfDamage -> solve(elfDamage) }
         .first { game -> game.round.winState == WinState.ELVES }
