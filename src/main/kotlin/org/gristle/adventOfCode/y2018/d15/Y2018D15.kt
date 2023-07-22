@@ -1,229 +1,250 @@
-@file:Suppress("unused")
-
 package org.gristle.adventOfCode.y2018.d15
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.*
-
-/**
- * World functions
- */
-
-fun Grid<Y2018D15.Entity>.finished() = count { it is Y2018D15.Elf }
-    .let { elfCount ->
-        elfCount == 0 || elfCount == count { it is Y2018D15.Player }
-    }
-
-fun MutableGrid<Y2018D15.Entity>.kill(deadPlayer: Y2018D15.Player) {
-    this[deadPlayer.pos] = Y2018D15.OpenSpace(deadPlayer.pos)
-}
-
-fun Grid<Y2018D15.Entity>.players() = filterIsInstance<Y2018D15.Player>()
-
-fun Grid<Y2018D15.Entity>.print(round: Int, finishMidRound: Boolean = false) {
-    val rep = buildString {
-        val roundAnnouncement = when {
-            round == 0 -> "Initially:"
-            finishMidRound -> "During round $round:"
-            round == 1 -> "After $round round:"
-            else -> "After $round rounds:"
-        }
-        append("$roundAnnouncement\n")
-        for (row in 0 until height) {
-            val gloss = StringBuilder()
-            for (col in 0 until width) {
-                val c = when (val entity = get(col, row)) {
-                    is Y2018D15.Wall -> '#'
-                    is Y2018D15.Goblin -> {
-                        gloss.append("G(${entity.health}), ")
-                        'G'
-                    }
-                    is Y2018D15.Elf -> {
-                        gloss.append("E(${entity.health}), ")
-                        'E'
-                    }
-                    else -> '.'
-                }
-                append(c)
-            }
-            append("   ${gloss.trimEnd(',', ' ')}\n")
-        }
-    }
-
-    println(rep)
-}
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Graph
+import java.util.*
 
 class Y2018D15(val input: String) : Day {
 
     /**
-     * Classes and objects to define the game elements
+     * Abstract class for both elves and goblins. Responsible for tracking health, playing each players turn,
+     * including attacking and moving
      */
-
-    sealed interface Entity {
-        var pos: Coord
-    }
-
-    class Wall(override var pos: Coord) : Entity {
-        override fun toString() = "Wall(pos=$pos)"
-    }
-
-    class OpenSpace(override var pos: Coord) : Entity {
-        override fun toString() = "OpenSpace(pos=$pos)"
-    }
-
-    abstract class Player(override var pos: Coord, val damage: Int) : Entity {
+    abstract class Player {
         var health = 200
-            private set
 
-        private val isDead: Boolean get() = health <= 0
+        private val isDead: Boolean get() = health < 1
 
-        fun playTurn(world: MutableGrid<Entity>) {
-            // Quits if dead
+        /**
+         * Finds the player at the specified other position and commands it to take damage.
+         */
+        private fun attack(world: World, otherPos: Coord) {
+            world[otherPos]?.takeDamage(world, otherPos, damage(world))
+        }
+
+        /**
+         * Looks for adjacent targets. If found, attack the one with lowest health. Otherwise, move to closest
+         * target and attack if now adjacent.
+         */
+        fun playTurn(world: World, pos: Coord) {
             if (isDead) return
 
-            // Get neighbors and see if they are a target
-            val adjacentTargets = getAdjacentTargets(world)
-            if (adjacentTargets.isEmpty()) {
-                val targets = world.players().filter { isEnemy(it) }
-                move(world, targets)
-                val adjacentTargetsAfterMove = getAdjacentTargets(world)
-                if (adjacentTargetsAfterMove.isNotEmpty()) {
-                    attackAdjacent(adjacentTargetsAfterMove, world)
+            val enemies = enemies(world)
+
+            // utility function for finding adjacent targets to attack
+            fun adjacentOpponentPos(pos: Coord) = pos
+                .getNeighbors()
+                .filter { it in enemies }
+                .minByOrNull { enemies.getValue(it).health }
+
+            // find adjacent target...
+            val adjacentTarget = adjacentOpponentPos(pos)
+
+            if (adjacentTarget != null) {
+                attack(world, adjacentTarget) // ...and attack it
+            } else { // if no adjacent target...
+                val newPos = move(world, pos) // move one space to a target
+                val adjacentTargetAfterMove = adjacentOpponentPos(newPos) // and attack if adjacent
+                if (adjacentTargetAfterMove != null) attack(world, adjacentTargetAfterMove)
+            }
+        }
+
+        /**
+         * Takes damage and removes the player from the world if dead.
+         */
+        private fun takeDamage(world: World, pos: Coord, damage: Int) {
+            health -= damage
+            if (isDead) {
+                friends(world).remove(pos)
+            }
+        }
+
+        /**
+         * Finds closest spot adjacent to a target and move one step toward it. Uses BFS
+         */
+        fun move(world: World, pos: Coord): Coord {
+            val friends = friends(world)
+            val enemies = enemies(world)
+
+            // The coordinates that are adjacent to targets.
+            val inRange: Set<Coord> = enemies
+                .keys
+                .flatMap { opponentPos -> opponentPos.getNeighbors().filter { world.canMove(it) } }
+                .toSet()
+
+            // BFS queue
+            val q: Deque<Graph.Vertex<Coord>> = ArrayDeque()
+            val start = Graph.StdVertex(pos, 0.0)
+            q.addLast(start)
+            val visited = mutableMapOf<Coord, Graph.StdVertex<Coord>>()
+
+            // BFS loop
+            while (q.isNotEmpty()) {
+                val current = q.removeFirst()
+
+                // for each vertex find neighbor vertices
+                val neighbors = current
+                    .id
+                    .getNeighbors()
+                    .filter { neighbor -> world.canMove(neighbor) }
+                    .map { Graph.StdVertex(it, current.weight + 1, current) }
+
+                for (neighbor in neighbors) {
+                    if (neighbor.id !in visited) {
+                        q.add(neighbor)
+                        visited[neighbor.id] = neighbor
+
+                        if (neighbor.id in inRange) {
+                            val steps = visited.values.last().weight
+                            val chosen = visited
+                                .values
+                                .filter { it.weight == steps && it.id in inRange }
+                                .minBy { it.id.asIndex(world.width) }
+                            val newPos = chosen
+                                .path()[1]
+                                .id
+                            friends.remove(pos)
+                            friends[newPos] = this
+                            return newPos
+                        }
+                    }
                 }
-            } else {
-                attackAdjacent(adjacentTargets, world)
             }
+            return pos
         }
 
-        private fun attack(target: Player) {
-            target.damage(damage)
+        abstract fun damage(world: World): Int
+
+        abstract fun friends(world: World): MutableMap<Coord, Player>
+
+        abstract fun enemies(world: World): MutableMap<Coord, Player>
+
+    }
+
+    class Elf : Player() {
+        override fun friends(world: World) = world.elves
+        override fun enemies(world: World) = world.goblins
+        override fun damage(world: World) = world.elfDamage
+    }
+
+    class Goblin : Player() {
+        override fun friends(world: World) = world.goblins
+        override fun enemies(world: World) = world.elves
+        override fun damage(world: World) = 3
+    }
+
+    data class World(
+        val width: Int,
+        val height: Int,
+        private val walls: Set<Coord>,
+        val elves: MutableMap<Coord, Player>,
+        val goblins: MutableMap<Coord, Player>,
+        val elfDamage: Int
+    ) {
+        private val initialElves = elves.size
+
+        fun clone(elfDamage: Int): World {
+            val newElves: MutableMap<Coord, Player> = elves
+                .entries
+                .associateTo(mutableMapOf()) { (pos) -> pos to Elf() }
+            val newGoblins: MutableMap<Coord, Player> = goblins
+                .entries
+                .associateTo(mutableMapOf()) { (pos) -> pos to Goblin() }
+
+            return World(width, height, walls, newElves, newGoblins, elfDamage)
         }
 
-        private fun attackAdjacent(targets: List<Player>, world: MutableGrid<Entity>) {
-            val target = targets.minBy { it.health }
-            attack(target)
-            if (target.isDead) world.kill(target)
-        }
+        fun canMove(pos: Coord): Boolean = pos.x in 0 until width
+                && pos.y in 0 until height
+                && pos !in walls
+                && pos !in elves
+                && pos !in goblins
 
-        private fun damage(attackDamage: Int) {
-            health -= attackDamage
-        }
+        fun elfHealth() = elves.values.sumOf { it.health }
+        fun goblinHealth() = goblins.values.sumOf { it.health }
 
-        fun move(world: MutableGrid<Entity>, targets: List<Player>) {
+        fun players() = (elves.entries + goblins.entries).sortedBy { (pos) -> pos.asIndex(width) }
 
-            val getEdges = { coord: Coord ->
-                if (coord != pos && world[coord] is Player) {
-                    emptyList()
-                } else {
-                    coord
-                        .getNeighbors()
-                        .filter { world.validCoord(it) && world[it] !is Wall }
+        fun elvesLose(): Boolean = elves.isEmpty() || (elfDamage > 3 && elves.size < initialElves)
 
+        operator fun get(pos: Coord): Player? = elves[pos] ?: goblins[pos]
+
+        companion object {
+            fun from(input: String): World {
+                val width = input.indexOf('\n')
+                val noSpace = input.replace("\n", "")
+                val height = noSpace.length / width
+                val elves = mutableMapOf<Coord, Player>()
+                val goblins = mutableMapOf<Coord, Player>()
+                val walls = mutableSetOf<Coord>()
+                for (y in 0 until height) {
+                    for (x in 0 until width) {
+                        val pos = Coord(x, y)
+                        when (noSpace[y * width + x]) {
+                            '#' -> walls.add(pos)
+                            'E' -> elves[pos] = Elf()
+                            'G' -> goblins[pos] = Goblin()
+                        }
+                    }
                 }
-            }
-
-            val distances = Graph.bfs(pos, defaultEdges = getEdges).drop(1)
-
-            val spots = targets
-                .flatMap { enemy -> world.getNeighborIndices(enemy.pos).map { world[it] }.filterIsInstance<OpenSpace>() }
-                .distinct()
-                .mapNotNull { openSpace -> distances.find { it.id == openSpace.pos } }
-
-            val attackPos = spots
-                .minByOrNull { it.weight * 10_000 + world.indexOf(it.id) } ?: return
-
-            val newPos = Graph.bfs(attackPos.id, defaultEdges = getEdges)
-                .filter { it.id.manhattanDistance(pos) == 1 && world[it.id] is OpenSpace }
-                .sortedWith(compareBy<Graph.Vertex<Coord>> { it.weight }.thenBy { world.indexOf(it.id) })
-                .first()
-                .id
-
-            val oldPos = pos
-            world[newPos] = world[pos].apply { this.pos = newPos }
-            world[oldPos] = OpenSpace(oldPos)
-        }
-
-        abstract fun getAdjacentTargets(world: MutableGrid<Entity>): List<Player>
-
-        abstract fun isEnemy(other: Player): Boolean
-    }
-
-    class Elf(pos: Coord, damage: Int) : Player(pos, damage) {
-        override fun getAdjacentTargets(world: MutableGrid<Entity>) =
-            world.getNeighbors(pos).filterIsInstance<Goblin>()
-
-        override fun isEnemy(other: Player) = other !is Elf
-
-        override fun toString() = "Elf(pos=$pos, damage=$damage, health=$health)"
-    }
-
-    class Goblin(pos: Coord) : Player(pos, 3) {
-        override fun getAdjacentTargets(world: MutableGrid<Entity>) =
-            world.getNeighbors(pos).filterIsInstance<Elf>()
-
-        override fun isEnemy(other: Player) = other !is Goblin
-
-        override fun toString() = "Goblin(pos=$pos, damage=$damage, health=$health)"
-    }
-
-    /**
-     * Main gameplay loop
-     */
-    fun solve(elfDamage: Int): Pair<String, Int> {
-
-        // Initialize world
-        val world = input.toMutableGridPos { coord, c ->
-            when (c) {
-                '#' -> Wall(coord)
-                'E' -> Elf(coord, elfDamage)
-                'G' -> Goblin(coord)
-                else -> OpenSpace(coord)
+                return World(width, height, walls, elves, goblins, 3)
             }
         }
+    }
 
-        var round = 0
+    private val initialWorld = World.from(input)
 
-        val elves = world.players().count { it is Elf }
+    data class Game(val round: Round, val opponentHp: Int) {
+        fun score(): Int = round.round * opponentHp
+    }
 
-        // Ends the game early if a single Elf dies, since part 2 wants to find the game where not a single elf
-        // dies. Always returns true if elfDamage is 3, so that it never stops the part 1 solution early.
-        fun p2Continue() = elfDamage == 3 || (elves == world.count { it is Elf })
+    enum class WinState { ELVES, GOBLINS, CONTINUE }
 
-        while (
-            p2Continue()
-            && world.filterIsInstance<Elf>().isNotEmpty()
-            && world.filterIsInstance<Goblin>().isNotEmpty()
-        ) {
+    data class Round(val round: Int = 0, val winState: WinState = WinState.CONTINUE)
+
+    fun solve(elfDamage: Int = 3): Game {
+        val world = initialWorld.clone(elfDamage)
+
+
+        fun playRound(round: Round): Round {
             val players = world.players()
-            // This loop plays the turns for all but the last player. The last player is played outside of the loop
-            // because if the game ends before all players play, that round is not counted. 
-            for (player in players.dropLast(1)) {
-                player.playTurn(world)
+            players.forEachIndexed { index, (pos, player) ->
+                player.playTurn(world, pos)
+
+                val winState = when {
+                    world.elvesLose() -> WinState.GOBLINS
+                    world.goblins.isEmpty() -> WinState.ELVES
+                    else -> WinState.CONTINUE
+                }
+
+                if (winState != WinState.CONTINUE) {
+                    val winRound = if (index == players.lastIndex) round.round + 1 else round.round
+                    return Round(winRound, winState)
+                }
             }
-            if (world.finished()) round--
-            if (players.isNotEmpty()) players.last().playTurn(world)
-            round++
+            return round.copy(round = round.round + 1)
         }
 
-        val remaining = world.players()
-        val hp = remaining.sumOf { it.health }
-        val victor = if (remaining.any { it is Goblin }) "Goblins" else "Elves"
-        return victor to round * hp
+        generateSequence(Round(), ::playRound)
+            .first { (_, winState) -> winState != WinState.CONTINUE }
+            .let { round ->
+                val opponentHp = if (round.winState == WinState.ELVES) world.elfHealth() else world.goblinHealth()
+                return Game(round, opponentHp)
+            }
     }
 
-    override fun part1() = solve(3).second
+    override fun part1() = solve().score()
 
-    // Plays the game several times, each time increasing elven damage until the elves with without losing
-    // a single Elf.
-    override fun part2() = generateSequence(4) { it + 1 }
-        .map { solve(it) }
-        .first { (victor, _) -> victor == "Elves" }
-        .second
+    override fun part2() = generateSequence(4) { elfDamage -> elfDamage + 1 }
+        .map { elfDamage -> solve(elfDamage) }
+        .first { game -> game.round.winState == WinState.ELVES }
+        .score()
 }
 
 fun main() = Day.runDay(Y2018D15::class)
 
-//    Class creation: 17ms
-//    Part 1: 224370 (703ms)
-//    Part 2: 45539 (3326ms)
-//    Total time: 4047ms
+//    Class creation: 5ms
+//    Part 1: 224370 (140ms)
+//    Part 2: 45539 (252ms)
+//    Total time: 399ms
