@@ -117,7 +117,7 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
         return if (includeDiagonals) {
             listOf(northwest(), north(), northeast(), east(), southeast(), south(), southwest(), west())
         } else {
-            listOf(north(), east(), west(), south())
+            listOf(north(), west(), east(), south())
         }
     }
 
