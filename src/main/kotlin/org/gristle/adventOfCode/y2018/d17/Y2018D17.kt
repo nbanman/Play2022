@@ -2,108 +2,102 @@ package org.gristle.adventOfCode.y2018.d17
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.MutableGrid
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.toMutableGrid
+import org.gristle.adventOfCode.utilities.getIntList
+import org.gristle.adventOfCode.utilities.takeUntil
 
-class Y2018D17(private val input: String) : Day {
+class Y2018D17(input: String) : Day {
+    enum class Ground { CLAY, STILL_WATER, MOVING_WATER }
 
-    private data class Directive(val xRange: IntRange, val yRange: IntRange)
-
-    private fun MutableGrid<Char>.spoutSpots() = count { it == '|' }
-
-    private fun MutableGrid<Char>.poolSpots() = count { it == '~' }
-
-    private fun spread(cavern: MutableGrid<Char>, spot: Int) {
-        val coord = cavern.coordOf(spot)
-        // Go left
-        var leftMost = coord.x
-        for (x in coord.x downTo 1) {
-            val leftSpot = Coord(x, coord.y)
-            leftMost = x
-            if (cavern[Coord(leftSpot.x - 1, leftSpot.y)] !in "|."
-                || cavern[Coord(leftSpot.x, leftSpot.y + 1)] !in "#~"
-            ) {
-                break
+    private val cavern: MutableMap<Coord, Ground> = input
+        .lines()
+        .flatMap { line ->
+            val (fixed, low, high) = line.getIntList()
+            if (line[0] == 'x') {
+                (low..high).map { Coord(fixed, it) }
+            } else {
+                (low..high).map { Coord(it, fixed) }
             }
-        }
-        // Go right
-        var rightMost = coord.x
-        for (x in coord.x until cavern.width - 1) {
-            val rightSpot = Coord(x, coord.y)
-            rightMost = x
-            if (cavern[Coord(rightSpot.x + 1, rightSpot.y)] !in "|."
-                || cavern[Coord(rightSpot.x, rightSpot.y + 1)] !in "#~") {
-                break
-            }
-        }
-        val fill = if (cavern[leftMost, coord.y + 1] in "|." || cavern[rightMost, coord.y + 1] in "|.") '|' else '~'
-        for (x in leftMost..rightMost) { cavern[x, coord.y] = fill }
-    }
+        }.associateWith { Ground.CLAY }
+        .toMutableMap()
 
-    val solution: Pair<Int, Int> = let {
-        var minY = 0
-        val cavern = input
-            .groupValues("""([xy])=(\d+), [xy]=(\d+)\.\.(\d+)""")
-            .map { gv ->
-                val gvi = gv.drop(1).map { it.toInt() }
-                val xRange = if (gv[0] == "x") gvi[0]..gvi[0] else gvi[1]..gvi[2]
-                val yRange = if (gv[0] == "y") gvi[0]..gvi[0] else gvi[1]..gvi[2]
-                Directive(xRange, yRange)
-            }.let { directives ->
-                val minX = directives.map { it.xRange.first }.minOf { it }
-                val maxX = directives.map { it.xRange.last }.maxOf { it }
-                minY = directives.map { it.yRange.first }.minOf { it }
-                val maxY = directives.map { it.yRange.last }.maxOf { it }
-                val width = maxX - minX + 5
-                val height = maxY + 1
-                val cave = List(width * height) { i -> if (i + minX - 2 == 500) '+' else '.' }.toMutableGrid(width)
-                for (directive in directives) {
-                    for (x in directive.xRange) {
-                        for (y in directive.yRange) {
-                            cave[x - minX + 2, y] = '#'
-                        }
+    // The deepest part of the cavern recorded.
+    private val firstClayDepth = cavern.keys.minOf(Coord::y)
+    private val depth = cavern.keys.maxOf(Coord::y)
+
+    private val start = Coord(500, 1)
+
+    private fun Coord.seep(): List<Coord> {
+
+        val below = south()
+
+        return when (cavern[below]) {
+            null, Ground.MOVING_WATER -> {
+                cavern[this] = Ground.MOVING_WATER
+                if (below.y > depth) emptyList() else listOf(below)
+            }
+
+            else -> {
+                val left = generateSequence(this.west()) { it.west() }
+                    .takeUntil {
+                        cavern[it] == Ground.CLAY
+                                || cavern[it.south()] == null
+                                || cavern[it.south()] == Ground.MOVING_WATER
+                    }.toMutableList()
+                val leftWall = cavern[left.last()] == Ground.CLAY
+                if (leftWall) {
+                    left.removeLast()
+                } else {
+                    if (cavern[left.last().south()] == Ground.MOVING_WATER) {
+                        left.clear()
                     }
                 }
-                cave
-            }
-        var previousSpoutSpots = 0
-        var currentSpoutSpots = 0
-        var previousPoolSpots = 0
-        var currentPoolSpots = 1
-        var round = 0
-        while (currentSpoutSpots != previousSpoutSpots || currentPoolSpots != previousPoolSpots) {
-            round++
-            previousSpoutSpots = currentSpoutSpots
-            previousPoolSpots = currentPoolSpots
-            val runningWaterSpots = cavern.mapIndexedNotNull { index, spot ->
-                if (spot !in "+|") null else index
-            }
 
-            for (spot in runningWaterSpots) {
-                val underSpot = spot + cavern.width
-                if (underSpot in cavern.indices) {
-                    when {
-                        cavern[underSpot] == '.' -> cavern[underSpot] = '|'
-                        cavern[underSpot] in "#~" -> spread(cavern, spot)
+                val right = generateSequence(this) { it.east() }
+                    .takeUntil {
+                        cavern[it] == Ground.CLAY
+                                || cavern[it.south()] == null
+                                || cavern[it.south()] == Ground.MOVING_WATER
+                    }.toMutableList()
+                val rightWall = cavern[right.last()] == Ground.CLAY
+                if (rightWall) {
+                    right.removeLast()
+                } else {
+                    if (cavern[right.last().south()] == Ground.MOVING_WATER) {
+                        right.clear()
                     }
                 }
+
+                val waterline = left + right
+
+                if (leftWall && rightWall) {
+                    waterline.forEach { cavern[it] = Ground.STILL_WATER }
+                    listOf(this.north())
+                } else {
+                    waterline.forEach { cavern[it] = Ground.MOVING_WATER }
+                    val stillRunning = mutableListOf<Coord>()
+                    if (!leftWall && left.isNotEmpty()) stillRunning.add(left.last().south())
+                    if (!rightWall && right.isNotEmpty()) stillRunning.add(right.last().south())
+                    stillRunning
+                }
             }
-            currentSpoutSpots = cavern.spoutSpots()
-            currentPoolSpots = cavern.poolSpots()
         }
-        cavern.drop(minY * cavern.width).count { it in "|~" } to
-                cavern.drop(minY * cavern.width).count { it in "~" }
     }
 
-    override fun part1() = solution.first
+    init {
+        generateSequence(listOf(start)) { stillRunning -> stillRunning.flatMap { it.seep() }.distinct() }
+            .first { stillRunning -> stillRunning.isEmpty() }
+    }
 
-    override fun part2() = solution.second
+    override fun part1() = cavern.count { (pos, ground) ->
+        pos.y >= firstClayDepth && (ground == Ground.MOVING_WATER || ground == Ground.STILL_WATER)
+    }
+
+    override fun part2() = cavern.values.count { it == Ground.STILL_WATER }
 }
 
 fun main() = Day.runDay(Y2018D17::class)
 
-//    Class creation: 12948ms
-//    Part 1: 40879 (0ms)
-//    Part 2: 34693 (0ms)
-//    Total time: 12948ms
+//    Class creation: 136ms
+//    Part 1: 40879 (14ms)
+//    Part 2: 34693 (7ms)
+//    Total time: 158ms
