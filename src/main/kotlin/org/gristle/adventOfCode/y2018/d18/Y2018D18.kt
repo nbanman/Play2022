@@ -39,7 +39,7 @@ class Y2018D18(input: String) : Day {
 
         // Runs the generator, with each minute adding the latest state into the cache. Stops and returns the first
         // state that is contained within the cache; i.e., is a repeated state.
-        val repeated = generator.first { area -> cache.contains(area).also { cache.add(area) } }
+        val repeated = generator.first { area -> !cache.add(area) }
 
         // The index of the first instance of a repeated state, which means all values with an index lower than that
         // are not repeats.
