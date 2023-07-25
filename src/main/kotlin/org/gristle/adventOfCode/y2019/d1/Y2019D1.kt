@@ -4,7 +4,7 @@ import org.gristle.adventOfCode.Day
 import kotlin.math.max
 
 class Y2019D1(input: String) : Day {
-    private val modules = input.lines().map(String::toInt)
+    private val modules = input.lineSequence().map(String::toInt).toList()
 
     private tailrec fun fuel(remaining: Int, total: Int = 0): Int {
         return if (remaining == 0) {
