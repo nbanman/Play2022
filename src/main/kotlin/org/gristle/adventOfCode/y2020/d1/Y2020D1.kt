@@ -1,14 +1,15 @@
 package org.gristle.adventOfCode.y2020.d1
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getIntList
 import org.gristle.adventOfCode.utilities.getPairSequence
 
 class Y2020D1(input: String) : Day {
 
-    private val entries = input.lines().map(String::toInt)
+    private val entries = input.getIntList()
     private val entrySet = entries.toSet()
 
-    override fun part1() = entries // for each entry...
+    override fun part1() = entrySet // for each entry...
         .first { entrySet.contains(2020 - it) } // find the first one where there is another entry that adds to 2020 
         .let { it * (2020 - it) } // multiply the two together
 
