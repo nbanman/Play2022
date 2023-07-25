@@ -68,11 +68,11 @@ class Y2020D4(input: String) : Day {
                 .groupValues("""([a-z]{3}):([^ \r\n]+)""")
                 .map(PassportField::fromGv)
                 .filter { it !is PassportField.Cid }
-        }
+        }.filter { passportFields -> passportFields.size == 7 }
 
-    override fun part1() = passports.count { it.size == 7 }
+    override fun part1() = passports.size
 
-    override fun part2() = passports.count { it.size == 7 && it.all(PassportField::isValid) }
+    override fun part2() = passports.count { it.all(PassportField::isValid) }
 }
 
 fun main() = Day.runDay(Y2020D4::class)
