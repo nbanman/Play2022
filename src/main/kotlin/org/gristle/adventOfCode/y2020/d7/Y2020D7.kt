@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2020.d7
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.gvs
 import java.util.*
 
 class Y2020D7(input: String) : Day {
@@ -35,13 +36,13 @@ class Y2020D7(input: String) : Day {
     private val bagRx = """(\d+) (\w+ \w+) bag""".toRegex()
 
     private val rules: List<Rule> = input
-        .groupValues("""(\w+ \w+) bags contain ([^.]+)\.""")
+        .gvs("""(\w+ \w+) bags contain ([^.]+)\.""")
         .map { (container, contained) ->
             val heldBags = contained
                 .groupValues(bagRx)
                 .map { (amountString, bag) -> HeldBag(bag, amountString.toInt()) }
             Rule(container, heldBags)
-        }
+        }.toList()
 
     private val bagMap: Map<String, Rule> by lazy {
         buildMap { rules.forEach { rule -> put(rule.color, rule) } }
