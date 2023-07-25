@@ -11,11 +11,11 @@ class Y2020D2(input: String) : Day {
     }
 
     private val policies = input
-        .lines()
+        .lineSequence()
         .map {
             val (lower, upper, letter, password) = it.split('-', ' ')
             PassPolicy(letter.first(), lower.toInt()..upper.toInt(), password)
-        }
+        }.toList()
 
     override fun part1() = policies.count(PassPolicy::isValidUnderOldJobPolicy)
     override fun part2() = policies.count(PassPolicy::isValidUnderCurrentPolicy)
