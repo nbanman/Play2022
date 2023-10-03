@@ -202,7 +202,47 @@ class ArrayGrid<E> private constructor(
         includeDiagonals: Boolean,
         wrapAround: Boolean
     ): List<E> {
-        return getNeighborsIndexedValue(x, y, includeDiagonals, wrapAround).map { it.value }
+        return if (includeDiagonals) {
+            listOf(
+                x - 1 to y - 1,
+                x to y - 1,
+                x + 1 to y - 1,
+                x - 1 to y,
+                x + 1 to y,
+                x - 1 to y + 1,
+                x to y + 1,
+                x + 1 to y + 1
+            )
+        } else {
+            listOf(
+                x to y - 1,
+                x - 1 to y,
+                x + 1 to y,
+                x to y + 1
+            )
+        }.mapNotNull { (x, y) ->
+            val neighborX = if (wrapAround) {
+                when (x) {
+                    -1 -> width - 1
+                    width -> 0
+                    else -> x
+                }
+            } else x
+
+            val neighborY = if (wrapAround) {
+                when (y) {
+                    -1 -> height - 1
+                    height -> 0
+                    else -> y
+                }
+            } else y
+
+            if (wrapAround || (neighborX in xIndices && neighborY in yIndices)) {
+                this[neighborX, neighborY]
+            } else {
+                null
+            }
+        }
     }
 
     override fun getNeighbors(index: Int, includeDiagonals: Boolean, wrapAround: Boolean) =
@@ -233,22 +273,22 @@ class ArrayGrid<E> private constructor(
                 x + 1 to y,
                 x to y + 1
             )
-        }.mapNotNull { coordinates ->
+        }.mapNotNull { (x, y) ->
             val neighborX = if (wrapAround) {
-                when (coordinates.first) {
+                when (x) {
                     -1 -> width - 1
                     width -> 0
-                    else -> coordinates.first
+                    else -> x
                 }
-            } else coordinates.first
+            } else x
 
             val neighborY = if (wrapAround) {
-                when (coordinates.second) {
+                when (y) {
                     -1 -> height - 1
                     height -> 0
-                    else -> coordinates.second
+                    else -> y
                 }
-            } else coordinates.second
+            } else y
 
             if (wrapAround || (neighborX in xIndices && neighborY in yIndices)) {
                 IndexedValue(indexOf(neighborX, neighborY), this[neighborX, neighborY])

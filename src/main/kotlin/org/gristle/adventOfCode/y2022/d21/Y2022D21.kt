@@ -201,4 +201,9 @@ class Y2022D21(private val input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2022D21::class) // 309248622142100 (52ms), 3757272361782 (13ms)
+fun main() = Day.runDay(Y2022D21::class)
+
+//    Class creation: 2ms
+//    Part 1: 309248622142100 (35ms)
+//    Part 2: 3757272361782 (13ms)
+//    Total time: 52ms
