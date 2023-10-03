@@ -1,16 +1,49 @@
 package org.gristle.adventOfCode.y2015.d22
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getIntList
 import java.util.*
 
 class Y2015D22(input: String) : Day {
 
-    private val stats = input.lines().map { line -> line.takeLastWhile { it.isDigit() }.toInt() }
+    private val bossHP: Int
+    private val damage: Int
 
-    private val bossHP = stats[0]
-    private val damage = stats[1]
+    init {
+        val (bhp, dam) = input.getIntList()
+        bossHP = bhp
+        damage = dam
+    }
 
-    class Effect(val name: String, val mana: Int, val duration: Int)
+    sealed interface Spell {
+        val mana: Int
+        val duration: Int
+    }
+
+    object MagicMissile : Spell {
+        override val mana: Int = 53
+        override val duration: Int = 1
+    }
+
+    object Drain : Spell {
+        override val mana: Int = 73
+        override val duration: Int = 1
+    }
+
+    object Shield : Spell {
+        override val mana: Int = 113
+        override val duration: Int = 6
+    }
+
+    object Poison : Spell {
+        override val mana: Int = 173
+        override val duration: Int = 6
+    }
+
+    object Recharge : Spell {
+        override val mana: Int = 229
+        override val duration: Int = 5
+    }
 
     data class State(
         val playerHP: Int,
@@ -27,19 +60,19 @@ class Y2015D22(input: String) : Day {
 
         val availableMana = currentMana + (if (recharge != 0) 101 else 0)
 
-        fun cast(spell: Effect, constantDrain: Boolean): State {
+        fun cast(spell: Spell, constantDrain: Boolean): State {
             val newDead = constantDrain && playerHP == 1
-            val newPlayerHP = playerHP + if (spell.name == "drain") 2 else 0 - if (constantDrain) 1 else 0
+            val newPlayerHP = playerHP + if (spell is Drain) 2 else 0 - if (constantDrain) 1 else 0
             val newBossHP = bossHP +
                     (if (poison > 0) -3 else 0) +
-                    (if (spell.name == "magic missile") -4 else 0) +
-                    (if (spell.name == "drain") -2 else 0)
+                    (if (spell is MagicMissile) -4 else 0) +
+                    (if (spell is Drain) -2 else 0)
             val newCurrentMana = currentMana - (spell.mana) +
                     (if (recharge > 0) 101 else 0)
             val newManaSpent = manaSpent + spell.mana
-            val newShield = if (spell.name == "shield") spell.duration else maxOf(0, shield - 1)
-            val newPoison = if (spell.name == "poison") spell.duration else maxOf(0, poison - 1)
-            val newRecharge = if (spell.name == "recharge") spell.duration else maxOf(0, recharge - 1)
+            val newShield = if (spell is Shield) spell.duration else maxOf(0, shield - 1)
+            val newPoison = if (spell is Poison) spell.duration else maxOf(0, poison - 1)
+            val newRecharge = if (spell is Recharge) spell.duration else maxOf(0, recharge - 1)
             return State(
                 newPlayerHP, damage, newDead, newBossHP, newCurrentMana,
                 newManaSpent, newShield, newPoison, newRecharge
@@ -59,18 +92,11 @@ class Y2015D22(input: String) : Day {
             )
         }
 
-        override fun compareTo(other: State) = playerHP - other.playerHP
+        override fun compareTo(other: State) = other.manaSpent - manaSpent
     }
 
-    private val spells = listOf(
-        Effect("magic missile", 53, 1),
-        Effect("drain", 73, 1),
-        Effect("shield", 113, 6),
-        Effect("poison", 173, 6),
-        Effect("recharge", 229, 5)
-    )
-
     private fun solve(constantDrain: Boolean): Int {
+        val spells = listOf(MagicMissile, Drain, Shield, Poison, Recharge)
         val states = PriorityQueue<State>()
         states.add(State(50, damage, false, bossHP, 500))
 
@@ -79,14 +105,14 @@ class Y2015D22(input: String) : Day {
         while (states.isNotEmpty()) {
             // player turn
             val current = states.poll()
-            spells.filter {
-                val alreadyCast = when (it.name) {
-                    "shield" -> current.shield > 1
-                    "poison" -> current.poison > 1
-                    "recharge" -> current.recharge > 1
+            spells.filter { spell ->
+                val alreadyCast = when (spell) {
+                    is Shield -> current.shield > 1
+                    is Poison -> current.poison > 1
+                    is Recharge -> current.recharge > 1
                     else -> false
                 }
-                !alreadyCast && current.availableMana >= it.mana
+                !alreadyCast && current.availableMana >= spell.mana
             }.map {
                 current.cast(it, constantDrain).bossTurn()
             }.filter {
