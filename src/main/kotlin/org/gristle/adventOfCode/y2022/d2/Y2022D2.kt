@@ -7,8 +7,8 @@ class Y2022D2(input: String) : Day {
     // and one outcome. 
 
     // Throws can be represented as Integers, starting at Rock (0), losing to Paper (1), losing to Scissors (2).
-    // We can make the relationship circular using floor mod. 012012012 etc. If circular, then the digit above
-    // always represents a win, and the digit below always represents a loss. 
+    // We can make the relationship circular using floor mod. 012012012 etc. If circular, then the digit to the right
+    // always represents a win, and the digit to the left always represents a loss. 
 
     // Outcomes can also be represented as Integers, starting at Loss(0), then, Draw(1), then Win(2).
 
@@ -21,8 +21,8 @@ class Y2022D2(input: String) : Day {
     //     myOutcome = (myThrow - opponentThrow + 1).mod(3)
     // We subtract the two throws to get the relationship between the two. A draw would mean 0 difference between two
     // throws. We add an offset of 1 to get it to correspond with the ordinals assigned to the outcomes.
-    // 0 + 1 = 1 (draw). A win is 1 above, which is also intuitive. 1 + 1 = 2 (win). A loss is two above, which 
-    // is where the mod comes in. Two above is the same as one below, corresponding to a loss. 
+    // 0 + 1 = 1 (draw). A win is 1 to the right, which is also intuitive. 1 + 1 = 2 (win). A loss is two to the right 
+    // above, which is where the mod comes in. Two above is the same as one below, corresponding to a loss. 
     // 2 + 1 = 3 mod 3 = 0 (loss). Thus:
     private fun myOutcome(myThrow: Int, opponentThrow: Int) = (myThrow - opponentThrow + 1).mod(3)
 
