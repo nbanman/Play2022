@@ -44,3 +44,11 @@ enum class Nsew {
     fun multiLeft(times: Int): Nsew = (1..times).fold(this) { acc, _ -> acc.left() }
     fun multiRight(times: Int): Nsew = (1..times).fold(this) { acc, _ -> acc.right() }
 }
+
+fun Char.toNsew(): Nsew = when (this) {
+    'R', 'E' -> Nsew.EAST
+    'U', 'N' -> Nsew.NORTH
+    'L', 'W' -> Nsew.WEST
+    'D', 'S' -> Nsew.SOUTH
+    else -> throw IllegalArgumentException("Invalid input")
+}
