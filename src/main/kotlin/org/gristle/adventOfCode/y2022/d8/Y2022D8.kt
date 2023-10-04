@@ -9,13 +9,10 @@ import org.gristle.adventOfCode.utilities.toGrid
 class Y2022D8(input: String) : Day {
 
     // Representations of the positions and heights of all the trees in the forest.
-    private val treeHeights = let {
-        val forest = input.toGrid(Char::toDigit)
-        forest.coords().associateWith { forest[it] }
-    }
+    private val treeHeights = input.toGrid(Char::toDigit)
 
     // utility function that makes the coordinates aware of whether they are in the forest
-    private fun Coord.outOfForest(): Boolean = !treeHeights.containsKey(this)
+    private fun Coord.outOfForest(): Boolean = !treeHeights.validCoord(this)
 
     // for a given position, provide a list of sequences that generate coordinates radiating away from the position
     // in each of the four directions
@@ -26,8 +23,9 @@ class Y2022D8(input: String) : Day {
     // determines whether a sequence should be terminated, returning true if the position is out of the forest 
     // or if the tree at the position blocks the starting tree's line of sight (LOS).
     private fun terminating(pos: Coord, tree: Coord): Boolean {
-        val posHeight = treeHeights[pos] ?: return true // null means out of forest, so return true
-        return posHeight >= treeHeights.getValue(tree)
+        if (pos.outOfForest()) return true
+        val posHeight = treeHeights[pos]
+        return posHeight >= treeHeights[tree]
     }
 
     // for a given position, checks all directions and returns true if *any* allow LOS out of the forest
@@ -53,14 +51,14 @@ class Y2022D8(input: String) : Day {
                 .let { (index, pos) -> index + if (pos.outOfForest()) 0 else 1 }
         }.reduce(Int::times)
 
-    override fun part1(): Int = treeHeights.keys.count { tree -> tree.isVisible() }
+    override fun part1(): Int = treeHeights.coords().count { tree -> tree.isVisible() }
 
-    override fun part2(): Int = treeHeights.keys.maxOf(::scenicScore)
+    override fun part2(): Int = treeHeights.coords().maxOf(::scenicScore)
 }
 
 fun main() = Day.runDay(Y2022D8::class)
 
-//    Class creation: 31ms
-//    Part 1: 1708 (31ms)
-//    Part 2: 504000 (30ms)
-//    Total time: 93ms
+//    Class creation: 10ms
+//    Part 1: 1708 (34ms)
+//    Part 2: 504000 (36ms)
+//    Total time: 82ms
