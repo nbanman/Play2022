@@ -22,7 +22,7 @@ class Y2022D5(input: String) : Day {
             .filter { it.last().isLetter() } // get rid of strings that don't have crate information
             .map { it.trimStart().toList() } // create and load up stacks
         instructions = instructionsStrings.map {
-            it.getIntList().let { intList -> Instruction(intList[0], intList[1] - 1, intList[2] - 1) }
+            it.getIntList().let { (amount, from, to) -> Instruction(amount, from - 1, to - 1) }
         }
     }
 
@@ -34,7 +34,7 @@ class Y2022D5(input: String) : Day {
      */
     fun solve(rearrange: (amount: Int, fromStack: ArrayDeque<Char>, toStack: ArrayDeque<Char>) -> Unit): String {
         // create arrayDeques for mutation
-        val stacks = crates.map { ArrayDeque(it) }
+        val stacks: List<ArrayDeque<Char>> = crates.map { ArrayDeque(it) }
         instructions.forEach { (amount, fromIndex, toIndex) ->
             rearrange(amount, stacks[fromIndex], stacks[toIndex])
         }
