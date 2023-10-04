@@ -23,8 +23,13 @@ class Y2022D6(private val input: String) : Day {
         } + 1
     }
 
-    override fun part1() = slowSolve(4)
-    override fun part2() = slowSolve(14)
+    override fun part1() = solve(4)
+    override fun part2() = solve(14)
 }
 
 fun main() = Day.runDay(Y2022D6::class) // 1361, 3263
+
+//    Class creation: 2ms
+//    Part 1: 1361 (4ms)
+//    Part 2: 3263 (2ms)
+//    Total time: 9ms
