@@ -142,7 +142,7 @@ class Test2021 {
 
     @Test
     internal fun y2021d23() {
-        assertEquals(14148L to 43814L, Day.testDay(Y2021D23::class))
+        assertEquals(14148 to 43814, Day.testDay(Y2021D23::class))
     }
 
     @Test
