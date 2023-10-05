@@ -7,13 +7,12 @@ import org.gristle.adventOfCode.utilities.Graph.steps
 class Y2021D23(input: String) : Day {
 
     companion object {
+
         /**
          * Utility function takes an index and an element and swaps in that element at the index.
          */
         fun <T> List<T>.swapElementAt(index: Int, newElement: T): List<T> =
-            mapIndexed { idx, t ->
-                if (index == idx) newElement else t
-            }
+            mapIndexed { idx, t -> if (index == idx) newElement else t }
     }
 
     /**
