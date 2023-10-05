@@ -202,6 +202,9 @@ class Y2021D23(input: String) : Day {
             defaultEdges = State::edges
         ).steps()
 
+    /**
+     * Parses strings into State object.
+     */
     private fun getState(a: List<String>): State {
         return a.let {
             List(it.size * it.first().length) { i ->
@@ -228,7 +231,7 @@ class Y2021D23(input: String) : Day {
 
 fun main() = Day.runDay(Y2021D23::class)
 
-//    Class creation: 17ms
-//    Part 1: 14148 (467ms)
-//    Part 2: 43814 (900ms)
-//    Total time: 1385ms
+//    Class creation: 2ms
+//    Part 1: 14148 (254ms)
+//    Part 2: 43814 (532ms)
+//    Total time: 789ms
