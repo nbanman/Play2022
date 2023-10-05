@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
     implementation(kotlin("script-runtime"))
     implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.6")
