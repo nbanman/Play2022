@@ -2,82 +2,87 @@ package org.gristle.adventOfCode.y2021.d23
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Graph.steps
 
 class Y2021D23(input: String) : Day {
 
     companion object {
-        fun <T> List<T>.swapElementAt(index: Int, newElement: T?): List<T> =
-            newElement?.let { subList(0, index) + it + subList(index + 1, lastIndex + 1) } ?: this
+        /**
+         * Utility function takes an index and an element and swaps in that element at the index.
+         */
+        fun <T> List<T>.swapElementAt(index: Int, newElement: T): List<T> =
+            mapIndexed { idx, t ->
+                if (index == idx) newElement else t
+            }
     }
 
-    enum class S(val energy: Double) {
+    /**
+     * Used to identify the Amphipod and store energy information. Amphipod.E is actually "Empty"
+     */
+    enum class Amphipod(val energy: Double) {
         A(1.0),
         B(10.0),
         C(100.0),
         D(1000.0),
-        E(0.0) {
-            override fun toString() = "_"
-        }
+        E(0.0),
     }
 
-    data class Room(val id: S, val spots: List<S>) {
+    /**
+     * Represents the state of the room.
+     */
+    data class Room(val id: Amphipod, val spots: List<Amphipod>) {
         val hallIndex = id.ordinal + 1
-        val isFinished = spots.all { it == id }
-        val isOpen = spots.all { it == S.E || it == id } && spots.any { it == S.E }
-        val isMixed = spots.any { it !in listOf(S.E, id) }
-        val openings = spots.count { it == S.E }
+        val isFinished: Boolean by lazy { spots.all { it == id } }
+        val isOpen: Boolean by lazy { spots.all { it == Amphipod.E || it == id } && spots.any { it == Amphipod.E } }
+        val isMixed: Boolean by lazy { spots.any { it !in listOf(Amphipod.E, id) } }
+        val openings: Int by lazy { spots.count { it == Amphipod.E } }
 
-        val topAmphipod = spots.find { it != S.E } ?: S.E
+        val topAmphipod: Amphipod = spots.find { it != Amphipod.E } ?: Amphipod.E
 
+        /**
+         * Adds an amphipod to the room.
+         */
         fun addAmphipod(): Room {
-            val lastEmptyIndex = spots.lastIndexOf(S.E)
+            val lastEmptyIndex = spots.lastIndexOf(Amphipod.E)
             return copy(spots = spots.swapElementAt(lastEmptyIndex, id))
         }
 
+        /**
+         * Removes an amphipod from the room
+         */
         fun removeAmphipod(): Room {
-            val firstOccupiedIndex = spots.indexOfFirst { it != S.E }
-            return copy(spots = spots.swapElementAt(firstOccupiedIndex, S.E))
-        }
-
-        override fun toString(): String {
-            return "$id: $spots"
+            val firstOccupiedIndex = spots.indexOfFirst { it != Amphipod.E }
+            return copy(spots = spots.swapElementAt(firstOccupiedIndex, Amphipod.E))
         }
     }
 
+    /**
+     * Represents the state of all amphipods in the hallway and rooms.
+     */
     data class State(
-        val hallway: List<S>,
-        val roomA: Room,
-        val roomB: Room,
-        val roomC: Room,
-        val roomD: Room,
-        val log: String = ""
+        val hallway: List<Amphipod>,
+        val rooms: List<Room>,
     ) {
-        companion object {
-            fun of(hallway: List<S>, roomList: List<Room>) =
-                State(hallway, roomList[0], roomList[1], roomList[2], roomList[3])
-        }
 
-        private val roomList = listOf(roomA, roomB, roomC, roomD)
-
-        val isEnd = hallway.all { it == S.E } && roomList.all { it.isFinished }
+        val isEnd = hallway.all { it == Amphipod.E } && this.rooms.all(Room::isFinished)
 
         fun edges(): List<Graph.Edge<State>> {
 
             // find open rooms and get corresponding values
-            roomList.filter { it.isOpen }.forEach { room ->
+            this.rooms.filter(Room::isOpen).forEach { room ->
                 // look left
                 var steps = 1
                 for (hallSpot in room.hallIndex downTo 0) {
                     // look in hall first
                     when (hallway[hallSpot]) {
                         room.id -> return listOf(edgeFromHallToRoom(hallSpot, room, steps)) // found a piece to place
-                        S.E -> {} // keep going
+                        Amphipod.E -> {} // keep going
                         else -> break // left blocked; go right
                     }
                     // look in room (if available)
                     val roomSpot = hallSpot - 2
                     if (roomSpot >= 0) {
-                        val top = roomList[roomSpot].topAmphipod
+                        val top = this.rooms[roomSpot].topAmphipod
                         if (top == room.id) {
                             return listOf(edgeFromRoomToRoom(roomSpot, room, steps))
                         }
@@ -90,13 +95,13 @@ class Y2021D23(input: String) : Day {
                     // look in hall first
                     when (hallway[hallSpot]) {
                         room.id -> return listOf(edgeFromHallToRoom(hallSpot, room, steps))
-                        S.E -> {}
+                        Amphipod.E -> {}
                         else -> break // right blocked; go to pop
                     }
                     // look in room (if available)
                     val roomSpot = hallSpot - 1
-                    if (roomSpot <= roomList.lastIndex) {
-                        val top = roomList[roomSpot].topAmphipod
+                    if (roomSpot <= this.rooms.lastIndex) {
+                        val top = this.rooms[roomSpot].topAmphipod
                         if (top == room.id) {
                             return listOf(edgeFromRoomToRoom(roomSpot, room, steps))
                         }
@@ -106,111 +111,106 @@ class Y2021D23(input: String) : Day {
             }
 
             // Move to popping...
-
-            // Create mutableList for holding various edges
-            val edges = mutableListOf<Graph.Edge<State>>()
-
-            roomList.filter { it.isMixed }.forEach { room ->
-                // look left
-                var steps = 1
-                for (hallSpot in room.hallIndex downTo 0) {
-                    if (hallway[hallSpot] == S.E) edges.add(edgeFromRoomToHall(hallSpot, room, steps)) else break
-                    steps = if (hallSpot == 1) steps + 1 else steps + 2
+            return buildList {
+                this@State.rooms.filter(Room::isMixed).forEach { room ->
+                    // look left
+                    var steps = 1
+                    for (hallSpot in room.hallIndex downTo 0) {
+                        if (hallway[hallSpot] == Amphipod.E) add(edgeFromRoomToHall(hallSpot, room, steps)) else break
+                        steps = if (hallSpot == 1) steps + 1 else steps + 2
+                    }
+                    // look right
+                    steps = 1
+                    for (hallSpot in (room.hallIndex + 1)..hallway.lastIndex) {
+                        if (hallway[hallSpot] == Amphipod.E) add(edgeFromRoomToHall(hallSpot, room, steps)) else break
+                        steps = if (hallSpot == 5) steps + 1 else steps + 2
+                    }
                 }
-                // look right
-                steps = 1
-                for (hallSpot in (room.hallIndex + 1)..hallway.lastIndex) {
-                    if (hallway[hallSpot] == S.E) edges.add(edgeFromRoomToHall(hallSpot, room, steps)) else break
-                    steps = if (hallSpot == 5) steps + 1 else steps + 2
-                }
+
             }
-            return edges
+        }
+
+        private inline fun List<Room>.newRooms(id: Amphipod, action: Room.() -> Room): List<Room> = List(size) { idx ->
+            if (idx == id.ordinal) {
+                rooms[idx].action()
+            } else {
+                rooms[idx]
+            }
         }
 
         private fun edgeFromRoomToHall(hallSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
             val newAmphipod = room.topAmphipod
-            val newHallway = hallway.swapElementAt(hallSpot, newAmphipod)
-            val newLog = "$newAmphipod from Room ${room.id} to Hall $hallSpot"
-            val newState = when (room.id) {
-                S.A -> copy(hallway = newHallway, roomA = room.removeAmphipod(), log = newLog)
-                S.B -> copy(hallway = newHallway, roomB = room.removeAmphipod(), log = newLog)
-                S.C -> copy(hallway = newHallway, roomC = room.removeAmphipod(), log = newLog)
-                S.D -> copy(hallway = newHallway, roomD = room.removeAmphipod(), log = newLog)
-                S.E -> this
+            val newState = let {
+                val newHallway = hallway.swapElementAt(hallSpot, newAmphipod)
+                val newRooms = rooms.newRooms(room.id, Room::removeAmphipod)
+                State(newHallway, newRooms)
             }
             val weight = (steps + room.openings + 1) * newAmphipod.energy
             return Graph.Edge(newState, weight)
         }
 
         private fun edgeFromHallToRoom(hallSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
-            val newHallway = hallway.swapElementAt(hallSpot, S.E)
-            val newLog = "${room.id} from Hall $hallSpot to Room ${room.id}"
-            val newState = when (room.id) {
-                S.A -> copy(hallway = newHallway, roomA = room.addAmphipod(), log = newLog)
-                S.B -> copy(hallway = newHallway, roomB = room.addAmphipod(), log = newLog)
-                S.C -> copy(hallway = newHallway, roomC = room.addAmphipod(), log = newLog)
-                S.D -> copy(hallway = newHallway, roomD = room.addAmphipod(), log = newLog)
-                S.E -> this
+            val newState = let {
+                val newHallway = hallway.swapElementAt(hallSpot, Amphipod.E)
+                val newRooms = rooms.newRooms(room.id, Room::addAmphipod)
+                State(newHallway, newRooms)
             }
             val weight = (steps + room.openings) * room.id.energy
             return Graph.Edge(newState, weight)
         }
 
         private fun edgeFromRoomToRoom(roomSpot: Int, room: Room, steps: Int): Graph.Edge<State> {
-            val other = roomList[roomSpot]
-            val newLog = "${other.topAmphipod} from Room ${other.id} to Room ${room.id}"
-            val newState = when (room.id) {
-                S.A -> when (roomList[roomSpot].id) {
-                    S.B -> copy(roomA = room.addAmphipod(), roomB = other.removeAmphipod(), log = newLog)
-                    S.C -> copy(roomA = room.addAmphipod(), roomC = other.removeAmphipod(), log = newLog)
-                    S.D -> copy(roomA = room.addAmphipod(), roomD = other.removeAmphipod(), log = newLog)
-                    else -> throw IllegalArgumentException()
+            val other = this.rooms[roomSpot]
+            val newState = let {
+                val newRooms = List(rooms.size) { index ->
+                    when (index) {
+                        room.id.ordinal -> room.addAmphipod()
+                        roomSpot -> other.removeAmphipod()
+                        else -> rooms[index]
+                    }
                 }
-                S.B -> when (roomList[roomSpot].id) {
-                    S.A -> copy(roomB = room.addAmphipod(), roomA = other.removeAmphipod(), log = newLog)
-                    S.C -> copy(roomB = room.addAmphipod(), roomC = other.removeAmphipod(), log = newLog)
-                    S.D -> copy(roomB = room.addAmphipod(), roomD = other.removeAmphipod(), log = newLog)
-                    else -> throw IllegalArgumentException()
-                }
-                S.C -> when (roomList[roomSpot].id) {
-                    S.A -> copy(roomC = room.addAmphipod(), roomA = other.removeAmphipod(), log = newLog)
-                    S.B -> copy(roomC = room.addAmphipod(), roomB = other.removeAmphipod(), log = newLog)
-                    S.D -> copy(roomC = room.addAmphipod(), roomD = other.removeAmphipod(), log = newLog)
-                    else -> throw IllegalArgumentException()
-                }
-                S.D -> when (roomList[roomSpot].id) {
-                    S.A -> copy(roomD = room.addAmphipod(), roomA = other.removeAmphipod(), log = newLog)
-                    S.B -> copy(roomD = room.addAmphipod(), roomB = other.removeAmphipod(), log = newLog)
-                    S.C -> copy(roomD = room.addAmphipod(), roomC = other.removeAmphipod(), log = newLog)
-                    else -> throw IllegalArgumentException()
-                }
-                S.E -> throw IllegalArgumentException()
+                copy(rooms = newRooms)
             }
+
             val weight = (steps + other.openings + 1 + room.openings + 1) * room.id.energy
             return Graph.Edge(newState, weight)
         }
 
-        override fun toString(): String {
-            return "H: $hallway $roomA $roomB $roomC $roomD"
+        override fun hashCode(): Int {
+            var result = hallway.hashCode()
+            result = 31 * result + rooms.hashCode()
+            return result
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as State
+
+            if (hallway != other.hallway) return false
+            if (rooms != other.rooms) return false
+
+            return true
         }
     }
 
-    private fun totalEnergy(state: State): Long {
-        val distance = Graph.dijkstra(state, { it.isEnd }) {
-            it.edges()
-        }
-        return distance.last().weight.toLong()
-    }
+    private fun totalEnergy(state: State): Int = Graph
+        .dijkstra(
+            startId = state,
+            endCondition = State::isEnd,
+            defaultEdges = State::edges
+        ).steps()
 
     private fun getState(a: List<String>): State {
         return a.let {
             List(it.size * it.first().length) { i ->
-                S.valueOf(it[i % it.size][i / it.size].toString())
+                Amphipod.valueOf(it[i % it.size][i / it.size].toString())
             }.chunked(it.size)
         }.mapIndexed { index, s ->
-            val name = S.values()[index]
+            val name = Amphipod.values()[index]
             Room(name, s)
-        }.let { State.of(List(7) { S.E }, it) }
+        }.let { State(List(7) { Amphipod.E }, it) }
     }
 
     private val strings = input
@@ -218,14 +218,10 @@ class Y2021D23(input: String) : Day {
         .split('\n')
         .filter { it.isNotBlank() }
 
-    override fun part1() = totalEnergy(getState(strings))
+    override fun part1(): Int = totalEnergy(getState(strings))
 
-    override fun part2(): Long {
-        val expandedStrings = strings
-            .let {
-                val last = it.last()
-                it.dropLast(1) + listOf("DCBA", "DBAC") + last
-            }
+    override fun part2(): Int {
+        val expandedStrings = strings.dropLast(1) + listOf("DCBA", "DBAC") + strings.last()
         return totalEnergy(getState(expandedStrings))
     }
 }
