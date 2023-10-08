@@ -9,20 +9,24 @@ import kotlin.math.max
 import kotlin.math.min
 
 class Y2022D16(input: String) : Day {
-    val pattern = """Valve (\w+) has flow rate=(\d+); tunnels? leads? to valves? (.*)""".toRegex()
-    private val flowMap = mutableMapOf<String, Int>()
-    private val edgeMapNoValves = mutableMapOf<String, List<Graph.Edge<String>>>()
+    private val flowMap: Map<String, Int>
     private val edgeMap: Map<String, Map<String, Int>>
 
     init {
+        val edgeMapNoValves = mutableMapOf<String, List<Graph.Edge<String>>>()
+
         // parse to edgeMapNoValves and flowRate maps
-        input.groupValues(pattern).forEach { gv ->
-            val name = gv[0]
-            val flowRate = gv[1].toInt()
-            val tunnels = gv[2].split(", ").map { Graph.Edge(it, 1.0) }
-            flowMap[name] = flowRate
-            edgeMapNoValves[name] = tunnels
+        flowMap = buildMap {
+            val pattern = """Valve (\w+) has flow rate=(\d+); tunnels? leads? to valves? (.*)""".toRegex()
+            input.groupValues(pattern).forEach { gv ->
+                val name = gv[0]
+                val flowRate = gv[1].toInt()
+                val tunnels = gv[2].split(", ").map { Graph.Edge(it, 1.0) }
+                this[name] = flowRate
+                edgeMapNoValves[name] = tunnels
+            }
         }
+
         // get point to point info on all the points, getting rid of 0-flow valve locations
         edgeMapNoValves
             .keys
@@ -32,6 +36,7 @@ class Y2022D16(input: String) : Day {
                     .filter { it.id != "AA" && flowMap.getValue(it.id) > 0 && it.weight != 0.0 }
                     .map { Graph.Edge(it.id, it.weight) }
             }
+
         // clean up the map
         edgeMap = edgeMapNoValves
             .filter { it.key == "AA" || flowMap.getValue(it.key) > 0 }
