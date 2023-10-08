@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2015.d6
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getIntList
+import kotlin.math.abs
 import kotlin.math.max
 
 class Y2015D6(input: String) : Day {
@@ -28,36 +29,34 @@ class Y2015D6(input: String) : Day {
 
     val length = 1_000
 
-    override fun part1(): Int {
-        val lights = BooleanArray(length * length)
-        fun BooleanArray.execute(instruction: Instruction) {
-            for (y in instruction.y1..instruction.y2) for (x in instruction.x1..instruction.x2) {
-                val index = y * length + x
-                this[index] = when (instruction.command) {
-                    1 -> true
-                    -1 -> false
-                    else -> !this[index]
-                }
-            }
-        }
-        instructions.forEach { lights.execute(it) }
-        return lights.count { it }
-    }
-
-    override fun part2(): Int {
+    fun solve(operation: (lights: IntArray, index: Int, command: Int) -> Int): Int {
         val lights = IntArray(length * length)
         fun IntArray.execute(instruction: Instruction) {
             for (y in instruction.y1..instruction.y2) for (x in instruction.x1..instruction.x2) {
                 val index = y * length + x
-                this[index] = when (instruction.command) {
-                    1 -> this[index] + 1
-                    -1 -> max(0, this[index] - 1)
-                    else -> this[index] + 2
-                }
+                this[index] = operation(lights, index, instruction.command)
             }
         }
         instructions.forEach { lights.execute(it) }
         return lights.sum()
+    }
+
+    override fun part1(): Int {
+        fun operation(lights: IntArray, index: Int, command: Int) = when (command) {
+            1 -> 1
+            -1 -> 0
+            else -> abs(lights[index] - 1)
+        }
+        return solve(::operation)
+    }
+
+    override fun part2(): Int {
+        fun operation(lights: IntArray, index: Int, command: Int) = when (command) {
+            1 -> lights[index] + 1
+            -1 -> max(0, lights[index] - 1)
+            else -> lights[index] + 2
+        }
+        return solve(::operation)
     }
 }
 
