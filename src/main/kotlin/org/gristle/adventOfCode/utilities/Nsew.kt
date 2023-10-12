@@ -43,12 +43,21 @@ enum class Nsew {
 
     fun multiLeft(times: Int): Nsew = (1..times).fold(this) { acc, _ -> acc.left() }
     fun multiRight(times: Int): Nsew = (1..times).fold(this) { acc, _ -> acc.right() }
+
+    companion object {
+        fun of(c: Char): Nsew = when (c) {
+            'R', 'E' -> Nsew.EAST
+            'U', 'N' -> Nsew.NORTH
+            'L', 'W' -> Nsew.WEST
+            'D', 'S' -> Nsew.SOUTH
+            else -> throw IllegalArgumentException("Invalid input")
+        }
+    }
 }
 
-fun Char.toNsew(): Nsew = when (this) {
-    'R', 'E' -> Nsew.EAST
-    'U', 'N' -> Nsew.NORTH
-    'L', 'W' -> Nsew.WEST
-    'D', 'S' -> Nsew.SOUTH
+fun Nsew.turn(c: Char): Nsew = when (c) {
+    'L' -> left()
+    'R' -> right()
+    'F' -> flip()
     else -> throw IllegalArgumentException("Invalid input")
 }
