@@ -71,7 +71,7 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
     inline fun move(distance: Int, size: Coord, wrapAround: Boolean, operation: () -> Coord): Coord {
         return (this + (Coord(distance, distance) * operation()))
             .let {
-                if (size == Coord(0, 0)) it else {
+                if (size == ORIGIN) it else {
                     if (wrapAround) it.mod(size) else Coord(
                         it.x.coerceIn(0 until size.x),
                         it.y.coerceIn(0 until size.y)
