@@ -17,8 +17,9 @@ class Y2016D2(input: String) : Day {
             .let { newPos -> if (newPos.inBounds()) newPos else pos }
 
         fun processInstruction(pos: Coord, instruction: String) = instruction.fold(pos, ::padTraverse)
-        val coords = instructions.runningFold(start, ::processInstruction)
-        return coords
+
+        return instructions
+            .runningFold(start, ::processInstruction)
             .drop(1) // dump the starting coordinate as that is not part of the code
             .joinToString(separator = "", transform = conversion)
     }
