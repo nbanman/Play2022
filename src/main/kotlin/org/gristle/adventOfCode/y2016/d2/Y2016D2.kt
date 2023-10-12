@@ -19,7 +19,7 @@ class Y2016D2(input: String) : Day {
         fun processInstruction(pos: Coord, instruction: String) = instruction.fold(pos, ::padTraverse)
         val coords = instructions.runningFold(start, ::processInstruction)
         return coords
-            .drop(1)
+            .drop(1) // dump the starting coordinate as that is not part of the code
             .joinToString(separator = "", transform = conversion)
     }
 
