@@ -3,6 +3,7 @@ package org.gristle.adventOfCode.y2016.d1
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.turn
 
 class Y2016D1(input: String) : Day {
 
@@ -13,11 +14,7 @@ class Y2016D1(input: String) : Day {
         moves = input
             .splitToSequence(", ")
             .map { command ->
-                direction = when (command[0]) {
-                    'L' -> direction.left()
-                    'R' -> direction.right()
-                    else -> throw IllegalArgumentException("Direction not recognized: ${command[0]}")
-                }
+                direction = direction.turn(command[0])
                 direction to command.drop(1).toInt()
             }.runningFold(Coord.ORIGIN) { pos, (dir, dist) -> pos.move(dir, dist) }
     }
