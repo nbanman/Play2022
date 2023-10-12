@@ -8,19 +8,18 @@ import kotlin.math.sign
 class Y2016D2(input: String) : Day {
     private val codes = input.lines()
 
-    private fun Coord.toNumpad1() = (y * 3 + x + 1).toString()
-
-    private fun Coord.toNumpad2() = (5 + x + (y - 2) * 2 + 2 * (y - 2).sign).toString(16).uppercase()
-
     fun solve(
         start: Coord,
         padTraverse: (Coord, Char) -> Coord,
         conversion: Coord.() -> String
     ): String {
-        val coords = codes.fold(listOf(start)) { coordList, s ->
-            coordList + s.fold(coordList.last(), padTraverse)
-        }
-        return coords.drop(1).joinToString("") { it.conversion() }
+        val coords: List<Coord> = codes
+            .runningFold(start) { lastPos, s ->
+                s.fold(lastPos, padTraverse)
+            }
+        return coords
+            .drop(1)
+            .joinToString(separator = "", transform = conversion)
     }
 
     override fun part1(): String {
@@ -34,8 +33,10 @@ class Y2016D2(input: String) : Day {
                 else -> coord.south(1, size)
             }
         }
-        val conversion: Coord.() -> String = { toNumpad1() }
-        return solve(start, padTraverse, conversion)
+
+        fun Coord.toNumpad1(): String = (y * 3 + x + 1).toString()
+
+        return solve(start, padTraverse, Coord::toNumpad1)
     }
 
     override fun part2(): String {
@@ -70,9 +71,10 @@ class Y2016D2(input: String) : Day {
                 }
             }
         }
-        val conversion: Coord.() -> String = { toNumpad2() }
 
-        return solve(start, padTraverse, conversion)
+        fun Coord.toNumpad2() = (5 + x + (y - 2) * 2 + 2 * (y - 2).sign).toString(16).uppercase()
+
+        return solve(start, padTraverse, Coord::toNumpad2)
     }
 }
 
