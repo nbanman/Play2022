@@ -80,6 +80,14 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
             }
     }
 
+    fun move(instruction: Char) = when (instruction) {
+        'U', 'N' -> north()
+        'D', 'S' -> south()
+        'L', 'W' -> west()
+        'R', 'E' -> east()
+        else -> throw IllegalArgumentException("\'$instruction\' not recognized. Use UDRL or NSEW.")
+    }
+
     fun north() = copy(y = y - 1)
     fun northwest() = Coord(x - 1, y - 1)
     fun northeast() = Coord(x + 1, y - 1)
