@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2022.d13
 
 import org.gristle.adventOfCode.Day
+import kotlin.math.sign
 
 class Y2022D13(input: String) : Day {
     sealed class PData : Comparable<PData> {
@@ -8,9 +9,8 @@ class Y2022D13(input: String) : Day {
 
             fun toPacket() = Packet(listOf(this))
             override fun compareTo(other: PData): Int {
-                fun Int.coerce() = coerceIn(-1..1)
                 return when (other) {
-                    is Value -> (this.value - other.value).coerce()
+                    is Value -> (this.value - other.value).sign
                     else -> this.toPacket().compareTo(other)
                 }
             }
@@ -24,7 +24,7 @@ class Y2022D13(input: String) : Day {
                             val answer = leftItem.compareTo(rightItem)
                             if (answer != 0) return answer
                         }
-                        return (this.list.size - other.list.size).coerce()
+                        return (this.list.size - other.list.size).sign
                     }
 
                     is Value -> {
@@ -35,8 +35,6 @@ class Y2022D13(input: String) : Day {
         }
 
         companion object {
-            fun Int.coerce() = coerceIn(-1..1)
-
             private val regex = Regex("""\[|]|\d+""")
 
             fun of(line: String): Packet {
@@ -77,4 +75,9 @@ class Y2022D13(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2022D13::class) // 5506, 21756
+fun main() = Day.runDay(Y2022D13::class)
+
+//    Class creation: 34ms
+//    Part 1: 5506 (2ms)
+//    Part 2: 21756 (2ms)
+//    Total time: 39ms
