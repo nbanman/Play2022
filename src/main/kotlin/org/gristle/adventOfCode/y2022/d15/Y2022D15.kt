@@ -56,17 +56,15 @@ class Y2022D15(input: String) : Day {
         return mutableRanges
     }
 
-    override fun part1() = sensors
-        .mapNotNull { it.toRangeOrNull(2000000) }
+    private fun rowRanges(y: Int): List<IntRange> = sensors
+        .mapNotNull { it.toRangeOrNull(y) }
         .concatenate()
+
+    override fun part1() = rowRanges(2000000)
         .sumOf { it.last - it.first }
 
     override fun part2() = generateSequence(0) { it + 1 }
-        .map { y ->
-            sensors
-                .mapNotNull { it.toRangeOrNull(y) }
-                .concatenate()
-        }.withIndex()
+        .map { y -> y to rowRanges(y) }
         .first { (_, ranges) -> ranges.size > 1 }
         .let { (y, ranges) ->
             val x = ranges.minBy(IntRange::first).last + 1
