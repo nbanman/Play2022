@@ -5,21 +5,8 @@ package org.gristle.adventOfCode.utilities
 import kotlin.reflect.KFunction
 
 /**
- * Finds all numbers in a string and returns them as a List of Int.
+ * Finds all numbers in a string and returns them as a Sequence of a number.
  */
-fun String.getIntList(omitDashes: Boolean = false) = getInts(omitDashes).toList()
-
-/**
- * Finds all numbers in a string and returns them as a Sequence of Int.
- */
-//fun String.getInts(omitDashes: Boolean = false): Sequence<Int> {
-//    val pattern = if (omitDashes) """\d+""" else """-?\d+"""
-//    return pattern
-//        .toRegex()
-//        .findAll(this)
-//        .mapNotNull { it.value.toIntOrNull() }
-//}
-
 inline fun <N : Number> String.getNumbers(
     omitDashes: Boolean = false,
     crossinline transform: String.() -> N?
@@ -45,47 +32,25 @@ inline fun <N : Number> String.getNumbers(
     }
 }
 
+/**
+ * Finds all numbers in a string and returns them as a Sequence of Int.
+ */
 fun String.getInts(omitDashes: Boolean = false): Sequence<Int> = getNumbers(omitDashes, String::toIntOrNull)
-fun String.getLongs(omitDashes: Boolean = false): Sequence<Long> = getNumbers(omitDashes, String::toLongOrNull)
 
-//fun String.getInts(omitDashes: Boolean = false): Sequence<Int> = sequence {
-//    var startPosition = -1
-//    for (position in indices) {
-//        val c = this@getInts[position]
-//        if (c.isDigit() || (!omitDashes && c == '-' && startPosition == -1)) {
-//            if (startPosition == -1) startPosition = position
-//        } else {
-//            if (startPosition != -1) {
-//                substring(startPosition, position)
-//                    .toIntOrNull()
-//                    ?.let { yield(it) }
-//                startPosition = -1
-//            }
-//        }
-//    }
-//    if (startPosition != -1) {
-//        substring(startPosition)
-//            .toIntOrNull()
-//            ?.let { yield(it) }
-//    }
-//}
+/**
+ * Finds all numbers in a string and returns them as a List of Int.
+ */
+fun String.getIntList(omitDashes: Boolean = false) = getInts(omitDashes).toList()
+
+/**
+ * Finds all numbers in a string and returns them as a Sequence of Long.
+ */
+fun String.getLongs(omitDashes: Boolean = false): Sequence<Long> = getNumbers(omitDashes, String::toLongOrNull)
 
 /**
  * Finds all numbers in a string and returns them as a List of Long.
  */
 fun String.getLongList(omitDashes: Boolean = false) = getLongs(omitDashes).toList()
-
-/**
- * Finds all numbers in a string and returns them as a Sequence of Long.
- */
-//fun String.getLongs(omitDashes: Boolean = false): Sequence<Long> {
-//    val pattern = if (omitDashes) """\d+""" else """-?\d+"""
-//    return pattern
-//        .toRegex()
-//        .findAll(this)
-//        .mapNotNull { it.value.toLongOrNull() }
-//}
-
 
 /**
  * Convenience method to obtain the group values of a findall regex search of a string.
