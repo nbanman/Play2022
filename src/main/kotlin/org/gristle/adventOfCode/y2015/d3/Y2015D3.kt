@@ -6,14 +6,6 @@ import org.gristle.adventOfCode.utilities.isEven
 
 class Y2015D3(private val input: String) : Day {
 
-    private fun Coord.move(dir: Char) = when (dir) {
-        '^' -> north()
-        'v' -> south()
-        '>' -> east()
-        '<' -> west()
-        else -> throw IllegalArgumentException("Invalid character in input")
-    }
-
     override fun part1() = input
         .runningFold(Coord.ORIGIN) { santa, dir -> santa.move(dir) }
         .toSet()
