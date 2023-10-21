@@ -20,16 +20,19 @@ fun String.getIntList(omitDashes: Boolean = false) = getInts(omitDashes).toList(
 //        .mapNotNull { it.value.toIntOrNull() }
 //}
 
-fun String.getInts(omitDashes: Boolean = false): Sequence<Int> = sequence {
+inline fun <N : Number> String.getNumbers(
+    omitDashes: Boolean = false,
+    crossinline transform: String.() -> N?
+): Sequence<N> = sequence {
     var startPosition = -1
     for (position in indices) {
-        val c = this@getInts[position]
+        val c = this@getNumbers[position]
         if (c.isDigit() || (!omitDashes && c == '-' && startPosition == -1)) {
             if (startPosition == -1) startPosition = position
         } else {
             if (startPosition != -1) {
                 substring(startPosition, position)
-                    .toIntOrNull()
+                    .transform()
                     ?.let { yield(it) }
                 startPosition = -1
             }
@@ -37,10 +40,35 @@ fun String.getInts(omitDashes: Boolean = false): Sequence<Int> = sequence {
     }
     if (startPosition != -1) {
         substring(startPosition)
-            .toIntOrNull()
+            .transform()
             ?.let { yield(it) }
     }
 }
+
+fun String.getInts(omitDashes: Boolean = false): Sequence<Int> = getNumbers(omitDashes, String::toIntOrNull)
+fun String.getLongs(omitDashes: Boolean = false): Sequence<Long> = getNumbers(omitDashes, String::toLongOrNull)
+
+//fun String.getInts(omitDashes: Boolean = false): Sequence<Int> = sequence {
+//    var startPosition = -1
+//    for (position in indices) {
+//        val c = this@getInts[position]
+//        if (c.isDigit() || (!omitDashes && c == '-' && startPosition == -1)) {
+//            if (startPosition == -1) startPosition = position
+//        } else {
+//            if (startPosition != -1) {
+//                substring(startPosition, position)
+//                    .toIntOrNull()
+//                    ?.let { yield(it) }
+//                startPosition = -1
+//            }
+//        }
+//    }
+//    if (startPosition != -1) {
+//        substring(startPosition)
+//            .toIntOrNull()
+//            ?.let { yield(it) }
+//    }
+//}
 
 /**
  * Finds all numbers in a string and returns them as a List of Long.
@@ -50,13 +78,13 @@ fun String.getLongList(omitDashes: Boolean = false) = getLongs(omitDashes).toLis
 /**
  * Finds all numbers in a string and returns them as a Sequence of Long.
  */
-fun String.getLongs(omitDashes: Boolean = false): Sequence<Long> {
-    val pattern = if (omitDashes) """\d+""" else """-?\d+"""
-    return pattern
-        .toRegex()
-        .findAll(this)
-        .mapNotNull { it.value.toLongOrNull() }
-}
+//fun String.getLongs(omitDashes: Boolean = false): Sequence<Long> {
+//    val pattern = if (omitDashes) """\d+""" else """-?\d+"""
+//    return pattern
+//        .toRegex()
+//        .findAll(this)
+//        .mapNotNull { it.value.toLongOrNull() }
+//}
 
 
 /**
