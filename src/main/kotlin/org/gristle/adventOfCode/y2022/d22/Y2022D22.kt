@@ -42,20 +42,21 @@ class Y2022D22(input: String) : Day {
             .findAll(lines.last())
             .map(MatchResult::value)
             .forEach {
-                when {
-                    it[0] == 'L' -> add(Command.LEFT)
-                    it[0] == 'R' -> add(Command.RIGHT)
+                when (it[0]) {
+                    'L' -> add(Command.LEFT)
+                    'R' -> add(Command.RIGHT)
                     else -> repeat(it.toInt()) { add(Command.FORWARD) }
                 }
             }
     }
+
+    private val start = Coord.fromIndex(grove.indexOfFirst { it == '.' }, grove.width)
 
     /**
      * Main loop is a fold that traverses the path. It delegates the translation of commands to a "move" function
      * which is supplied by the two parts of the puzzle. Return is the scoring for the final position.
      */
     fun solve(move: (CoordDirection) -> CoordDirection): Int {
-        val start = Coord.fromIndex(grove.indexOfFirst { it == '.' }, grove.width)
         var dir = Nsew.EAST
         val end = path.fold(start) { pos, command ->
             if (command == Command.FORWARD) {
@@ -252,4 +253,9 @@ class Y2022D22(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2022D22::class) // 133174 (30ms), 15410 (27ms)
+fun main() = Day.runDay(Y2022D22::class)
+
+//    Class creation: 46ms
+//    Part 1: 133174 (44ms)
+//    Part 2: 15410 (36ms)
+//    Total time: 127ms
