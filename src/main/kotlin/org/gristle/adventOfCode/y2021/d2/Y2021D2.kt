@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.Coord
 
 class Y2021D2(input: String) : Day {
 
-    val commands = input
+    val commands: Sequence<Pair<Char, Int>> = input
         .lineSequence()
         .map { line -> line[0] to line.takeLastWhile { it.isDigit() }.toInt() }
 
