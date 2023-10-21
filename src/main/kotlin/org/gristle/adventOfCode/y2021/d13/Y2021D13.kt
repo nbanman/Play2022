@@ -52,7 +52,7 @@ class Y2021D13(input: String) : Day {
     init {
         val (dotInput, foldInput) = input.blankSplit()
 
-        dots = input
+        dots = dotInput
             .getInts()
             .chunked(2) { Coord(it[0], it[1]) }
             .toList()
@@ -79,7 +79,7 @@ class Y2021D13(input: String) : Day {
 
 fun main() = Day.runDay(Y2021D13::class)
 
-//    Class creation: 70ms
-//    Part 1: 740 (173ms)
-//    Part 2: UFRZKAUZ (113ms)
-//    Total time: 357ms
+//    Class creation: 40ms
+//    Part 1: 735 (150ms)
+//    Part 2: UFRZKAUZ (98ms)
+//    Total time: 288ms
