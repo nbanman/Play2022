@@ -5,11 +5,6 @@ import kotlin.math.min
 import kotlin.math.pow
 
 /**
- * Returns elapsed time in ms.
- */
-fun elapsedTime(m: Long) = (System.nanoTime() - m) / 1_000_000
-
-/**
  * Prints to console if the Boolean is true. Used for quick and dirty debugging.
  */
 fun Boolean.print(s: String) {
