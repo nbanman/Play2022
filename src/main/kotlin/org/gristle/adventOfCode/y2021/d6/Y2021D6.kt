@@ -5,15 +5,13 @@ import org.gristle.adventOfCode.utilities.getInts
 
 class Y2021D6(input: String) : Day {
 
-    private val fish = input
+    private val fish: Map<Int, Int> = input
         .getInts()
         .groupingBy { it }
         .eachCount()
 
     // initialize count of fish by day
-    private val fishByDays = List(9) { i ->
-        fish[i]?.toLong() ?: 0L
-    }
+    private val fishByDays: List<Long> = List(9) { i -> fish[i]?.toLong() ?: 0L }
 
     // iterate one day
     private fun List<Long>.propagate() = List(9) { i ->
