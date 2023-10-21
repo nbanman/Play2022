@@ -1,13 +1,17 @@
 package org.gristle.adventOfCode.y2021.d7
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.getIntList
+import org.gristle.adventOfCode.utilities.minMax
 import kotlin.math.abs
 
 class Y2021D7(input: String) : Day {
 
-    private val crabs = input.split(',').map { it.toInt() }
+    private val crabs: List<Int> = input.getIntList()
 
-    private val crabRange = crabs.min()..crabs.max()
+    private val crabRange: IntRange = crabs
+        .minMax()
+        .let { (min, max) -> min..max }
 
     private tailrec fun List<Int>.optimalAlignmentCost(range: IntRange = crabRange, fuelCost: (Int) -> Int): Int {
 
@@ -18,10 +22,8 @@ class Y2021D7(input: String) : Day {
 
         if (range.first == range.last) return alignmentCost(range.first, fuelCost)
         val midPoint = range.midPoint()
-        val newRange = listOf(
-            range.first..midPoint,
-            midPoint..range.last
-        ).minBy { alignmentCost(it.midPoint(), fuelCost) }
+        val newRange = listOf(range.first..midPoint, midPoint..range.last)
+            .minBy { alignmentCost(it.midPoint(), fuelCost) }
 
         return optimalAlignmentCost(newRange, fuelCost)
     }
