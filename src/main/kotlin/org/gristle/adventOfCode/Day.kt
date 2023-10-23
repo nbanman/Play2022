@@ -27,6 +27,25 @@ interface Day {
             println("Total time: ${timer.elapsed()}ms")
         }
 
+        fun <T : Any> runDay(
+            kClass: KClass<T>,
+            sampleInput: List<String>,
+        ) {
+            val constructor = kClass.constructors.first()
+            val (year, day) = kClass.simpleName?.getIntList()
+                ?: throw IllegalArgumentException("Class does not have a name")
+            println("[$year Day $day]")
+            sampleInput.forEachIndexed { index, sample ->
+                println("Example #${index + 1}: $sample")
+                val timer = Stopwatch(true)
+                val c = constructor.call(sample) as Day
+                println("Class creation: ${timer.lap()}ms")
+                println("\tPart 1: ${c.part1()} (${timer.lap()}ms)")
+                if (day != 25) println("\tPart 2: ${c.part2()} (${timer.lap()}ms)")
+                println("Total time: ${timer.elapsed()}ms\n")
+            }
+        }
+
         fun <T : Any> testDay(
             kClass: KClass<T>,
             sampleInput: String? = null,
