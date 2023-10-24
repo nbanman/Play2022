@@ -20,8 +20,7 @@ class Y2015D14(input: String) : Day {
 
     private val racers = input
         .getInts()
-        .chunked(3)
-        .map { (speed, duration, rest) -> Reindeer(speed, duration, rest) }
+        .chunked(3) { (speed, duration, rest) -> Reindeer(speed, duration, rest) }
         .toList()
 
     override fun part1() = racers.maxOf { it.distanceRaced(SECONDS) }
