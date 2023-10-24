@@ -3,35 +3,32 @@ package org.gristle.adventOfCode.y2016.d1
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.turn
 
 class Y2016D1(input: String) : Day {
 
-    private val moves: Sequence<Coord>
+    private val moves: Sequence<Nsew>
 
     init {
-        var direction = Nsew.NORTH
+        var dir = Nsew.NORTH
+
         moves = input
             .splitToSequence(", ")
-            .map { command ->
-                direction = direction.turn(command[0])
-                direction to command.drop(1).toInt()
-            }.runningFold(Coord.ORIGIN) { pos, (dir, dist) -> pos.move(dir, dist) }
+            .flatMap { instruction ->
+                dir = if (instruction[0] == 'L') dir.left() else dir.right()
+                List(instruction.drop(1).toInt()) { dir }
+            }
     }
 
-    override fun part1() = moves.last().manhattanDistance()
+    override fun part1() = moves
+        .fold(Coord.ORIGIN, Coord::move)
+        .manhattanDistance()
 
     override fun part2(): Int {
-        val visited = mutableSetOf(Coord.ORIGIN)
-        moves
-            .zipWithNext()
-            .forEach { (prev, next) ->
-                prev
-                    .lineTo(next)
-                    .drop(1)
-                    .forEach { pos -> if (!visited.add(pos)) return pos.manhattanDistance() }
-            }
-        throw IllegalStateException("Movements completed with no location visited more than once!")
+        val visited = mutableSetOf<Coord>()
+        return moves
+            .runningFold(Coord.ORIGIN, Coord::move)
+            .first { !visited.add(it) }
+            .manhattanDistance()
     }
 }
 
