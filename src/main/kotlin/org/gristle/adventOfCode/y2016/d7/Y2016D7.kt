@@ -1,11 +1,11 @@
 package org.gristle.adventOfCode.y2016.d7
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.collate
 import org.gristle.adventOfCode.utilities.lines
-import org.gristle.adventOfCode.utilities.unravel
 
 class Y2016D7(input: String) : Day {
-    private val ips: List<List<List<String>>> = input.lines { it.split('[', ']').unravel(2) }
+    private val ips: List<List<List<String>>> = input.lines { it.split('[', ']').collate(2) }
     private fun String.abba(): Boolean = windowed(4).any { it[0] == it[3] && it[0] != it[1] && it[1] == it[2] }
     private fun String.aba(): List<String> = windowed(3)
         .filter { it[0] == it[2] && it[0] != it[1] }
