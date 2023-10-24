@@ -5,7 +5,7 @@ import org.gristle.adventOfCode.utilities.*
 
 class Y2020D6(input: String) : Day {
     // Read input and split into separate groups.
-    private val groups = input
+    private val groups: List<List<Set<Char>>> = input
         .blankSplit()
         .map { it.split('\n').map(String::toSet) }
 
