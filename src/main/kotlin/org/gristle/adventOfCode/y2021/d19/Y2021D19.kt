@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2021.d19
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.MCoord
-import org.gristle.adventOfCode.utilities.groupValues
-import org.gristle.adventOfCode.utilities.stripCarriageReturns
+import org.gristle.adventOfCode.utilities.getInts
 import kotlin.math.abs
 
 class Y2021D19(input: String) : Day {
@@ -15,10 +14,21 @@ class Y2021D19(input: String) : Day {
         }
     }
 
-    private val pattern = """--- scanner (\d+) ---\n((?:-?\d+,-?\d+,-?\d+\n)+)""".toRegex()
-
     data class Scanner(val id: String, val beacons: List<MCoord>, val scannerLocations: List<MCoord> = emptyList()) {
-        
+
+        companion object {
+            fun of(s: String): Scanner {
+                val id = s.getInts().first().toString()
+                val beacons = s
+                    .getInts()
+                    .drop(1)
+                    .chunked(3)
+                    .map(::MCoord)
+                    .toList()
+                return Scanner(id, beacons)
+            }
+        }
+
         fun MCoord.toSet(): Set<Int> = coordinates.map { abs(it) }.toSet()
 
         val morphisms = beacons
@@ -70,20 +80,9 @@ class Y2021D19(input: String) : Day {
     }
 
     private val scanners = input
-        .stripCarriageReturns()
-        .groupValues(pattern)
-        .map { g ->
-            val id = g[0]
-            val beacons = g[1].dropLast(1)
-                .split('\n')
-                .map { line ->
-                    line
-                        .split(',')
-                        .map(String::toInt)
-                }.map(::MCoord)
-            Scanner(id, beacons)
-        }
-
+        .splitToSequence("\n\n")
+        .map(Scanner::of)
+        .toList()
 
     data class SharedSets(val master: Scanner, val b: Scanner, val matches: Set<Set<Int>>) {
         override fun toString(): String {
