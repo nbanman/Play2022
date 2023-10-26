@@ -1,7 +1,7 @@
 package org.gristle.adventOfCode.y2018.d4
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getIntList
 import org.gristle.adventOfCode.utilities.transpose
 import java.time.LocalDateTime
 
@@ -11,12 +11,16 @@ class Y2018D4(input: String) : Day {
     private val guards: Map<Int, List<List<Boolean>>> = buildMap<Int, MutableList<List<Boolean>>> {
 
         // Parse input to list of log entries sorted by dateTime
-        val log: List<Pair<LocalDateTime, Int>> = input
-            .groupValues("""\[([^]]+)\] (?:Guard #)?(\d+|\w)""")
-            .map { (dateTime, action) ->
-                val id = action.toIntOrNull() ?: -1
-                LocalDateTime.parse(dateTime.replace(' ', 'T')) to id
+        val log = input
+            .lineSequence()
+            .map { line ->
+                val ints = line.getIntList()
+                val (year, month, day, hour, minute) = ints
+                val date = LocalDateTime.of(year, month, day, hour, minute)
+                val id = if (ints.size == 6) ints[5] else -1
+                date to id
             }.sortedBy { (dateTime, _) -> dateTime }
+            .toList()
 
         // index of log listings, as there is a nested while loop requiring more fine-tuned control 
         var index = 0
