@@ -79,16 +79,17 @@ class Y2022D13(input: String) : Day {
         .map(Packet::of)
         .toList()
 
-    private val dividerPackets = listOf(Packet.of("[[2]]"), Packet.of("[[6]]"))
-
     override fun part1(): Int = packets
         .chunked(2) // pairs the packets
         .withIndex()
         .sumOf { (index, value) -> if (value.first() < value.last()) index + 1 else 0 }
 
-    override fun part2(): Int = dividerPackets
-        .mapIndexed { index, packet -> packets.count { packet > it } + index + 1 }
-        .reduce(Int::times)
+    override fun part2(): Int {
+        val dividerPackets = listOf(Packet.of("[[2]]"), Packet.of("[[6]]"))
+        return dividerPackets
+            .mapIndexed { index, packet -> packets.count { packet > it } + index + 1 }
+            .reduce(Int::times)
+    }
 }
 
 fun main() = Day.runDay(Y2022D13::class)
