@@ -10,15 +10,16 @@ class Y2020D4(input: String) : Day {
         abstract fun isValid(): Boolean
 
         companion object {
-            fun fromGv(gv: List<String>): PassportField {
-                return when (gv[0]) {
-                    "byr" -> Byr(gv[1])
-                    "iyr" -> Iyr(gv[1])
-                    "eyr" -> Eyr(gv[1])
-                    "hgt" -> Hgt(gv[1])
-                    "hcl" -> Hcl(gv[1])
-                    "ecl" -> Ecl(gv[1])
-                    "pid" -> Pid(gv[1])
+            fun of(gv: List<String>): PassportField {
+                val (field, info) = gv
+                return when (field) {
+                    "byr" -> Byr(info)
+                    "iyr" -> Iyr(info)
+                    "eyr" -> Eyr(info)
+                    "hgt" -> Hgt(info)
+                    "hcl" -> Hcl(info)
+                    "ecl" -> Ecl(info)
+                    "pid" -> Pid(info)
                     else -> Cid
                 }
             }
@@ -66,7 +67,7 @@ class Y2020D4(input: String) : Day {
         .map { rawPassportData ->
             rawPassportData
                 .groupValues("""([a-z]{3}):([^ \r\n]+)""")
-                .map(PassportField::fromGv)
+                .map(PassportField::of)
                 .filter { it !is PassportField.Cid }
         }.filter { passportFields -> passportFields.size == 7 }
 
