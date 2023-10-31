@@ -8,16 +8,15 @@ class Y2018D5(input: String) : Day {
     // takes chars and creates a new list of chars only adding the char if the character is not removed
     // and the char is not preceded by the opposite polarity char. If it is preceded by the opposite polarity char,
     // that char is removed from the list.
-    private fun Iterable<Char>.react(removed: Char? = null): List<Char> = mutableListOf<Char>()
-        .also { newPolymer ->
-            forEach { unit ->
-                when {
-                    removed != null && (unit == removed || unit == removed.uppercaseChar()) -> {}
-                    newPolymer.isEmpty() || abs(newPolymer.last() - unit) != 32 -> newPolymer.add(unit)
-                    else -> newPolymer.removeLast()
-                }
+    private fun Iterable<Char>.react(removed: Char? = null): List<Char> = buildList {
+        this@react.forEach { unit ->
+            when {
+                removed != null && ((unit == removed) || (unit == removed.uppercaseChar())) -> {}
+                isEmpty() || abs(last() - unit) != 32 -> add(unit)
+                else -> removeLast()
             }
         }
+    }
 
     // The initial reaction, the size of which is the pt 1 answer. However, the pt 2 answer can use this value to 
     // bootstrap its calculations.
