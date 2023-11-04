@@ -26,7 +26,7 @@ class Y2019D18(input: String) : Day {
 
     private val tunnels = input.toGrid()
 
-    fun solve(tunnels: Grid<Char>, starts: List<Char>): Int {
+    fun solve(tunnels: Grid<Char>, starts: String): Int {
 
         // Intermediate edge map used to later make the keyEdges edge map used for the final solution. Just gives
         // the distance to the nearest keys and doors. Once a key or door is reached, the BFS does not explore 
@@ -89,7 +89,7 @@ class Y2019D18(input: String) : Day {
             }
 
         // initial state for the main Dijkstra algorithm
-        val startState = State(starts, emptySet())
+        val startState = State(starts.toList(), emptySet())
 
         // continue Dijkstra until all keys have been collected
         val endCondition = { state: State -> state.keys.size == 26 }
@@ -120,10 +120,10 @@ class Y2019D18(input: String) : Day {
         return Graph.dijkstra(startState, endCondition, defaultEdges = findEdges).steps()
     }
 
-    override fun part1() = solve(tunnels, listOf('@'))
+    override fun part1() = solve(tunnels, "@")
 
     override fun part2(): Int {
-        val robots = "@$%^".toList()
+        val robots = "@$%^"
 
         // Change the grid so that there are 4 quadrants
         val quadrants: Grid<Char> = tunnels.toMutableGrid().apply {
