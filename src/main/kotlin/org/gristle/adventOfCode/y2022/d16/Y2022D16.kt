@@ -18,20 +18,17 @@ class Y2022D16(input: String) : Day {
         // parse to edgeMapNoValves and flowRate maps
         flowMap = buildMap {
             val pattern = """Valve (\w+) has flow rate=(\d+); tunnels? leads? to valves? (.*)""".toRegex()
-            input.groupValues(pattern).forEach { gv ->
-                val name = gv[0]
-                val flowRate = gv[1].toInt()
-                val tunnels = gv[2].split(", ").map { Graph.Edge(it, 1.0) }
-                this[name] = flowRate
+            input.groupValues(pattern).forEach { (name, flowRate, tunnelString) ->
+                val tunnels = tunnelString.split(", ").map { Graph.Edge(it, 1.0) }
+                this[name] = flowRate.toInt()
                 edgeMapNoValves[name] = tunnels
             }
         }
 
         // get point to point info on all the points, getting rid of 0-flow valve locations
         edgeMapNoValves
-            .keys
-            .filter { it == "AA" || flowMap.getValue(it) > 0 }
-            .forEach { valve ->
+            .filter { (valve, _) -> valve == "AA" || flowMap.getValue(valve) > 0 }
+            .forEach { (valve, _) ->
                 edgeMapNoValves[valve] = Graph.dijkstra(valve, edges = edgeMapNoValves)
                     .filter { it.id != "AA" && flowMap.getValue(it.id) > 0 && it.weight != 0.0 }
                     .map { Graph.Edge(it.id, it.weight) }
