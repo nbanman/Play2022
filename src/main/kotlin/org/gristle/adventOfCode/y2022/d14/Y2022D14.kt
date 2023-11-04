@@ -46,7 +46,7 @@ class Y2022D14(input: String) : Day {
      * For speed reasons, this is an effectful sequence, mutating the cavern rather than returning a new cavern on each
      * iteration.
      */
-    private fun solve(predicate: (Coord) -> Boolean): Int {
+    private inline fun solve(predicate: (Coord) -> Boolean): Int {
 
         // make shadowed mutable copy of original cavern
         val cavern = cavern.toMutableSet()
@@ -71,7 +71,7 @@ class Y2022D14(input: String) : Day {
 
 fun main() = Day.runDay(Y2022D14::class)
 
-//    Class creation: 69ms
-//    Part 1: 825 (38ms)
-//    Part 2: 26729 (170ms)
-//    Total time: 279ms
+//    Class creation: 32ms
+//    Part 1: 825 (18ms)
+//    Part 2: 26729 (131ms)
+//    Total time: 181ms
