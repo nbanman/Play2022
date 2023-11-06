@@ -25,13 +25,13 @@ class Y2022D11(val input: String) : Day {
 
     private val monkeys = input
         .gvs(pattern)
-        .map { gv ->
+        .map { (startingItems, operation, test, ifTrue, ifFalse) ->
             Monkey(
-                startingItems = gv[0].getLongList(),
-                operation = Operation.from(gv[1]),
-                test = gv[2].toInt(),
-                ifTrue = gv[3].toInt(),
-                ifFalse = gv[4].toInt()
+                startingItems = startingItems.getLongList(),
+                operation = Operation.from(operation),
+                test = test.toInt(),
+                ifTrue = ifTrue.toInt(),
+                ifFalse = ifFalse.toInt()
             )
         }.withIndex()
         .toList()
