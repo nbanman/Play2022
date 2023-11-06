@@ -296,10 +296,11 @@ object Graph {
         return if (endCondition(startId) == null) visited.values.toList() else emptyList()
     }
 
-    fun <E> bfsSequence(
+
+    inline fun <E> bfsSequence(
         startId: E,
         edges: Map<E, Iterable<E>> = mapOf(),
-        defaultEdges: (E) -> Iterable<E> = { emptyList() }
+        crossinline defaultEdges: (E) -> Iterable<E> = { emptyList() }
     ): Sequence<Vertex<E>> = sequence {
         val start = StdVertex(startId, 0.0)
         val edgeMap = edges.toMutableMap()
@@ -319,10 +320,10 @@ object Graph {
         }
     }
 
-    fun <E> dfsSequence(
+    inline fun <E> dfsSequence(
         startId: E,
         edges: Map<E, Iterable<E>> = mapOf(),
-        defaultEdges: (E) -> Iterable<E> = { emptyList() }
+        crossinline defaultEdges: (E) -> Iterable<E> = { emptyList() }
     ): Sequence<Vertex<E>> = sequence {
         val start = StdVertex(startId, 0.0)
         val edgeMap = edges.toMutableMap()
@@ -344,10 +345,10 @@ object Graph {
         }
     }
 
-    fun <E> dijkstraSequence(
+    inline fun <E> dijkstraSequence(
         startId: E,
         edges: Map<E, List<Edge<E>>> = mapOf(),
-        defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
+        crossinline defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
     ): Sequence<Vertex<E>> = sequence {
         val start = StdVertex(startId, 0.0)
         val vertices = mutableMapOf(startId to start)
