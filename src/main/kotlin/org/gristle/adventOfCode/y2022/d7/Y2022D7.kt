@@ -6,7 +6,7 @@ class Y2022D7(input: String) : Day {
 
     // Directory node tracks child Directories in a map, and tracks the total file size of any files assigned to it 
     // or any child directory.
-    private class Directory(val name: String) {
+    private class Directory {
         val directories: MutableMap<String, Directory> = mutableMapOf()
         var fileSize: Int = 0 // not just size of files in this directory, but files in child directories as well
 
@@ -19,7 +19,7 @@ class Y2022D7(input: String) : Day {
     private fun createFileStructure(input: String): Directory {
 
         // tracks the full path to current dir, starting with root.
-        val path: MutableList<Directory> = mutableListOf(Directory("/"))
+        val path: MutableList<Directory> = mutableListOf(Directory())
 
         input.lines().forEach { line ->
             when {
@@ -27,7 +27,7 @@ class Y2022D7(input: String) : Day {
                 line.startsWith("\$ cd ..") -> if (path.size > 1) path.removeLast() // $ cd ..
                 line.startsWith("\$ cd") -> { // cd [directory]
                     val dir = line.takeLastWhile { it != ' ' } // grabs last word in the String
-                    path.add(path.last().directories.getOrPut(dir) { Directory(dir) })
+                    path.add(path.last().directories.getOrPut(dir) { Directory() })
                 }
 
                 line[0].isDigit() -> { // increase fileSize of all Directories in the path
@@ -58,7 +58,7 @@ class Y2022D7(input: String) : Day {
 
 fun main() = Day.runDay(Y2022D7::class)
 
-//    Class creation: 19ms
+//    Class creation: 14ms
 //    Part 1: 1477771 (0ms)
 //    Part 2: 3579501 (0ms)
-//    Total time: 19ms
+//    Total time: 14ms
