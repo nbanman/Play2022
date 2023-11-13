@@ -1,31 +1,79 @@
 package org.gristle.adventOfCode.y2022.d20
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.getLongList
+import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2022D20(input: String) : Day {
 
-    private val values = input.getLongList()
+    class Node(
+        val value: Long,
+        prev: Node? = null,
+        next: Node? = null,
+    ) {
+        var prev: Node = prev
+            ?.also { it.next = this }
+            ?: this
+        var next: Node = next
+            ?.also { it.prev = this }
+            ?: this
 
-    private fun solve(factor: Int, times: Int): Long {
+        fun move(size: Int) {
+            val steps = value.mod(size - 1)
 
-        // Pair numbers with their original index to ensure numbers are unique. I don't know a better way of getting
-        // the numbers in order other than doing an indexOf function.
-        val numbers = MutableList(values.size) { index -> IndexedValue(index, values[index] * factor) }
+            if (steps == 0) return
 
-        repeat(times) { // repeat swapping process n times
+            val moveNode = if (steps > size / 2) {
+                generateSequence(this, Node::prev).take(size - steps + 1).last()
+            } else {
+                val actual = generateSequence(this, Node::next).take(steps + 1).last()
+                actual
+            }
 
-            numbers.indices.forEach { currentIndex -> // swap for each number in the original order
-                val nextIndex = numbers.indexOfFirst { it.index == currentIndex }
-                val number = numbers.removeAt(nextIndex)
-                val addIndex = (nextIndex + number.value).mod(numbers.size)
-                numbers.add(addIndex, number)
+            // take node out
+            prev.next = next
+            next.prev = prev
+
+            // fix node pointers
+            next = moveNode.next
+            prev = moveNode
+
+
+            // add node
+            moveNode.next.prev = this
+            moveNode.next = this
+        }
+
+        override fun toString(): String {
+            return "Node(value=$value, prev=${prev.value}, next=${next.value})"
+        }
+    }
+
+    private val initialValues = input.getIntList()
+
+    fun solve(factor: Long, times: Int): Long {
+        val values: List<Long> = initialValues.map { it * factor }
+
+        val nodes = buildList {
+            val header = Node(values.first())
+            add(header)
+            var previous = header
+            for (n in values.drop(1)) {
+                previous = Node(n, previous, header)
+                add(previous)
             }
         }
 
-        val zeroIndex = numbers.indexOfFirst { it.value == 0L }
+        val zeroNode = nodes.find { it.value == 0L } ?: throw IllegalStateException("0 not found in nodes")
+        repeat(times) {
+            for (node in nodes) {
+                node.move(nodes.size)
+            }
+        }
+
+        val traverse = generateSequence(zeroNode, Node::next).drop(1)
+
         return (1..3).fold(0L) { acc, thousand ->
-            acc + numbers[(zeroIndex + thousand * 1000) % numbers.size].value
+            acc + traverse.take((thousand * 1000) % nodes.size).last().value
         }
     }
 
@@ -36,7 +84,7 @@ class Y2022D20(input: String) : Day {
 
 fun main() = Day.runDay(Y2022D20::class)
 
-//    Class creation: 19ms
-//    Part 1: 4151 (48ms) (original 216ms)
-//    Part 2: 7848878698663 (435ms) (original 1006ms)
-//    Total time: 503ms
+//    Class creation: 10ms
+//    Part 1: 4151 (60ms)
+//    Part 2: 7848878698663 (314ms)
+//    Total time: 385ms
