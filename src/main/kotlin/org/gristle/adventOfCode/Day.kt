@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode
 
 import org.gristle.adventOfCode.utilities.Stopwatch
+import org.gristle.adventOfCode.utilities.TimeUnits
 import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.getIntList
 import kotlin.reflect.KClass
@@ -74,11 +75,11 @@ interface Day {
             val input = sampleInput ?: getInput(day, year)
             val c = constructor.call(input) as Day
             println("${kClass.simpleName} Part 1\n")
-            val timer = Stopwatch(true)
+            val timer = Stopwatch(true, TimeUnits.US)
             val p1Average = benchmark(warmups, iterations, timer, c::part1)
             println("\n${kClass.simpleName} Part 1\n")
             val p2Average = benchmark(warmups, iterations, timer, c::part2)
-            println("\nParts 1 and 2: ${p1Average + p2Average} ms/op [Average]")
+            println("\nParts 1 and 2: ${p1Average + p2Average} us/op [Average]")
         }
 
         private fun benchmark(
@@ -91,17 +92,17 @@ interface Day {
                 print("Warm-up $warmup: ")
                 timer.lap()
                 part()
-                println("${timer.lap()} ms/op")
+                println("${timer.lap()} us/op")
             }
             val times = (1..iterations)
                 .map { iteration ->
                     print("Iteration $iteration: ")
                     timer.lap()
                     part()
-                    timer.lap().also { println("$it ms/op") }
+                    timer.lap().also { println("$it us/op") }
                 }
             val average = times.average()
-            println("\n$average ms/op [Average]")
+            println("\n$average us/op [Average]")
             return average.toLong()
         }
     }
