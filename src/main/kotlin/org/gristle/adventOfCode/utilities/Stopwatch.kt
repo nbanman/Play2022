@@ -1,6 +1,13 @@
 package org.gristle.adventOfCode.utilities
 
-class Stopwatch(start: Boolean = false) {
+enum class TimeUnits(val divisor: Long) {
+    S(1_000_000_000),
+    MS(1_000_000),
+    US(1_000),
+    NS(1)
+}
+
+class Stopwatch(start: Boolean = false, val units: TimeUnits = TimeUnits.MS) {
     private var elapsed = 0L
     private var lastStart = 0L
     private var isRunning = false
@@ -22,7 +29,7 @@ class Stopwatch(start: Boolean = false) {
             isRunning = false
             elapsed += now - lastStart
         }
-        return elapsed / 1_000_000
+        return elapsed / units.divisor
     }
 
     fun lap(): Long =
@@ -31,7 +38,7 @@ class Stopwatch(start: Boolean = false) {
             val lap = now - lastStart
             elapsed += lap
             lastStart = now
-            lap / 1_000_000
+            lap / units.divisor
         } else 0
 
 
@@ -41,6 +48,6 @@ class Stopwatch(start: Boolean = false) {
         isRunning = false
     }
 
-    fun elapsed() = elapsed / 1_000_000
+    fun elapsed() = elapsed / units.divisor
 
 }
