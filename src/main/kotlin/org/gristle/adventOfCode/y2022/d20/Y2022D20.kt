@@ -86,7 +86,7 @@ class Y2022D20(input: String) : Day {
         val traverseSequence = generateSequence(zeroNode, Node::next).drop(1)
         fun traverse(n: Int) = traverseSequence.take(n).last().value
         
-        // delivers sum of the 
+        // delivers sum of the 1000th, 2000th, and 3000th
         return (1000..3000 step 1000).sumOf(::traverse)
     }
 
