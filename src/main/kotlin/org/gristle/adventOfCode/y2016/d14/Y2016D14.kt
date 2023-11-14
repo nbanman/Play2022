@@ -70,7 +70,7 @@ class Y2016D14(private val salt: String) : Day {
 
         generateSequence(0) { it + 1 } // Sequence starting with increasing index...
             .asFlow() // turn into Flow
-            .map { md5s(it) }
+            .map(::md5s)
             .flattenConcat()
             .withIndex()
             .onEach { (n, md5) ->
