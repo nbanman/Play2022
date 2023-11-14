@@ -4,6 +4,7 @@ import org.gristle.adventOfCode.utilities.Stopwatch
 import org.gristle.adventOfCode.utilities.getInput
 import org.gristle.adventOfCode.utilities.getIntList
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction0
 
 interface Day {
     fun part1(): Any?
@@ -59,6 +60,47 @@ interface Day {
             val part1 = if (skipPartOne) false else c.part1()
             val part2 = if (skipPartTwo) false else c.part2()
             return part1 to part2
+        }
+
+        fun <T : Any> benchmarkDay(
+            kClass: KClass<T>,
+            sampleInput: String? = null,
+            warmups: Int = 1,
+            iterations: Int = 5
+        ) {
+            val constructor = kClass.constructors.first()
+            val (year, day) = kClass.simpleName?.getIntList()
+                ?: throw IllegalArgumentException("Class does not have a name")
+            val input = sampleInput ?: getInput(day, year)
+            val c = constructor.call(input) as Day
+            println("Benchmarking ${kClass.simpleName} Part 1\n")
+            val timer = Stopwatch(true)
+            val p1Average = benchmark(warmups, iterations, timer, c::part1)
+            println()
+            val p2Average = benchmark(warmups, iterations, timer, c::part2)
+            println("\nParts 1 and 2: ${p1Average + p2Average} ms/op [Average]")
+        }
+
+        private fun benchmark(
+            warmups: Int,
+            iterations: Int,
+            timer: Stopwatch,
+            part: KFunction0<Any?>
+        ): Long {
+            for (warmup in 1..warmups) {
+                print("Warm-up $warmup: ")
+                part()
+                println("${timer.lap()} ms/op")
+            }
+            val times = (1..iterations)
+                .map { iteration ->
+                    print("Iteration $iteration: ")
+                    part()
+                    timer.lap().also { println("$it ms/op") }
+                }
+            val average = times.average()
+            println("\n$average ms/op [Average]")
+            return average.toLong()
         }
     }
 }
