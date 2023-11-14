@@ -1,12 +1,12 @@
 package org.gristle.adventOfCode.y2016.d14
 
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.md5
+import org.gristle.adventOfCode.utilities.Md5.toHex
+import java.security.MessageDigest
 
 class Y2016D14(private val salt: String) : Day {
-
-    // function to perform stretched MD5 per part 2 instructions
-    private fun String.stretchedMd5() = (1..2017).fold(this) { acc, _ -> acc.md5() }
 
     // utility function for accessing the indexes of 5-strings in an IntArray
     private fun Char.hexIndex(): Int = if (isDigit()) digitToInt() else this - 'W'
@@ -15,7 +15,8 @@ class Y2016D14(private val salt: String) : Day {
     private val threeRx = Regex("""([0-9a-f])\1{2,}""")
     private val fiveRx = Regex("""([0-9a-f])\1{4,}""")
 
-    private fun solve(hashing: (String) -> String): Int {
+    @OptIn(FlowPreview::class)
+    private fun solve(hashing: (String) -> String): Int = runBlocking {
 
         // for each hex value 0-f, store index of last time 5-string appeared
         val fives = IntArray(16) { -1 }
@@ -46,14 +47,33 @@ class Y2016D14(private val salt: String) : Day {
             return evaluateIndex
         }
 
-        // Sequence starting with increasing index, generating a hash based on that and the salt. For each hash,
+        val chunk = 128
+
+        /**
+         * Returns a Flow performing the hashing function $chunk number of times. Uses async/await to do tasks
+         * asynchronously, but then collect them all to deliver to the Flow in sequential order.
+         */
+        suspend fun md5s(n: Int): Flow<String> = withContext(Dispatchers.Default) {
+            (n * chunk until n * chunk + chunk)
+                .map { seed ->
+                    async {
+                        hashing(salt + seed)
+                    }
+                }.awaitAll()
+                .asFlow()
+        }
+
+        // Flow starting with increasing index, generating a hash based on that and the salt. For each hash,
         // record any 5-string in the fives with the current index. Add the 3-string value to the rolling list.
         // When 3-string values start rolling off, check fives to see if that value has shown up as a five. If
         // so, add it to the list of keys. Keep going until the 64th key is found.
-        generateSequence(0) { it + 1 } // Sequence starting with increasing index... 
-            .onEach { n ->
-                val md5: String = hashing(salt + n) // ...generating a hash based on that and the salt.
 
+        generateSequence(0) { it + 1 } // Sequence starting with increasing index...
+            .asFlow() // turn into Flow
+            .map { md5s(it) }
+            .flattenConcat()
+            .withIndex()
+            .onEach { (n, md5) ->
                 // For each hash, record any 5-string in the fives with the current index.
                 fiveRx
                     .findAll(md5)
@@ -65,19 +85,31 @@ class Y2016D14(private val salt: String) : Day {
                     .addRolling(three, n) // When 3-string values start rolling off, check fives... 
                     ?.let { key -> keys.add(key) } // ...If so, add it to the list of keys.
             }.takeWhile { keys.size < 64 } // Keep going until the 64th key is found.
-            .last()
+            .last() // launches Flow
 
-        return keys.last()
+        keys.last()
     }
 
-    override fun part1() = solve(String::md5)
+    private fun md5(s: String): String = MessageDigest
+        .getInstance("MD5")!!
+        .apply { update(s.toByteArray()) }
+        .digest()
+        .toHex()
 
-    override fun part2() = solve { it.stretchedMd5() }
+    override fun part1() = solve(::md5)
+
+    // function to perform stretched MD5 per part 2 instructions
+    private fun stretchedMd5(s: String): String {
+        val digest = MessageDigest.getInstance("MD5")!!
+        return (1..2017).fold(s) { acc, _ -> digest.apply { update(acc.toByteArray()) }.digest().toHex() }
+    }
+
+    override fun part2() = solve(::stretchedMd5)
 }
 
 fun main() = Day.runDay(Y2016D14::class)
 
 //    Class creation: 2ms
-//    Part 1: 18626 (95ms)
-//    Part 2: 20092 (11337ms)
-//    Total time: 11435ms
+//    Part 1: 18626 (280ms)
+//    Part 2: 20092 (2109ms)
+//    Total time: 2392ms
