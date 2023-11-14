@@ -85,7 +85,7 @@ class Y2016D14(private val salt: String) : Day {
                     .addRolling(three, n) // When 3-string values start rolling off, check fives... 
                     ?.let { key -> keys.add(key) } // ...If so, add it to the list of keys.
             }.takeWhile { keys.size < 64 } // Keep going until the 64th key is found.
-            .last() // launches Flow
+            .collect() // launches Flow
 
         keys.last()
     }
