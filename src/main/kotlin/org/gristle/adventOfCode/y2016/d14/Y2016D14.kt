@@ -114,23 +114,34 @@ fun main() = Day.runDay(Y2016D14::class)
 //    Part 2: 20092 (2109ms)
 //    Total time: 2392ms
 
-//    Benchmarking Y2016D14 Part 1
+//    Y2016D14 Part 1
 //    
-//    Warm-up 1: 267 ms/op
-//    Iteration 1: 136 ms/op
-//    Iteration 2: 127 ms/op
-//    Iteration 3: 115 ms/op
-//    Iteration 4: 80 ms/op
-//    Iteration 5: 66 ms/op
+//    Warm-up 1: 265 ms/op
+//    Warm-up 2: 110 ms/op
+//    Warm-up 3: 95 ms/op
+//    Warm-up 4: 91 ms/op
+//    Warm-up 5: 76 ms/op
+//    Iteration 1: 69 ms/op
+//    Iteration 2: 59 ms/op
+//    Iteration 3: 53 ms/op
+//    Iteration 4: 55 ms/op
+//    Iteration 5: 57 ms/op
 //    
-//    104.8 ms/op [Average]
+//    58.6 ms/op [Average]
 //    
-//    Warm-up 1: 1708 ms/op
-//    Iteration 1: 1519 ms/op
-//    Iteration 2: 1548 ms/op
-//    Iteration 3: 1519 ms/op
-//    Iteration 4: 1519 ms/op
-//    Iteration 5: 1518 ms/op
+//    Y2016D14 Part 1
 //    
-//    1524.6 ms/op [Average]
-//    Parts 1 and 2: 1628 ms/op [Average]
+//    Warm-up 1: 1647 ms/op
+//    Warm-up 2: 1498 ms/op
+//    Warm-up 3: 1503 ms/op
+//    Warm-up 4: 1522 ms/op
+//    Warm-up 5: 1508 ms/op
+//    Iteration 1: 1505 ms/op
+//    Iteration 2: 1514 ms/op
+//    Iteration 3: 1525 ms/op
+//    Iteration 4: 1508 ms/op
+//    Iteration 5: 1506 ms/op
+//    
+//    1511.6 ms/op [Average]
+//    
+//    Parts 1 and 2: 1569 ms/op [Average]
