@@ -113,3 +113,24 @@ fun main() = Day.runDay(Y2016D14::class)
 //    Part 1: 18626 (280ms)
 //    Part 2: 20092 (2109ms)
 //    Total time: 2392ms
+
+//    Benchmarking Y2016D14 Part 1
+//    
+//    Warm-up 1: 267 ms/op
+//    Iteration 1: 136 ms/op
+//    Iteration 2: 127 ms/op
+//    Iteration 3: 115 ms/op
+//    Iteration 4: 80 ms/op
+//    Iteration 5: 66 ms/op
+//    
+//    104.8 ms/op [Average]
+//    
+//    Warm-up 1: 1708 ms/op
+//    Iteration 1: 1519 ms/op
+//    Iteration 2: 1548 ms/op
+//    Iteration 3: 1519 ms/op
+//    Iteration 4: 1519 ms/op
+//    Iteration 5: 1518 ms/op
+//    
+//    1524.6 ms/op [Average]
+//    Parts 1 and 2: 1628 ms/op [Average]
