@@ -89,12 +89,14 @@ interface Day {
         ): Long {
             for (warmup in 1..warmups) {
                 print("Warm-up $warmup: ")
+                timer.lap()
                 part()
                 println("${timer.lap()} ms/op")
             }
             val times = (1..iterations)
                 .map { iteration ->
                     print("Iteration $iteration: ")
+                    timer.lap()
                     part()
                     timer.lap().also { println("$it ms/op") }
                 }
