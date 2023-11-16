@@ -23,22 +23,22 @@ class Stopwatch(start: Boolean = false, val units: TimeUnits = TimeUnits.MS) {
             true
         }
 
-    fun stop(): Long {
+    fun stop(units: TimeUnits? = null): Long {
         val now = System.nanoTime()
         if (isRunning) {
             isRunning = false
             elapsed += now - lastStart
         }
-        return elapsed / units.divisor
+        return elapsed / (units?.divisor ?: this.units.divisor)
     }
 
-    fun lap(): Long =
+    fun lap(units: TimeUnits? = null): Long =
         if (isRunning) {
             val now = System.nanoTime()
             val lap = now - lastStart
             elapsed += lap
             lastStart = now
-            lap / units.divisor
+            lap / (units?.divisor ?: this.units.divisor)
         } else 0
 
 
@@ -48,6 +48,6 @@ class Stopwatch(start: Boolean = false, val units: TimeUnits = TimeUnits.MS) {
         isRunning = false
     }
 
-    fun elapsed() = elapsed / units.divisor
+    fun elapsed(units: TimeUnits? = null) = elapsed / (units?.divisor ?: this.units.divisor)
 
 }
