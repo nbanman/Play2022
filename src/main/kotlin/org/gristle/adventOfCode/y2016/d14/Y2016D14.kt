@@ -16,7 +16,7 @@ class Y2016D14(private val salt: String) : Day {
     private val fiveRx = Regex("""([0-9a-f])\1{4,}""")
 
     @OptIn(FlowPreview::class)
-    private fun solve(hashing: (String) -> String): Int = runBlocking {
+    private fun solve(routines: Int = 1, hashing: (digest: MessageDigest, String) -> String): Int {
 
         // for each hex value 0-f, store index of last time 5-string appeared
         val fives = IntArray(16) { -1 }
@@ -47,31 +47,37 @@ class Y2016D14(private val salt: String) : Day {
             return evaluateIndex
         }
 
-        val chunk = 128
-
-        /**
-         * Returns a Flow performing the hashing function $chunk number of times. Uses async/await to do tasks
-         * asynchronously, but then collect them all to deliver to the Flow in sequential order.
-         */
-        suspend fun md5s(n: Int): Flow<String> = withContext(Dispatchers.Default) {
-            (n * chunk until n * chunk + chunk)
-                .map { seed ->
-                    async {
-                        hashing(salt + seed)
-                    }
-                }.awaitAll()
-                .asFlow()
-        }
-
         // Flow starting with increasing index, generating a hash based on that and the salt. For each hash,
         // record any 5-string in the fives with the current index. Add the 3-string value to the rolling list.
         // When 3-string values start rolling off, check fives to see if that value has shown up as a five. If
         // so, add it to the list of keys. Keep going until the 64th key is found.
-
-        generateSequence(0) { it + 1 } // Sequence starting with increasing index...
+        val flowGenerator: Flow<Int> = generateSequence(0) { it + 1 } // Sequence starting with increasing index...
             .asFlow() // turn into Flow
-            .map(::md5s)
-            .flattenConcat()
+
+        // Hashes can be run sequentially or in parallel. Sequential is faster for part 1 because this allows us to 
+        // reuse the MessageDigest instance, which is expensive to create. Parallel is faster for part2 because while
+        // each coroutine creates its own MessageDigest instance, it then uses it 2017 times so the init cost is 
+        // amortized.
+        val hashGenerator: Flow<String> = if (routines == 1) {
+            val digest = MessageDigest.getInstance("MD5")
+            flowGenerator.map { seed -> hashing(digest, (salt + seed)) }
+        } else {
+            flowGenerator
+                .map { n ->
+                    withContext(Dispatchers.Default) {
+                        (n * routines until n * routines + routines)
+                            .map { seed ->
+                                async {
+                                    val digest = MessageDigest.getInstance("MD5")
+                                    hashing(digest, (salt + seed))
+                                }
+                            }.awaitAll()
+                            .asFlow()
+                    }
+                }.flattenConcat()
+        }
+
+        val keyFlow = hashGenerator
             .withIndex()
             .onEach { (n, md5) ->
                 // For each hash, record any 5-string in the fives with the current index.
@@ -85,63 +91,56 @@ class Y2016D14(private val salt: String) : Day {
                     .addRolling(three, n) // When 3-string values start rolling off, check fives... 
                     ?.let { key -> keys.add(key) } // ...If so, add it to the list of keys.
             }.takeWhile { keys.size < 64 } // Keep going until the 64th key is found.
-            .collect() // launches Flow
 
-        keys.last()
+        keyFlow.collectBlocking()
+
+        return keys.last()
     }
 
-    private fun md5(s: String): String = MessageDigest
-        .getInstance("MD5")!!
-        .apply { update(s.toByteArray()) }
-        .digest()
-        .toHex()
+    private fun Flow<IndexedValue<String>>.collectBlocking() = runBlocking { collect() }
 
-    override fun part1() = solve(::md5)
-
-    // function to perform stretched MD5 per part 2 instructions
-    private fun stretchedMd5(s: String): String {
-        val digest = MessageDigest.getInstance("MD5")!!
-        return (1..2017).fold(s) { acc, _ -> digest.apply { update(acc.toByteArray()) }.digest().toHex() }
+    override fun part1() = solve { digest, s ->
+        digest.update(s.toByteArray())
+        digest.digest().toHex()
     }
 
-    override fun part2() = solve(::stretchedMd5)
+    override fun part2() = solve(512) { digest, s ->
+        // needs to convert back and forth from ByteArray and String because Java MessageDigest returns uppercase
+        // A-F, and we need to feed back in lowercase a-f values.
+        (1..2017).fold(s) { acc, _ ->
+            digest.update(acc.toByteArray())
+            digest.digest().toHex()
+        }
+    }
 }
 
 fun main() = Day.runDay(Y2016D14::class)
 
 //    Class creation: 2ms
-//    Part 1: 18626 (280ms)
-//    Part 2: 20092 (2109ms)
-//    Total time: 2392ms
+//    Part 1: 18626 (152ms)
+//    Part 2: 20092 (1875ms)
+//    Total time: 2030ms
 
 //    Y2016D14 Part 1
 //    
-//    Warm-up 1: 265 ms/op
-//    Warm-up 2: 110 ms/op
-//    Warm-up 3: 95 ms/op
-//    Warm-up 4: 91 ms/op
-//    Warm-up 5: 76 ms/op
-//    Iteration 1: 69 ms/op
-//    Iteration 2: 59 ms/op
-//    Iteration 3: 53 ms/op
-//    Iteration 4: 55 ms/op
-//    Iteration 5: 57 ms/op
+//    Warm-up 1: 157599 us/op
+//    Iteration 1: 62071 us/op
+//    Iteration 2: 49656 us/op
+//    Iteration 3: 58339 us/op
+//    Iteration 4: 49319 us/op
+//    Iteration 5: 49527 us/op
 //    
-//    58.6 ms/op [Average]
+//    53782.4 us/op [Average]
 //    
-//    Y2016D14 Part 1
+//    Y2016D14 Part 2
 //    
-//    Warm-up 1: 1647 ms/op
-//    Warm-up 2: 1498 ms/op
-//    Warm-up 3: 1503 ms/op
-//    Warm-up 4: 1522 ms/op
-//    Warm-up 5: 1508 ms/op
-//    Iteration 1: 1505 ms/op
-//    Iteration 2: 1514 ms/op
-//    Iteration 3: 1525 ms/op
-//    Iteration 4: 1508 ms/op
-//    Iteration 5: 1506 ms/op
+//    Warm-up 1: 1847431 us/op
+//    Iteration 1: 1514573 us/op
+//    Iteration 2: 1538634 us/op
+//    Iteration 3: 1517352 us/op
+//    Iteration 4: 1521000 us/op
+//    Iteration 5: 1506612 us/op
 //    
-//    1511.6 ms/op [Average]
+//    1519634.2 us/op [Average]
 //    
-//    Parts 1 and 2: 1569 ms/op [Average]
+//    Parts 1 and 2: 1573416 us/op [Average]
