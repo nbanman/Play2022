@@ -1,5 +1,6 @@
 package org.gristle.adventOfCode.y2021.d19
 
+import kotlinx.coroutines.*
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.MCoord
 import org.gristle.adventOfCode.utilities.getInts
@@ -126,16 +127,14 @@ class Y2021D19(input: String) : Day {
         }
     }
 
-    fun solve(): Pair<Int, Int> {
+    fun solve(): Pair<Int, Int> = runBlocking {
 
         var master = scanners.first()
         val mScan = scanners.drop(1).toMutableList()
 
         while (mScan.isNotEmpty()) {
-            val sharedSet = mScan
-                .map {
-                    SharedSets(master, it, master.coordPairs.keys.intersect(it.coordPairs.keys))
-                }.first { it.matches.size >= 66 }
+
+            val sharedSet = sharedSet(mScan, master)
 
             master = sharedSet.merge()
             mScan.remove(sharedSet.b)
@@ -144,7 +143,20 @@ class Y2021D19(input: String) : Day {
         val furthestDistance =
             master.scannerLocations.elementPairs().toList().maxOf { it.first.manhattanDistance(it.second) }
 
-        return master.beacons.size to furthestDistance
+        master.beacons.size to furthestDistance
+    }
+
+    private suspend fun sharedSet(
+        mScan: MutableList<Scanner>,
+        master: Scanner
+    ): SharedSets = withContext(Dispatchers.Default) {
+        mScan
+            .map {
+                async {
+                    SharedSets(master, it, master.coordPairs.keys.intersect(it.coordPairs.keys))
+                }
+            }.awaitAll()
+            .first { it.matches.size >= 66 }
     }
 
     private val solution = solve()
@@ -156,7 +168,7 @@ class Y2021D19(input: String) : Day {
 
 fun main() = Day.runDay(Y2021D19::class)
 
-//    Class creation: 3863ms
-//    Part 1: 370 (0ms)
+//    Class creation: 2275ms
+//    Part 1: 378 (0ms)
 //    Part 2: 13148 (0ms)
-//    Total time: 3863ms
+//    Total time: 2275ms
