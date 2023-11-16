@@ -119,8 +119,6 @@ object Graph {
             AStarVertex(vertexId, parent.weight + weight, heuristic(vertexId), parent)
     }
 
-    fun <E> Iterable<E>.toEdges(weight: Double = 1.0) = map { Edge(it, weight) }
-
     /**
      * Finds the shortest path in a directed, weighted graph from a starting point to an end condition.
      *
@@ -147,8 +145,6 @@ object Graph {
     ): List<Vertex<E>> {
         val startVertex = AStarVertex(startId, 0.0, heuristic(startId))
 
-        val edgeMap = edges.toMutableMap()
-
         val open = PriorityQueue<AStarVertex<E>>()
         open.add(startVertex)
         val closed = mutableSetOf<E>()
@@ -158,7 +154,7 @@ object Graph {
             if (endCondition(current.id)) {
                 return current.path()
             }
-            val neighbors = edgeMap[current.id] ?: defaultEdges(current.id)
+            val neighbors = edges[current.id] ?: defaultEdges(current.id)
             for (neighbor in neighbors) {
                 if (!closed.contains(neighbor.vertexId)) open.add(neighbor.toAStarVertex(current, heuristic))
             }
@@ -189,7 +185,6 @@ object Graph {
         defaultEdges: (E) -> List<E> = { emptyList() }
     ): List<Vertex<E>> {
         val start = StdVertex(startId, 0.0)
-        val edgeMap = edges.toMutableMap()
         val q: Deque<Vertex<E>> = ArrayDeque()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
@@ -198,7 +193,7 @@ object Graph {
         val visited = mutableMapOf(startId to start)
         while (q.isNotEmpty()) {
             val current = q.removeFirst()
-            val neighbors: List<StdVertex<E>> = (edgeMap[current.id] ?: defaultEdges(current.id))
+            val neighbors: List<StdVertex<E>> = (edges[current.id] ?: defaultEdges(current.id))
                 .filter { it !in visited }
                 .map { StdVertex(it, current.weight + 1.0, current) }
             neighbors
@@ -233,7 +228,6 @@ object Graph {
         defaultEdges: (E) -> List<E> = { emptyList() }
     ): List<Vertex<E>> {
         val start = StdVertex(startId, 0.0)
-        val edgeMap = edges.toMutableMap()
         val q: Deque<Vertex<E>> = ArrayDeque()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
@@ -245,7 +239,7 @@ object Graph {
             if (current.id !in visited) {
                 visited[current.id] = current
                 if (endCondition(current.id) == true) return visited.values.toList()
-                edgeMap[current.id] ?: defaultEdges(current.id)
+                edges[current.id] ?: defaultEdges(current.id)
                     .map { StdVertex(it, current.weight + 1.0, current) }
                     .forEach { q.add(it) }
             }
@@ -277,7 +271,6 @@ object Graph {
         val start = StdVertex(startId, 0.0)
         val vertices = mutableMapOf(startId to start)
         val q = PriorityQueue<Vertex<E>>()
-        val edgeMap = edges.toMutableMap()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
         // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
@@ -287,7 +280,7 @@ object Graph {
             val current = q.pollUntil { visited[it.id] == null } ?: break
             visited[current.id] = current
             if (endCondition(current.id) == true) return visited.values.toList()
-            (edgeMap[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
+            (edges[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
                 val alternateWeight = current.weight + neighborEdge.weight
                 val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
                 if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
@@ -303,14 +296,13 @@ object Graph {
         crossinline defaultEdges: (E) -> Iterable<E> = { emptyList() }
     ): Sequence<Vertex<E>> = sequence {
         val start = StdVertex(startId, 0.0)
-        val edgeMap = edges.toMutableMap()
         val q = ArrayDeque<Vertex<E>>()
         q.add(start)
         val visited = mutableMapOf(startId to start)
         while (q.isNotEmpty()) {
             val current = q.poll()
             yield(current)
-            edgeMap[current.id] ?: defaultEdges(current.id)
+            edges[current.id] ?: defaultEdges(current.id)
                 .filter { it !in visited }
                 .map { StdVertex(id = it, weight = current.weight + 1.0, parent = current) }
                 .forEach { neighbor ->
@@ -326,7 +318,6 @@ object Graph {
         crossinline defaultEdges: (E) -> Iterable<E> = { emptyList() }
     ): Sequence<Vertex<E>> = sequence {
         val start = StdVertex(startId, 0.0)
-        val edgeMap = edges.toMutableMap()
         val q = ArrayDeque<StdVertex<E>>()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
@@ -338,7 +329,7 @@ object Graph {
             if (current.id !in visited) {
                 visited[current.id] = current
                 yield(current)
-                edgeMap[current.id] ?: defaultEdges(current.id)
+                edges[current.id] ?: defaultEdges(current.id)
                     .map { StdVertex(it, current.weight + 1.0, current) }
                     .forEach { q.add(it) }
             }
@@ -353,7 +344,6 @@ object Graph {
         val start = StdVertex(startId, 0.0)
         val vertices = mutableMapOf(startId to start)
         val q = PriorityQueue<Vertex<E>>()
-        val edgeMap = edges.toMutableMap()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
         // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
@@ -363,7 +353,7 @@ object Graph {
             val current = q.pollUntil { visited[it.id] == null } ?: break
             yield(current)
             visited[current.id] = current
-            (edgeMap[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
+            (edges[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
                 val alternateWeight = current.weight + neighborEdge.weight
                 val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
                 if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
@@ -382,7 +372,6 @@ object Graph {
     ): Sequence<Vertex<E>> = sequence {
         val startVertex = AStarVertex(startId, 0.0, heuristic(startId))
 
-        val edgeMap = edges.toMutableMap()
 
         val open = PriorityQueue<AStarVertex<E>>()
         open.add(startVertex)
@@ -391,7 +380,7 @@ object Graph {
             val current = open.pollUntil { !closed.contains(it.id) } ?: break
             yield(current)
             closed.add(current.id)
-            val neighbors = edgeMap[current.id] ?: defaultEdges(current.id)
+            val neighbors = edges[current.id] ?: defaultEdges(current.id)
             for (neighbor in neighbors) {
                 if (!closed.contains(neighbor.vertexId)) open.add(neighbor.toAStarVertex(current, heuristic))
             }
