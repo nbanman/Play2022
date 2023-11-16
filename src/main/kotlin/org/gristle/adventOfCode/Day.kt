@@ -77,7 +77,7 @@ interface Day {
             println("${kClass.simpleName} Part 1\n")
             val timer = Stopwatch(true, TimeUnits.US)
             val p1Average = benchmark(warmups, iterations, timer, c::part1)
-            println("\n${kClass.simpleName} Part 1\n")
+            println("\n${kClass.simpleName} Part 2\n")
             val p2Average = benchmark(warmups, iterations, timer, c::part2)
             println("\nParts 1 and 2: ${p1Average + p2Average} us/op [Average]")
         }
