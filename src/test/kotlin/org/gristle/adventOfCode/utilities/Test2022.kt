@@ -146,6 +146,6 @@ class Test2022 {
 
     @Test
     internal fun y2022d25() {
-        assertEquals("2=-2=0-=0=-0200-==21" to false, Day.testDay(Y2022D25::class, skipPartTwo = true))
+        assertEquals("2=-2=0-=0=-0200-==21" to false, Day.testDay(Y2022D25::class))
     }
 }

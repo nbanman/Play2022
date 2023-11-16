@@ -152,6 +152,6 @@ class Test2020 {
 
     @Test
     internal fun y2020d25() {
-        assertEquals(296776L to false, Day.testDay(Y2020D25::class, skipPartTwo = true))
+        assertEquals(296776L to false, Day.testDay(Y2020D25::class))
     }
 }

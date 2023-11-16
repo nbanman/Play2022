@@ -59,7 +59,7 @@ interface Day {
             val input = sampleInput ?: getInput(day, year)
             val c = constructor.call(input) as Day
             val part1 = if (skipPartOne) false else c.part1()
-            val part2 = if (skipPartTwo) false else c.part2()
+            val part2 = if (skipPartTwo || day == 25) false else c.part2()
             return part1 to part2
         }
 

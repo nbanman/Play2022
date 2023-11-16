@@ -1,20 +1,28 @@
 package org.gristle.adventOfCode.test
 
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.runBlocking
 
-suspend fun printName() {
-    println(coroutineContext[CoroutineName]?.name)
+fun main() = runBlocking<Unit> {
+    val channel = Channel<String>()
+    launch {
+        channel.send("A1")
+        channel.send("A2")
+        log("A done")
+    }
+    launch {
+        channel.send("B1")
+        log("B done")
+    }
+    launch {
+        repeat(3) {
+            val x = channel.receive()
+            log(x)
+        }
+    }
 }
 
-suspend fun main() = withContext(CoroutineName("Outer")) {
-    printName() // Outer
-    launch(CoroutineName("Inner")) {
-        printName() // Inner
-    }
-    delay(10)
-    printName() // Outer
+fun log(message: Any?) {
+    println("[${Thread.currentThread().name}] $message")
 }

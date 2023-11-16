@@ -12,7 +12,7 @@ fun makeDay(day: Int, year: Int = LocalDate.now().year, template: String = "temp
 }
 
 fun main(args: Array<String>) {
-    for (day in 6..25) {
+    for (day in 1..25) {
         makeDay(day)
     }
     return

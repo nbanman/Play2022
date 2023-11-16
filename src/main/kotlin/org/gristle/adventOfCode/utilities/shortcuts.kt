@@ -100,6 +100,33 @@ fun <T> Iterable<T>.collate(threads: Int): List<List<T>> {
     return partitions
 }
 
+inline fun <T> Iterable<T>.partitionIndexed(predicate: (index: Int, T) -> Boolean): Pair<List<T>, List<T>> {
+    val first = ArrayList<T>()
+    val second = ArrayList<T>()
+    forEachIndexed { index, element ->
+        if (predicate(index, element)) {
+            first.add(element)
+        } else {
+            second.add(element)
+        }
+    }
+    return Pair(first, second)
+}
+
+inline fun String.partitionIndexed(predicate: (index: Int, Char) -> Boolean): Pair<String, String> {
+    val first = StringBuilder()
+    val second = StringBuilder()
+    forEachIndexed { index, element ->
+        if (predicate(index, element)) {
+            first.append(element)
+        } else {
+            second.append(element)
+        }
+    }
+    return Pair(first.toString(), second.toString())
+}
+
+
 fun <T> Sequence<T>.collate(threads: Int): Sequence<List<T>> {
     val partitions = List(threads) { ArrayList<T>() }
     forEachIndexed { index, element -> partitions[index % threads].add(element) }
@@ -226,5 +253,4 @@ inline fun <E> PriorityQueue<E>.pollWhile(predicate: (E) -> Boolean): List<E> {
     }
     return list
 }
-
 

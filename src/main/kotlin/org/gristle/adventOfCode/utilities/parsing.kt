@@ -138,7 +138,7 @@ fun String.blankSplit(): List<String> = split("\n\n")
 /**
  * Splits file by newline and applies transform
  */
-inline fun <E> String.lines(transform: (String) -> E) = split("\n", "\r\n").map(transform)
+inline fun <E> String.lines(transform: (String) -> E) = lines().map(transform)
 
 fun List<String>.transpose(): List<String> {
     val width = first().length

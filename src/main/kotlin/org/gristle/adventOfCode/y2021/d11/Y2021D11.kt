@@ -1,4 +1,4 @@
-package org.gristle.adventOfCode.y2021.d11
+ package org.gristle.adventOfCode.y2021.d11
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.toGrid
