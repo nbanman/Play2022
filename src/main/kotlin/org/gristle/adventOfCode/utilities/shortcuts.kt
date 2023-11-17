@@ -94,11 +94,28 @@ fun IntRange.overlaps(other: IntRange): Boolean = if (first <= other.first) {
  */
 fun <E> Iterable<E>.eachCount() = groupingBy { it }.eachCount()
 
+/**
+ * Splits the original collection into n lists, interleaving elements among the lists.
+ */
 fun <T> Iterable<T>.collate(threads: Int): List<List<T>> {
     val partitions = List(threads) { ArrayList<T>() }
     forEachIndexed { index, element -> partitions[index % threads].add(element) }
     return partitions
 }
+
+/**
+ * Splits the original sequence into n lists, interleaving elements among the lists.
+ */
+fun <T> Sequence<T>.collate(threads: Int): Sequence<List<T>> {
+    val partitions = List(threads) { ArrayList<T>() }
+    forEachIndexed { index, element -> partitions[index % threads].add(element) }
+    return partitions.asSequence()
+}
+
+/**
+ * Splits the original collection into a pair of lists, where first list contains elements for which predicate yielded
+ * true, while second list contains elements for which predicate yielded false. Exposes an index value.
+ */
 
 inline fun <T> Iterable<T>.partitionIndexed(predicate: (index: Int, T) -> Boolean): Pair<List<T>, List<T>> {
     val first = ArrayList<T>()
@@ -113,6 +130,10 @@ inline fun <T> Iterable<T>.partitionIndexed(predicate: (index: Int, T) -> Boolea
     return Pair(first, second)
 }
 
+/**
+ * Splits the original string into a pair of strings, where first string contains elements for which predicate yielded
+ * true, while second string contains elements for which predicate yielded false. Exposes an index value.
+ */
 inline fun String.partitionIndexed(predicate: (index: Int, Char) -> Boolean): Pair<String, String> {
     val first = StringBuilder()
     val second = StringBuilder()
@@ -124,13 +145,6 @@ inline fun String.partitionIndexed(predicate: (index: Int, Char) -> Boolean): Pa
         }
     }
     return Pair(first.toString(), second.toString())
-}
-
-
-fun <T> Sequence<T>.collate(threads: Int): Sequence<List<T>> {
-    val partitions = List(threads) { ArrayList<T>() }
-    forEachIndexed { index, element -> partitions[index % threads].add(element) }
-    return partitions.asSequence()
 }
 
 fun <E : Comparable<E>> Iterable<E>.toPriorityQueue(): PriorityQueue<E> {
