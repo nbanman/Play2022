@@ -25,7 +25,7 @@ class Y2016D14(private val salt: String) : Day {
         val keys = ArrayList<Int>(70)
 
         // rolling list of 1,000 of the 3-string value of hashes. returns 'X' if no 3-string in hash
-        val threes = ArrayDeque<Char>(1000)
+        val threes = ArrayDeque<Char>(1001)
 
         // adds a 3-string value to the rolling list, returning the index of the value that rolled off if that
         // index has been validated
