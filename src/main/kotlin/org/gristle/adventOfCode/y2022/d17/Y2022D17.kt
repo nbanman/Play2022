@@ -169,3 +169,7 @@ class Y2022D17(private val jetPattern: String) : Day {
 }
 
 fun main() = Day.runDay(Y2022D17::class) // 3055, 1507692307690
+//    Class creation: 2ms
+//    Part 1: 3055 (23ms)
+//    Part 2: 1507692307690 (41ms)
+//    Total time: 68ms
