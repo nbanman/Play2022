@@ -3,7 +3,7 @@ package org.gristle.adventOfCode.y2022.d10
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.ocr
 import org.gristle.adventOfCode.utilities.rep
-import org.gristle.adventOfCode.utilities.toMutableGrid
+import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2022D10(input: String) : Day {
 
@@ -31,9 +31,9 @@ class Y2022D10(input: String) : Day {
         .sumOf { (cycle, register) -> (cycle + 1) * register }
 
     override fun part2() = cpu
-        .take(240) // The OCR grid needs 240 exact
+        .take(240) // The OCR grid needs 240 exact, while the sequence delivers 241 values (initial + 240 additional)
         .map { (cycle, register) -> ((cycle) % 40) in (register - 1)..(register + 1) }
-        .toMutableGrid(40)
+        .toGrid(40)
         .apply { println("\n${rep()}") }
         .ocr()
 }
