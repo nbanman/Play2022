@@ -268,3 +268,10 @@ inline fun <E> PriorityQueue<E>.pollWhile(predicate: (E) -> Boolean): List<E> {
     return list
 }
 
+fun <E : Any?> E.convertToString(): String? = when {
+    this is String -> this
+    this is Int -> this.toString()
+    this is Long -> this.toString()
+    this is Boolean -> this.toString()
+    else -> null
+}
