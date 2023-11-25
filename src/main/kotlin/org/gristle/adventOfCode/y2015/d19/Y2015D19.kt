@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.y2015.d19
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.blankSplit
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.gvs
 
 class Y2015D19(private val input: String) : Day {
 
@@ -28,7 +28,6 @@ class Y2015D19(private val input: String) : Day {
         val elements = """[A-Z][a-z]?"""
             .toRegex()
             .findAll(molecule)
-            .toList()
 
         return elements
             .flatMap { mr ->
@@ -37,21 +36,23 @@ class Y2015D19(private val input: String) : Day {
                     .map { rule ->
                         molecule.substring(0, mr.range.first) + rule.replacement + molecule.substring(mr.range.last + 1)
                     }
-            }.distinct()
+            }.toList()
+            .distinct()
             .size
     }
 
     override fun part2(): Int {
         val elementPattern = """e => (\w+)""".toRegex()
         val starts = input
-            .groupValues(elementPattern)
+            .gvs(elementPattern)
             .map { it[0] }
+            .toList()
 
         return generateSequence(molecule) { molecule ->
             rules
                 .first { rule -> molecule.contains(rule.replacement) } // find first applicable rule
                 .let { rule -> molecule.replaceFirst(rule.replacement, rule.element) } // apply rule to molecule; yield
-        }.indexOfFirst { starts.contains(it) } + 1
+        }.indexOfFirst { it in starts } + 1
     }
 }
 
