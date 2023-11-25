@@ -1,9 +1,6 @@
 package org.gristle.adventOfCode
 
-import org.gristle.adventOfCode.utilities.Stopwatch
-import org.gristle.adventOfCode.utilities.TimeUnits
-import org.gristle.adventOfCode.utilities.getInput
-import org.gristle.adventOfCode.utilities.getIntList
+import org.gristle.adventOfCode.utilities.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction0
 
@@ -32,7 +29,7 @@ interface Day {
         fun <T : Any> runDay(
             kClass: KClass<T>,
             sampleInput: List<String>,
-            omitInput: Boolean = false,
+            omitInputPrintout: Boolean = false,
         ) {
             val constructor = kClass.constructors.first()
             val (year, day) = kClass.simpleName?.getIntList()
@@ -40,10 +37,39 @@ interface Day {
             println("[$year Day $day]")
             sampleInput.forEachIndexed { index, sample ->
                 print("${index + 1}:")
-                val inputString = if (omitInput) "\t" else " $sample\t"
+                val inputString = if (omitInputPrintout) "\t" else " $sample\t"
                 print(inputString)
                 val c = constructor.call(sample) as Day
                 println("Part 1: ${c.part1()}\tPart 2: ${c.part2()}")
+            }
+        }
+
+        fun <T : Any> testPart(
+            kClass: KClass<T>,
+            part: Int,
+            sampleInput: List<Pair<String, String>>,
+            omitInput: Boolean = false,
+        ) {
+            val constructor = kClass.constructors.first()
+            val (year, day) = kClass.simpleName?.getIntList()
+                ?: throw IllegalArgumentException("Class does not have a name")
+            println("[$year Day $day]")
+            sampleInput.forEachIndexed { index, (sample, answer) ->
+                print("${index + 1}:\t")
+                val c = constructor.call(sample) as Day
+                val result =
+                    when {
+                        part == 1 -> c.part1()
+                        part == 2 && day != 25 -> c.part2()
+                        else -> throw IllegalArgumentException("Invalid part number: $part")
+                    }.convertToString()
+                if (result == answer) {
+                    print("SUCCESS\t")
+                } else {
+                    print("FAILURE\t")
+                }
+                print("$result ($answer)")
+                if (omitInput) println() else println("\t$sample")
             }
         }
 
