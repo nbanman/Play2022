@@ -5,8 +5,6 @@ import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2017D7(input: String) : Day {
 
-    private val pattern = """(\w+) \((\d+)\)(?: -> (.*))?""".toRegex()
-
     data class Program(val name: String, val weight: Int, val childNames: List<String>) {
         companion object {
             // register is a mutable hashmap shared by all instances used to get a parent from the parent's name
@@ -55,7 +53,9 @@ class Y2017D7(input: String) : Day {
         }
     }
 
-    // Parse input to a list of "Program"s
+    // Parse input to a list of 'Program's
+
+    private val pattern = """(\w+) \((\d+)\)(?: -> (.*))?""".toRegex()
     private val programs = input
         .groupValues(pattern)
         .map { gv ->
@@ -66,9 +66,9 @@ class Y2017D7(input: String) : Day {
     // The bottom program has no programs that reference it as a child.
     private val bottomProgram = let {
         // All program names
-        val pgNames = programs.map { it.name }.toSet()
+        val pgNames = programs.map(Program::name).toSet()
         // All program names that are referenced as a child
-        val childNames = programs.flatMap { it.childNames }.toSet()
+        val childNames = programs.flatMap(Program::childNames).toSet()
         // The program whose name is left over once the child references are removed
         Program[(pgNames - childNames).first()] ?: throw IllegalArgumentException()
     }
