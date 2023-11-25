@@ -27,9 +27,25 @@ class Y2022D6(private val input: String) : Day {
     override fun part2() = solve(14)
 }
 
-fun main() = Day.runDay(Y2022D6::class) // 1361, 3263
+fun main() = Day.runDay(Y2022D6::class)
 
 //    Class creation: 2ms
 //    Part 1: 1361 (4ms)
 //    Part 2: 3263 (2ms)
 //    Total time: 9ms
+
+private val p1Test = listOf(
+    """mjqjpqmgbljsphdztnvjfqwrcgsmlb""" to "7",
+    """bvwbjplbgvbhsrlpgdmjqwftvncz""" to "5",
+    """nppdvjthqldpwncqszvftbrmjlhg""" to "6",
+    """nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg""" to "10",
+    """zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw""" to "11",
+)
+
+private val p2Test = listOf(
+    """mjqjpqmgbljsphdztnvjfqwrcgsmlb""" to "19",
+    """bvwbjplbgvbhsrlpgdmjqwftvncz""" to "23",
+    """nppdvjthqldpwncqszvftbrmjlhg""" to "23",
+    """nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg""" to "29",
+    """zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw""" to "26",
+)
