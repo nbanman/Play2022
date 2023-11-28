@@ -57,13 +57,13 @@ class Y2019D22(private val input: String) : Day {
 
         private val techniques = input
             .groupValues("""(cut|deal)[^-0-9\n]+(-?\d+)?""")
-            .flatMap { gv ->
-                if (gv[0] == "cut") {
-                    listOf(Technique.Cut(gv[1].toLong()))
+            .flatMap { (technique, increment) ->
+                if (technique == "cut") {
+                    listOf(Technique.Cut(increment.toLong()))
                 } else {
-                    if (gv[1] == "") {
+                    if (increment == "") {
                         listOf(Technique.Deal(-1), Technique.Cut(1))
-                    } else listOf(Technique.Deal(gv[1].toLong()))
+                    } else listOf(Technique.Deal(increment.toLong()))
                 }
             }.reduceAndRepeat()
 
