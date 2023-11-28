@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2018.d21
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
+import org.gristle.adventOfCode.utilities.getIntList
 import org.gristle.adventOfCode.y2018.shared.Ops
 
 class Y2018D21(private val input: String) : Day {
-    private val pattern = """([a-z]{4}) (\d+) (\d+) (\d+)""".toRegex()
 
     data class Command(
         val op: Ops,
@@ -20,11 +19,15 @@ class Y2018D21(private val input: String) : Day {
 
     fun solve(part2: Boolean = false): Long {
         val p = input.takeWhile { it !in "\r\n" }.takeLast(1).toInt()
+
         val commands = input
-            .groupValues(pattern)
-            .mapIndexed { index, gv ->
-                Command(Ops.from(gv[0]), p, gv[1].toInt(), gv[2].toInt(), gv[3].toInt(), index)
-            }
+            .lineSequence()
+            .drop(1)
+            .mapIndexed { lineNo, s ->
+                val op = Ops.from(s.takeWhile { it != ' ' })
+                val (a, b, c) = s.getIntList()
+                Command(op, p, a, b, c, lineNo)
+            }.toList()
 
         val register = longArrayOf(0L, 0L, 0L, 0L, 0L, 0L)
         val r1Set = mutableSetOf<Long>()
