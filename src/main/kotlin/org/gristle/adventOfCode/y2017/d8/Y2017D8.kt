@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2017.d8
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2017D8(input: String) : Day {
 
@@ -32,12 +31,14 @@ class Y2017D8(input: String) : Day {
         }
     }
 
-    val instructions = input
-        .groupValues(pattern)
-        .map { gv ->
-            val amount = gv[2].toInt().let { if (gv[1] == "dec") -it else it }
-            Instruction(gv[0], amount, gv[3], gv[4], gv[5].toInt())
-        }
+    val instructions = pattern
+        .findAll(input)
+        .map { matchResult ->
+            val (operand, operation, amountStr, conVar, conOp, conAmtStr) = matchResult.destructured
+            val amount = amountStr.toInt().let { if (operation == "dec") -it else it }
+            val conAmt = conAmtStr.toInt()
+            Instruction(operand, amount, conVar, conOp, conAmt)
+        }.toList()
 
     private val solution = let {
         val register = mutableMapOf<String, Int>().withDefault { 0 }
