@@ -9,31 +9,31 @@ class Y2020D14(input: String) : Day {
         companion object {
             private val pattern = Regex("""(mask|mem)(?:\[(\d+)])? = ([X\d]+)""")
             fun fromString(s: String): Instruction {
-                val gv = pattern
+                val (_, command, register, value) = pattern
                     .find(s)
                     ?.groupValues
                     ?: throw Exception("regex pattern not found in string")
-                return when (gv[1]) {
+                return when (command) {
                     "mask" -> {
-                        val oneMask = gv[3].foldRightIndexed(0L) { index, c, acc ->
+                        val oneMask = value.foldRightIndexed(0L) { index, c, acc ->
                             acc + if (c == '1') {
-                                1L.shl(gv[3].length - index - 1)
+                                1L.shl(value.length - index - 1)
                             } else 0L
                         }
-                        val zeroMask = gv[3].foldRightIndexed(0L) { index, c, acc ->
+                        val zeroMask = value.foldRightIndexed(0L) { index, c, acc ->
                             acc + if (c != '0') {
-                                1L.shl(gv[3].length - index - 1)
+                                1L.shl(value.length - index - 1)
                             } else 0L
                         }
-                        val xMask = gv[3].foldRightIndexed(0L) { index, c, acc ->
+                        val xMask = value.foldRightIndexed(0L) { index, c, acc ->
                             acc + if (c == 'X') {
-                                1L.shl(gv[3].length - index - 1)
+                                1L.shl(value.length - index - 1)
                             } else 0L
                         }
                         Mask(oneMask, zeroMask, xMask)
                     }
                     else -> {
-                        Mem(gv[2].toLong(), gv[3].toLong())
+                        Mem(register.toLong(), value.toLong())
                     }
                 }
             }
