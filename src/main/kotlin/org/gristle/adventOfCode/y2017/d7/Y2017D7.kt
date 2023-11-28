@@ -58,9 +58,9 @@ class Y2017D7(input: String) : Day {
     private val pattern = """(\w+) \((\d+)\)(?: -> (.*))?""".toRegex()
     private val programs = input
         .groupValues(pattern)
-        .map { gv ->
-            val childNames = gv[2].split(", ").let { if (it.first() == "") emptyList() else it }
-            Program(gv[0], gv[1].toInt(), childNames)
+        .map { (name, weight, childStr) ->
+            val childNames = childStr.split(", ").let { if (it.first() == "") emptyList() else it }
+            Program(name, weight.toInt(), childNames)
         }
 
     // The bottom program has no programs that reference it as a child.
