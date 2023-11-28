@@ -83,11 +83,10 @@ class Y2016D11(private val input: String) : Day {
             .mapIndexed { index, line ->
                 line
                     .groupValues(pattern)
-                    .map { gv ->
-                        val type = if (gv[1] == "microchip") ItemType.MICROCHIP else ItemType.GENERATOR
-                        RadioItem(gv[0], type)
-                    }
-                    .let {
+                    .map { (name, typeStr) ->
+                        val type = if (typeStr == "microchip") ItemType.MICROCHIP else ItemType.GENERATOR
+                        RadioItem(name, type)
+                    }.let {
                         if (index == 0 && part2) it + listOf(
                             RadioItem("elerium", ItemType.GENERATOR),
                             RadioItem("elerium", ItemType.MICROCHIP),
