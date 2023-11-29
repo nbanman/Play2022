@@ -39,15 +39,13 @@ class Y2017D25(input: String) : Day {
         val oneChange: String
     )
 
-    private val stepPattern = """(\d+) steps""".toRegex()
-
     private val pattern = """In state ([A-F]):
   If the current value is 0:
-    - Write the value (0|1).
+    - Write the value ([01]).
     - Move one slot to the (left|right).
     - Continue with state ([A-F]).
   If the current value is 1:
-    - Write the value (0|1).
+    - Write the value ([01]).
     - Move one slot to the (left|right).
     - Continue with state ([A-F])."""
 
