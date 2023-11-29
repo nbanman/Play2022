@@ -70,7 +70,7 @@ class Y2022D16(input: String) : Day {
         val closed = mutableSetOf<State>()
 
         while (open.isNotEmpty()) {
-            val (current, heuristic) = open.pollUntil { !closed.contains(it.first) } ?: break
+            val (current, heuristic) = open.pollUntil { (state, _) -> !closed.contains(state) } ?: break
             val firstRoom = current.pos.first()
             val secondRoom = current.pos.last()
             closed.add(current)

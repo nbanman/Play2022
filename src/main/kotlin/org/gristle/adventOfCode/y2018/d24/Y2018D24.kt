@@ -47,10 +47,9 @@ class Y2018D24(input: String) : Day {
             val infectionSelections = selectTargets(infection.sortedWith(selectionOrder), immuneSystem)
 
             // attack phase
-            val attackers = (immuneSelections + infectionSelections).sortedByDescending { it.first.initiative }
-            for (attackerDefender in attackers) {
-                val attacker = attackerDefender.first
-                val defender = attackerDefender.second
+            val attackers = (immuneSelections + infectionSelections)
+                .sortedByDescending { (attacker) -> attacker.initiative }
+            for ((attacker, defender) in attackers) {
                 if (attacker.units <= 0) continue
                 defender.takeDamage(defender.modifiedDamage(attacker))
             }
@@ -82,10 +81,9 @@ class Y2018D24(input: String) : Day {
 
                 // attack phase
 
-                val attackers = (immuneSelections + infectionSelections).sortedByDescending { it.first.initiative }
-                for (attackerDefender in attackers) {
-                    val attacker = attackerDefender.first
-                    val defender = attackerDefender.second
+                val attackers = (immuneSelections + infectionSelections)
+                    .sortedByDescending { (attacker) -> attacker.initiative }
+                for ((attacker, defender) in attackers) {
                     if (attacker.units <= 0) continue
                     defender.takeDamage(defender.modifiedDamage(attacker, boost))
                 }

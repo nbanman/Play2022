@@ -12,8 +12,8 @@ class Y2019D4(input: String) : Day {
             .map(Int::toString) // convert each number in range to String for rule analysis
             .filter { password -> // apply part 1 rules b/c they apply to both parts
                 val zippedPassString = password.zipWithNext() // compare each digit with the one after it
-                zippedPassString.none { it.first > it.second } // digits never decrease 
-                        && zippedPassString.any { it.first == it.second } // at least one is the same
+                zippedPassString.none { (prev, next) -> prev > next } // digits never decrease 
+                        && zippedPassString.any { (prev, next) -> prev == next } // at least one is the same
             }
     }
 

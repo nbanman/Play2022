@@ -72,7 +72,7 @@ class Y2021D19(input: String) : Day {
             .toList()
             .elementPairs()
             .toList()
-            .associateBy { (beacons[it.first] - beacons[it.second]).toSet() }
+            .associateBy { (a, b) -> (beacons[a] - beacons[b]).toSet() }
 
         override fun toString(): String {
             return "Scanner(id=$id, beacons=${beacons.size})"
@@ -140,7 +140,7 @@ class Y2021D19(input: String) : Day {
         }
 
         val furthestDistance =
-            master.scannerLocations.elementPairs().toList().maxOf { it.first.manhattanDistance(it.second) }
+            master.scannerLocations.elementPairs().toList().maxOf { (a, b) -> a.manhattanDistance(b) }
 
         master.beacons.size to furthestDistance
     }

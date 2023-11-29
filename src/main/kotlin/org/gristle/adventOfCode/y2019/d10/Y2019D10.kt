@@ -28,7 +28,8 @@ class Y2019D10(input: String) : Day {
                         new
                     }.distinct()
                     .size to asteroid
-            }.maxByOrNull { it.first } ?: throw Exception("no asteroids")
+            }.maxByOrNull { (size) -> size }
+            ?: throw Exception("no asteroids")
         this.station = station
         this.detectableFromStation = detectableFromStation
     }
@@ -45,15 +46,15 @@ class Y2019D10(input: String) : Day {
                     .let { if (it <= 0.0) it else (-2 * PI) + it }
                 newAngle to asteroid
             }
-            .sortedBy { it.second.manhattanDistance(station) }
-            .groupBy { it.first }
+            .sortedBy { (_, asteroid) -> asteroid.manhattanDistance(station) }
+            .groupBy { (angle) -> angle }
             .values
 
-        val pq = IndexedHeap.maxHeap<Pair<Double, Coord>> { o1, o2 ->
-            (o1.first - o2.first).let { if (it < 0.0) -1 else if (it > 0.0) 1 else 0 }
+        val pq = IndexedHeap.maxHeap<Pair<Double, Coord>> { (angle1, _), (angle2, _) ->
+            (angle1 - angle2).let { if (it < 0.0) -1 else if (it > 0.0) 1 else 0 }
         }
         for (angle in angles) {
-            angle.forEachIndexed { index, pair -> pq.add(-10.0 * index + pair.first to pair.second) }
+            angle.forEachIndexed { index, (angle, asteroid) -> pq.add(-10.0 * index + angle to asteroid) }
         }
 
         return pq.toList()[199].let { it.second.x * 100 + it.second.y }

@@ -31,7 +31,7 @@ class Y2019D6(input: String) : Day {
         .lines()
         .map { line -> line
             .split(')')
-            .let { CelestialBody(it.last(), it.first()) }
+            .let { (parentName, name) -> CelestialBody(name, parentName) }
         } + CelestialBody("COM", "")
 
     override fun part1() = celestialBodies.sumOf(CelestialBody::orbits)

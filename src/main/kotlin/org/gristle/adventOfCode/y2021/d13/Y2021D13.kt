@@ -54,7 +54,7 @@ class Y2021D13(input: String) : Day {
 
         dots = dotInput
             .getInts()
-            .chunked(2) { Coord(it[0], it[1]) }
+            .chunked(2) { (x, y) -> Coord(x, y) }
             .toList()
 
         foldInstructions = foldInput

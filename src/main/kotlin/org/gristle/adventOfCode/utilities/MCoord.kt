@@ -19,7 +19,7 @@ open class MCoord(coordinates: Iterable<Int>) {
     }
 
     fun manhattanDistance(other: MCoord = ORIGIN): Int {
-        return (coordinates zip other.coordinates).sumOf { abs(it.first - it.second) }
+        return (coordinates zip other.coordinates).sumOf { (a, b) -> abs(a - b) }
     }
 
     operator fun get(n: Int) = coordinates[n]
@@ -33,7 +33,7 @@ open class MCoord(coordinates: Iterable<Int>) {
             other.coordinates to this.coordinates
         }
         val newCoordinates = (this.coordinates zip other.coordinates)
-            .map { operation(it.first, it.second) } +
+            .map { (a, b) -> operation(a, b) } +
                 larger.drop(smaller.size).map { identity * it }
         return MCoord(newCoordinates)
 
