@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2017.d25
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
-import org.gristle.adventOfCode.utilities.groupValues
 
 class Y2017D25(input: String) : Day {
     private class Node(var isOne: Boolean = false, var left: Node? = null, var right: Node? = null) {
@@ -55,22 +54,23 @@ class Y2017D25(input: String) : Day {
     private val data = input.replace("\r", "")
 
     override fun part1(): Int {
-        val steps = data.getInts().first()
+        val steps: Int = data.getInts().first()
 
-        val states = data
-            .groupValues(pattern)
-            .map {
-                it[0] to State(
-                    it[1] == "1",
-                    it[2] == "left",
-                    it[3],
-                    it[4] == "1",
-                    it[5] == "left",
-                    it[6]
+        val states: Map<String, State> = pattern
+            .toRegex()
+            .findAll(data)
+            .associate { result ->
+                val (name, zeroWrite, zeroLeft, zeroChange, oneWrite, oneLeft, oneChange) = result.destructured
+                name to State(
+                    zeroWrite == "1",
+                    zeroLeft == "left",
+                    zeroChange,
+                    oneWrite == "1",
+                    oneLeft == "left",
+                    oneChange
                 )
-            }.let {
-                mapOf(*it.toTypedArray())
             }
+
         val startNode = Node()
         var currentNode = startNode
         var currentName = "A"
