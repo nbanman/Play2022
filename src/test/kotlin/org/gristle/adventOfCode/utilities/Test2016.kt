@@ -152,6 +152,6 @@ class Test2016 {
 
     @Test
     internal fun y2016d25() {
-        assertEquals(175 to null, Day.testDay(Y2016D25::class))
+        assertEquals(175 to false, Day.testDay(Y2016D25::class))
     }
 }
