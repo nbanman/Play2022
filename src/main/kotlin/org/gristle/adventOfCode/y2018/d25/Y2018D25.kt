@@ -10,7 +10,7 @@ class Y2018D25(private val input: String) : Day {
     override fun part1(): Int {
         val points = input
             .getInts()
-            .chunked(4) { MCoord(it) }
+            .chunked(4, ::MCoord)
 
         val constellations = mutableListOf<List<MCoord>>()
 

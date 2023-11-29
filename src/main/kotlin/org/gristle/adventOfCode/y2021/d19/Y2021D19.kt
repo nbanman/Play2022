@@ -23,8 +23,7 @@ class Y2021D19(input: String) : Day {
                 val beacons = s
                     .getInts()
                     .drop(1)
-                    .chunked(3)
-                    .map(::MCoord)
+                    .chunked(3, ::MCoord)
                     .toList()
                 return Scanner(id, beacons)
             }
