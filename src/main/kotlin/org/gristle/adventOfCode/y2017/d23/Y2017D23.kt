@@ -9,8 +9,7 @@ class Y2017D23(input: String) : Day {
 
     val commands = input
         .split(' ', '\n')
-        .chunked(3)
-        .map { (name, arg1, arg2) -> Command(name, arg1, arg2) }
+        .chunked(3) { (name, arg1, arg2) -> Command(name, arg1, arg2) }
 
     private var registers = mutableMapOf<String, Long>()
 

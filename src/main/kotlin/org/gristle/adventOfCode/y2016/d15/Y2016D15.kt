@@ -8,9 +8,9 @@ private typealias Disc = Pair<Long, Long>
 class Y2016D15(input: String) : Day {
 
     // Parse input into Discs
-    private val discs = input
+    private val discs: Sequence<Pair<Long, Long>> = input
         .getLongs()
-        .chunked(4) { it[1] to -it[0] - it[3] }
+        .chunked(4) { (startTime, positions, _, positionAtT0) -> positions to -startTime - positionAtT0 }
 
     // Uses a sieve version of CRT
     private fun solve(discs: Sequence<Disc>): Long {

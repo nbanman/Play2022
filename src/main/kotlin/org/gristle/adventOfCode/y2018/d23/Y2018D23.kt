@@ -77,8 +77,7 @@ class Y2018D23(input: String) : Day {
 
     private val nanobots = input
         .getInts()
-        .chunked(4)
-        .map { (x, y, z, radius) -> Nanobot(Xyz(x, y, z), radius) }
+        .chunked(4) { (x, y, z, radius) -> Nanobot(Xyz(x, y, z), radius) }
         .toList()
 
     override fun part1(): Int {

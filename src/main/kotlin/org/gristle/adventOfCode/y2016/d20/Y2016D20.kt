@@ -10,7 +10,7 @@ class Y2016D20(input: String) : Day {
     // avoid overflow issues.
     private val ranges = input
         .getLongList(omitDashes = true)
-        .chunked(2) { it[0]..it[1] }
+        .chunked(2) { (start, end) -> start..end }
         .sortedBy(LongRange::first)
 
     // delivers a sequence of ips not blocked by the whitelist by starting at 0

@@ -128,5 +128,5 @@ fun Iterable<MCoord>.getBounds(padding: Int = 0): List<IntRange> {
             if (i > bounds[upperIndex]) bounds[upperIndex] = i
         }
     }
-    return bounds.chunked(2) { it.first() - padding..it.last() + padding }
+    return bounds.chunked(2) { (lower, upper) -> lower - padding..upper + padding }
 }

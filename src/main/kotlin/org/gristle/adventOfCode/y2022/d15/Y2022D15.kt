@@ -30,8 +30,7 @@ class Y2022D15(input: String) : Day {
 
     private val sensors = input
         .getInts()
-        .chunked(4)
-        .map { Sensor(Coord(it[0], it[1]), Coord(it[2], it[3])) }
+        .chunked(4) { (x1, y1, x2, y2) -> Sensor(Coord(x1, y1), Coord(x2, y2)) }
         .toList()
 
     private fun List<IntRange>.concatenate(): List<IntRange> {

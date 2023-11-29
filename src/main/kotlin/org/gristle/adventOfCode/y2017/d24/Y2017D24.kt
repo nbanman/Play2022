@@ -29,8 +29,7 @@ class Y2017D24(input: String) : Day {
 
     private val components = input
         .getInts()
-        .chunked(2)
-        .map { MagComp(it[0], it[1]) }
+        .chunked(2) { MagComp(it[0], it[1]) }
         .toList()
 
     private val compareByStrength = compareBy { bridge: Bridge -> bridge.strength() }

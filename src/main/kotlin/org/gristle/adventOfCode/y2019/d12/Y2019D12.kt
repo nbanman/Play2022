@@ -20,8 +20,7 @@ class Y2019D12(input: String) : Day {
 
     private val moons = input
         .getInts()
-        .chunked(3)
-        .map { (x, y, z) -> Moon(Xyz(x, y, z)) }
+        .chunked(3) { (x, y, z) -> Moon(Xyz(x, y, z)) }
         .toList()
 
     private fun applyForce(a: Int, b: Int) = (a - b).let { if (it < 0) 1 else if (it > 0) -1 else 0 }

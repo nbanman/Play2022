@@ -20,8 +20,7 @@ class Y2015D2(input: String) : Day {
 
     private val boxes = input
         .getInts()
-        .chunked(3)
-        .map { dimensions -> Box(dimensions) }
+        .chunked(3) { dimensions -> Box(dimensions) }
 
     override fun part1() = boxes.sumOf(Box::paperNeeded)
 

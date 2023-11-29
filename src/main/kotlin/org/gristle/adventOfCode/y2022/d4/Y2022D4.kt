@@ -9,8 +9,7 @@ class Y2022D4(input: String) : Day {
 
     private val ranges = input
         .getInts(true)
-        .chunked(4)
-        .map { it[0]..it[1] to it[2]..it[3] }
+        .chunked(4) { (low1, high1, low2, high2) -> low1..high1 to low2..high2 }
 
     override fun part1() = ranges.count { (left, right) ->
         left.containsAll(right) || right.containsAll(left)
@@ -21,4 +20,9 @@ class Y2022D4(input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2022D4::class) // 605, 914
+fun main() = Day.runDay(Y2022D4::class)
+
+//    Class creation: 3ms
+//    Part 1: 605 (12ms)
+//    Part 2: 914 (3ms)
+//    Total time: 19ms
