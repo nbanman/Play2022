@@ -19,3 +19,30 @@ inline fun <T> Sequence<T>.takeUntil(crossinline predicate: (T) -> Boolean): Seq
         if (predicate(item)) break
     }
 }
+
+data class Cycle<T>(val element: T, val indexOfFirstInstance: Int, val elements: List<T>)
+
+fun <T> Sequence<T>.findCycle(): Cycle<T>? {
+    val cache = LinkedHashMap<T, Int>()
+    forEachIndexed { index, element ->
+        cache[element]
+            ?.let { indexOfFirstInstance -> return Cycle(element, indexOfFirstInstance, cache.keys.toList()) }
+            ?: let { cache[element] = index }
+    }
+    return null
+}
+
+fun <T, U> Sequence<T>.findCycle(differentiateBy: T.() -> U): Cycle<T>? {
+    val cache = LinkedHashMap<U, Int>()
+    val list = mutableListOf<T>()
+    forEachIndexed { index, element ->
+        val compare = element.differentiateBy()
+        cache[compare]
+            ?.let { indexOfFirstInstance -> return Cycle(element, indexOfFirstInstance, list) }
+            ?: let {
+                cache[compare] = index
+                list.add(element)
+            }
+    }
+    return null
+}
