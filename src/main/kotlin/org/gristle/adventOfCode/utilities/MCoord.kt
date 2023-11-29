@@ -2,7 +2,7 @@ package org.gristle.adventOfCode.utilities
 
 import kotlin.math.abs
 
-open class MCoord(val coordinates: List<Int>) {
+open class MCoord(coordinates: Iterable<Int>) {
 
     companion object {
         val ORIGIN = MCoord(listOf(0,0,0,0,0,0,0))
@@ -10,9 +10,11 @@ open class MCoord(val coordinates: List<Int>) {
 
     constructor(vararg coordinates: Int) : this(coordinates.toList())
 
-    val dimensions = coordinates.size
+    val coordinates = coordinates.toList()
 
-    fun changeInOneDimension(dimension: Int, newValue: Int): MCoord {
+    private val dimensions = this.coordinates.size
+
+    private fun changeInOneDimension(dimension: Int, newValue: Int): MCoord {
         return MCoord(coordinates.toMutableList().also { it[dimension] = newValue })
     }
 
@@ -24,7 +26,7 @@ open class MCoord(val coordinates: List<Int>) {
 
     operator fun unaryMinus() = MCoord(coordinates.map { -it  })
 
-    fun operate(other: MCoord, identity: Int, operation: (Int, Int) -> Int): MCoord {
+    private fun operate(other: MCoord, identity: Int, operation: (Int, Int) -> Int): MCoord {
         val (larger, smaller) = if (dimensions > other.dimensions) {
             this.coordinates to other.coordinates
         } else {
@@ -76,9 +78,7 @@ open class MCoord(val coordinates: List<Int>) {
 
         other as MCoord
 
-        if (coordinates != other.coordinates) return false
-
-        return true
+        return coordinates == other.coordinates
     }
 
     override fun hashCode(): Int {
