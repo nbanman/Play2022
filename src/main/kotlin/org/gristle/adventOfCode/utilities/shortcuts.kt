@@ -41,7 +41,7 @@ fun <E> Collection<E>.testPrint(transform: (E) -> String = { e -> e.toString() }
 /**
  * Returns status of whether Int is even
  */
-fun Int.isEven(): Boolean = this % 2 == 0
+fun Int.isEven(): Boolean = this and 1 == 0
 
 /**
  * Returns status of whether Int is odd
