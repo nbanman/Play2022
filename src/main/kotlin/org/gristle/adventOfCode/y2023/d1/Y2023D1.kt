@@ -28,8 +28,10 @@ class Y2023D1(input: String) : Day {
     }
 
     override fun part2() = lines.sumOf { line ->
-        val firstDigit = pattern.findAll(line).first().value.toDigit()
-        val secondDigit = reversePattern.findAll(line.reversed()).first().value.toDigit()
+        val firstDigit = pattern.find(line)?.value?.toDigit()
+            ?: throw IllegalArgumentException("No digit found in $line")
+        val secondDigit = reversePattern.find(line.reversed())?.value?.toDigit()
+            ?: throw IllegalArgumentException("No digit found in $line")
         firstDigit * 10 + secondDigit
     }
 }
