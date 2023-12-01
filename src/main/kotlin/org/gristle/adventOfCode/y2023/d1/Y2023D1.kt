@@ -14,26 +14,29 @@ class Y2023D1(input: String) : Day {
     private val pattern = """one|two|three|four|five|six|seven|eight|nine|[0-9]""".toRegex()
     private val reversePattern = """eno|owt|eerht|ruof|evif|xis|neves|thgie|enin|[0-9]""".toRegex()
 
-    private fun String.toDigit() = when (this) {
-        "one", "eno" -> 1
-        "two", "owt" -> 2
-        "three", "eerht" -> 3
-        "four", "ruof" -> 4
-        "five", "evif" -> 5
-        "six", "xis" -> 6
-        "seven", "neves" -> 7
-        "eight", "thgie" -> 8
-        "nine", "enin" -> 9
-        else -> this.toInt()
+    private val tokenMap = buildMap<String, Int> {
+        "one|two|three|four|five|six|seven|eight|nine"
+            .split('|')
+            .forEachIndexed { index, s ->
+                val value = index + 1
+                put(value.toString(), value)
+                put(s, value)
+                put(s.reversed(), value)
+            }
     }
 
     override fun part2() = lines.sumOf { line ->
-        val firstDigit = pattern.find(line)?.value?.toDigit()
+        val firstDigit = pattern.find(line)?.value?.let { tokenMap.getValue(it) }
             ?: throw IllegalArgumentException("No digit found in $line")
-        val secondDigit = reversePattern.find(line.reversed())?.value?.toDigit()
+        val secondDigit = reversePattern.find(line.reversed())?.value?.let { tokenMap.getValue(it) }
             ?: throw IllegalArgumentException("No digit found in $line")
         firstDigit * 10 + secondDigit
     }
 }
 
 fun main() = Day.runDay(Y2023D1::class)
+
+//    Class creation: 15ms
+//    Part 1: 54388 (2ms)
+//    Part 2: 53515 (9ms)
+//    Total time: 27ms
