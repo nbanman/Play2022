@@ -12,8 +12,8 @@ class Y2023D1(input: String) : Day {
     }
 
     override fun part2(): Int {
-        val pattern = Regex("""[0-9]|one|two|three|four|five|six|seven|eight|nine""")
-        val reversePattern = Regex("""[0-9]|eerht|enin|eno|evif|owt|ruof|xis|neves|thgie""")
+        val pattern = Regex("""[1-9]|one|two|three|four|five|six|seven|eight|nine""")
+        val reversePattern = Regex("""[1-9]|eerht|enin|eno|evif|owt|ruof|xis|neves|thgie""")
 
         val tokenMap: Map<String, Int> = buildMap {
             "one|two|three|four|five|six|seven|eight|nine"

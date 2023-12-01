@@ -1,90 +1,4 @@
-Kt
-.
-!org.gristle.adventOfCode.y2015.d5	Y2015D5Kt
-.
-!org.gristle.adventOfCode.y2015.d6	Y2015D6Kt
-.
-!org.gristle.adventOfCode.y2015.d7	Y2015D7Kt
-.
-!org.gristle.adventOfCode.y2015.d8	Y2015D8Kt
-.
-!org.gristle.adventOfCode.y2015.d9	Y2015D9Kt
-.
-!org.gristle.adventOfCode.y2016.d1	Y2016D1Kt
-0
-"org.gristle.adventOfCode.y2016.d10
-Y2016D10Kt
-0
-"org.gristle.adventOfCode.y2016.d11
-Y2016D11Kt
-0
-"org.gristle.adventOfCode.y2016.d12
-Y2016D12Kt
-0
-"org.gristle.adventOfCode.y2016.d13
-Y2016D13Kt
-0
-"org.gristle.adventOfCode.y2016.d14
-Y2016D14Kt
-0
-"org.gristle.adventOfCode.y2016.d15
-Y2016D15Kt
-0
-"org.gristle.adventOfCode.y2016.d16
-Y2016D16Kt
-0
-"org.gristle.adventOfCode.y2016.d17
-Y2016D17Kt
-0
-"org.gristle.adventOfCode.y2016.d18
-Y2016D18Kt
-0
-"org.gristle.adventOfCode.y2016.d19
-Y2016D19Kt
-.
-!org.gristle.adventOfCode.y2016.d2	Y2016D2Kt
-0
-"org.gristle.adventOfCode.y2016.d20
-Y2016D20Kt
-0
-"org.gristle.adventOfCode.y2016.d21
-Y2016D21Kt
-0
-"org.gristle.adventOfCode.y2016.d22
-Y2016D22Kt
-0
-"org.gristle.adventOfCode.y2016.d23
-Y2016D23Kt
-0
-"org.gristle.adventOfCode.y2016.d24
-Y2016D24Kt
-0
-"org.gristle.adventOfCode.y2016.d25
-Y2016D25Kt
-.
-!org.gristle.adventOfCode.y2016.d3	Y2016D3Kt
-.
-!org.gristle.adventOfCode.y2016.d4	Y2016D4Kt
-.
-!org.gristle.adventOfCode.y2016.d5	Y2016D5Kt
-.
-!org.gristle.adventOfCode.y2016.d6	Y2016D6Kt
-.
-!org.gristle.adventOfCode.y2016.d7	Y2016D7Kt
-.
-!org.gristle.adventOfCode.y2016.d8	Y2016D8Kt
-.
-!org.gristle.adventOfCode.y2016.d9	Y2016D9Kt
-.
-!org.gristle.adventOfCode.y2017.d1	Y2017D1Kt
-0
-"org.gristle.adventOfCode.y2017.d10
-Y2017D10Kt
-0
-"org.gristle.adventOfCode.y2017.d11
-Y2017D11Kt
-0
-"org.gristle.adventOfCode.y2017.d12
+.d12
 Y2017D12Kt
 0
 "org.gristle.adventOfCode.y2017.d13
@@ -543,90 +457,7 @@ Y2023D25Kt
 .
 !org.gristle.adventOfCode.y2023.d8	Y2023D8Kt
 .
-!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     2022.d15
-Y2022D15Kt
-0
-"org.gristle.adventOfCode.y2022.d16
-Y2022D16Kt
-J
-"org.gristle.adventOfCode.y2022.d17
-Y2022D17KtY2022D17bKtY2022D17cKt
-0
-"org.gristle.adventOfCode.y2022.d18
-Y2022D18Kt
-0
-"org.gristle.adventOfCode.y2022.d19
-Y2022D19Kt
-.
-!org.gristle.adventOfCode.y2022.d2	Y2022D2Kt
-0
-"org.gristle.adventOfCode.y2022.d20
-Y2022D20Kt
-0
-"org.gristle.adventOfCode.y2022.d21
-Y2022D21Kt
-=
-"org.gristle.adventOfCode.y2022.d22
-Y2022D22KtY2022D22bKt
-0
-"org.gristle.adventOfCode.y2022.d23
-Y2022D23Kt
-0
-"org.gristle.adventOfCode.y2022.d24
-Y2022D24Kt
-0
-"org.gristle.adventOfCode.y2022.d25
-Y2022D25Kt
-.
-!org.gristle.adventOfCode.y2022.d3	Y2022D3Kt
-.
-!org.gristle.adventOfCode.y2022.d4	Y2022D4Kt
-.
-!org.gristle.adventOfCode.y2022.d5	Y2022D5Kt
-.
-!org.gristle.adventOfCode.y2022.d6	Y2022D6Kt
-.
-!org.gristle.adventOfCode.y2022.d7	Y2022D7Kt
-.
-!org.gristle.adventOfCode.y2022.d8	Y2022D8Kt
-.
-!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt
-.
-!org.gristle.adventOfCode.y2023.d1	Y2023D1Kt
-0
-"org.gristle.adventOfCode.y2023.d10
-Y2023D10Kt
-0
-"org.gristle.adventOfCode.y2023.d11
-Y2023D11Kt
-0
-"org.gristle.adventOfCode.y2023.d12
-Y2023D12Kt
-0
-"org.gristle.adventOfCode.y2023.d13
-Y2023D13Kt
-0
-"org.gristle.adventOfCode.y2023.d14
-Y2023D14Kt
-0
-"org.gristle.adventOfCode.y2023.d15
-Y2023D15Kt
-0
-"org.gristle.adventOfCode.y2023.d16
-Y2023D16Kt
-0
-"org.gristle.adventOfCode.y2023.d17
-Y2023D17Kt
-0
-"org.gristle.adventOfCode.y2023.d18
-Y2023D18Kt
-0
-"org.gristle.adventOfCode.y2023.d19
-Y2023D19Kt
-.
-!org.gristle.adventOfCode.y2023.d2	Y2023D2Kt
-0
-"org.gristle.adventOfCode.y2023.d20
+!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     y2023.d9	Y2023D9Kt" *     ode.y2023.d9	Y2023D9Kt" *     2023.d20
 Y2023D20Kt
 0
 "org.gristle.adventOfCode.y2023.d21
@@ -656,104 +487,7 @@ Y2023D25Kt
 .
 !org.gristle.adventOfCode.y2023.d8	Y2023D8Kt
 .
-!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *      5Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner; master y(Ljava/util/List;Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner;Lkotlin/coroutines/Continuation;)Ljava/lang/Object; solve Lkotlin/Pair; scanners   solution 	Companion Scanner 
-SharedSets Play2022ú     `
-
- 
-
-
-
- 
- 
- † 20B	¢J*HH00" *H0H¨	   
- 7Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Companion;   <init> ()V elementPairs Lkotlin/sequences/Sequence; Lkotlin/Pair; T   Play2022Ê    ­4
-
- 
- 
-
- 
- 
-
-
-"
-
-
-$
-
-†  "20:"B-00000¢	J	
-0H†J00H†J00H†J00 20200200J00*0J0HR00¢
- R/ 
-000000¢
- R0¢
- R&
-000X†¢
- "R
-000¢
-  R00¢
- !¨#   $ 5Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner;   id   beacons   +Lorg/gristle/adventOfCode/utilities/MCoord; scannerLocations <init> 5(Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V 
-component1 
-component2 
-component3 copy toSet     toString 
-getBeacons ()Ljava/util/List; 
-coordPairs   Lkotlin/Pair; getCoordPairs ()Ljava/util/Map; getId ()Ljava/lang/String; mightyMorphisms getMightyMorphisms setMightyMorphisms (Ljava/util/List;)V 	morphisms getMorphisms getScannerLocations 	Companion Play2022ã     @
-
- 
-
-
- 
-
- † 20B	¢J020¨   	 ?Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner$Companion;   <init> ()V of 5Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner; s   Play2022à    &
-
- 
- 
-
-
-"
-
-
-
-† 20B+00
-000¢	J	
-0H†J	0H†J
-000H†J00 20202
-000J0J0HR0¢
- R0¢
- R
-000¢
- ¨    8Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$SharedSets;   master 5Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner; b matches     <init> |(Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner;Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner;Ljava/util/Set;)V 
-component1 
-component2 
-component3 copy merge toString   getB 7()Lorg/gristle/adventOfCode/y2021/d19/Y2021D19$Scanner; 	getMaster 
-getMatches ()Ljava/util/Set; Play2022/    
- 
-
-  0¨    main   Play2022Í¸    .                  
-S
-org.gristle.adventOfCode.cqTestKtY23D10KtY23D6KtY23D7KtY23D8KtY23D9Kt
-/
-!org.gristle.adventOfCode.generate
-GenerateKt
-L
-org.gristle.adventOfCode.testCoroutinesKt
-FlowTestKtParseTestReportKt
-ã
-"org.gristle.adventOfCode.utilitiesCoordKtFloydKtGcdKtGridKtIndexedLinkedListKtIoKtMCoordKtMathKtMd5KtMinMaxKtNsewKtOcrKtParseToObjectKt	ParsingKtPermutationsKtSequencesKt	SessionKtShortcutsKt
-.
-!org.gristle.adventOfCode.y2015.d1	Y2015D1Kt
-0
-"org.gristle.adventOfCode.y2015.d10
-Y2015D10Kt
-0
-"org.gristle.adventOfCode.y2015.d11
-Y2015D11Kt
-0
-"org.gristle.adventOfCode.y2015.d12
-Y2015D12Kt
-0
-"org.gristle.adventOfCode.y2015.d13
-Y2015D13Kt
-0
-"org.gristle.adventOfCode.y2015.d14
+!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     dventOfCode.y2015.d14
 Y2015D14Kt
 0
 "org.gristle.adventOfCode.y2015.d15
@@ -1338,14 +1072,254 @@ Y2023D25Kt
 .
 !org.gristle.adventOfCode.y2023.d8	Y2023D8Kt
 .
-!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     	Y2023D4Kt
-.
-!org.gristle.adventOfCode.y2023.d5	Y2023D5Kt
-.
-!org.gristle.adventOfCode.y2023.d6	Y2023D6Kt
-.
-!org.gristle.adventOfCode.y2023.d7	Y2023D7Kt
-.
-!org.gristle.adventOfCode.y2023.d8	Y2023D8Kt
-.
-!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     
+!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     
+
+
+
+
+
+ 
+
+ 
+
+
+
+
+
+
+	
+
+
+$
+
+
+3 H0" 202
+H0"H¢3H0" 202
+H0"H¢K	H
+0" 
+20202!0¢(H
+0H†ø KH
+0" 
+20202!0¢(H
+0H†ø )H0" *H020¢$H0" *H020$H0" *H020$H0" *H020H0" *H000*02000*0200H0" *020H0H†ø EH0" *02'#0¢(0H0H†ø )H0" *H020¢$H0" *H020H0" *H000*02000*00H0" *020H0H†ø E H0" *02'#0¢(0H0H†ø E!H0" *02'#0"¢(#0H0H†ø *$H0" *H02%H0*&H0" *H02%H0<'H0" "*H02HH0H†ø Q(H0" "*H02'#0¢(HH0H†ø <)H0" "*H02HH0H†ø Q*H0" "*H02'#0¢(HH0H†ø +0*0,0H¢-+0*00>.&
+000
+0000100/*00220230
+00100/*00220‚
+™20¨4   5 gridOf )Lorg/gristle/adventOfCode/utilities/Grid; E width   elements   ?(I[Ljava/lang/Object;)Lorg/gristle/adventOfCode/utilities/Grid; mutableGridOf Grid T height init Lkotlin/Function1; Lkotlin/ParameterName; name index MutableGrid 0Lorg/gristle/adventOfCode/utilities/MutableGrid; toGrid ?([Ljava/lang/Object;I)Lorg/gristle/adventOfCode/utilities/Grid;   Lkotlin/sequences/Sequence; toMutableGrid     padding R 	transform toGridIndexed Lkotlin/Function2; F([Ljava/lang/Object;I)Lorg/gristle/adventOfCode/utilities/MutableGrid; toMutableGridIndexed toMutableGridPos *Lorg/gristle/adventOfCode/utilities/Coord; pos addRight addGrid addDown 	mapToGrid mapToGridIndexed mapToMutableGrid mapToMutableGridIndexed rep   
+BooleanRep getEdgeMapIndexed   !Lkotlin/collections/IndexedValue; /Lorg/gristle/adventOfCode/utilities/Graph$Edge; ignore 
+getEdgeMap Play2022Å    l
+ 
+$
+ 
+ 
+
+R &HH
+H0000" 2 H
+H000¨    floyd   E   /Lorg/gristle/adventOfCode/utilities/Graph$Edge; graph Play2022Ù
+   ‡>
+ 
+
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+ 
+
+
+ 0*020000*000	*002
+00*002
+000*0000*0000*0000*0000*00&000*0020 0*000!0*00020H†¨    toCoord *Lorg/gristle/adventOfCode/utilities/Coord;   width minMaxRanges Lkotlin/Pair; Lkotlin/ranges/IntRange;   printToConsole   
+blankSpace   toGraphicString   rotate90   	rotate180 	rotate270 flipY flipX 	getBounds padding contains   pos Play2022Ö    ¹<
+
+ 
+
+
+ 
+
+
+ 
+
+
+
+
+
+
+ 
+† 20B	¢JC020002!	0¢(00
+H†ø J?020202!	0¢(00
+H†ø J?020202!	0¢(00
+H†ø J02020J002020R00¢
+ R00¢
+ R00¢
+ R 0¢
+ !"‚
+™20¨#   $ 4Lorg/gristle/adventOfCode/utilities/Coord$Companion;   <init> ()V forRectangle   minMaxRange Lkotlin/Pair; Lkotlin/ranges/IntRange; action Lkotlin/Function1; *Lorg/gristle/adventOfCode/utilities/Coord; Lkotlin/ParameterName; name coord tl br xRange yRange 	fromIndex n   width rectangleFrom   ALLADJACENT getALLADJACENT ()Ljava/util/List; CROSS getCROSS NSEW getNSEW ORIGIN 	getORIGIN ,()Lorg/gristle/adventOfCode/utilities/Coord; Play2022ø    Ö<
+
+
+ 
+
+
+
+ 
+ 
+
+
+
+ 
+
+ 
+
+
+
+†  820 0:8B00¢J0J02	0J
+020 J020 H–J	0H†J	0H†J0 2020J0 20 H†J0 J"0 2020 20J0 020J0 02020J0 020 J020 J0 20 J0 20 J0 20 H†J 0 20 J!0 2"0#J!0 2$0%20J2!0 2020 202&0 0'H†ø J(0 J"(0 2020 20J)0 J")0 2020 20J*0 J"*0 2020 20J+0 20 H†J+0 2,0H†J-0 20 H†J.0 J".0 2020 20J/0 J"/0 2020 20J00 J"00 2020 20J10 20 H†J203HJ40 J"40 2020 20R0¢
+ 56R0¢
+ 76‚
+™20¨9   : *Lorg/gristle/adventOfCode/utilities/Coord;   x   y <init> (II)V area asIndex width chebyshevDistance coord 	compareTo other 
+component1 
+component2 copy div east distance size 
+wrapAround   getNeighbors   includeDiagonals includeSelf lineTo manhattanDistance max min minus mod move instruction   dir )Lorg/gristle/adventOfCode/utilities/Nsew; 	operation Lkotlin/Function0; north 	northeast 	northwest plus n rem south 	southeast 	southwest times toString   west getX ()I getY 	Companion Play2022O    (
+ 
+
+ 
+
+  0*0H0¨    toAnswer   main   Play2022/    
+ 
+
+  0¨    main   Play2022Y    .
+ 
+
+
+ 
+  0020¨    main   log message   Play2022À    c 
+ 
+
+ 
+
+
+
+
+
+" 02020200200	¢
+¨    makeDay   day   year template   main args   ([Ljava/lang/String;)V Play2022Z    4
+ 
+
+ 
+ 
+
+  0"00X‚¢
+ ¨    main   input     Play2022É     O
+
+ 
+
+%
+
+† 20B	¢R000¢
+ ¨	   
+ ,Lorg/gristle/adventOfCode/cq/Node$Companion;   <init> ()V widths     	getWidths ()Ljava/util/Map; Play2022â    §"
+
+ 
+
+ 
+
+
+
+
+
+‚  !* *H020:!BA
+8 
+8 0 
+8 0 0¢	
+J8 H†¢J
+8 0 H†J
+8 0 H†J	0H†JK8 0 2
+8 2
+8 0 2
+8 0 20¢J028 ¢R0¢
+ R"
+8 0 X†¢
+ "R"
+8 0 X†¢
+ "R8 X†¢
+ "¨"   # "Lorg/gristle/adventOfCode/cq/Node; T     value left right depth   <init> ^(Ljava/lang/Comparable;Lorg/gristle/adventOfCode/cq/Node;Lorg/gristle/adventOfCode/cq/Node;I)V 
+component1 ()Ljava/lang/Comparable; 
+component2 
+component3 
+component4 copy (Ljava/lang/Comparable;Lorg/gristle/adventOfCode/cq/Node;Lorg/gristle/adventOfCode/cq/Node;I)Lorg/gristle/adventOfCode/cq/Node; place   newValue (Ljava/lang/Comparable;)V getDepth ()I getLeft $()Lorg/gristle/adventOfCode/cq/Node; setLeft %(Lorg/gristle/adventOfCode/cq/Node;)V getRight setRight getValue setValue Ljava/lang/Comparable; 	Companion Play2022Z    4
+ 
+
+ 
+ 
+
+  0"00X‚¢
+ ¨    main   input     Play2022¬    p
+ 
+
+
+ 
+
+ 
+ 
+
+ 0" 0000X‚¢
+ *$ "0002000¨   	 Pos Lkotlin/Pair;   main   input     Play2022    H
+ 
+
+ 
+ 
+
+
+
+  0" 0000X‚¢
+ ¨    main   input   Lkotlin/Pair;     Play2022Z    4
+ 
+
+ 
+ 
+
+  0"00X‚¢
+ ¨    main   input     Play2022/    
+ 
+
+  0¨    main   Play2022Ñ     g 
+
+ 
+
+
+
+
+ 
+
+  20B¢J0HJ0HJ0HR	0
+8@X’.¢
+ ¨    "Lbenchmarks/y2022/d1/Y2022D2Bench;   <init> ()V part1   part2 prepare   input   Play2022Ñ     g 
+
+ 
+
+
+
+
+ 
+
+  20B¢J0HJ0HJ0HR	0
+8@X’.¢
+ ¨    "Lbenchmarks/y2022/d1/Y2022D1Bench;   <init> ()V part1   part2 prepare   input   Play2022Ï     g 
+
+ 
+
+
+
+
+ 
+
+  20B¢J0HJ0HJ0HR	0
+8@X’.¢
+ ¨     Lbenchmarks/y2016/Y2016D14Bench;   <init> ()V part1   part2 prepare   input   Play2022
