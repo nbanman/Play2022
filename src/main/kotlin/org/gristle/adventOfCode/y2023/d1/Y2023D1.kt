@@ -25,13 +25,18 @@ class Y2023D1(input: String) : Day {
             }
     }
 
+    private fun getDigit(line: String, pattern: Regex): Int = pattern
+        .find(line)
+        ?.value
+        ?.let { tokenMap.getValue(it) }
+        ?: throw IllegalArgumentException("No digit found in $line")
+
     override fun part2() = lines.sumOf { line ->
-        val firstDigit = pattern.find(line)?.value?.let { tokenMap.getValue(it) }
-            ?: throw IllegalArgumentException("No digit found in $line")
-        val secondDigit = reversePattern.find(line.reversed())?.value?.let { tokenMap.getValue(it) }
-            ?: throw IllegalArgumentException("No digit found in $line")
+        val firstDigit = getDigit(line, pattern)
+        val secondDigit = getDigit(line.reversed(), reversePattern)
         firstDigit * 10 + secondDigit
     }
+
 }
 
 fun main() = Day.runDay(Y2023D1::class)
