@@ -11,32 +11,33 @@ class Y2023D1(input: String) : Day {
         line.first { it.isDigit() }.toDigit() * 10 + line.last { it.isDigit() }.toDigit()
     }
 
-    private val pattern = """one|two|three|four|five|six|seven|eight|nine|[0-9]""".toRegex()
-    private val reversePattern = """eno|owt|eerht|ruof|evif|xis|neves|thgie|enin|[0-9]""".toRegex()
+    override fun part2(): Int {
+        val pattern = Regex("""[0-9]|one|two|three|four|five|six|seven|eight|nine""")
+        val reversePattern = Regex("""[0-9]|eerht|enin|eno|evif|owt|ruof|xis|neves|thgie""")
 
-    private val tokenMap = buildMap<String, Int> {
-        "one|two|three|four|five|six|seven|eight|nine"
-            .split('|')
-            .forEachIndexed { index, s ->
-                val value = index + 1
-                put(value.toString(), value)
-                put(s, value)
-                put(s.reversed(), value)
-            }
+        val tokenMap: Map<String, Int> = buildMap {
+            "one|two|three|four|five|six|seven|eight|nine"
+                .split('|')
+                .forEachIndexed { index, s ->
+                    val value = index + 1
+                    put(value.toString(), value)
+                    put(s, value)
+                    put(s.reversed(), value)
+                }
+        }
+
+        return lines.sumOf { line ->
+            val firstDigit: Int = getDigit(line, pattern, tokenMap)
+            val secondDigit: Int = getDigit(line.reversed(), reversePattern, tokenMap)
+            firstDigit * 10 + secondDigit
+        }
     }
 
-    private fun getDigit(line: String, pattern: Regex): Int = pattern
+    private fun getDigit(line: String, pattern: Regex, tokenMap: Map<String, Int>): Int = pattern
         .find(line)
         ?.value
         ?.let { tokenMap.getValue(it) }
         ?: throw IllegalArgumentException("No digit found in $line")
-
-    override fun part2() = lines.sumOf { line ->
-        val firstDigit = getDigit(line, pattern)
-        val secondDigit = getDigit(line.reversed(), reversePattern)
-        firstDigit * 10 + secondDigit
-    }
-
 }
 
 fun main() = Day.runDay(Y2023D1::class)
