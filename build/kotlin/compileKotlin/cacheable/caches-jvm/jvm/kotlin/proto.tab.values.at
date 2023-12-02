@@ -1,7 +1,4 @@
-.d12
-Y2017D12Kt
-0
-"org.gristle.adventOfCode.y2017.d13
+de.y2017.d13
 Y2017D13Kt
 0
 "org.gristle.adventOfCode.y2017.d14
@@ -457,37 +454,29 @@ Y2023D25Kt
 .
 !org.gristle.adventOfCode.y2023.d8	Y2023D8Kt
 .
-!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     y2023.d9	Y2023D9Kt" *     ode.y2023.d9	Y2023D9Kt" *     2023.d20
-Y2023D20Kt
+!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     .gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     rg.gristle.adventOfCode.generate
+GenerateKt
+L
+org.gristle.adventOfCode.testCoroutinesKt
+FlowTestKtParseTestReportKt
+ã
+"org.gristle.adventOfCode.utilitiesCoordKtFloydKtGcdKtGridKtIndexedLinkedListKtIoKtMCoordKtMathKtMd5KtMinMaxKtNsewKtOcrKtParseToObjectKt	ParsingKtPermutationsKtSequencesKt	SessionKtShortcutsKt
+.
+!org.gristle.adventOfCode.y2015.d1	Y2015D1Kt
 0
-"org.gristle.adventOfCode.y2023.d21
-Y2023D21Kt
+"org.gristle.adventOfCode.y2015.d10
+Y2015D10Kt
 0
-"org.gristle.adventOfCode.y2023.d22
-Y2023D22Kt
+"org.gristle.adventOfCode.y2015.d11
+Y2015D11Kt
 0
-"org.gristle.adventOfCode.y2023.d23
-Y2023D23Kt
+"org.gristle.adventOfCode.y2015.d12
+Y2015D12Kt
 0
-"org.gristle.adventOfCode.y2023.d24
-Y2023D24Kt
+"org.gristle.adventOfCode.y2015.d13
+Y2015D13Kt
 0
-"org.gristle.adventOfCode.y2023.d25
-Y2023D25Kt
-.
-!org.gristle.adventOfCode.y2023.d3	Y2023D3Kt
-.
-!org.gristle.adventOfCode.y2023.d4	Y2023D4Kt
-.
-!org.gristle.adventOfCode.y2023.d5	Y2023D5Kt
-.
-!org.gristle.adventOfCode.y2023.d6	Y2023D6Kt
-.
-!org.gristle.adventOfCode.y2023.d7	Y2023D7Kt
-.
-!org.gristle.adventOfCode.y2023.d8	Y2023D8Kt
-.
-!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     dventOfCode.y2015.d14
+"org.gristle.adventOfCode.y2015.d14
 Y2015D14Kt
 0
 "org.gristle.adventOfCode.y2015.d15
@@ -1072,36 +1061,76 @@ Y2023D25Kt
 .
 !org.gristle.adventOfCode.y2023.d8	Y2023D8Kt
 .
-!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     
-
-
-
-
-
- 
-
- 
-
-
-
-
-
-
-	
-
-
-$
-
-
-3 H0" 202
-H0"H¢3H0" 202
-H0"H¢K	H
-0" 
-20202!0¢(H
-0H†ø KH
-0" 
-20202!0¢(H
-0H†ø )H0" *H020¢$H0" *H020$H0" *H020$H0" *H020H0" *H000*02000*0200H0" *020H0H†ø EH0" *02'#0¢(0H0H†ø )H0" *H020¢$H0" *H020H0" *H000*02000*00H0" *020H0H†ø E H0" *02'#0¢(0H0H†ø E!H0" *02'#0"¢(#0H0H†ø *$H0" *H02%H0*&H0" *H02%H0<'H0" "*H02HH0H†ø Q(H0" "*H02'#0¢(HH0H†ø <)H0" "*H02HH0H†ø Q*H0" "*H02'#0¢(HH0H†ø +0*0,0H¢-+0*00>.&
+!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     Y2022D8Kt
+.
+!org.gristle.adventOfCode.y2022.d9	Y2022D9Kt
+:
+!org.gristle.adventOfCode.y2023.d1	Y2023D1Kt
+Y2023D1bKt
+0
+"org.gristle.adventOfCode.y2023.d10
+Y2023D10Kt
+0
+"org.gristle.adventOfCode.y2023.d11
+Y2023D11Kt
+0
+"org.gristle.adventOfCode.y2023.d12
+Y2023D12Kt
+0
+"org.gristle.adventOfCode.y2023.d13
+Y2023D13Kt
+0
+"org.gristle.adventOfCode.y2023.d14
+Y2023D14Kt
+0
+"org.gristle.adventOfCode.y2023.d15
+Y2023D15Kt
+0
+"org.gristle.adventOfCode.y2023.d16
+Y2023D16Kt
+0
+"org.gristle.adventOfCode.y2023.d17
+Y2023D17Kt
+0
+"org.gristle.adventOfCode.y2023.d18
+Y2023D18Kt
+0
+"org.gristle.adventOfCode.y2023.d19
+Y2023D19Kt
+.
+!org.gristle.adventOfCode.y2023.d2	Y2023D2Kt
+0
+"org.gristle.adventOfCode.y2023.d20
+Y2023D20Kt
+0
+"org.gristle.adventOfCode.y2023.d21
+Y2023D21Kt
+0
+"org.gristle.adventOfCode.y2023.d22
+Y2023D22Kt
+0
+"org.gristle.adventOfCode.y2023.d23
+Y2023D23Kt
+0
+"org.gristle.adventOfCode.y2023.d24
+Y2023D24Kt
+0
+"org.gristle.adventOfCode.y2023.d25
+Y2023D25Kt
+.
+!org.gristle.adventOfCode.y2023.d3	Y2023D3Kt
+.
+!org.gristle.adventOfCode.y2023.d4	Y2023D4Kt
+.
+!org.gristle.adventOfCode.y2023.d5	Y2023D5Kt
+.
+!org.gristle.adventOfCode.y2023.d6	Y2023D6Kt
+.
+!org.gristle.adventOfCode.y2023.d7	Y2023D7Kt
+.
+!org.gristle.adventOfCode.y2023.d8	Y2023D8Kt
+.
+!org.gristle.adventOfCode.y2023.d9	Y2023D9Kt" *     (HH0H†ø <)H0" "*H02HH0H†ø Q*H0" "*H02'#0¢(HH0H†ø +0*0,0H¢-+0*00>.&
 000
 0000100/*00220230
 00100/*00220‚
