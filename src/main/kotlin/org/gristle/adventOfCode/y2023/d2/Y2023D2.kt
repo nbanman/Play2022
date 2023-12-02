@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2023.d2
 
 import org.gristle.adventOfCode.Day
-import kotlin.math.max
 
 class Y2023D2(input: String) : Day {
 
@@ -15,7 +14,10 @@ class Y2023D2(input: String) : Day {
                 cubePattern
                     .findAll(line)
                     .map(MatchResult::destructured)
-                    .forEach { (amt, color) -> this[color] = max(amt.toInt(), this[color] ?: 0) }
+                    .forEach { (amtStr, color) ->
+                        val amt = amtStr.toInt()
+                        if ((this[color] ?: 0) < amt) this[color] = amt
+                    }
             }
         }
 
