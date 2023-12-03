@@ -4,15 +4,15 @@ import org.gristle.adventOfCode.Day
 
 class Y2023D3(private val schematic: String) : Day {
 
-    // we use the input schematic directly, using indexes. To move up and down by index, we need the width.
+    // we use the input schematic directly, using indexes. To move up and down the y axis, we need the width.
     private val width = schematic.indexOf('\n') + 1
 
     // intermediate step used for both parts. Given a predicate to know which symbols to look for, looks at every
     // symbol and for each returns a list of IntRanges representing numbers that are adjacent to it. Intranges are
     // used rather than the underlying Ints because IntRanges are unique and Ints are not.
-    private fun validNumbers(validSymbol: (Char) -> Boolean): List<List<IntRange>> = schematic
+    private fun numbersAdjacentToSymbol(symbol: (Char) -> Boolean): List<List<IntRange>> = schematic
         .withIndex()
-        .filter { validSymbol(it.value) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
+        .filter { symbol(it.value) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
         .map { (index, _) -> // turn each valid symbol into a list of the adjacent Ints
             (-1..1).flatMap { y -> // 3x3 grid
                 (-1..1).mapNotNull { x ->
@@ -26,16 +26,17 @@ class Y2023D3(private val schematic: String) : Day {
     private fun getNumber(index: Int): IntRange? {
 
         // If the index is out of bounds or does not contain a digit, return null.
-        if (index !in schematic.indices || !schematic[index].isDigit()) return null
+        if (schematic.getOrNull(index)?.isDigit() == false) return null
 
         // keep subtracting from leftIndex while there are digits to the left. The getOrNull version of get ensures
         // that the leftIndex does not go below 0.
         var leftIndex = index
         while (schematic.getOrNull(leftIndex - 1)?.isDigit() == true) leftIndex--
 
-        // keep adding to rightIndex while there are digits to the right
+        // keep adding to rightIndex while there are digits to the right. The getOrNull version of get ensures
+        // that the RightIndex does not exceed the string length.
         var rightIndex = index
-        while (schematic[rightIndex + 1].isDigit()) rightIndex++
+        while (schematic.getOrNull(rightIndex + 1)?.isDigit() == true) rightIndex++
 
         // return the range
         return leftIndex..rightIndex
@@ -43,17 +44,17 @@ class Y2023D3(private val schematic: String) : Day {
 
     // sums the numbers provided by validNumbers, using a "catchall" predicate that says a symbol is valid if it is 
     // not a digit, '.', or line break.
-    override fun part1() = validNumbers { it !in ".\n" && !it.isDigit() }
+    override fun part1() = numbersAdjacentToSymbol { it !in ".\n" && !it.isDigit() }
         .flatten() // internal list of numbers not needed for p1 so flatten it away 
         .distinct() // removes theoretical double-count of an IntRange adjacent to two symbols
         .sumOf { schematic.substring(it).toInt() } // map IntRange to number in schematic and sum them
 
-    // 'gears' are '*' symbols that have exactly two numbers adjacent. So we use filter to keep symbols with two
-    // numbers. We sum the product of the two numbers.
-    override fun part2() = validNumbers { it == '*' }
+    // 'gears' are '*' symbols that have exactly two numbers adjacent. So we use filter to remove symbols with fewer
+    // or greater numbers. We sum the product of the two numbers.
+    override fun part2() = numbersAdjacentToSymbol { it == '*' }
         .filter { it.size == 2 } // definition of gear requires exactly two adjacent numbers
         .map { it.map { intRange -> schematic.substring(intRange).toInt() } } // convert IntRanges to numbers
-        .sumOf { it.reduce(Int::times) } // multiply gearRatios and sum them
+        .sumOf { it.reduce(Int::times) } // multiply gear ratios and sum them
 }
 
 fun main() = Day.runDay(Y2023D3::class)
