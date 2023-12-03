@@ -7,14 +7,17 @@ import kotlin.reflect.KFunction
 /**
  * Finds all numbers in a string and returns them as a Sequence of a number.
  */
-inline fun <N : Number> String.getNumbers(
-    omitDashes: Boolean = false,
-    crossinline transform: String.() -> N?
-): Sequence<N> = sequence {
+//inline fun <N : Number> String.getNumbers(crossinline transform: String.() -> N?): Sequence<N> =
+//    Regex("""(?<!\d)-?\d+""")
+//        .findAll(this)
+//        .mapNotNull { it.value.transform() }
+
+
+inline fun <N : Number> String.getNumbers(crossinline transform: String.() -> N?): Sequence<N> = sequence {
     var startPosition = -1
     for (position in indices) {
         val c = this@getNumbers[position]
-        if (c.isDigit() || (!omitDashes && c == '-' && startPosition == -1)) {
+        if (c.isDigit() || (c == '-' && this@getNumbers.getOrNull(position - 1)?.isDigit() != true)) {
             if (startPosition == -1) startPosition = position
         } else {
             if (startPosition != -1) {
@@ -35,22 +38,22 @@ inline fun <N : Number> String.getNumbers(
 /**
  * Finds all numbers in a string and returns them as a Sequence of Int.
  */
-fun String.getInts(omitDashes: Boolean = false): Sequence<Int> = getNumbers(omitDashes, String::toIntOrNull)
+fun String.getInts(): Sequence<Int> = getNumbers(String::toIntOrNull)
 
 /**
  * Finds all numbers in a string and returns them as a List of Int.
  */
-fun String.getIntList(omitDashes: Boolean = false) = getInts(omitDashes).toList()
+fun String.getIntList() = getInts().toList()
 
 /**
  * Finds all numbers in a string and returns them as a Sequence of Long.
  */
-fun String.getLongs(omitDashes: Boolean = false): Sequence<Long> = getNumbers(omitDashes, String::toLongOrNull)
+fun String.getLongs(): Sequence<Long> = getNumbers(String::toLongOrNull)
 
 /**
  * Finds all numbers in a string and returns them as a List of Long.
  */
-fun String.getLongList(omitDashes: Boolean = false) = getLongs(omitDashes).toList()
+fun String.getLongList() = getLongs().toList()
 
 /**
  * Convenience method to obtain the group values of a findall regex search of a string.
