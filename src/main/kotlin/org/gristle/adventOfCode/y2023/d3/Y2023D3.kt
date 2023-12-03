@@ -17,7 +17,7 @@ class Y2023D3(private val schematic: String) : Day {
             buildSet {
                 for (y in -1..1) {
                     for (x in -1..1) {
-                        getNumber(index + y * width + x)?.let { add(it) }
+                        getNumberOrNull(index + y * width + x)?.let { add(it) }
                     }
                 }
             }
@@ -25,7 +25,7 @@ class Y2023D3(private val schematic: String) : Day {
 
     // for a given index in the schematic, if there is a digit, expand left and right until the digit ends. Grab
     // the sequence of digits and convert to Int. If the index is out of bounds or does not contain a digit, return null.
-    private fun getNumber(index: Int): IntRange? {
+    private fun getNumberOrNull(index: Int): IntRange? {
 
         // If the index is out of bounds or does not contain a digit, return null.
         if (schematic.getOrNull(index)?.isDigit() == false) return null
