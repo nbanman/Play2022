@@ -8,7 +8,7 @@ import org.gristle.adventOfCode.utilities.overlaps
 class Y2022D4(input: String) : Day {
 
     private val ranges = input
-        .getInts(true)
+        .getInts()
         .chunked(4) { (low1, high1, low2, high2) -> low1..high1 to low2..high2 }
 
     override fun part1() = ranges.count { (left, right) ->

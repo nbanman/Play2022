@@ -9,7 +9,7 @@ class Y2016D20(input: String) : Day {
     // parse input into ranges and sort the ranges by the start of the range. Using Long instead of UInt to 
     // avoid overflow issues.
     private val ranges = input
-        .getLongList(omitDashes = true)
+        .getLongList()
         .chunked(2) { (start, end) -> start..end }
         .sortedBy(LongRange::first)
 
