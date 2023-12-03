@@ -8,17 +8,19 @@ class Y2023D3(private val schematic: String) : Day {
     private val width = schematic.indexOf('\n') + 1
 
     // intermediate step used for both parts. Given a predicate to know which symbols to look for, looks at every
-    // symbol and for each returns a list of IntRanges representing numbers that are adjacent to it. Intranges are
+    // symbol and for each returns a set of IntRanges representing numbers that are adjacent to it. Intranges are
     // used rather than the underlying Ints because IntRanges are unique and Ints are not.
-    private fun numbersAdjacentToSymbol(symbol: (Char) -> Boolean): List<List<IntRange>> = schematic
+    private fun numbersAdjacentToSymbol(symbol: (Char) -> Boolean): List<Set<IntRange>> = schematic
         .withIndex()
-        .filter { symbol(it.value) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
+        .filter { (_, c) -> symbol(c) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
         .map { (index, _) -> // turn each valid symbol into a list of the adjacent Ints
-            (-1..1).flatMap { y -> // 3x3 grid
-                (-1..1).mapNotNull { x ->
-                    getNumber(index + y * width + x) // get any number with a digit in that grid
+            buildSet {
+                for (y in -1..1) {
+                    for (x in -1..1) {
+                        getNumber(index + y * width + x)?.let { add(it) }
+                    }
                 }
-            }.distinct() // the above grid will have duplicate numbers; this de-dupes the list
+            }
         }
 
     // for a given index in the schematic, if there is a digit, expand left and right until the digit ends. Grab
@@ -45,7 +47,7 @@ class Y2023D3(private val schematic: String) : Day {
     // sums the numbers provided by validNumbers, using a "catchall" predicate that says a symbol is valid if it is 
     // not a digit, '.', or line break.
     override fun part1() = numbersAdjacentToSymbol { it !in ".\n" && !it.isDigit() }
-        .flatten() // internal list of numbers not needed for p1 so flatten it away 
+        .flatten() // internal set of numbers not needed for p1 so flatten it away 
         .distinct() // removes theoretical double-count of an IntRange adjacent to two symbols
         .sumOf { schematic.substring(it).toInt() } // map IntRange to number in schematic and sum them
 
