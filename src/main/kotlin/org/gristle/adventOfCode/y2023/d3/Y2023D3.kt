@@ -2,17 +2,58 @@ package org.gristle.adventOfCode.y2023.d3
 
 import org.gristle.adventOfCode.Day
 
-class Y2023D3(input: String) : Day {
+class Y2023D3(private val schematic: String) : Day {
 
-    private val parsed = input.lines()
+    // we use the input schematic directly, using indexes. To move up and down by index, we need the width.
+    private val width = schematic.indexOf('\n') + 1
 
-    override fun part1() = "To be implemented"
+    // intermediate step used for both parts. Given a predicate to know which symbols to look for, looks at every
+    // symbol and for each returns a list of numbers that are adjacent to it.
+    private fun validNumbers(validSymbol: (Char) -> Boolean): List<List<Int>> = schematic
+        .withIndex()
+        .filter { validSymbol(it.value) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
+        .map { (index, _) -> // turn each valid symbol into a list of the adjacent Ints
+            (-1..1).flatMap { y -> // 3x3 grid
+                (-1..1).mapNotNull { x ->
+                    getNumber(index + y * width + x) // get any number with a digit in that grid
+                }
+            }.distinct() // the above grid will have duplicate numbers; this de-dupes the list
+        }
 
-    override fun part2() = "To be implemented"
+    // for a given index in the schematic, if there is a digit, expand left and right until the digit ends. Grab
+    // the sequence of digits and convert to Int. If the index is out of bounds or does not contain a digit, return null.
+    private fun getNumber(index: Int): Int? {
+
+        // If the index is out of bounds or does not contain a digit, return null.
+        if (index !in schematic.indices || !schematic[index].isDigit()) return null
+
+        // keep subtracting from leftIndex while there are digits to the left. The getOrNull version of get ensures
+        // that the leftIndex does not go below 0.
+        var leftIndex = index
+        while (schematic.getOrNull(leftIndex - 1)?.isDigit() == true) leftIndex--
+
+        // keep adding to rightIndex while there are digits to the right
+        var rightIndex = index
+        while (schematic[rightIndex + 1].isDigit()) rightIndex++
+
+        // get the substring and return it as an Int
+        return schematic.substring(leftIndex..rightIndex).toInt()
+    }
+
+    // sums the numbers provided by validNumbers, using a "catchall" predicate that says a symbol is valid if it is 
+    // not a digit, '.', or line break.
+    override fun part1() = validNumbers { it !in ".\n" && !it.isDigit() }.sumOf { it.sum() }
+
+    // 'gears' are '*' symbols that have exactly two numbers adjacent. So we use filter to keep symbols with two
+    // numbers. We sum the product of the two numbers.
+    override fun part2() = validNumbers { it == '*' }
+        .filter { it.size == 2 }
+        .sumOf { it.reduce(Int::times) }
 }
 
-fun main() = Day.runDay(Y2023D3::class, sampleInput)
+fun main() = Day.runDay(Y2023D3::class)
 
-private val sampleInput = listOf(
-    """""",
-)
+//    Class creation: 3ms
+//    Part 1: 525911 (21ms)
+//    Part 2: 75805607 (7ms)
+//    Total time: 32ms
