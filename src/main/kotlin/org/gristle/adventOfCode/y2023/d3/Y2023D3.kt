@@ -8,8 +8,9 @@ class Y2023D3(private val schematic: String) : Day {
     private val width = schematic.indexOf('\n') + 1
 
     // intermediate step used for both parts. Given a predicate to know which symbols to look for, looks at every
-    // symbol and for each returns a list of numbers that are adjacent to it.
-    private fun validNumbers(validSymbol: (Char) -> Boolean): List<List<Int>> = schematic
+    // symbol and for each returns a list of IntRanges representing numbers that are adjacent to it. Intranges are
+    // used rather than the underlying Ints because IntRanges are unique and Ints are not.
+    private fun validNumbers(validSymbol: (Char) -> Boolean): List<List<IntRange>> = schematic
         .withIndex()
         .filter { validSymbol(it.value) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
         .map { (index, _) -> // turn each valid symbol into a list of the adjacent Ints
@@ -22,7 +23,7 @@ class Y2023D3(private val schematic: String) : Day {
 
     // for a given index in the schematic, if there is a digit, expand left and right until the digit ends. Grab
     // the sequence of digits and convert to Int. If the index is out of bounds or does not contain a digit, return null.
-    private fun getNumber(index: Int): Int? {
+    private fun getNumber(index: Int): IntRange? {
 
         // If the index is out of bounds or does not contain a digit, return null.
         if (index !in schematic.indices || !schematic[index].isDigit()) return null
@@ -36,19 +37,23 @@ class Y2023D3(private val schematic: String) : Day {
         var rightIndex = index
         while (schematic[rightIndex + 1].isDigit()) rightIndex++
 
-        // get the substring and return it as an Int
-        return schematic.substring(leftIndex..rightIndex).toInt()
+        // return the range
+        return leftIndex..rightIndex
     }
 
     // sums the numbers provided by validNumbers, using a "catchall" predicate that says a symbol is valid if it is 
     // not a digit, '.', or line break.
-    override fun part1() = validNumbers { it !in ".\n" && !it.isDigit() }.sumOf { it.sum() }
+    override fun part1() = validNumbers { it !in ".\n" && !it.isDigit() }
+        .flatten() // internal list of numbers not needed for p1 so flatten it away 
+        .distinct() // removes theoretical double-count of an IntRange adjacent to two symbols
+        .sumOf { schematic.substring(it).toInt() } // map IntRange to number in schematic and sum them
 
     // 'gears' are '*' symbols that have exactly two numbers adjacent. So we use filter to keep symbols with two
     // numbers. We sum the product of the two numbers.
     override fun part2() = validNumbers { it == '*' }
-        .filter { it.size == 2 }
-        .sumOf { it.reduce(Int::times) }
+        .filter { it.size == 2 } // definition of gear requires exactly two adjacent numbers
+        .map { it.map { intRange -> schematic.substring(intRange).toInt() } } // convert IntRanges to numbers
+        .sumOf { it.reduce(Int::times) } // multiply gearRatios and sum them
 }
 
 fun main() = Day.runDay(Y2023D3::class)
