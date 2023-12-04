@@ -32,126 +32,126 @@ import kotlin.test.assertEquals
 class Test2019 {
     @Test
     internal fun y2019d1() {
-        assertEquals(3325347 to 4985145, Day.testDay(Y2019D1::class))
+        assertEquals("3325347" to "4985145", Day.testDay(Y2019D1::class))
     }
 
     @Test
     internal fun y2019d2() {
-        assertEquals(3895705L to 6417L, Day.testDay(Y2019D2::class))
+        assertEquals("3895705" to "6417", Day.testDay(Y2019D2::class))
     }
 
     @Test
     internal fun y2019d3() {
-        assertEquals(266 to 19242, Day.testDay(Y2019D3::class))
+        assertEquals("266" to "19242", Day.testDay(Y2019D3::class))
     }
 
     @Test
     internal fun y2019d4() {
-        assertEquals(466 to 292, Day.testDay(Y2019D4::class))
+        assertEquals("466" to "292", Day.testDay(Y2019D4::class))
     }
 
     @Test
     internal fun y2019d5() {
-        assertEquals(7839346L to 447803L, Day.testDay(Y2019D5::class))
+        assertEquals("7839346" to "447803", Day.testDay(Y2019D5::class))
     }
 
     @Test
     internal fun y2019d6() {
-        assertEquals(315757 to 481, Day.testDay(Y2019D6::class))
+        assertEquals("315757" to "481", Day.testDay(Y2019D6::class))
     }
 
     @Test
     internal fun y2019d7() {
-        assertEquals(24405L to 8271623L, Day.testDay(Y2019D7::class))
+        assertEquals("24405" to "8271623", Day.testDay(Y2019D7::class))
     }
 
     @Test
     internal fun y2019d8() {
-        assertEquals(1088 to "LGYHB", Day.testDay(Y2019D8::class))
+        assertEquals("1088" to "LGYHB", Day.testDay(Y2019D8::class))
     }
 
     @Test
     internal fun y2019d9() {
-        assertEquals(2870072642L to 58534L, Day.testDay(Y2019D9::class))
+        assertEquals("2870072642" to "58534", Day.testDay(Y2019D9::class))
     }
 
     @Test
     internal fun y2019d10() {
-        assertEquals(286 to 504, Day.testDay(Y2019D10::class))
+        assertEquals("286" to "504", Day.testDay(Y2019D10::class))
     }
 
     @Test
     internal fun y2019d11() {
-        assertEquals(2720 to "JZPJRAGJ", Day.testDay(Y2019D11::class))
+        assertEquals("2720" to "JZPJRAGJ", Day.testDay(Y2019D11::class))
     }
 
     @Test
     internal fun y2019d12() {
-        assertEquals(10028 to 314610635824376, Day.testDay(Y2019D12::class))
+        assertEquals("10028" to "314610635824376", Day.testDay(Y2019D12::class))
     }
 
     @Test
     internal fun y2019d13() {
-        assertEquals(348 to 16999, Day.testDay(Y2019D13::class))
+        assertEquals("348" to "16999", Day.testDay(Y2019D13::class))
     }
 
     @Test
     internal fun y2019d14() {
-        assertEquals(751038L to 2074843L, Day.testDay(Y2019D14::class))
+        assertEquals("751038" to "2074843", Day.testDay(Y2019D14::class))
     }
 
     @Test
     internal fun y2019d15() {
-        assertEquals(250 to 332, Day.testDay(Y2019D15::class))
+        assertEquals("250" to "332", Day.testDay(Y2019D15::class))
     }
 
     @Test
     internal fun y2019d16() {
-        assertEquals(52611030 to 52541026, Day.testDay(Y2019D16::class))
+        assertEquals("52611030" to "52541026", Day.testDay(Y2019D16::class))
     }
 
     @Test
     internal fun y2019d17() {
-        assertEquals(10632 to 1356191L, Day.testDay(Y2019D17::class))
+        assertEquals("10632" to "1356191", Day.testDay(Y2019D17::class))
     }
 
     @Test
     internal fun y2019d18() {
-        assertEquals(3918 to 2004, Day.testDay(Y2019D18::class))
+        assertEquals("3918" to "2004", Day.testDay(Y2019D18::class))
     }
 
     @Test
     internal fun y2019d19() {
-        assertEquals(179 to 9760485L, Day.testDay(Y2019D19::class))
+        assertEquals("179" to "9760485", Day.testDay(Y2019D19::class))
     }
 
     @Test
     internal fun y2019d20() {
-        assertEquals(528 to 6214, Day.testDay(Y2019D20::class))
+        assertEquals("528" to "6214", Day.testDay(Y2019D20::class))
     }
 
     @Test
     internal fun y2019d21() {
-        assertEquals(19349530L to 1142805439L, Day.testDay(Y2019D21::class))
+        assertEquals("19349530" to "1142805439", Day.testDay(Y2019D21::class))
     }
 
     @Test
     internal fun y2019d22() {
-        assertEquals(6129 to 71345377301237, Day.testDay(Y2019D22::class))
+        assertEquals("6129" to "71345377301237", Day.testDay(Y2019D22::class))
     }
 
     @Test
     internal fun y2019d23() {
-        assertEquals(23701L to 17225L, Day.testDay(Y2019D23::class))
+        assertEquals("23701" to "17225", Day.testDay(Y2019D23::class))
     }
 
     @Test
     internal fun y2019d24() {
-        assertEquals(18852849 to 1948, Day.testDay(Y2019D24::class))
+        assertEquals("18852849" to "1948", Day.testDay(Y2019D24::class))
     }
 
     @Test
     internal fun y2019d25() {
-        assertEquals("16810049" to false, Day.testDay(Y2019D25::class))
+        assertEquals("16810049" to "skipped", Day.testDay(Y2019D25::class))
     }
 }
