@@ -46,10 +46,11 @@ interface Day {
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
             sampleInput.forEachIndexed { index, sample ->
+                val trimmedSample = sample.trimEnd()
                 print("${index + 1}:")
-                val inputString = if (omitInputPrintout) "\t" else " $sample\t"
+                val inputString = if (omitInputPrintout) "\t" else " $trimmedSample\t"
                 print(inputString)
-                val c = constructor.call(sample) as Day
+                val c = constructor.call(trimmedSample) as Day
                 println("Part 1: ${c.part1()}\tPart 2: ${c.part2()}")
             }
         }
@@ -65,8 +66,9 @@ interface Day {
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
             sampleInput.forEachIndexed { index, (sample, answer) ->
+                val trimmedSample = sample.trimEnd()
                 print("${index + 1}:\t")
-                val c = constructor.call(sample) as Day
+                val c = constructor.call(trimmedSample) as Day
                 val result =
                     when {
                         part == 1 -> c.part1()
@@ -79,7 +81,7 @@ interface Day {
                     print("FAILURE\t")
                 }
                 print("$result ($answer)")
-                if (displayInput) println("\t$sample") else println()
+                if (displayInput) println("\t$trimmedSample") else println()
             }
         }
 
