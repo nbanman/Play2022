@@ -18,12 +18,22 @@ interface Day {
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
             val input = sampleInput ?: getInput(day, year)
+//            val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+            var part2: String? = null
             val timer = Stopwatch(true)
             val c = constructor.call(input) as Day
             println("Class creation: ${timer.lap()}ms")
-            println("\tPart 1: ${c.part1()} (${timer.lap()}ms)")
-            if (day != 25) println("\tPart 2: ${c.part2()} (${timer.lap()}ms)")
+            val part1 = c.part1().toString()
+            println("\tPart 1: $part1 (${timer.lap()}ms)")
+            if (day != 25) {
+                part2 = c.part2().toString()
+                println("\tPart 2: $part2 (${timer.lap()}ms)")
+            }
             println("Total time: ${timer.elapsed()}ms")
+
+//            clipboard.setContents(StringSelection(part1), null)
+//            clipboard.getContents(this)
+//            if (part2 != null) clipboard.setContents(StringSelection(part2), null)
         }
 
         fun <T : Any> runDay(
@@ -48,7 +58,7 @@ interface Day {
             kClass: KClass<T>,
             part: Int,
             sampleInput: List<Pair<String, String>>,
-            omitInput: Boolean = false,
+            displayInput: Boolean = false,
         ) {
             val constructor = kClass.constructors.first()
             val (year, day) = kClass.simpleName?.getIntList()
@@ -69,7 +79,7 @@ interface Day {
                     print("FAILURE\t")
                 }
                 print("$result ($answer)")
-                if (omitInput) println() else println("\t$sample")
+                if (displayInput) println("\t$sample") else println()
             }
         }
 
@@ -78,14 +88,14 @@ interface Day {
             sampleInput: String? = null,
             skipPartOne: Boolean = false,
             skipPartTwo: Boolean = false
-        ): Any {
+        ): Pair<String, String> {
             val constructor = kClass.constructors.first()
             val (year, day) = kClass.simpleName?.getIntList()
                 ?: throw IllegalArgumentException("Class does not have a name")
             val input = sampleInput ?: getInput(day, year)
             val c = constructor.call(input) as Day
-            val part1 = if (skipPartOne) false else c.part1()
-            val part2 = if (skipPartTwo || day == 25) false else c.part2()
+            val part1 = if (skipPartOne) "skipped" else c.part1().toString()
+            val part2 = if (skipPartTwo || day == 25) "skipped" else c.part2().toString()
             return part1 to part2
         }
 
