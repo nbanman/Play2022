@@ -1,30 +1,38 @@
 package org.gristle.adventOfCode.y2023.d4
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.getIntList
-import kotlin.math.pow
+import org.gristle.adventOfCode.utilities.getInts
 
 class Y2023D4(input: String) : Day {
 
-    private val cards: List<Int>
+    private val cards: List<Int> = input
+        .lines()
+        .map { line ->
 
-    init {
-        val leftOffset = input.indexOf(':')
+            // rather than split the numbers into winners and potentials, rely on the fact that neither side has a 
+            // duplicate number. So we can get a list of all the numbers and pull out the ones that are duplicated.
+            // the first Int in the line is the card number, which we don't need, so drop that.
+            val numbers = line.getInts().drop(1).toList()
+            numbers.size - numbers.distinct().size
+        }
 
-        cards = input
-            .lines()
-            .map { line ->
-                val ints = line.substring(leftOffset).getIntList()
-                ints.size - ints.distinct().size
-            }
-    }
-
-    override fun part1() = cards.sumOf { 2.0.pow(it - 1).toInt() }
+    // bitwise Int equivalent of 2^(n - 1) returns the point value
+    override fun part1() = cards.sumOf { 1 shl it shr 1 }
 
     override fun part2(): Int {
+        // use mutable array to track how many of each card we have
         val cardCount = IntArray(cards.size) { 1 }
+
+        // increase the number of each card we have by going through each card number in turn, checking how many 
+        // future cards they create, and updating the cardCount appropriately
         cards.forEachIndexed { index, count ->
+
+            // this is the range of indices in cardCount to be updated. Note that there is no need to check for 
+            // overflow beyond the number of cards because the puzzle states, 'Cards will never make you copy a card 
+            // past the end of the table.'
             val range = index + 1..index + count
+
+            // there is a multiplier effect for each card of that index you have
             val numberOfCards = cardCount[index]
             range.forEach { cardCount[it] += numberOfCards }
         }
