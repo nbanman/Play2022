@@ -8,46 +8,43 @@ import kotlin.math.min
 class Y2023D5(input: String) : Day {
 
     data class Listing(val sourceStart: Long, val destinationStart: Long, val length: Long) {
-        private val sourceRange = sourceStart until sourceStart + length
+        private val sourceEnd = sourceStart + length - 1
 
-        // returns up to 3 sub-ranges
+        // returns up to 3 sub-ranges, applying conversion where appropriate
         fun splitAndSend(source: LongRange): List<LongRange> = buildList {
 
-            // first is anything before the Listing, no offset
-            if (source.first < sourceRange.first) {
-                add(source.first..min(source.last, sourceRange.first))
+            // first is anything before the Listing; no offset
+            if (source.first < sourceStart) {
+                add(source.first..min(source.last, sourceStart))
             }
 
-            // second is any overlap with the Listing, offset
+            // second is any overlap with the Listing; offset by difference between destination and source
             val offset = destinationStart - sourceStart
-            if (source.last >= sourceRange.first && source.first <= sourceRange.last) {
+            if (source.last >= sourceStart && source.first <= sourceEnd) {
                 val newFirst = if (isEmpty()) source.first else sourceStart
-                add(newFirst + offset..min(source.last, sourceRange.last) + offset)
+                add(newFirst + offset..min(source.last, sourceEnd) + offset)
             }
 
-            // third is anything after the Listing, no offset
+            // third is anything after the Listing; no offset
             when {
                 isEmpty() -> add(source)
                 last().last == source.last -> {}
                 last().last == source.last + offset -> {}
-                else -> {
-                    add(last().last + 1 - offset..source.last)
-                }
+                else -> add(last().last + 1 - offset..source.last)
             }
         }
     }
 
     private val seeds: List<Long>
-
     private val conversions: List<List<Listing>>
 
     init {
-        val chunked = input.blankSplit()
-        seeds = chunked[0].getLongList()
-        conversions = chunked.drop(1)
+        val longChunks = input.blankSplit().map { it.getLongList() }
+        seeds = longChunks[0]
+        conversions = longChunks
+            .drop(1)
             .map { listing ->
                 listing
-                    .getLongList()
                     .chunked(3) { (destinationStart, sourceStart, length) ->
                         Listing(sourceStart, destinationStart, length)
                     }
@@ -62,7 +59,7 @@ class Y2023D5(input: String) : Day {
             // as each conversion handles different parts of the range differently.
             val subRanges = conversions.fold(listOf(seedRange)) { ranges, listings ->
                 ranges.flatMap { range ->
-                    // fold constantly breaks down the last range in the list,
+                    // fold constantly breaks down the last range in the list, as it runs through the listings
                     listings.fold(mutableListOf(range)) { subRanges, listing ->
                         if (subRanges.last().last == range.last) {
                             subRanges.addAll(listing.splitAndSend(subRanges.removeLast()))
@@ -71,9 +68,10 @@ class Y2023D5(input: String) : Day {
                     }
                 }
             }
+
+            // we only care about the lowest number of all these subRanges
             subRanges.minOf { it.first }
         }
-
 
     override fun part1() = solve(seeds.map { it..it })
 
@@ -82,10 +80,10 @@ class Y2023D5(input: String) : Day {
 
 fun main() = Day.runDay(Y2023D5::class)
 
-//    Class creation: 11ms
-//    Part 1: 379811651 (8ms)
-//    Part 2: 27992443 (7ms)
-//    Total time: 26ms
+//    Class creation: 14ms
+//    Part 1: 379811651 (4ms)
+//    Part 2: 27992443 (4ms)
+//    Total time: 23ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
