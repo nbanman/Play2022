@@ -39,7 +39,7 @@ interface Day {
         fun <T : Any> runDay(
             kClass: KClass<T>,
             sampleInput: List<String>,
-            omitInputPrintout: Boolean = false,
+            displayInput: Boolean = false,
         ) {
             val constructor = kClass.constructors.first()
             val (year, day) = kClass.simpleName?.getIntList()
@@ -48,7 +48,7 @@ interface Day {
             sampleInput.forEachIndexed { index, sample ->
                 val trimmedSample = sample.trimEnd()
                 print("${index + 1}:")
-                val inputString = if (omitInputPrintout) "\t" else " $trimmedSample\t"
+                val inputString = if (displayInput) " $trimmedSample\t" else "\t"
                 print(inputString)
                 val c = constructor.call(trimmedSample) as Day
                 println("Part 1: ${c.part1()}\tPart 2: ${c.part2()}")
@@ -111,10 +111,11 @@ interface Day {
             val (year, day) = kClass.simpleName?.getIntList()
                 ?: throw IllegalArgumentException("Class does not have a name")
             val input = sampleInput ?: getInput(day, year)
-            val c = constructor.call(input) as Day
-            println("${kClass.simpleName} Part 1\n")
             val timer = Stopwatch(true, TimeUnits.US)
+            var c = constructor.call(input) as Day
+            println("${kClass.simpleName} Part 1\n")
             val p1Average = benchmark(warmups, iterations, timer, c::part1)
+            c = constructor.call(input) as Day
             println("\n${kClass.simpleName} Part 2\n")
             val p2Average = benchmark(warmups, iterations, timer, c::part2)
             println("\nParts 1 and 2: ${p1Average + p2Average} us/op [Average]")
