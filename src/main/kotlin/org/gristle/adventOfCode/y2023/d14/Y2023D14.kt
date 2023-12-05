@@ -11,8 +11,9 @@ class Y2023D14(input: String) : Day {
     override fun part2() = "To be implemented"
 }
 
-fun main() = Day.runDay(Y2023D14::class, sampleInput)
+fun main() = Day.runDay(Y2023D14::class)
 
+@Suppress("unused")
 private val sampleInput = listOf(
     """""",
 )
