@@ -12,8 +12,9 @@ class Y[[YEAR]]D[[DAY]](input: String) : Day {
     override fun part2() = "To be implemented"
 }
 
-fun main() = Day.runDay(Y[[YEAR]]D[[DAY]]::class, sampleInput) 
+fun main() = Day.runDay(Y[[YEAR]]D[[DAY]]::class) 
 
+@Suppress("unused")
 private val sampleInput = listOf(
     """""",
 )
