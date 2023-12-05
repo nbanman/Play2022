@@ -18,7 +18,6 @@ interface Day {
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
             val input = sampleInput ?: getInput(day, year)
-//            val clipboard = Toolkit.getDefaultToolkit().systemClipboard
             var part2: String? = null
             val timer = Stopwatch(true)
             val c = constructor.call(input) as Day
@@ -30,10 +29,6 @@ interface Day {
                 println("\tPart 2: $part2 (${timer.lap()}ms)")
             }
             println("Total time: ${timer.elapsed()}ms")
-
-//            clipboard.setContents(StringSelection(part1), null)
-//            clipboard.getContents(this)
-//            if (part2 != null) clipboard.setContents(StringSelection(part2), null)
         }
 
         fun <T : Any> runDay(
