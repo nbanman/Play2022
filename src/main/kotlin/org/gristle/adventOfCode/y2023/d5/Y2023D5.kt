@@ -7,32 +7,8 @@ import kotlin.math.min
 
 class Y2023D5(input: String) : Day {
 
-    data class Listing(val sourceStart: Long, val destinationStart: Long, val length: Long) {
-        private val sourceEnd = sourceStart + length - 1
-
-        // returns up to 3 sub-ranges, applying conversion where appropriate
-        fun splitAndSend(source: LongRange): List<LongRange> = buildList {
-
-            // first is anything before the Listing; no offset
-            if (source.first < sourceStart) {
-                add(source.first..min(source.last, sourceStart))
-            }
-
-            // second is any overlap with the Listing; offset by difference between destination and source
-            val offset = destinationStart - sourceStart
-            if (source.last >= sourceStart && source.first <= sourceEnd) {
-                val newFirst = if (isEmpty()) source.first else sourceStart
-                add(newFirst + offset..min(source.last, sourceEnd) + offset)
-            }
-
-            // third is anything after the Listing; no offset
-            when {
-                isEmpty() -> add(source)
-                last().last == source.last -> {}
-                last().last == source.last + offset -> {}
-                else -> add(last().last + 1 - offset..source.last)
-            }
-        }
+    data class Listing(val sourceStart: Long, val offset: Long, val length: Long) {
+        val sourceEnd = sourceStart + length - 1
     }
 
     private val seeds: List<Long>
@@ -46,7 +22,7 @@ class Y2023D5(input: String) : Day {
             .map { mapNumbers ->
                 mapNumbers
                     .chunked(3) { (destinationStart, sourceStart, length) ->
-                        Listing(sourceStart, destinationStart, length)
+                        Listing(sourceStart, destinationStart - sourceStart, length)
                     }.sortedBy(Listing::sourceStart)
             }
     }
@@ -58,12 +34,27 @@ class Y2023D5(input: String) : Day {
             // as each conversion handles different parts of the range differently.
             val subRanges = conversions.fold(listOf(seedRange)) { ranges, listings ->
                 ranges.flatMap { range ->
-                    // fold constantly breaks down the last range in the list, as it runs through the listings
-                    listings.fold(mutableListOf(range)) { subRanges, listing ->
-                        if (subRanges.last().last == range.last) {
-                            subRanges.addAll(listing.splitAndSend(subRanges.removeLast()))
+                    buildList {
+
+                        // tracks where we are in filling out the subRanges
+                        var next = range.first
+
+                        // go through each listing in ascending order, adding subranges where appropriate, mapping to
+                        // destination where appropriate
+                        listings.forEach { listing ->
+
+                            // only run if the listing range overlaps with the remaining range
+                            if (range.last >= listing.sourceStart && next <= listing.sourceEnd) {
+                                if (next < listing.sourceStart) {
+                                    add(next until listing.sourceStart)
+                                    next = listing.sourceStart
+                                }
+                                val mapEnd = min(range.last, listing.sourceEnd)
+                                add(next + listing.offset..mapEnd + listing.offset)
+                                next = mapEnd + 1
+                            }
                         }
-                        subRanges
+                        if (next <= range.last) add(next..range.last)
                     }
                 }
             }
@@ -79,10 +70,10 @@ class Y2023D5(input: String) : Day {
 
 fun main() = Day.runDay(Y2023D5::class)
 
-//    Class creation: 14ms
+//    Class creation: 11ms
 //    Part 1: 379811651 (4ms)
 //    Part 2: 27992443 (4ms)
-//    Total time: 23ms
+//    Total time: 20ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
