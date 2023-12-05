@@ -39,16 +39,15 @@ class Y2023D5(input: String) : Day {
     private val conversions: List<List<Listing>>
 
     init {
-        val longChunks = input.blankSplit().map { it.getLongList() }
-        seeds = longChunks[0]
-        conversions = longChunks
+        val stanzas = input.blankSplit().map { it.getLongList() }
+        seeds = stanzas[0]
+        conversions = stanzas
             .drop(1)
-            .map { listing ->
-                listing
+            .map { mapNumbers ->
+                mapNumbers
                     .chunked(3) { (destinationStart, sourceStart, length) ->
                         Listing(sourceStart, destinationStart, length)
-                    }
-                    .sortedBy { it.sourceStart }
+                    }.sortedBy(Listing::sourceStart)
             }
     }
 
