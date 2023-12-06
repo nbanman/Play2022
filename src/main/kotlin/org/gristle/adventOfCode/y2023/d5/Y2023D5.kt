@@ -36,25 +36,24 @@ class Y2023D5(input: String) : Day {
                 ranges.flatMap { range ->
                     buildList {
 
-                        // tracks where we are in filling out the subRanges
-                        var next = range.first
-
-                        // go through each listing in ascending order, adding subranges where appropriate, mapping to
-                        // destination where appropriate
-                        listings.forEach { listing ->
-
-                            // only run if the listing range overlaps with the remaining range
+                        // go through each listing in ascending order, adding subRanges where appropriate, mapping to
+                        // destination where appropriate. In order to avoid using a mutable "last" variable, we
+                        // put everything in a fold that updates an internal "next" and ultimately outputs a "last"
+                        // value to use to complete the subRanges once we've run through all the listings.
+                        val last = listings.fold(range.first) { next, listing ->
                             if (range.last >= listing.sourceStart && next <= listing.sourceEnd) {
                                 if (next < listing.sourceStart) {
                                     add(next until listing.sourceStart)
-                                    next = listing.sourceStart
                                 }
                                 val mapEnd = min(range.last, listing.sourceEnd)
                                 add(next + listing.offset..mapEnd + listing.offset)
-                                next = mapEnd + 1
+                                mapEnd + 1
+                            } else {
+                                next
                             }
                         }
-                        if (next <= range.last) add(next..range.last)
+                        // clean up subRanges
+                        if (last <= range.last) add(last..range.last)
                     }
                 }
             }
