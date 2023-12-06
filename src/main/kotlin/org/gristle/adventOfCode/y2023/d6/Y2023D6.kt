@@ -3,6 +3,8 @@ package org.gristle.adventOfCode.y2023.d6
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getLongList
 import org.gristle.adventOfCode.utilities.transpose
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class Y2023D6(private val input: String) : Day {
 
@@ -10,7 +12,7 @@ class Y2023D6(private val input: String) : Day {
 
     override fun part2() = solve { it.filter(Char::isDigit).getLongList() }
 
-    private inline fun solve(parseLine: (String) -> List<Long>): Int {
+    private inline fun solve(parseLine: (String) -> List<Long>): Long {
         
         // parses input by parsing the digits in each input line according to the rules for each part, then
         // transposing the list of lists so that the vertical columns are grouped together.
@@ -19,24 +21,20 @@ class Y2023D6(private val input: String) : Day {
             .map(parseLine)
             .transpose()
         
-        return races.map(::waysToWin).reduce(Int::times)
+        return races.map(::waysToWin).reduce(Long::times)
     }
 
-    private fun waysToWin(race: List<Long>): Int {
+    private fun waysToWin(race: List<Long>): Long {
         val (time, distance) = race
-        var backHalfCount = 0
         
-        // the largest product is when the two operands are the same (or as close as can be for odd times),
-        // so start there. If product > distance, increment the count and the first operand. Do that until
-        // every combination in the back half has been checked or product <= distance
-        for (operand in (time / 2) until distance) {
-            if (operand * (time - operand) > distance) backHalfCount++ else break
-        }
-        
-        // only the back half was counted, so double it, since the first half is a mirror of the second.
-        // even-numbered times lose one count because there is a singular "peak" that isn't mirrored on the other
-        // side. e.g. t=8 -> 7, 12, 15, *16*, 15, 12, 7
-        return (backHalfCount - 1) * 2 - if (time and 1L == 0L) 1 else 0
+        // equation can be expressed as quadratic equation
+        // D = distance, T = time, t = time pushing button
+        // D = t(T - t) -> D = tT - t^2 -> -t^2 + tT - D = 0
+        // which becomes: t = (-T ± sqrt(T^2 - 4 * D)) / -2
+        val part = sqrt(time.toDouble().pow(2) - 4 * distance)
+        val t1 = (-time + part) / -2
+        val t2 = (-time - part) / -2
+        return t2.toLong() - t1.toLong()
     }
 }
 
@@ -44,8 +42,8 @@ fun main() = Day.runDay(Y2023D6::class)
 
 //    Class creation: 2ms
 //    Part 1: 2374848 (2ms)
-//    Part 2: 39132886 (14ms)
-//    Total time: 20ms
+//    Part 2: 39132886 (0ms)
+//    Total time: 5ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
