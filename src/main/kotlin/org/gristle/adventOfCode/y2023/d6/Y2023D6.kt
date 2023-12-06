@@ -4,6 +4,8 @@ import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getLongList
 import org.gristle.adventOfCode.utilities.quadraticFormula
 import org.gristle.adventOfCode.utilities.transpose
+import kotlin.math.ceil
+import kotlin.math.floor
 
 class Y2023D6(private val input: String) : Day {
 
@@ -30,7 +32,7 @@ class Y2023D6(private val input: String) : Day {
         // D = distance, T = time, t = time pushing button
         // D = t(T - t) => (-1)t^2 + (T)t + (-D) = 0
         val (root1, root2) = quadraticFormula(-1, time, -distance)
-        return root2.toLong() - root1.toLong()
+        return (ceil(root2 - 1.0) - floor(root1 + 1.0)).toLong() + 1L
     }
 }
 
