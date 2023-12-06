@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2023.d6
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getLongList
 import org.gristle.adventOfCode.utilities.quadraticFormula
-import org.gristle.adventOfCode.utilities.transpose
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -17,15 +16,15 @@ class Y2023D6(private val input: String) : Day {
         
         // parses input by parsing the digits in each input line according to the rules for each part, then
         // transposing the list of lists so that the vertical columns are grouped together.
-        val races: List<List<Long>> = input
+        val races: List<Pair<Long, Long>> = input
             .lines()
             .map(parseLine)
-            .transpose()
+            .let { (times, distances) -> times zip distances }
         
         return races.map(::waysToWin).reduce(Long::times)
     }
 
-    private fun waysToWin(race: List<Long>): Long {
+    private fun waysToWin(race: Pair<Long, Long>): Long {
         val (time, distance) = race
         
         // equation can be expressed as quadratic equation
