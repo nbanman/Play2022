@@ -1,5 +1,6 @@
 package org.gristle.adventOfCode.utilities
 
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 fun Sequence<Pair<Long, Long>>.crt(): Long {
@@ -23,4 +24,11 @@ fun Int.isPrime(): Boolean = when {
     }
 }
 
-fun Int.factorial(): Long = (1..this).fold(1L, Long::times) 
+fun Int.factorial(): Long = (1..this).fold(1L, Long::times)
+
+fun quadraticFormula(a: Long, b: Long, c: Long): Pair<Double, Double> {
+    val determinant = sqrt(b.toDouble().pow(2) - 4 * a * c)
+    val root1 = (-b + determinant) / (2 * a)
+    val root2 = (-b - determinant) / (2 * a)
+    return root1 to root2
+}
