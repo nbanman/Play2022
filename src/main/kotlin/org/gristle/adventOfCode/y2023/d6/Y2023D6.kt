@@ -2,9 +2,8 @@ package org.gristle.adventOfCode.y2023.d6
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getLongList
+import org.gristle.adventOfCode.utilities.quadraticFormula
 import org.gristle.adventOfCode.utilities.transpose
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class Y2023D6(private val input: String) : Day {
 
@@ -29,12 +28,9 @@ class Y2023D6(private val input: String) : Day {
         
         // equation can be expressed as quadratic equation
         // D = distance, T = time, t = time pushing button
-        // D = t(T - t) -> D = tT - t^2 -> -t^2 + tT - D = 0
-        // which becomes: t = (-T ± sqrt(T^2 - 4 * D)) / -2
-        val part = sqrt(time.toDouble().pow(2) - 4 * distance)
-        val t1 = (-time + part) / -2
-        val t2 = (-time - part) / -2
-        return t2.toLong() - t1.toLong()
+        // D = t(T - t) => (-1)t^2 + (T)t + (-D) = 0
+        val (root1, root2) = quadraticFormula(-1, time, -distance)
+        return root2.toLong() - root1.toLong()
     }
 }
 
