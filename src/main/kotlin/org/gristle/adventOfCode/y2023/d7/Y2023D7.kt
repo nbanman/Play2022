@@ -42,7 +42,7 @@ class Y2023D7(input: String) : Day {
         // strength is an Int that we use to sort with. The most important thing is handType, after that, the value
         // of the cards, in order. E.g., 98 > 8A, because 9 is greater than 8. We can represent this all as an Int
         // concatenating them all, giving 4 bits for each value.
-        val strength: Int = cards.fold(handType) { acc, card -> (acc shl 4) + cardValues.getValue(card) }
+        val strength: Int = cards.fold(handType) { acc, card -> (acc shl 4) + CARD_ORDER_1.indexOf(card) }
         
         // strengthWild does the same thing as strength, but first it adjusts the handType to accommodate Jokers.
         // And it also uses a different card value ranking.
@@ -61,20 +61,12 @@ class Y2023D7(input: String) : Day {
                 } else {
                     handType
                 }
-            cards.fold(handTypeWild) { acc, card -> (acc shl 4) + cardValuesWild.getValue(card) }
+            cards.fold(handTypeWild) { acc, card -> (acc shl 4) + CARD_ORDER_2.indexOf(card) }
         }
         
         companion object {
             private const val CARD_ORDER_1 = "23456789TJQKA"
             private const val CARD_ORDER_2 = "J23456789TQKA"
-
-            private val cardValues: Map<Char, Int> = CARD_ORDER_1
-                .mapIndexed { index, c -> c to index }
-                .toMap()
-
-            private val cardValuesWild: Map<Char, Int> = CARD_ORDER_2
-                .mapIndexed { index, c -> c to index }
-                .toMap()
         }
     }
 }
