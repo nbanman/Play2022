@@ -30,10 +30,18 @@ class Y2023D7(input: String) : Day {
         // [biggest group size] * 2 + [2nd biggest group size]. Then normalized to 0..6.
         private val handType: Int = cards
             .groupingBy { it }
-            .eachCount()
-            .map { (_, amt) -> amt }
-            .sortedDescending()
-            .let { groups -> (groups[0] * 2 + groups.getOrElse(1) { 0 } - 4).coerceAtLeast(0) }
+            .eachCount()             // count the number of each card we have
+            .map { (_, amt) -> amt } // we only care about biggest group size, not contents of group
+            .sortedDescending()      // we only want the two largest groups
+            .let { groups ->
+
+                // this gives a strength, from weakest to strongest, of 3, 5, 6, 7, 8, 9, 10
+                // we use getOrElse for the second group because a 5-kind has no second group
+                val rawStrength = groups.first() * 2 + groups.getOrElse(1) { 0 }
+                
+                // normalize to 0..6
+                (rawStrength - 4).coerceAtLeast(0)
+            }
         
         // strength is an Int that we use to sort with. The most important thing is handType, after that, the value
         // of the cards, in order. E.g., 98 > 8A, because 9 is greater than 8. We can represent this all as an Int
@@ -49,11 +57,11 @@ class Y2023D7(input: String) : Day {
                 val jokers = cards.count { it == 'J' }
                 if (jokers > 0) {
                     when (handType) {
-                        4, 5, 6 -> 6 // full house to 5-kind all become 5-kind
-                        3 -> 5 // 3-kind becomes 4-kind
+                        4, 5, 6 -> 6    // full house to 5-kind all become 5-kind
+                        3 -> 5          // 3-kind becomes 4-kind
                         2 -> 3 + jokers // if JJ found, full house, else 3-kind
-                        1 -> 3 // pair becomes 3-kind
-                        else -> 1 // high card becomes pair
+                        1 -> 3          // pair becomes 3-kind
+                        else -> 1       // high card becomes pair
                     }
                 } else {
                     handType
@@ -72,10 +80,10 @@ class Y2023D7(input: String) : Day {
 
 fun main() = Day.runDay(Y2023D7::class)
 
-//    Class creation: 48ms
-//    Part 1: 253866470 (3ms)
-//    Part 2: 254494947 (3ms)
-//    Total time: 55ms
+//    Class creation: 27ms
+//    Part 1: 253866470 (4ms)
+//    Part 2: 254494947 (4ms)
+//    Total time: 37ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
