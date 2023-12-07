@@ -67,7 +67,6 @@ class Y2023D7(input: String) : Day {
                     handType
                 }
             }
-                
             cards.fold(handTypeWild) { acc, card -> (acc shl 4) + CARD_ORDER_2.indexOf(card) }
         }
         
