@@ -25,19 +25,15 @@ class Y2023D7(input: String) : Day {
     data class Hand(val cards: String, val bid: Int) {
 
         // groups cards together, for use in determining handStrength. Sorted because the relative size of the groups
-        // is used to determine what kind of hand we have 
-        private val handCount: List<Pair<Char, Int>> = cards
+        // is used to determine what kind of hand we have. Then take the two most populous groups in the hand, 
+        // then deliver ordered ranking of each hand type. 
+        // [biggest group size] * 2 + [2nd biggest group size]. Then normalized to 0..6.
+        private val handType: Int = cards
             .groupingBy { it }
             .eachCount()
-            .map { (card, amt) -> card to amt }
-            .sortedWith(compareByDescending { (_, amt) -> amt })
-
-        // take the two most populous groups in the hand, perform arcane function to deliver ordered ranking of each
-        // hand type. Arcane function: [biggest group size] * 2 + [2nd biggest group size]. Then normalized to 0..6.
-        private val handType: Int = handCount
-            .take(2)
-            .foldIndexed(0) { index, acc, (_, amt) -> acc + (2 - index) * amt }
-            .let { raw -> (raw - 4).coerceAtLeast(0) }
+            .map { (_, amt) -> amt }
+            .sortedDescending()
+            .let { groups -> (groups[0] * 2 + groups.getOrElse(1) { 0 } - 4).coerceAtLeast(0) }
         
         // strength is an Int that we use to sort with. The most important thing is handType, after that, the value
         // of the cards, in order. E.g., 98 > 8A, because 9 is greater than 8. We can represent this all as an Int
@@ -49,18 +45,21 @@ class Y2023D7(input: String) : Day {
         val strengthWild: Int = let {
             
             // changes the hand type if a joker is found
-            val handTypeWild: Int =
-                if (cards.contains('J')) {
+            val handTypeWild: Int = let {
+                val jokers = cards.count { it == 'J' }
+                if (jokers > 0) {
                     when (handType) {
                         4, 5, 6 -> 6 // full house to 5-kind all become 5-kind
                         3 -> 5 // 3-kind becomes 4-kind
-                        2 -> if (handCount.last().first == 'J') 4 else 5 // if JJ found, full house, else 3-kind
+                        2 -> 3 + jokers // if JJ found, full house, else 3-kind
                         1 -> 3 // pair becomes 3-kind
                         else -> 1 // high card becomes pair
                     }
                 } else {
                     handType
                 }
+            }
+                
             cards.fold(handTypeWild) { acc, card -> (acc shl 4) + CARD_ORDER_2.indexOf(card) }
         }
         
