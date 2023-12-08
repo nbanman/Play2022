@@ -27,38 +27,31 @@ class Y2023D7(private val input: String) : Day {
         // hand. After that, the value of the cards, in order. E.g., 98 > 8A, because 9 is greater than 8. We can 
         // represent this all as an Int concatenating them all, giving 4 bits for each value.
         private fun getStrength(): Int {
-
-            // groups cards together, for use in determining handTypeStrength. Sorted because the relative size 
-            // of the groups is used to determine what kind of hand we have. Then take the two most populous groups 
-            // in the hand, then deliver ordered ranking of each hand type. 
-            // [biggest group size] * 2 + [2nd biggest group size]. Then normalized to 0..6.
-            val groups: List<Int> = cards
-                .groupingBy { it }
-                .eachCount()        // count the number of each card we have
-                .values             // we only care about biggest group size, not contents of group
-                .sortedDescending() // we only want the two largest groups
-
-            // this gives a strength, from weakest to strongest, of 3, 5, 6, 7, 8, 9, 10
-            // we use getOrElse for the second group because a 5-kind has no second group
-            val rawHandTypeStrength = groups.first() * 2 + groups.getOrElse(1) { 0 }
-
-            // normalize to 0..6
-            val handTypeStrengthBeforeJokers = (rawHandTypeStrength - 4).coerceAtLeast(0)
-
-            val jokers = cards.count { it == 'ĵ' }
-
-            val handTypeStrength = if (jokers == 0) {
-                handTypeStrengthBeforeJokers
-            } else {
-                when (handTypeStrengthBeforeJokers) {
-                    4, 5, 6 -> 6    // full house to 5-kind all become 5-kind
-                    3 -> 5          // 3-kind becomes 4-kind
-                    2 -> 3 + jokers // 2 jokers: 4-kind; 1 joker: full house
-                    1 -> 3          // pair becomes 3-kind
-                    else -> 1       // high card becomes pair
-                }
-            }
             
+            // number of jokers gets added to the most numerous of the other cards to make the most powerful hand
+            val jokers = cards.count { it == 'ĵ' }
+            
+            val handTypeStrength = if (jokers == 5) {
+                
+                // special case where there are 5 jokers, the rest of logic fails because there's nothing to add
+                // jokers to. So just give maximum hand type strength.
+                10
+            } else {
+                
+                // groups cards together, for use in determining handTypeStrength. Sorted because the relative size 
+                // of the groups is used to determine what kind of hand we have. Then take the two most populous groups 
+                // in the hand, then deliver ordered ranking of each hand type.
+                val groups: List<Int> = cards.filter { it != 'ĵ' }
+                    .groupingBy { it }
+                    .eachCount()        // count the number of each card we have
+                    .values             // we only care about biggest group size, not contents of group
+                    .sortedDescending() // we only want the two largest groups
+
+                // this gives a strength, from weakest to strongest, of 3, 5, 6, 7, 8, 9, 10
+                // we use getOrElse for the second group because some combinations have no second group
+                (groups.first() + jokers ) * 2 + groups.getOrElse(1) { 0 }
+            }
+
             return cards.fold(handTypeStrength) { acc, card -> (acc shl 4) + CARD_ORDER.indexOf(card) }
         }
 
