@@ -21,15 +21,16 @@ class Y2023D7(private val input: String) : Day {
     
     data class Hand(val cards: String, val bid: Int): Comparable<Hand> {
         
-        // strength is an Int that we use to sort with. The most important thing is handType, after that, the value
-        // of the cards, in order. E.g., 98 > 8A, because 9 is greater than 8. We can represent this all as an Int
-        // concatenating them all, giving 4 bits for each value.
         private val strength: Int = getStrength()
-        
+
+        // strength is an Int that we use to sort with. The most important thing is the strength of the type of
+        // hand. After that, the value of the cards, in order. E.g., 98 > 8A, because 9 is greater than 8. We can 
+        // represent this all as an Int concatenating them all, giving 4 bits for each value.
         private fun getStrength(): Int {
-            // groups cards together, for use in determining handStrength. Sorted because the relative size of the groups
-            // is used to determine what kind of hand we have. Then take the two most populous groups in the hand, 
-            // then deliver ordered ranking of each hand type. 
+
+            // groups cards together, for use in determining handTypeStrength. Sorted because the relative size 
+            // of the groups is used to determine what kind of hand we have. Then take the two most populous groups 
+            // in the hand, then deliver ordered ranking of each hand type. 
             // [biggest group size] * 2 + [2nd biggest group size]. Then normalized to 0..6.
             val groups: List<Int> = cards
                 .groupingBy { it }
@@ -39,17 +40,17 @@ class Y2023D7(private val input: String) : Day {
 
             // this gives a strength, from weakest to strongest, of 3, 5, 6, 7, 8, 9, 10
             // we use getOrElse for the second group because a 5-kind has no second group
-            val rawStrength = groups.first() * 2 + groups.getOrElse(1) { 0 }
+            val rawHandTypeStrength = groups.first() * 2 + groups.getOrElse(1) { 0 }
 
             // normalize to 0..6
-            val handStrengthBeforeJokers = (rawStrength - 4).coerceAtLeast(0)
+            val handTypeStrengthBeforeJokers = (rawHandTypeStrength - 4).coerceAtLeast(0)
 
             val jokers = cards.count { it == 'ĵ' }
 
-            val handStrength = if (jokers == 0) {
-                handStrengthBeforeJokers
+            val handTypeStrength = if (jokers == 0) {
+                handTypeStrengthBeforeJokers
             } else {
-                when (handStrengthBeforeJokers) {
+                when (handTypeStrengthBeforeJokers) {
                     4, 5, 6 -> 6    // full house to 5-kind all become 5-kind
                     3 -> 5          // 3-kind becomes 4-kind
                     2 -> 3 + jokers // 2 jokers: 4-kind; 1 joker: full house
@@ -57,8 +58,8 @@ class Y2023D7(private val input: String) : Day {
                     else -> 1       // high card becomes pair
                 }
             }
-
-            return cards.fold(handStrength) { acc, card -> (acc shl 4) + CARD_ORDER.indexOf(card) }
+            
+            return cards.fold(handTypeStrength) { acc, card -> (acc shl 4) + CARD_ORDER.indexOf(card) }
         }
 
         override fun compareTo(other: Hand): Int = 
