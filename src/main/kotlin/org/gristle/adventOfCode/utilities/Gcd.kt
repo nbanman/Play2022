@@ -66,3 +66,8 @@ fun lcm(longs: List<Long>): Long {
     require(longs.size >= 2) { "There must be at least two numbers" }
     return lcm(longs[0], longs[1], *longs.drop(2).toLongArray())
 }
+
+fun Iterable<Long>.lcm(): Long {
+    val longList = this.toList()
+    return lcm(longList)
+}
