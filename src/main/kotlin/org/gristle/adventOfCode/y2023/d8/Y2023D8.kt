@@ -16,30 +16,19 @@ class Y2023D8(input: String) : Day {
         directions = sequence { while (true) for (dir in dirStr) yield(dir) }
         
         // representing a puzzle map with a Kotlin map
-        network = buildMap {
-            Regex("""\w{3}""")
-                .findAll(netStr)
-                .map(MatchResult::value)
-                .chunked(3) 
-                .forEach { (node, left, right) -> put(node, left to right) }
-        }
+        network = netStr
+            .lines()
+            .associate { line -> 
+                val (node, left, right) = line.split(" = (", ", ", ")")
+                node to Pair(left, right)
+            }
     }
-    
-    // the 'sequence' builder lets you build sequences based on other sequences, in a way that you have access
-    // to the state of both at the same time. In this case, it takes the sequence of directions, and relies on
-    // that to deliver a sequence of Strings from the network map.
-    private fun traverseSequence(startNode: String): Sequence<String> = sequence { 
-        var node = startNode
-        yield(node)
-        for (dir in directions) {
-            node = network.getValue(node).let { (left, right) -> if (dir == 'L') left else right }
-            yield(node)
-        }
-    }
-
+        
     // deliver steps needed for traveler to go from startNode to an end condition,
-    private inline fun traverse(startNode: String, endCondition: (String) -> Boolean): Int = 
-        traverseSequence(startNode).indexOfFirst(endCondition)
+    private inline fun traverse(startNode: String, endCondition: (String) -> Boolean): Int = directions
+        .runningFold(startNode) { node, dir ->
+            network.getValue(node).let { (left, right) -> if (dir == 'L') left else right }
+        }.indexOfFirst(endCondition)
     
     // basic
     override fun part1() = traverse("AAA") { it == "ZZZ" }
