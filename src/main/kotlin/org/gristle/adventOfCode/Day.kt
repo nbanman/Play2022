@@ -2,7 +2,7 @@ package org.gristle.adventOfCode
 
 import org.gristle.adventOfCode.utilities.*
 import kotlin.reflect.KClass
-import kotlin.reflect.KFunction0
+import kotlin.reflect.KFunction
 
 interface Day {
     fun part1(): Any?
@@ -86,7 +86,7 @@ interface Day {
             skipPartOne: Boolean = false,
             skipPartTwo: Boolean = false
         ): Pair<String, String> {
-            val constructor = kClass.constructors.first()
+            val constructor: KFunction<T> = kClass.constructors.first()
             val (year, day) = kClass.simpleName?.getIntList()
                 ?: throw IllegalArgumentException("Class does not have a name")
             val input = sampleInput ?: getInput(day, year)
@@ -98,41 +98,57 @@ interface Day {
 
         fun <T : Any> benchmarkDay(
             kClass: KClass<T>,
-            sampleInput: String? = null,
-            warmups: Int = 1,
-            iterations: Int = 5
+            warmups: Int = 5,
+            iterations: Int = 50,
+            reinstantiate: Boolean = true,
+            sampleInput: String? = null
         ) {
             val constructor = kClass.constructors.first()
             val (year, day) = kClass.simpleName?.getIntList()
                 ?: throw IllegalArgumentException("Class does not have a name")
             val input = sampleInput ?: getInput(day, year)
-            val timer = Stopwatch(true, TimeUnits.US)
-            var c = constructor.call(input) as Day
+            val timer = Stopwatch(false, TimeUnits.US)
             println("${kClass.simpleName} Part 1\n")
-            val p1Average = benchmark(warmups, iterations, timer, c::part1)
-            c = constructor.call(input) as Day
+            val p1Average = benchmark(constructor, input, warmups, iterations, timer, 1, reinstantiate)
             println("\n${kClass.simpleName} Part 2\n")
-            val p2Average = benchmark(warmups, iterations, timer, c::part2)
-            println("\nParts 1 and 2: ${p1Average + p2Average} us/op [Average]")
+            val p2Average = benchmark(constructor, input, warmups, iterations, timer, 2, reinstantiate)
+            val not = if (reinstantiate) "" else " not"
+            println("\nInstance$not reinstantiated after each run.")
+            println("Parts 1 and 2: ${p1Average + p2Average} us/op [Average]")
         }
 
-        private fun benchmark(
+        private fun <T: Any> benchmark(
+            constructor: KFunction<T>,
+            input: String,
             warmups: Int,
             iterations: Int,
             timer: Stopwatch,
-            part: KFunction0<Any?>
+            part: Int,
+            reinstantiate: Boolean
         ): Long {
+            timer.start()
+            var c: Day? = null
             for (warmup in 1..warmups) {
                 print("Warm-up $warmup: ")
                 timer.lap()
-                part()
+                if (c == null || reinstantiate) c = constructor.call(input) as Day
+                when (part) {
+                    1 -> c.part1()
+                    2 -> c.part2()
+                    else -> throw IllegalArgumentException("Function does not exist for part $part")
+                }
                 println("${timer.lap()} us/op")
             }
             val times = (1..iterations)
                 .map { iteration ->
                     print("Iteration $iteration: ")
                     timer.lap()
-                    part()
+                    if (c == null || reinstantiate) c = constructor.call(input) as Day
+                    when (part) {
+                        1 -> c!!.part1()
+                        2 -> c!!.part2()
+                        else -> throw IllegalArgumentException("Function does not exist for part $part")
+                    }
                     timer.lap().also { println("$it us/op") }
                 }
             val average = times.average()
