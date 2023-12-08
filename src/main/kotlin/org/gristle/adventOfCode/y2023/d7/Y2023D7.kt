@@ -52,7 +52,7 @@ class Y2023D7(private val input: String) : Day {
                 when (handStrengthBeforeJokers) {
                     4, 5, 6 -> 6    // full house to 5-kind all become 5-kind
                     3 -> 5          // 3-kind becomes 4-kind
-                    2 -> 3 + jokers // if JJ found, full house, else 3-kind
+                    2 -> 3 + jokers // 2 jokers: 4-kind; 1 joker: full house
                     1 -> 3          // pair becomes 3-kind
                     else -> 1       // high card becomes pair
                 }
