@@ -17,20 +17,20 @@ class Y2023D7(private val input: String) : Day {
     
     override fun part1() = solve()
 
+    // Part 2 is the same thing, except 'J' cards are replaced by 'ĵ' cards, which are recognized as jokers and
+    // are dealt with appropriately in the Hand class logic.
     override fun part2() = solve { it.replace('J', 'ĵ') }
     
     data class Hand(val cards: String, val bid: Int): Comparable<Hand> {
-        
         private val strength: Int = getStrength()
 
-        // strength is an Int that we use to sort with. The most important thing is the strength of the type of
-        // hand. After that, the value of the cards, in order. E.g., 98 > 8A, because 9 is greater than 8. We can 
-        // represent this all as an Int concatenating them all, giving 4 bits for each value.
+        // strength is an Int that we use to sort with. The most important component of strength  is the strength 
+        // of the type of hand. After that, the value of the cards, in order. E.g., 98 > 8A, because 9 is greater 
+        // than 8. We can represent this all as an Int concatenating them all, giving 4 bits for each value.
         private fun getStrength(): Int {
             
             // number of jokers gets added to the most numerous of the other cards to make the most powerful hand
             val jokers = cards.count { it == 'ĵ' }
-            
             val handTypeStrength = if (jokers == 5) {
                 
                 // special case where there are 5 jokers, the rest of logic fails because there's nothing to add
@@ -51,12 +51,12 @@ class Y2023D7(private val input: String) : Day {
                 // we use getOrElse for the second group because some combinations have no second group
                 (groups.first() + jokers ) * 2 + groups.getOrElse(1) { 0 }
             }
-
+            
+            // calculate overall strength by building an int with bitshifts
             return cards.fold(handTypeStrength) { acc, card -> (acc shl 4) + CARD_ORDER.indexOf(card) }
         }
 
-        override fun compareTo(other: Hand): Int = 
-            compareValuesBy(this, other, Hand::strength)
+        override fun compareTo(other: Hand): Int = this.strength - other.strength
 
         companion object {
             private const val CARD_ORDER = "ĵ23456789TJQKA"
