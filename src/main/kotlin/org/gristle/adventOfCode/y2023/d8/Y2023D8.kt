@@ -34,8 +34,7 @@ class Y2023D8(input: String) : Day {
     override fun part1() = traverse("AAA") { it == "ZZZ" }
 
     // find how long it takes for each ghost to make it from a to z, making the *massive* assumption that
-    // they immediately cycle (they do). These are all different (though coprime). So lcm or just multiplying them
-    // all together gives you the answer.
+    // they immediately cycle (they do). These are all different. So lcm gives you the answer.
     override fun part2(): Long {
         val startNodes = network.keys
             .filter { it.last() == 'A' }
