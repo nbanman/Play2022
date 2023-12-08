@@ -35,21 +35,18 @@ class Y2023D8(input: String) : Day {
 
     // find how long it takes for each ghost to make it from a to z, making the *massive* assumption that
     // they immediately cycle (they do). These are all different. So lcm gives you the answer.
-    override fun part2(): Long {
-        val startNodes = network.keys
-            .filter { it.last() == 'A' }
-            .map { node -> traverse(node) { it.last() == 'Z' }.toLong() }
-        
-        return lcm(startNodes)
-    }
+    override fun part2(): Long = network.keys
+        .filter { it.last() == 'A' }
+        .map { node -> traverse(node) { it.last() == 'Z' }.toLong() }
+        .lcm()
 }
 
 fun main() = Day.runDay(Y2023D8::class)
 
-//    Class creation: 17ms
-//    Part 1: 19241 (14ms)
-//    Part 2: 9606140307013 (32ms)
-//    Total time: 64ms
+//    Class creation: 16ms
+//    Part 1: 19241 (13ms)
+//    Part 2: 9606140307013 (31ms)
+//    Total time: 61ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
