@@ -1,13 +1,10 @@
 package org.gristle.adventOfCode.y2023.d9
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2023D9(input: String) : Day {
 
-    private val patterns = input
-        .lines()
-        .map(String::getIntList)
+    private val patterns = input.lines().map { line -> line.split(' ').map(String::toInt) }
 
     private fun findNext(pattern: List<Int>) = generateSequence(pattern) { it.zipWithNext { a, b -> b - a } }
         .takeWhile { next -> next.any { it != 0 } }
@@ -15,20 +12,20 @@ class Y2023D9(input: String) : Day {
     override fun part1() = patterns.sumOf { pattern -> findNext(pattern).sumOf { it.last() } }
 
     override fun part2() = patterns.sumOf { pattern ->
-        val initial = 0L.toInt() // lousy hack to make the compiler/linter shut up
-        findNext(pattern)
+        val next = findNext(pattern)
             .map { it.first() }
             .toList()
-            .foldRight(initial) { i, acc -> i - acc }
+            .foldRight(0) { i, acc -> i - acc }
+        next
     }
 }
 
 fun main() = Day.runDay(Y2023D9::class)
 
-//    Class creation: 20ms
+//    Class creation: 17ms
 //    Part 1: 1974913025 (6ms)
-//    Part 2: 884 (4ms)
-//    Total time: 32ms
+//    Part 2: 884 (3ms)
+//    Total time: 27ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
