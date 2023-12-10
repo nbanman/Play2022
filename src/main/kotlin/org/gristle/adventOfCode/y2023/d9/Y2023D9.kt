@@ -8,16 +8,11 @@ class Y2023D9(input: String) : Day {
 
     private fun findNext(pattern: List<Int>) = generateSequence(pattern) { it.zipWithNext { a, b -> b - a } }
         .takeWhile { next -> next.any { it != 0 } }
+        .sumOf { it.last() }
     
-    override fun part1() = patterns.sumOf { pattern -> findNext(pattern).sumOf { it.last() } }
+    override fun part1() = patterns.sumOf { pattern -> findNext(pattern) }
 
-    override fun part2() = patterns.sumOf { pattern ->
-        val next = findNext(pattern)
-            .map { it.first() }
-            .toList()
-            .foldRight(0) { i, acc -> i - acc }
-        next
-    }
+    override fun part2() = patterns.sumOf { pattern -> findNext(pattern.reversed()) }
 }
 
 fun main() = Day.runDay(Y2023D9::class)
