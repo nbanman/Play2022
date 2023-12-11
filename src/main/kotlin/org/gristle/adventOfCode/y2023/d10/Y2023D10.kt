@@ -20,11 +20,11 @@ class Y2023D10(input: String) : Day {
         val startDir = validDirections.getValue('S') // get directions
             .first { direction -> // pick the first direction pointing to a fitting pointing back to startPos
                 val neighborPos = startPos.move(direction)
-                field.validCoord(neighborPos) &&
-                        direction in validDirections.getValue(field[neighborPos]).map { it.flip() }
+                field.validCoord(neighborPos)
+                        && direction in validDirections.getValue(field[neighborPos]).map { it.flip() }
             }
         
-        // lambda from moving along the pipe, taking in the position and direction and returning the next
+        // lambda for moving along the pipe, taking in the position and direction and returning the next
         // position and direction
         val move: (Pair<Coord, Nsew>) -> Pair<Coord, Nsew> = { (pos, dir) ->
             val newPos = pos.move(dir)
@@ -43,8 +43,8 @@ class Y2023D10(input: String) : Day {
     // Furthest direction is half-way along the loop.
     override fun part1() = loop.size / 2
 
-    // Get the area of the loop, then get the inner points using Pick's theorem.
-    // Area algorithm based on Stokes' theorem. h/t Jakub Gwozdz
+    // Get the area of the loop, then get the inner points' area using Pick's theorem.
+    // Area algorithm based on Stokes' theorem. h/t Jakub Gwóźdź
     override fun part2(): Int {
         val area = loop
             .fold(0 to 0) { (sum, d), dir ->
@@ -55,8 +55,9 @@ class Y2023D10(input: String) : Day {
                     Nsew.EAST -> sum + d to d
                 }
             }.first.absoluteValue
-        // Pick's theorem: area = [interior points] + ([boundary points / 2]) - 1
-        // Solve for i -> i = - (b / 2) - 1
+        
+        // Pick's theorem: A = i + (b / 2]) + 1
+        // Solve for i -> i = A - (b / 2) - 1
         return area - (loop.size / 2) + 1
     }
 
@@ -69,7 +70,6 @@ class Y2023D10(input: String) : Day {
             'J' to setOf(Nsew.NORTH, Nsew.WEST),
             '7' to setOf(Nsew.SOUTH, Nsew.WEST),
             'F' to setOf(Nsew.SOUTH, Nsew.EAST),
-            '.' to emptySet()
         ).toMap()
     }
 }
