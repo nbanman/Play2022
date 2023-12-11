@@ -17,18 +17,18 @@ class Y2023D10(input: String) : Day {
         
         // find the initial direction by looking in each direction, and pick the first one that has a pipe
         // fitting that connects back to the start
-        val startDir = validDirections.getValue('S') // get directions
+        val startDir = Nsew.entries // get directions
             .first { direction -> // pick the first direction pointing to a fitting pointing back to startPos
                 val neighborPos = startPos.move(direction)
                 field.validCoord(neighborPos)
-                        && direction in validDirections.getValue(field[neighborPos]).map { it.flip() }
+                        && movements.containsKey(field[neighborPos] to direction.flip())
             }
         
         // lambda for moving along the pipe, taking in the position and direction and returning the next
         // position and direction
         val move: (Pair<Coord, Nsew>) -> Pair<Coord, Nsew> = { (pos, dir) ->
             val newPos = pos.move(dir)
-            val newDir = (validDirections.getValue(field[newPos]) - dir.flip()).first()
+            val newDir = movements.getValue(field[newPos] to dir)
             newPos to newDir
         }
         
@@ -62,15 +62,25 @@ class Y2023D10(input: String) : Day {
     }
 
     companion object {
-        private val validDirections: Map<Char, Set<Nsew>> = listOf(
-            'S' to setOf(Nsew.NORTH, Nsew.EAST, Nsew.SOUTH, Nsew.WEST),
-            '|' to setOf(Nsew.NORTH, Nsew.SOUTH),
-            '-' to setOf(Nsew.EAST, Nsew.WEST),
-            'L' to setOf(Nsew.NORTH, Nsew.EAST),
-            'J' to setOf(Nsew.NORTH, Nsew.WEST),
-            '7' to setOf(Nsew.SOUTH, Nsew.WEST),
-            'F' to setOf(Nsew.SOUTH, Nsew.EAST),
-        ).toMap()
+        
+        private val movements: Map<Pair<Char, Nsew>, Nsew> = mapOf(
+            ('S' to Nsew.NORTH) to Nsew.NORTH,
+            ('S' to Nsew.SOUTH) to Nsew.SOUTH,
+            ('S' to Nsew.EAST) to Nsew.EAST,
+            ('S' to Nsew.WEST) to Nsew.WEST,
+            ('|' to Nsew.NORTH) to Nsew.NORTH,
+            ('|' to Nsew.SOUTH) to Nsew.SOUTH,
+            ('-' to Nsew.EAST) to Nsew.EAST,
+            ('-' to Nsew.WEST) to Nsew.WEST,
+            ('L' to Nsew.SOUTH) to Nsew.EAST,
+            ('L' to Nsew.WEST) to Nsew.NORTH,
+            ('J' to Nsew.SOUTH) to Nsew.WEST,
+            ('J' to Nsew.EAST) to Nsew.NORTH,
+            ('7' to Nsew.EAST) to Nsew.SOUTH,
+            ('7' to Nsew.NORTH) to Nsew.WEST,
+            ('F' to Nsew.WEST) to Nsew.SOUTH,
+            ('F' to Nsew.NORTH) to Nsew.EAST,
+        )
     }
 }
 
