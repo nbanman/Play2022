@@ -82,4 +82,68 @@ class Assembunny(private val registers: IntArray = IntArray(4)) {
         }
         return this
     }
+
+    fun runAsSequence(instructions: List<List<String>>): Sequence<List<Int>> = sequence {
+
+        var parser = 0
+        val toggles = BooleanArray(instructions.size)
+
+        fun cpy(instruction: List<String>) {
+            registers[instruction[2].toRegister()] = instruction[1].valueOf()
+        }
+
+        fun jnz(instruction: List<String>) {
+            if (instruction[1].valueOf() != 0) parser += (instruction[2].valueOf() - 1)
+        }
+
+        fun inc(instruction: List<String>) {
+            registers[instruction[1].toRegister()] = registers[instruction[1].toRegister()] + 1
+        }
+
+        fun dec(instruction: List<String>) {
+            registers[instruction[1].toRegister()] = registers[instruction[1].toRegister()] - 1
+        }
+
+        while (parser in instructions.indices) {
+            val instruction = instructions[parser]
+            yield(registers.toList())
+            if (toggles[parser]) {
+                when (instruction[0][0]) {
+                    'c' -> {
+                        jnz(instruction)
+                    }
+                    'i' -> {
+                        dec(instruction)
+                    }
+                    'd' -> {
+                        inc(instruction)
+                    }
+                    'j' -> {
+                        cpy(instruction)
+                    }
+                    't' -> {
+                        inc(instruction)
+                    }
+                }
+            } else {
+                when (instruction[0][0]) {
+                    'c' -> {
+                        cpy(instruction)
+                    }
+                    'i' -> {
+                        inc(instruction)
+                    }
+                    'd' -> {
+                        dec(instruction)
+                    }
+                    'j' -> jnz(instruction)
+                    't' -> {
+                        val tglIndex = parser + instruction[1].valueOf()
+                        if (tglIndex in instructions.indices) toggles[tglIndex] = !toggles[tglIndex]
+                    }
+                }
+            }
+            parser++
+        }
+    }
 } 
