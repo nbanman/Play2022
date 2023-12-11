@@ -1,27 +1,29 @@
 package org.gristle.adventOfCode.y2023.d11
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.Grid
-import org.gristle.adventOfCode.utilities.toGrid
 import kotlin.math.abs
 
-class Y2023D11(input: String) : Day {
-    private val image: Grid<Boolean> = input.toGrid { it == '#' }
+class Y2023D11(private val image: String) : Day {
 
+    private val width = image.indexOf('\n') + 1
+    private val height = (image.length + 1) / width
+    
     // for each axis, get indexed iterables of pairs. The first being the index where galaxies reside, the 
     // second being the number of galaxies. We separate the axes to avoid repeat calculation.
-    private val xGal = image.xIndices
-        .map { x -> x to image.column(x).count { it } }
+    private val xGal = (0 until width - 1)
+        .map { x -> x to (0 until height).count { y -> image[y * width + x] == '#' } }
         .filter { (_, count) -> count > 0 }
         .withIndex()
-    private val yGal = image.yIndices
-        .map { y -> y to image.row(y).count { it } }
+    private val yGal = (0 until height)
+        .map { y -> y to (0 until width - 1).count { x -> image[y * width + x] == '#' } }
         .filter { (_, count) -> count > 0 }
         .withIndex()
 
     // for each axis, track the indices representing expansion fields
-    private val xExpansions: List<Int> = image.xIndices.filter { x -> image.column(x).none { it } }
-    private val yExpansions: List<Int> = image.yIndices.filter { y -> image.row(y).none { it } }
+    private val xExpansions: List<Int> = (0 until width - 1)
+        .filter { x -> (0 until height).none { y -> image[y * width + x] == '#' } }
+    private val yExpansions: List<Int> = (0 until height)
+        .filter { y -> (0 until width - 1).none { x -> image[y * width + x] == '#' } }
 
     // run the distance function twice (once for each axis), return the sum 
     fun solve(expansionFactor: Int): Long = distance(expansionFactor, xGal, xExpansions) +
@@ -61,10 +63,10 @@ class Y2023D11(input: String) : Day {
 
 fun main() = Day.runDay(Y2023D11::class)
 
-//    Class creation: 18ms
-//    Part 1: 9545480 (12ms)
+//    Class creation: 7ms
+//    Part 1: 9545480 (10ms)
 //    Part 2: 406725732046 (6ms)
-//    Total time: 37ms
+//    Total time: 24ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
