@@ -26,14 +26,14 @@ class Y2023D11(private val image: String) : Day {
         .filter { y -> (0 until width - 1).none { x -> image[y * width + x] == '#' } }
 
     // run the distance function twice (once for each axis), return the sum 
-    fun solve(expansionFactor: Int): Long = distance(expansionFactor, xGal, xExpansions) +
+    private fun solve(expansionFactor: Int): Long = distance(expansionFactor, xGal, xExpansions) +
             distance(expansionFactor, yGal, yExpansions)
 
     // Get the distance between two indices where galaxies reside.
     // This involves calculating the unexpanded difference multiplied by the number of expansions passed times
     // the expansion factor
     // Lastly, the distance is multiplied by #galaxies in the first index multiplied by #galaxies in the second index.
-    fun distance(
+    private fun distance(
         expansionFactor: Int,
         galaxies: Iterable<IndexedValue<Pair<Int, Int>>>,
         expansions: List<Int>
