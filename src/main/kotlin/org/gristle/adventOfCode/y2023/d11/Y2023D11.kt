@@ -9,11 +9,11 @@ class Y2023D11(private val image: String) : Day {
     
     // for each axis, get indexed iterables of pairs. The first being the index where galaxies reside, the 
     // second being the number of galaxies. We separate the axes to avoid repeat calculation.
-    private val xGal: Iterable<IndexedValue<Pair<Int, Int>>> = (0 until width - 1)
+    private val xGalaxies: Iterable<IndexedValue<Pair<Int, Int>>> = (0 until width - 1)
         .map { x -> x to (0 until height).count { y -> image[y * width + x] == '#' } }
         .filter { (_, count) -> count > 0 }
         .withIndex()
-    private val yGal: Iterable<IndexedValue<Pair<Int, Int>>> = (0 until height)
+    private val yGalaxies: Iterable<IndexedValue<Pair<Int, Int>>> = (0 until height)
         .map { y -> y to (0 until width - 1).count { x -> image[y * width + x] == '#' } }
         .filter { (_, count) -> count > 0 }
         .withIndex()
@@ -25,8 +25,8 @@ class Y2023D11(private val image: String) : Day {
         .filter { y -> (0 until width - 1).none { x -> image[y * width + x] == '#' } }
 
     // run the distance function twice (once for each axis), return the sum 
-    private fun solve(expansionFactor: Int): Long = distance(expansionFactor, xGal, xExpansions) +
-            distance(expansionFactor, yGal, yExpansions)
+    private fun solve(expansionFactor: Int): Long = distance(expansionFactor, xGalaxies, xExpansions) +
+            distance(expansionFactor, yGalaxies, yExpansions)
 
     // Get the distance between two indices where galaxies reside.
     // This involves calculating the unexpanded difference multiplied by the number of expansions passed times
