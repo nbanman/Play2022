@@ -4,17 +4,16 @@ import org.gristle.adventOfCode.Day
 import kotlin.math.abs
 
 class Y2023D11(private val image: String) : Day {
-
     private val width = image.indexOf('\n') + 1
     private val height = (image.length + 1) / width
     
     // for each axis, get indexed iterables of pairs. The first being the index where galaxies reside, the 
     // second being the number of galaxies. We separate the axes to avoid repeat calculation.
-    private val xGal = (0 until width - 1)
+    private val xGal: Iterable<IndexedValue<Pair<Int, Int>>> = (0 until width - 1)
         .map { x -> x to (0 until height).count { y -> image[y * width + x] == '#' } }
         .filter { (_, count) -> count > 0 }
         .withIndex()
-    private val yGal = (0 until height)
+    private val yGal: Iterable<IndexedValue<Pair<Int, Int>>> = (0 until height)
         .map { y -> y to (0 until width - 1).count { x -> image[y * width + x] == '#' } }
         .filter { (_, count) -> count > 0 }
         .withIndex()
@@ -39,19 +38,19 @@ class Y2023D11(private val image: String) : Day {
         expansions: List<Int>
     ): Long {
         return galaxies.sumOf { (i, a) ->
-            val (aPos, aCount) = a
+            val (aPosition, aCount) = a
 
             // calculate which expansions are to the left of the source galaxies
             // this returns a negative number due to how binarySearch returns values but this will be rectified
             // later.
-            val alreadyPassed = expansions.binarySearch(aPos)
+            val alreadyPassed = expansions.binarySearch(aPosition)
             galaxies.drop(i + 1).sumOf { (_, b) ->
-                val (bPos, bCount) = b
+                val (bPosition, bCount) = b
 
                 // calculates which expansions are to the left of the destination galaxies, and subtracts the
                 // ones to the left of the source galaxies. The abs function handles the negative value.
-                val expansionsPassed = abs(expansions.binarySearch(bPos) - alreadyPassed)
-                ((bPos - aPos) + expansionsPassed.toLong() * (expansionFactor - 1)) * aCount * bCount
+                val expansionsPassed = abs(expansions.binarySearch(bPosition) - alreadyPassed)
+                ((bPosition - aPosition) + expansionsPassed.toLong() * (expansionFactor - 1)) * aCount * bCount
             }
         }
     }
