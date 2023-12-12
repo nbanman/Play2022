@@ -17,7 +17,7 @@ interface Day {
             val (year, day) = kClass.simpleName?.getIntList()
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
-            val input = sampleInput ?: getInput(day, year)
+            val input = sampleInput?.trimEnd() ?: getInput(day, year)
             var part2: String? = null
             val timer = Stopwatch(true)
             val c = constructor.call(input) as Day
