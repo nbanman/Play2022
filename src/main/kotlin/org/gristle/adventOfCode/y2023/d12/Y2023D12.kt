@@ -4,6 +4,13 @@ import org.gristle.adventOfCode.Day
 import kotlin.math.min
 
 class Y2023D12(input: String) : Day {
+
+    /**
+     * 'conditionsIndex' tracks which "block" of '#' and '?' characters, with no '.' characters. The SpringRow
+     * class holds these blocks in a list.
+     * 'place' is the index of substring of the block
+     * 'damageReportIndex' tracks which series of broken springs to assign from the list kept by SpringRow class
+     */
     data class State(
         val conditionsIndex: Int,
         val place: Int,
