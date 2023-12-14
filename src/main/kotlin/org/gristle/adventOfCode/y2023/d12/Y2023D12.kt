@@ -1,6 +1,5 @@
 package org.gristle.adventOfCode.y2023.d12
 
-import kotlinx.coroutines.runBlocking
 import org.gristle.adventOfCode.Day
 import kotlin.math.min
 
@@ -91,7 +90,7 @@ class Y2023D12(input: String) : Day {
         return springRows.sumOf { springRow -> springRow.arrangements() }
     }
 
-    override fun part2(): Long = runBlocking {
+    override fun part2(): Long {
         val springRows = springReports.map { (conditionsStr, damageReport) ->
             val expandedConditions = (1..5).joinToString("?") { conditionsStr }
             val expandedDamageReport = (1..5).flatMap { damageReport }
@@ -100,7 +99,7 @@ class Y2023D12(input: String) : Day {
                 expandedDamageReport
             )
         }
-        springRows.sumOf { springRow -> springRow.arrangements() }
+        return springRows.sumOf { springRow -> springRow.arrangements() }
     }
 
     companion object {
@@ -112,8 +111,8 @@ fun main() = Day.runDay(Y2023D12::class)
 
 //    Class creation: 16ms
 //    Part 1: 7344 (28ms)
-//    Part 2: 1088006519007 (159ms)
-//    Total time: 205ms
+//    Part 2: 1088006519007 (129ms)
+//    Total time: 174ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
