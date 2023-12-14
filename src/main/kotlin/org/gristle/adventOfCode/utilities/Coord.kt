@@ -149,6 +149,13 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
         Nsew.WEST -> west(distance)
     }
 
+    fun move(dir: Nsew, distance: Int = 1, size: Coord) = when (dir) {
+        Nsew.NORTH -> north(distance, size)
+        Nsew.SOUTH -> south(distance, size)
+        Nsew.EAST -> east(distance, size)
+        Nsew.WEST -> west(distance, size)
+    }
+
     override fun compareTo(other: Coord) = manhattanDistance() - other.manhattanDistance()
 }
 
