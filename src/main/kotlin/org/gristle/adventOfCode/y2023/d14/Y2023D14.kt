@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2023.d14
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.minMaxRanges
 import org.gristle.adventOfCode.utilities.stabilized
 
 class Y2023D14(input: String) : Day {
@@ -62,25 +61,11 @@ class Y2023D14(input: String) : Day {
         val repeat = generateSequence(rocks, ::spinCycle)
             .first { rocks -> !rockFormations.add(rocks) }
         val repeatFirst = rockFormations.indexOf(repeat)
-        val repeatLast = rockFormations.size
         val cycles = 1_000_000_000 - repeatFirst
         val cycleLength = rockFormations.size - repeatFirst
         val answer = rockFormations
             .elementAt(repeatFirst + cycles % cycleLength)
         return answer.sumOf { it.load() }
-    }
-    
-    companion object {
-        fun graphicString(rocks: Set<Coord>, cubes: Set<Coord>): String {
-            val (xRange, yRange) = (rocks + cubes).minMaxRanges()
-            return buildString {
-                Coord.forRectangle(xRange, yRange) { coord ->
-                    if (coord.x == xRange.first && coord.y != yRange.first) append('\n')
-                    append(if (coord in rocks) 'O' else if (coord in cubes) '#' else '.')
-                }
-                append('\n')
-            }
-        }
     }
 }
 
