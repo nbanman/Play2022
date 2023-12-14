@@ -15,10 +15,13 @@ class Y2023D14(input: String) : Day {
             when (c) {
                 '#' -> tilted[index] = '#'
                 'O' -> {
-                    val tiltedIndex = generateSequence(index) { it - rocks.width }
-                        .takeWhile { it >= 0 && tilted[it] !in "#O" }
-                        .last()
-                    tilted[tiltedIndex] = 'O'
+                    for (i in index downTo 0 step rocks.width) {
+                        val next = i - rocks.width
+                        if (next < 0 || tilted[next] in "#O") {
+                            tilted[i] = 'O'
+                            break
+                        }
+                    }
                 }
             }
         }
@@ -36,23 +39,22 @@ class Y2023D14(input: String) : Day {
             tiltUp(acc).rotate90().toGrid(acc.height)
         }
         val rockFormations = mutableSetOf<Grid<Char>>()
-        val repeat = generateSequence(initial, ::spinCycle)
+        val firstIndexOfCycle = generateSequence(initial, ::spinCycle)
             .first { rocks -> !rockFormations.add(rocks) }
-        val repeatFirst = rockFormations.indexOf(repeat)
-        val cycles = 1_000_000_000 - repeatFirst
-        val cycleLength = rockFormations.size - repeatFirst
-        val answer = rockFormations
-            .elementAt(repeatFirst + cycles % cycleLength)
+            .let { rockFormations.indexOf(it) }
+        val cycleSpace = 1_000_000_000 - firstIndexOfCycle
+        val cycleLength = rockFormations.size - firstIndexOfCycle
+        val answer = rockFormations.elementAt(firstIndexOfCycle + cycleSpace % cycleLength)
         return answer.load()
     }
 }
 
 fun main() = Day.runDay(Y2023D14::class)
 
-//    Class creation: 9ms
-//    Part 1: 106990 (11ms)
-//    Part 2: 100531 (350ms)
-//    Total time: 371ms
+//    Class creation: 8ms
+//    Part 1: 106990 (6ms)
+//    Part 2: 100531 (230ms)
+//    Total time: 246ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
