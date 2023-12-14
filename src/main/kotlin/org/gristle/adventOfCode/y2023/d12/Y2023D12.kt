@@ -99,8 +99,8 @@ class Y2023D12(input: String) : Day {
 
     override fun part2(): Long {
         val springRows = springReports.map { (conditionsStr, damageReport) ->
-            val expandedConditions = (1..5).joinToString("?") { conditionsStr }
-            val expandedDamageReport = (1..5).flatMap { damageReport }
+            val expandedConditions = List(5) {conditionsStr}.joinToString("?") 
+            val expandedDamageReport = List(5) { damageReport }.flatten()
             SpringRow(
                 groupRx.findAll(expandedConditions).map(MatchResult::value).toList(),
                 expandedDamageReport
