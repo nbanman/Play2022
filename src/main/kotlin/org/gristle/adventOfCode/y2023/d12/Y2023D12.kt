@@ -81,7 +81,7 @@ class Y2023D12(input: String) : Day {
         }
     }
 
-    private val springReports = input.lines().map { line ->
+    private val springReports: List<Pair<String, List<Int>>> = input.lines().map { line ->
         val (conditions, damageReportStr) = line.split(' ')
         val damageReport: List<Int> = damageReportStr.split(',').map(String::toInt)
         conditions to damageReport
@@ -90,7 +90,7 @@ class Y2023D12(input: String) : Day {
     override fun part1(): Long {
         val springRows = springReports.map { (conditionsStr, damageReport) ->
             SpringRow(
-                groupRx.findAll(conditionsStr).map(MatchResult::value).toList(),
+                conditionsStr.split('.').filter(String::isNotBlank),
                 damageReport
             )
         }
@@ -102,24 +102,20 @@ class Y2023D12(input: String) : Day {
             val expandedConditions = List(5) {conditionsStr}.joinToString("?") 
             val expandedDamageReport = List(5) { damageReport }.flatten()
             SpringRow(
-                groupRx.findAll(expandedConditions).map(MatchResult::value).toList(),
+                expandedConditions.split('.').filter(String::isNotBlank),
                 expandedDamageReport
             )
         }
         return springRows.sumOf { springRow -> springRow.arrangements() }
     }
-
-    companion object {
-        val groupRx = Regex("[?#]+")
-    }
 }
 
 fun main() = Day.runDay(Y2023D12::class)
 
-//    Class creation: 16ms
-//    Part 1: 7344 (28ms)
-//    Part 2: 1088006519007 (129ms)
-//    Total time: 174ms
+//    Class creation: 18ms
+//    Part 1: 7344 (20ms)
+//    Part 2: 1088006519007 (117ms)
+//    Total time: 155ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
