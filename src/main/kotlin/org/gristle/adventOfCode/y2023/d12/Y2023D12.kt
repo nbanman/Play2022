@@ -1,86 +1,59 @@
 package org.gristle.adventOfCode.y2023.d12
 
 import org.gristle.adventOfCode.Day
-import kotlin.math.min
 
 class Y2023D12(input: String) : Day {
 
-    /**
-     * 'conditionsIndex' tracks which "block" of '#' and '?' characters, with no '.' characters. The SpringRow
-     * class holds these blocks in a list.
-     * 'place' is the index of substring of the block
-     * 'damageReportIndex' tracks which series of broken springs to assign from the list kept by SpringRow class
-     */
-    data class State(
-        val conditionsIndex: Int,
-        val place: Int,
-        val damageReportIndex: Int,
-    )
+    data class State(val conditionsIndex: Int, val damageReportIndex: Int)
 
-    data class SpringRow(val conditions: List<String>, val damageReport: List<Int>) {
-
+    data class SpringRow(val conditions: String, val damageReport: List<Int>) {
         private val cache = mutableMapOf<State, Long>()
 
-        fun arrangements(s: State = State(0, 0, 0)): Long {
-            val cachedAnswer = cache[s]
-            if (cachedAnswer != null) {
-                return cachedAnswer
-            }
-            return cache.getOrPut(s) {
-                val block = conditions.getOrNull(s.conditionsIndex)?.substring(s.place) ?: ""
-                val fulfillment = damageReport.getOrNull(s.damageReportIndex) ?: 0
+        fun arrangements(s: State = State(0, 0)): Long = cache.getOrPut(s) {
+            
+            // do not consider conditions already handled in previous states
+            // if state place exceeds the conditions length string, we are done and the block is blank 
+            val block = if (s.conditionsIndex < conditions.length) conditions.substring(s.conditionsIndex) else "" 
+            
+            // the # of consecutive broken springs in the damage report that we try to place along the row
+            val fulfillment = damageReport.getOrNull(s.damageReportIndex) ?: 0
 
-                // Base case. Takes states at the end of the line and returns 1 if valid, 0 if invalid
-                // Valid states are those with no remaining '#' in the current or any future blocks, and that
-                // have filled all the damaged spring requirements
-                if (fulfillment == 0) {
-                    return@getOrPut if ('#' !in block && conditions.drop(s.conditionsIndex + 1).all { '#' !in it }) {
-                        1
-                    } else {
-                        0
+            // Base case. Takes states that have fulfilled the entire damage report and returns 1 if valid, 
+            // 0 if invalid. Valid states are those with no remaining '#' in the current or any future blocks, 
+            // and that have filled all the damaged spring requirements
+            if (fulfillment == 0) return@getOrPut if ('#' in block) 0 else 1
+            
+            // Otherwise, we go recursive by trying to fit the fulfillment in every place along the block
+            // This starts as a sequence of indexes, from 0 until the length of the block minus the fulfillment size
+            // (to account for the size of the fulfillment itself in the string).
+            (0..block.length - fulfillment)
+                .asSequence()
+                // stop the sequence if a '#' precedes the index b/c '#' cannot be skipped
+                .takeWhile { index -> block.getOrNull(index - 1) != '#' }
+                .filter { index ->
+                    
+                    // filter out invalid placements, in cascading fashion
+                    // if the placement includes a '.', invalid b/c '.' means not broken
+                    // if the placement has no part of the string after it, valid b/c nothing else to consider
+                    // if the character following the placement is '#', invalid b/c that extra '#' would overfulfill
+                    // otherwise valid
+                    when {
+                        '.' in block.substring(index, index + fulfillment) -> false
+                        index + fulfillment == block.length -> true
+                        block[index + fulfillment] == '#' -> false
+                        else -> true
                     }
-                } else if (block == "") {
-                    return@getOrPut 0
-                }
-
-                // Otherwise, create new states
-                val brokenIndex = block.indexOf('#').let { if (it == -1) Int.MAX_VALUE else it }
-                val newStates = min(block.length - fulfillment, brokenIndex) + 1
-
-                val subArrangements = (fulfillment until fulfillment + newStates)
-                    .filter { nextIndex ->
-                        // the character after the block MUST be a '?', otherwise the block would continue
-                        nextIndex >= block.length || block[nextIndex] == '?'
-                    }.sumOf { nextIndex ->
-                        // if there is still some block left, stay on block (can always skip on next pass)
-                        if (nextIndex + 1 <= block.lastIndex) {
-                            val newState = State(
-                                conditionsIndex = s.conditionsIndex,
-                                place = s.place + nextIndex + 1,
-                                damageReportIndex = s.damageReportIndex + 1
-                            )
-                            arrangements(newState)
-                        } else { // otherwise go to next block
-                            val newState = State(
-                                conditionsIndex = s.conditionsIndex + 1,
-                                place = 0,
-                                damageReportIndex = s.damageReportIndex + 1
-                            )
-                            arrangements(newState)
-                        }
-                    }
-
-                val skipArrangement = if (block.all { it == '?' }) {
-                    val newState = State(s.conditionsIndex + 1, 0, s.damageReportIndex)
+                }.sumOf { index ->
+                    val newState = State(
+                        s.conditionsIndex + index + fulfillment + 1,
+                        s.damageReportIndex + 1
+                    )
                     arrangements(newState)
-                } else {
-                    0
                 }
-                return@getOrPut subArrangements + skipArrangement
-            }
         }
     }
 
+    // parsing
     private val springReports: List<Pair<String, List<Int>>> = input.lines().map { line ->
         val (conditions, damageReportStr) = line.split(' ')
         val damageReport: List<Int> = damageReportStr.split(',').map(String::toInt)
@@ -88,23 +61,17 @@ class Y2023D12(input: String) : Day {
     }
 
     override fun part1(): Long {
-        val springRows = springReports.map { (conditionsStr, damageReport) ->
-            SpringRow(
-                conditionsStr.split('.').filter(String::isNotBlank),
-                damageReport
-            )
+        val springRows = springReports.map { (conditions, damageReport) ->
+            SpringRow(conditions, damageReport)
         }
         return springRows.sumOf { springRow -> springRow.arrangements() }
     }
 
     override fun part2(): Long {
-        val springRows = springReports.map { (conditionsStr, damageReport) ->
-            val expandedConditions = List(5) {conditionsStr}.joinToString("?") 
+        val springRows = springReports.map { (conditions, damageReport) ->
+            val expandedConditions = List(5) {conditions}.joinToString("?") 
             val expandedDamageReport = List(5) { damageReport }.flatten()
-            SpringRow(
-                expandedConditions.split('.').filter(String::isNotBlank),
-                expandedDamageReport
-            )
+            SpringRow(expandedConditions, expandedDamageReport)
         }
         return springRows.sumOf { springRow -> springRow.arrangements() }
     }
@@ -112,10 +79,10 @@ class Y2023D12(input: String) : Day {
 
 fun main() = Day.runDay(Y2023D12::class)
 
-//    Class creation: 18ms
-//    Part 1: 7344 (20ms)
-//    Part 2: 1088006519007 (117ms)
-//    Total time: 155ms
+//    Class creation: 16ms
+//    Part 1: 7344 (19ms)
+//    Part 2: 1088006519007 (157ms)
+//    Total time: 193ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
