@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2023.d16
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.Graph
 import org.gristle.adventOfCode.utilities.Nsew
 import org.gristle.adventOfCode.utilities.toGrid
 
@@ -47,10 +46,24 @@ class Y2023D16(input: String) : Day {
         }
     }
     
-    private fun lightBeam(state: Pair<Coord, Nsew>) = Graph.bfs(state, defaultEdges = ::next)
-        .map { it.id.first }
-        .distinct()
-        .size - 1
+    private fun Pair<Coord, Nsew>.toIndex(): Int = ((first.y * grid.width + first.x) shl 2) + second.ordinal
+
+    private fun lightBeam(state: Pair<Coord, Nsew>): Int {
+        val visited = BooleanArray(grid.size * 4)
+        val q = mutableListOf(state)
+        while (q.isNotEmpty()) {
+            val current = q.removeLast()
+            next(current)
+                .filter { state ->
+                    val index = state.toIndex()
+                    !visited[index].also { visited[index] = true }
+                }.forEach { q.add(it) }
+        }
+        return visited
+            .asSequence()
+            .chunked(4) { dirGroup -> dirGroup.any { it } }
+            .count { it }
+    }
 
     override fun part1() = lightBeam(Coord(-1, 0) to Nsew.EAST)
 
