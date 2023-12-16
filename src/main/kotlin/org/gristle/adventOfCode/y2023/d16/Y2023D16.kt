@@ -84,10 +84,10 @@ class Y2023D16(input: String) : Day {
 
 fun main() = Day.runDay(Y2023D16::class)
 
-//    Class creation: 10ms
-//    Part 1: 7798 (46ms)
-//    Part 2: 8026 (923ms)
-//    Total time: 980ms
+//    Class creation: 13ms
+//    Part 1: 7798 (24ms)
+//    Part 2: 8026 (508ms)
+//    Total time: 546ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
