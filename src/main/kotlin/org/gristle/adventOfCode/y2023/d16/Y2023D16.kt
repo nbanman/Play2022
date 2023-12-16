@@ -1,19 +1,86 @@
 package org.gristle.adventOfCode.y2023.d16
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.toGrid
 
 class Y2023D16(input: String) : Day {
 
-    private val parsed = input.lines()
+    private val grid = input.toGrid()
+    
+    private fun next(c: Char, dir: Nsew): List<Nsew> {
+        return when (c) {
+            '.' -> listOf(dir)
+            '|' -> when (dir) {
+                Nsew.NORTH, Nsew.SOUTH -> listOf(dir)
+                Nsew.EAST, Nsew.WEST -> listOf(Nsew.NORTH, Nsew.SOUTH)
+            }
+            '-' -> when (dir) {
+                Nsew.NORTH, Nsew.SOUTH -> listOf(Nsew.EAST, Nsew.WEST)
+                Nsew.EAST, Nsew.WEST -> listOf(dir)
+            }
+            '/' -> when (dir) {
+                Nsew.NORTH -> listOf(Nsew.EAST)
+                Nsew.EAST -> listOf(Nsew.NORTH)
+                Nsew.SOUTH -> listOf(Nsew.WEST)
+                Nsew.WEST -> listOf(Nsew.SOUTH)
+            }
+            '\\' -> when (dir) {
+                Nsew.NORTH -> listOf(Nsew.WEST)
+                Nsew.EAST -> listOf(Nsew.SOUTH)
+                Nsew.SOUTH -> listOf(Nsew.EAST)
+                Nsew.WEST -> listOf(Nsew.NORTH)
+            }
+            else -> throw IllegalArgumentException("$c not recognized as space or mirror")
+        }
+    }
+    
+    private fun next(state: Pair<Coord, Nsew>): List<Pair<Coord, Nsew>> {
+        val (pos, dir) = state
+        val nextPos = pos.move(dir)
+        return if (nextPos.x in grid.xIndices && nextPos.y in grid.yIndices) {
+            next(grid[nextPos], dir).map { nextDir -> nextPos to nextDir}
+        } else {
+            emptyList()
+        }
+    }
+    
+    private fun lightBeam(state: Pair<Coord, Nsew>) = Graph.bfs(state, defaultEdges = ::next)
+        .map { it.id.first }
+        .distinct()
+        .size - 1
 
-    override fun part1() = "To be implemented"
+    override fun part1() = lightBeam(Coord(-1, 0) to Nsew.EAST)
 
-    override fun part2() = "To be implemented"
+    override fun part2(): Int {
+        val states = (0 until grid.width).map { Coord(it, -1) to Nsew.SOUTH } +
+                    (0 until grid.width).map { Coord(it, grid.height) to Nsew.NORTH } +
+                    (0 until grid.height).map { Coord(-1, it) to Nsew.EAST } +
+                    (0 until grid.height).map { Coord(grid.width, it) to Nsew.WEST }
+        return states.stream().parallel().map { lightBeam(it) }.max(Integer::compare).get()
+    }
 }
 
-fun main() = Day.runDay(Y2023D16::class)
+fun main() = Day.benchmarkDay(Y2023D16::class)
+
+//    Class creation: 11ms
+//    Part 1: 7798 (53ms)
+//    Part 2: 8026 (1081ms)
+//    Total time: 1146ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
-    """""",
+    """.|...\....
+|.-.\.....
+.....|-...
+........|.
+..........
+.........\
+..../.\\..
+.-.-/..|..
+.|....-|.\
+..//.|....
+""",
 )
