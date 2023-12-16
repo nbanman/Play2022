@@ -56,19 +56,19 @@ class Y2023D16(input: String) : Day {
 
     override fun part2(): Int {
         val states = (0 until grid.width).map { Coord(it, -1) to Nsew.SOUTH } +
-                    (0 until grid.width).map { Coord(it, grid.height) to Nsew.NORTH } +
-                    (0 until grid.height).map { Coord(-1, it) to Nsew.EAST } +
-                    (0 until grid.height).map { Coord(grid.width, it) to Nsew.WEST }
+                (0 until grid.width).map { Coord(it, grid.height) to Nsew.NORTH } +
+                (0 until grid.height).map { Coord(-1, it) to Nsew.EAST } +
+                (0 until grid.height).map { Coord(grid.width, it) to Nsew.WEST }
         return states.stream().parallel().map { lightBeam(it) }.max(Integer::compare).get()
     }
 }
 
-fun main() = Day.benchmarkDay(Y2023D16::class)
+fun main() = Day.runDay(Y2023D16::class)
 
-//    Class creation: 11ms
-//    Part 1: 7798 (53ms)
-//    Part 2: 8026 (1081ms)
-//    Total time: 1146ms
+//    Class creation: 10ms
+//    Part 1: 7798 (46ms)
+//    Part 2: 8026 (923ms)
+//    Total time: 980ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
