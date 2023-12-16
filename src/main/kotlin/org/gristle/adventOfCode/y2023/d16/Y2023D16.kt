@@ -54,15 +54,21 @@ class Y2023D16(input: String) : Day {
         while (q.isNotEmpty()) {
             val current = q.removeLast()
             next(current)
-                .filter { state ->
-                    val index = state.toIndex()
+                .filter { nextState ->
+                    val index = nextState.toIndex()
                     !visited[index].also { visited[index] = true }
                 }.forEach { q.add(it) }
         }
-        return visited
-            .asSequence()
-            .chunked(4) { dirGroup -> dirGroup.any { it } }
-            .count { it }
+        var count = 0 
+        for (index in grid.indices) {
+            for (dir in 0..3) {
+                if (visited[(index shl 2) + dir]) {
+                    count++
+                    break
+                }
+            }
+        }
+        return count
     }
 
     override fun part1() = lightBeam(Coord(-1, 0) to Nsew.EAST)
