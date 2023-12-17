@@ -12,40 +12,97 @@ class Y2023D17(input: String) : Day {
     private val city = input.toGrid { it.digitToInt() }
 
     private data class State(val pos: Coord, val dir: Nsew, val straights: Int)
+    
+    private val start = State(Coord.ORIGIN, Nsew.EAST, 0)
+    private val end = city.coordOf(city.lastIndex)
+    private val heuristic = { state: State -> state.pos.manhattanDistance(end).toDouble() }
 
-    private fun solve(minimumStraight: Int, wobblyRules: (State, Nsew) -> Boolean): Int {
-        val start = State(Coord.ORIGIN, Nsew.EAST, 0)
-        val end = city.coordOf(city.lastIndex)
-        val heuristic: (State) -> Double = { (pos) -> pos.manhattanDistance(end).toDouble() }
-        val endCondition: (State) -> Boolean = { state -> state.straights >= minimumStraight && state.pos.manhattanDistance(end) == 0 }
-        val getEdges: (State) -> List<Graph.Edge<State>> = { state ->
-            listOf(state.dir, state.dir.left(), state.dir.right())
-                .filter { wobblyRules(state, it) }
-                .map { dir -> state.pos.move(dir) to dir }
-                .filter { (pos) -> city.validCoord(pos) }
-                .map { (pos, dir) ->
-                    val straights = if (dir == state.dir) state.straights + 1 else 1
-                    val newState = State(pos, dir, straights)
-                    Graph.Edge(newState, city[newState.pos].toDouble())
-                }
+    override fun part1(): Int {
+        fun turnOrNull(state: State, turnDir: Nsew): Graph.Edge<State>? {
+            val pos = state.pos.move(turnDir)
+            val weight = city.getOrNull(pos)
+            return if (weight != null) {
+                val newState = State(pos, turnDir, 1)
+                Graph.Edge(newState, weight.toDouble())
+            } else {
+                null
+            }
         }
-        val path = Graph.aStar(start, heuristic, endCondition, defaultEdges = getEdges)
+        
+        val getEdges = { state: State -> 
+            buildList {
+                // continue straight
+                if (state.straights < 3) {
+                    val pos = state.pos.move(state.dir)
+                    val weight = city.getOrNull(pos)
+                    if (weight != null) {
+                        val newState = State(pos, state.dir, state.straights + 1)
+                        add(Graph.Edge(newState, weight.toDouble()))
+                    }
+                }
+                // go left
+                turnOrNull(state, state.dir.left())?.let { add(it) }
+
+                // go right
+                turnOrNull(state, state.dir.right())?.let { add(it) }
+            }
+        }
+        
+        val path = Graph.aStar(start, heuristic, defaultEdges = getEdges)
+        return path.steps()
+    }
+    
+    override fun part2(): Int {
+        fun move(pos: Coord, dir: Nsew, distance: Int): Pair<Coord, Double>? =
+            (1..distance).fold(pos to 0.0) { (currentPos, weight), _ ->
+                val nextPos = currentPos.move(dir)
+                if (!city.validCoord(nextPos)) return@move null
+                val newWeight = weight + city[nextPos]
+                nextPos to newWeight
+            }
+
+        val getEdges = { state: State ->
+            buildList { 
+                // continue straight
+                val distance = when (state.straights) {
+                    0 -> 4
+                    in 4..9 -> 1
+                    else -> 0
+                }
+                if (distance != 0) {
+                    move(state.pos, state.dir, distance)?.let { (pos, weight) ->
+                        val newState = State(pos, state.dir, state.straights + distance)
+                        add(Graph.Edge(newState, weight))
+                    }
+                }
+                
+                // go left
+                val leftDir = state.dir.left()
+                move(state.pos, leftDir, 4)?.let { (pos, weight) ->
+                    val newState = State(pos, leftDir, 4)
+                    add(Graph.Edge(newState, weight))
+                }
+
+                // go right
+                val rightDir = state.dir.right()
+                move(state.pos, rightDir, 4)?.let { (pos, weight) ->
+                    val newState = State(pos, rightDir, 4)
+                    add(Graph.Edge(newState, weight))
+                }
+            }
+        }
+        val path = Graph.aStar(start, heuristic, defaultEdges = getEdges)
         return path.steps()
     }
 
-    override fun part1() = solve(0) { state, newDir -> (newDir != state.dir || state.straights < 3) }
-    override fun part2(): Int = solve(4) { state, newDir -> 
-        val result = when (state.straights) {
-            in 1..3 -> state.dir == newDir
-            10 -> state.dir != newDir
-            else -> true
-        }
-        result
-    }
-
 }
-//fun main() = Day.runDay(Y2023D17::class, sampleInput[0])
+//fun main() = Day.runDay(Y2023D17::class, sampleInput[1])
 fun main() = Day.runDay(Y2023D17::class)
+
+//    Class creation: 14ms
+//    Part 1: 635 (547ms)
+//    Part 2: 734 (1139ms)
+//    Total time: 1702ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
