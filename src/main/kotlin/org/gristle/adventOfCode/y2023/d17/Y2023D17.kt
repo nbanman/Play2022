@@ -30,14 +30,13 @@ class Y2023D17(input: String) : Day {
             val pos = state.pos.move(turnDir)
             val weight = city.getOrNull(pos) ?: return null
             val straights = if (state.dir == turnDir) state.straights + 1 else 1
-            val newState = State(pos, turnDir, straights)
-            return Graph.Edge(newState, weight)
+            return Graph.Edge(State(pos, turnDir, straights), weight)
         }
         
         // Get edges for any given state.
         val getEdges = { state: State -> 
             buildList {
-                // continue straight
+                // continue straight if haven't already gone straight 3 times
                 if (state.straights < 3) {
                     moveOrNull(state) { this }?.let { add(it) }
                 }
@@ -58,13 +57,13 @@ class Y2023D17(input: String) : Day {
         fun moveOrNull(state: State, turn: Nsew.() -> Nsew, distance: Int): Graph.Edge<State>? {
             val turnDir = state.dir.turn()
             return if (distance == 0) null else {
-                (1..distance).fold(state.pos to 0.0) { (currentPos, weight), _ ->
-                    val nextPos = currentPos.move(turnDir)
-                    val newWeight = weight + (city.getOrNull(nextPos) ?: return null)
-                    nextPos to newWeight
-                }.let { (nextPos, newWeight) ->
+                (1..distance).fold(state.pos to 0.0) { (currentPos, heatLoss), _ ->
+                    val pos = currentPos.move(turnDir)
+                    val weight = heatLoss + (city.getOrNull(pos) ?: return null)
+                    pos to weight
+                }.let { (pos, weight) ->
                     val straights = if (state.dir == turnDir) state.straights + distance else distance
-                    Graph.Edge(State(nextPos, turnDir, straights), newWeight)
+                    Graph.Edge(State(pos, turnDir, straights), weight)
                 }
             }
         }
