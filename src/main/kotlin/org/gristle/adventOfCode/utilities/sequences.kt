@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.utilities
 
 fun <T> Iterator<T>.nextOrNull(): T? = if (hasNext()) next() else null
