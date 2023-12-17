@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.utilities
 
 import java.io.File
