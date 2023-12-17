@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.utilities
 
 fun <T> Iterable<T>.getPermutations(seed: List<T> = emptyList()): List<List<T>> {
