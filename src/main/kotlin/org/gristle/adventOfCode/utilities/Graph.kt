@@ -111,6 +111,18 @@ object Graph {
     fun <E> Sequence<Vertex<E>>.steps() = lastOrNull()?.weight?.toInt() ?: -1
 
     /**
+     * Utility function to provide the path from the beginning to the end of the traversal.
+     * Returns empty List if the traversal did not complete.
+     */
+    fun <E> List<Vertex<E>>.path() = lastOrNull()?.path() ?: emptyList()
+
+    /**
+     * Utility function to provide the path from the beginning to the end of the traversal.
+     * Returns empty List if the traversal did not complete.
+     */
+    fun <E> Sequence<Vertex<E>>.path() = lastOrNull()?.path() ?: emptyList()
+    
+    /**
      * Contains id of a neighboring vertex and the weight to travel there. Used in constructing
      * a map of edges and/or a default edge function for the Dijkstra and AStar functions.
      */
