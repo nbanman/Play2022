@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.utilities
 
 enum class TimeUnits(val divisor: Long) {
@@ -7,7 +9,7 @@ enum class TimeUnits(val divisor: Long) {
     NS(1)
 }
 
-class Stopwatch(start: Boolean = false, val units: TimeUnits = TimeUnits.MS) {
+class Stopwatch(start: Boolean = false, private val units: TimeUnits = TimeUnits.MS) {
     private var elapsed = 0L
     private var lastStart = 0L
     private var isRunning = false
