@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.utilities
 
 import java.util.*
@@ -147,6 +149,16 @@ inline fun String.partitionIndexed(predicate: (index: Int, Char) -> Boolean): Pa
     return Pair(first.toString(), second.toString())
 }
 
+inline fun <T> Iterable<T>.takeUntil(predicate: (T) -> Boolean): List<T> {
+    val list = ArrayList<T>()
+    for (item in this) {
+        list.add(item)
+        if (predicate(item)) break
+    }
+    return list
+}
+
+
 fun <E : Comparable<E>> Iterable<E>.toPriorityQueue(): PriorityQueue<E> {
     val pq = if (this is Collection<E>) {
         PriorityQueue<E>(size)
@@ -268,10 +280,10 @@ inline fun <E> PriorityQueue<E>.pollWhile(predicate: (E) -> Boolean): List<E> {
     return list
 }
 
-fun <E : Any?> E.convertToString(): String? = when {
-    this is String -> this
-    this is Int -> this.toString()
-    this is Long -> this.toString()
-    this is Boolean -> this.toString()
+fun <E : Any?> E.convertToString(): String? = when (this) {
+    is String -> this
+    is Int -> this.toString()
+    is Long -> this.toString()
+    is Boolean -> this.toString()
     else -> null
 }
