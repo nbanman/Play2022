@@ -1,8 +1,8 @@
 package org.gristle.adventOfCode.utilities
 
-// letterForms is each character rotated 90 degrees with newlines stripped out. The 90 degree rotation makes it
+// letterForms is each character rotated 90 degrees with newlines stripped out. The 90-degree rotation makes it
 // easier to parse letters because they can be easily separated. 
-private val letterForms = buildMap<String, Char> {
+private val letterForms: Map<String, Char> = buildMap {
     // 6 height letters
     put("#####...#..#..#..######.", 'A')
     put("#######..#.##..#.#.##.#.", 'B')
