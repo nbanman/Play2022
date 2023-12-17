@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.utilities
 
 enum class Nsew {
@@ -46,10 +48,10 @@ enum class Nsew {
 
     companion object {
         fun of(c: Char): Nsew = when (c) {
-            'R', 'E' -> Nsew.EAST
-            'U', 'N' -> Nsew.NORTH
-            'L', 'W' -> Nsew.WEST
-            'D', 'S' -> Nsew.SOUTH
+            'R', 'E' -> EAST
+            'U', 'N' -> NORTH
+            'L', 'W' -> WEST
+            'D', 'S' -> SOUTH
             else -> throw IllegalArgumentException("Invalid input")
         }
     }
