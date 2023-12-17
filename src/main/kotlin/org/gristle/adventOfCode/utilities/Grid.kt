@@ -118,9 +118,19 @@ class ArrayGrid<E> private constructor(
 
     override operator fun get(coord: Coord): E = get(indexOf(coord.x, coord.y))
 
-    override fun getOrNull(x: Int, y: Int): E? = getOrNull(indexOf(x, y))
+    override fun getOrNull(x: Int, y: Int): E? = 
+        if (validCoord(Coord(x, y))) {
+            get(indexOf(x, y))
+        } else {
+            null
+        }
 
-    override fun getOrNull(coord: Coord): E? = getOrNull(indexOf(coord.x, coord.y))
+    override fun getOrNull(coord: Coord): E? = 
+        if (validCoord(coord)) {
+            get(indexOf(coord))
+        } else {
+            null
+        }
 
     override fun coordOf(n: Int): Coord = Coord(n % width, n / width)
 
