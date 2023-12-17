@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.utilities
 
 import kotlin.math.*
@@ -14,7 +16,7 @@ data class Coord(val x: Int, val y: Int) : Comparable<Coord> {
             Coord(0, -1), Coord(0, 1), Coord(1, 0), Coord(-1, 0),
         )
 
-        val ALLADJACENT = listOf(
+        val ALL_ADJACENT = listOf(
             Coord(-1, -1), Coord(0, -1), Coord(1, -1),
             Coord(1, 0), Coord(-1, 0),
             Coord(-1, 1), Coord(0, 1), Coord(1, 1),
