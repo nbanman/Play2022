@@ -1,7 +1,10 @@
 package org.gristle.adventOfCode.y2023.d10
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.*
+import org.gristle.adventOfCode.utilities.Coord
+import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.takeUntil
+import org.gristle.adventOfCode.utilities.toGrid
 import kotlin.math.absoluteValue
 
 class Y2023D10(input: String) : Day {
@@ -49,8 +52,8 @@ class Y2023D10(input: String) : Day {
         val area = loop
             .fold(0 to 0) { (sum, d), dir ->
                 when (dir) {
-                    Nsew.NORTH -> sum to d + 1
-                    Nsew.SOUTH -> sum to d - 1
+                    Nsew.NORTH -> sum to d - 1
+                    Nsew.SOUTH -> sum to d + 1
                     Nsew.WEST -> sum - d to d
                     Nsew.EAST -> sum + d to d
                 }
