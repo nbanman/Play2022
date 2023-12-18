@@ -30,10 +30,8 @@ class Y2023D18(input: String) : Day {
     }
 
     override fun part2(): Long {
-        val moat = plans.runningFold(Coord.ORIGIN) { acc, plan ->
-            acc.move(plan.colorDir, plan.colorDist) 
-        }
-        val moatSize: Long = plans.sumOf { it.dist.toLong() }
+        val moat = plans.runningFold(Coord.ORIGIN) { acc, plan -> acc.move(plan.colorDir, plan.colorDist) }
+        val moatSize = plans.sumOf { it.colorDist }
         val moatArea = abs((moat + moat[0])
             .zipWithNext { (x1, y1), (x2, y2) -> x1.toLong() * y2 - x2.toLong() * y1 }
             .fold(0L, Long::plus) / 2)
