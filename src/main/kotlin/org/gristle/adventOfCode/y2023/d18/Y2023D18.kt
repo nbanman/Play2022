@@ -6,34 +6,34 @@ import org.gristle.adventOfCode.utilities.Nsew
 import kotlin.math.abs
 
 class Y2023D18(input: String) : Day {
+    
+    class Plan(val dir: Nsew, val dist: Int, color: String) {
+        val colorDir = when(color.last()) {
+            '0' -> Nsew.EAST
+            '1' -> Nsew.SOUTH
+            '2' -> Nsew.WEST
+            else -> Nsew.NORTH
+        }
+        val colorDist = color.dropLast(1).toInt(16)
+    }
 
     private val plans = input.lines().map {
         val (dir, dist, color) = it.split(" (#", " ", ")")
-        Triple(Nsew.of(dir[0]), dist.toInt(), color)
+        Plan(Nsew.of(dir[0]), dist.toInt(), color)
     }
 
     override fun part1(): Int {
-        val moat = plans.runningFold(Coord.ORIGIN) { acc, (dir, dist ) -> acc.move(dir, dist) }
-        val moatSize = plans.sumOf { (_, dist) -> dist }
+        val moat = plans.runningFold(Coord.ORIGIN) { acc, plan -> acc.move(plan.dir, plan.dist) }
+        val moatSize = plans.sumOf { it.dist }
         val moatArea = abs((moat + moat[0]).zipWithNext { (x1, y1), (x2, y2) -> x1 * y2 - x2 * y1 }.sum() / 2)
         return moatSize + 1 + (moatArea - (moatSize) / 2)
     }
 
     override fun part2(): Long {
-        val moat = plans.runningFold(Coord.ORIGIN) { acc, (_, _, color) -> 
-            val dir = when(color.last()) {
-                '0' -> Nsew.EAST
-                '1' -> Nsew.SOUTH
-                '2' -> Nsew.WEST
-                else -> Nsew.NORTH
-            }
-            val dist = color.dropLast(1).toInt(16)
-            acc.move(dir, dist) 
+        val moat = plans.runningFold(Coord.ORIGIN) { acc, plan ->
+            acc.move(plan.colorDir, plan.colorDist) 
         }
-        val moatSize: Long = plans.sumOf { (_, _, color) -> 
-            val dist = color.dropLast(1).toLong(16)
-            dist
-        }
+        val moatSize: Long = plans.sumOf { it.dist.toLong() }
         val moatArea = abs((moat + moat[0])
             .zipWithNext { (x1, y1), (x2, y2) -> x1.toLong() * y2 - x2.toLong() * y1 }
             .fold(0L, Long::plus) / 2)
@@ -42,6 +42,11 @@ class Y2023D18(input: String) : Day {
 }
 
 fun main() = Day.runDay(Y2023D18::class)
+
+//    Class creation: 17ms
+//    Part 1: 50746 (3ms)
+//    Part 2: 70086216556038 (3ms)
+//    Total time: 24ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
