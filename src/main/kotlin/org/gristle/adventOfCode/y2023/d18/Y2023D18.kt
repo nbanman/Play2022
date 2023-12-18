@@ -3,39 +3,43 @@ package org.gristle.adventOfCode.y2023.d18
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 class Y2023D18(input: String) : Day {
     
-    class Plan(val dir: Nsew, val dist: Int, color: String) {
-        val colorDir = when(color.last()) {
-            '0' -> Nsew.EAST
-            '1' -> Nsew.SOUTH
-            '2' -> Nsew.WEST
-            else -> Nsew.NORTH
+    data class Plan(val dir: Nsew, val dist: Int) {
+        companion object {
+            fun of(dirStr: String, distStr: String) = Plan(Nsew.of(dirStr[0]), distStr.toInt())
+            fun of(colorStr: String): Plan {
+                val dir = when(colorStr.last()) {
+                    '0' -> Nsew.EAST
+                    '1' -> Nsew.SOUTH
+                    '2' -> Nsew.WEST
+                    else -> Nsew.NORTH
+                }
+                return Plan(dir, colorStr.dropLast(1).toInt(16))
+            }
         }
-        val colorDist = color.dropLast(1).toInt(16)
     }
+    
+    private val plans = input.lines().map { it.split(" (#", " ", ")") }
 
-    private val plans = input.lines().map {
-        val (dir, dist, color) = it.split(" (#", " ", ")")
-        Plan(Nsew.of(dir[0]), dist.toInt(), color)
-    }
-
-    override fun part1(): Int {
-        val moat = plans.runningFold(Coord.ORIGIN) { acc, plan -> acc.move(plan.dir, plan.dist) }
-        val moatSize = plans.sumOf { it.dist }
-        val moatArea = abs((moat + moat[0]).zipWithNext { (x1, y1), (x2, y2) -> x1 * y2 - x2 * y1 }.sum() / 2)
-        return moatSize + 1 + (moatArea - (moatSize) / 2)
-    }
-
-    override fun part2(): Long {
-        val moat = plans.runningFold(Coord.ORIGIN) { acc, plan -> acc.move(plan.colorDir, plan.colorDist) }
-        val moatSize = plans.sumOf { it.colorDist }
-        val moatArea = abs((moat + moat[0])
-            .zipWithNext { (x1, y1), (x2, y2) -> x1.toLong() * y2 - x2.toLong() * y1 }
-            .fold(0L, Long::plus) / 2)
-        return moatSize + 1 + (moatArea - (moatSize) / 2)
+    override fun part1() = plans.map { (dir, dist) -> Plan.of(dir, dist) }.solve()
+    override fun part2() = plans.map { (_, _, color) -> Plan.of(color) }.solve()
+    
+    fun Iterable<Plan>.solve(): Long {
+        
+        // build out list of points making the loop
+        val moat = runningFold(Coord.ORIGIN) { acc, (dir, dist) -> acc.move(dir, dist) }
+        
+        // add up the distances in each plan and you get the perimeter of the moat
+        val moatPerimeter = sumOf { it.dist }
+        
+        // this gives the area according to the shoelace formula, but that "rounds down" the area due to the block
+        // nature of the AoC coordinate system. We add this back by adding half the perimeter + 1 to the shoelace
+        // area.
+        val shoelaceArea = moat.zipWithNext { (x1, y1), (x2, y2) -> x1.toLong() * y2 - x2.toLong() * y1 }.sum() / 2
+        return moatPerimeter / 2 + 1 + shoelaceArea.absoluteValue
     }
 }
 
