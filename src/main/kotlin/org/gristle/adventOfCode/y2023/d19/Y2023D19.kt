@@ -137,7 +137,7 @@ class Y2023D19(input: String) : Day {
                 }
             }
         }
-        return accepted.fold(0L) { acc, partRanges -> acc + partRanges.permutations() }
+        return accepted.sumOf { it.permutations() }
     }
 }
 
