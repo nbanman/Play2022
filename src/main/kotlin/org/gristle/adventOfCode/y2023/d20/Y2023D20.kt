@@ -11,7 +11,7 @@ class Y2023D20(input: String) : Day {
     // queues and lookup tables.
     sealed interface Module {
         val name: String
-        val downstream: Set<String>
+        val downstream: List<String>
         
         fun onReceive(signal: Signal, round: Int)
         
@@ -26,7 +26,7 @@ class Y2023D20(input: String) : Day {
     
     data object Button : Module {
         override val name = "button"
-        override val downstream = setOf("broadcaster")
+        override val downstream = listOf("broadcaster")
         
         init {
             Module.lookup[name] = this
@@ -41,7 +41,7 @@ class Y2023D20(input: String) : Day {
         override fun reset() { }
     }
     
-    class BroadCaster(override val downstream: Set<String>) : Module {
+    class BroadCaster(override val downstream: List<String>) : Module {
         override val name = "broadcaster"
         
         init {
@@ -57,7 +57,7 @@ class Y2023D20(input: String) : Day {
         override fun reset() { }
     }
     
-    class FlipFlop(override val name: String, override val downstream: Set<String>) : Module {
+    class FlipFlop(override val name: String, override val downstream: List<String>) : Module {
         init {
             Module.lookup[name] = this
             downstream.forEach { Module.upstreamCount[it] = (Module.upstreamCount[it] ?: 0) + 1 }
@@ -79,7 +79,7 @@ class Y2023D20(input: String) : Day {
         }
     }
     
-    class Conjunction(override val name: String, override val downstream: Set<String>) : Module {
+    class Conjunction(override val name: String, override val downstream: List<String>) : Module {
         init {
             Module.lookup[name] = this
             downstream.forEach { Module.upstreamCount[it] = (Module.upstreamCount[it] ?: 0) + 1 }
@@ -106,7 +106,7 @@ class Y2023D20(input: String) : Day {
         }
     }
     
-    data class Signal(val sender: String, val recipients: Set<String>, val pulse: Pulse) {
+    data class Signal(val sender: String, val recipients: List<String>, val pulse: Pulse) {
         fun send(round: Int) {
             recipients.forEach { name -> Module.lookup[name]?.onReceive(this, round) }
         }
@@ -117,7 +117,7 @@ class Y2023D20(input: String) : Day {
         // table.
         input.lines().forEach { line ->
             val (nameStr, downstreamStr) = line.split(" -> ")
-            val downstream = downstreamStr.split(", ").toSet()
+            val downstream = downstreamStr.split(", ").toList()
             when (nameStr[0]) {
                 '%' -> FlipFlop(nameStr.drop(1), downstream)
                 '&' -> Conjunction(nameStr.drop(1), downstream)
@@ -129,7 +129,7 @@ class Y2023D20(input: String) : Day {
     // Simulates one round by pushing the button, then processing signals until none are sent.
     // Returns the number of high and low pulses sent, which is used for Part 1. Part 2 relies on side effects.
     private fun pressButton(round: Int): Pair<Int, Int> {
-        Button.onReceive(Signal(Button.name, setOf("broadcaster"), Pulse.LOW), 0)
+        Button.onReceive(Signal(Button.name, listOf("broadcaster"), Pulse.LOW), 0)
         return generateSequence { Module.dispatchQueue.removeFirstOrNull() }
             .fold(0 to 0) { (high, low), signal ->
                 signal.send(round)
@@ -171,9 +171,9 @@ class Y2023D20(input: String) : Day {
 fun main() = Day.runDay(Y2023D20::class)
 
 //    Class creation: 9ms
-//    Part 1: 938065580 (25ms)
-//    Part 2: 250628960065793 (47ms)
-//    Total time: 82ms
+//    Part 1: 938065580 (26ms)
+//    Part 2: 250628960065793 (33ms)
+//    Total time: 69ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
