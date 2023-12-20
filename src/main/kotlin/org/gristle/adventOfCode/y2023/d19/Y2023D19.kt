@@ -7,11 +7,20 @@ import org.gristle.adventOfCode.utilities.gvs
 
 class Y2023D19(input: String) : Day {
     
+    // A single workflow holds several rules in sequence. 
+    // 'Category' is an int representation of the various XMAS categories
+    // 'Amount' is used to compare whether there are the correct amount of prats.
+    // 'Comparison' can be ">", "<", or "". Blank means automatically pass.
+    // 'Destination' is the name of the next workflow to send to if the number/range passes.
     data class Rule(val category: Int, val amount: Int, val comparison: String, val destination: String) 
     
+    // Workflows accessible by workflow name.
     private val workflows: Map<String, List<Rule>>
+    
+    // Parts used for Part 1.
     private val parts: List<List<Int>>
     
+    // Parsing 
     init {
         val (workStanza, partStanza) = input.blankSplit()
         workflows = workStanza
@@ -35,6 +44,8 @@ class Y2023D19(input: String) : Day {
         parts = partStanza.getInts().chunked(4).toList()
     }
     
+    // For each part, run the recursive sort function on it, which sends it through the various workflows until it 
+    // ends up being accepted "A" or rejected "R." Sum the XMAS values for each accepted part and sum the total.
     override fun part1() = parts
         .filter { xmas ->
             generateSequence("in") { sort(it, xmas) }
@@ -43,9 +54,13 @@ class Y2023D19(input: String) : Day {
         }.sumOf { it.sum() }
 
     private fun sort(name: String, part: List<Int>): String {
+        
+        // get the relevant workflow
         val workflow = workflows.getValue(name)
         for (rule in workflow) {
             with (rule) {
+                
+                // perform comparison and route accordingly
                 val resultOrNull = if (comparison == ">") {
                     if (part[category] > amount) destination else null
                 } else if (comparison == "<") {
@@ -53,6 +68,8 @@ class Y2023D19(input: String) : Day {
                 } else {
                     destination
                 }
+                
+                // if routed to "A" or "R", we are done. Otherwise call sort again with the next workflow.
                 if (resultOrNull == "A" || resultOrNull == "R") {
                     return resultOrNull
                 } else if (resultOrNull != null) {
@@ -63,6 +80,10 @@ class Y2023D19(input: String) : Day {
         return ""
     }
     
+    // Start with a PartRanges instance, a list of 4 IntRanges from 1..4000, representing each of X, M, A, and S.
+    // Run the instance through the first workflow. Create two PartRanges instances, splitting the ranges for each 
+    // branching. Then do the same thing to those instances, until the subranges reach "R" or "A". Keep track of the
+    // ones that are accepted, and sum the number of possible permutations 
     override fun part2(): Long {
         val accepted = mutableListOf<PartRanges>()
         var remaining: List<Pair<String, PartRanges>> = listOf("in" to PartRanges(List(4) { 1..4000 }))
@@ -84,51 +105,49 @@ class Y2023D19(input: String) : Day {
         return accepted.sumOf { it.permutations() }
     }
 
+    // Tracks the ranges for each xmas category.
     @JvmInline
     value class PartRanges(val ranges: List<IntRange>) {
+        
+        // Number of possible permutations given the four ranges.
         fun permutations(): Long = ranges.fold(1L) { acc, range -> acc * (1 + range.last - range.first) }
 
-        // two lists, one that matches, and one that doesn't match
+        // Splits the PartRanges into two, one that meets the rule condition, and one that doesn't.
         fun split(rule: Rule): List<PartRanges> {
             return when (rule.comparison) {
                 ">" -> {
                     val breakpoint = rule.amount + 1
                     val pass = breakpoint..ranges[rule.category].last
                     val fail = ranges[rule.category].first until breakpoint
-                    makeCopies(rule.category, pass, fail)
+                    makeSplits(rule.category, pass, fail)
                 }
                 "<" -> {
                     val breakpoint = rule.amount
                     val pass = ranges[rule.category].first until breakpoint
                     val fail = breakpoint..ranges[rule.category].last
-                    makeCopies(rule.category, pass, fail)
+                    makeSplits(rule.category, pass, fail)
                 }
                 else -> throw IllegalArgumentException("Non-comparisons should not be passed to split function.")
             }
         }
-
-        private fun makeCopies(category: Int, pass: IntRange, fail: IntRange): List<PartRanges> =
+        
+        private fun makeSplits(category: Int, pass: IntRange, fail: IntRange): List<PartRanges> =
             listOf(
                 PartRanges(List(4) { i -> if (i == category) pass else ranges[i] }),
                 PartRanges(List(4) { i -> if (i == category) fail else ranges[i] }),
             )
     }
 
+    // for a particular workflow, return sub-PartRanges along with where they should be routed to next
     private fun List<Rule>.route(partRanges: PartRanges): List<Pair<String, PartRanges>> = buildList {
         var remaining: PartRanges? = partRanges
         for (workflow in this@route) {
             if (remaining == null) return@buildList
             remaining = if (workflow.comparison.isNotEmpty()) {
                 val (pass, fail) = remaining.split(workflow)
-                if (pass.ranges[workflow.category].first <= pass.ranges[workflow.category].last) {
-                    add(workflow.destination to pass)
-                }
-                if (fail.ranges[workflow.category].first <= fail.ranges[workflow.category].last) {
-                    fail
-                } else {
-                    null
-                }
-            } else {
+                add(workflow.destination to pass)
+                fail
+            } else { // every rule conditional failed and base case reached
                 add(workflow.destination to remaining)
                 null
             }
