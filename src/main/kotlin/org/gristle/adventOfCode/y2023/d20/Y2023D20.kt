@@ -177,9 +177,9 @@ class Y2023D20(input: String) : Day {
 fun main() = Day.runDay(Y2023D20::class)
 
 //    Class creation: 9ms
-//    Part 1: 938065580 (26ms)
-//    Part 2: 250628960065793 (33ms)
-//    Total time: 69ms
+//    Part 1: 938065580 (24ms)
+//    Part 2: 250628960065793 (2ms)
+//    Total time: 37ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
