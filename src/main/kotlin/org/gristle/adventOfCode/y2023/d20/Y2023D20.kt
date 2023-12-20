@@ -41,7 +41,7 @@ class Y2023D20(input: String) : Day {
         override fun reset() { }
     }
     
-    class BroadCaster(override val downstream: List<String>) : Module {
+    data class BroadCaster(override val downstream: List<String>) : Module {
         override val name = "broadcaster"
         
         init {
@@ -57,7 +57,7 @@ class Y2023D20(input: String) : Day {
         override fun reset() { }
     }
     
-    class FlipFlop(override val name: String, override val downstream: List<String>) : Module {
+    data class FlipFlop(override val name: String, override val downstream: List<String>) : Module {
         init {
             Module.lookup[name] = this
             downstream.forEach { Module.upstreamCount[it] = (Module.upstreamCount[it] ?: 0) + 1 }
@@ -79,21 +79,23 @@ class Y2023D20(input: String) : Day {
         }
     }
     
-    class Conjunction(override val name: String, override val downstream: List<String>) : Module {
+    data class Conjunction(override val name: String, override val downstream: List<String>) : Module {
         init {
             Module.lookup[name] = this
             downstream.forEach { Module.upstreamCount[it] = (Module.upstreamCount[it] ?: 0) + 1 }
         }
 
         private val upstreamPulses = mutableMapOf<String, Pulse>()
+        
+        private val upstreamCount: Int by lazy { Module.upstreamCount.getValue(name) }
 
         // Tracks the first time a conjunction box sends a high signal as part of a very basic cycle detection scheme
         // for pt 2.
-        var firstHigh: Int? = null
+        private var firstHigh: Int? = null
         
         override fun onReceive(signal: Signal, round: Int) {
             upstreamPulses[signal.sender] = signal.pulse
-            val pulse = if (Module.upstreamCount.getValue(name) == upstreamPulses.size &&
+            val pulse = if (upstreamCount == upstreamPulses.size &&
                 upstreamPulses.values.all { it == Pulse.HIGH }) Pulse.LOW else Pulse.HIGH
             if (pulse == Pulse.HIGH) firstHigh = round // records the round of first high pulse
             val output = Signal(name, downstream, pulse)
@@ -141,30 +143,34 @@ class Y2023D20(input: String) : Day {
             }
     }
     
-    // Resets stateful objects, then returns a sequence that repeatedly presses the button and returns a sequence
-    // of the high and low pulses sent that round.
-    private fun rounds(): Sequence<Pair<Int, Int>> {
+    // Runs sequence 1000 times, sums up the high and low pulses sent, and multiplies the two together.
+    override fun part1(): Int {
         Module.lookup.values.forEach { it.reset() }
         return generateSequence(1, Int::inc).map { pressButton(it) }
-    }
-
-    // Runs sequence 1000 times, sums up the high and low pulses sent, and multiplies the two together.
-    override fun part1(): Int = rounds()
-        .take(1000)
-        .fold(0 to 0) { (sumHigh, sumLow), (high, low) ->
-            sumHigh + high to sumLow + low
-        }.let { (high, low) ->
-            high * low
-        }
-
-    // Runs sequence until all conjunction modules have found their cycle, then returns the lcm of those conjunction
-    // modules. As it turns out, the cycles have no offsets, every conjunction box that doesn't directly factor into
-    // whether the box that sends a signal to 'rx' sends a high signal every round. So this simplified cycle detection
-    // is sufficient.
+            .take(1000)
+            .fold(0 to 0) { (sumHigh, sumLow), (high, low) ->
+                sumHigh + high to sumLow + low
+            }.let { (high, low) ->
+                high * low
+            }
+    } 
+        
+    // Recognizing that the input creates a set of binary counters that all must emit at the same time, analyze those
+    // counters and determine when they individually emit. Then take the lcm of all the counters.
+    // The broadcaster sends to four separate counters. These are chains of FlipFlop modules connected to a Conjunction
+    // clock module. The FlipFlop modules that send a signal back to the clock become a "1" and the modules that 
+    // receive a signal from the clock become a "0". Put these in reverse order and you have a binary representation
+    // of how many cycles it takes to trigger the Conjunction module.
     override fun part2(): Long {
-        val conjunctions: List<Conjunction> = Module.lookup.values.filterIsInstance<Conjunction>()
-        rounds().first { conjunctions.all { it.firstHigh != null } }
-        return lcm(conjunctions.mapNotNull { it.firstHigh?.toLong() })
+        val flipFlops = Module.lookup.values.filterIsInstance<FlipFlop>().map { it.name }.toSet()
+        val binaryCounterResults = Module.lookup.getValue("broadcaster").downstream
+            .map { name ->
+                val start = Module.lookup.getValue(name)
+                generateSequence(start) { module -> Module.lookup[module.downstream.firstOrNull { it in flipFlops }] }
+                    .map { if (Module.upstreamCount.getValue(it.name) == 1) 1 else 0 }
+                    .foldIndexed(1L) { index, acc, i -> acc + (i shl index) }
+            }
+        return lcm(binaryCounterResults)
     }
 }
 
