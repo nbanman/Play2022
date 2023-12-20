@@ -7,6 +7,8 @@ class Y2023D20(input: String) : Day {
     
     enum class Pulse { HIGH, LOW }
     
+    // Java OOP style, Modules are a bunch of objects with mutating state, strung together with various global 
+    // queues and lookup tables.
     sealed interface Module {
         val name: String
         val downstream: Set<String>
@@ -85,13 +87,15 @@ class Y2023D20(input: String) : Day {
 
         private val upstreamPulses = mutableMapOf<String, Pulse>()
 
+        // Tracks the first time a conjunction box sends a high signal as part of a very basic cycle detection scheme
+        // for pt 2.
         var firstHigh: Int? = null
         
         override fun onReceive(signal: Signal, round: Int) {
             upstreamPulses[signal.sender] = signal.pulse
             val pulse = if (Module.upstreamCount.getValue(name) == upstreamPulses.size &&
                 upstreamPulses.values.all { it == Pulse.HIGH }) Pulse.LOW else Pulse.HIGH
-            if (pulse == Pulse.HIGH) firstHigh = round
+            if (pulse == Pulse.HIGH) firstHigh = round // records the round of first high pulse
             val output = Signal(name, downstream, pulse)
             Module.dispatchQueue.add(output)
         }
@@ -109,6 +113,8 @@ class Y2023D20(input: String) : Day {
     }
 
     init {
+        // creates modules from input. No need to assign a variable because the objects are stored in a global lookup
+        // table.
         input.lines().forEach { line ->
             val (nameStr, downstreamStr) = line.split(" -> ")
             val downstream = downstreamStr.split(", ").toSet()
@@ -120,11 +126,13 @@ class Y2023D20(input: String) : Day {
         }
     }
     
-    private fun pressButton(): Pair<Int, Int> {
+    // Simulates one round by pushing the button, then processing signals until none are sent.
+    // Returns the number of high and low pulses sent, which is used for Part 1. Part 2 relies on side effects.
+    private fun pressButton(round: Int): Pair<Int, Int> {
         Button.onReceive(Signal(Button.name, setOf("broadcaster"), Pulse.LOW), 0)
         return generateSequence { Module.dispatchQueue.removeFirstOrNull() }
             .fold(0 to 0) { (high, low), signal ->
-                signal.send(0)
+                signal.send(round)
                 if (signal.pulse == Pulse.HIGH) {
                     high + signal.recipients.size to low
                 } else {
@@ -133,33 +141,29 @@ class Y2023D20(input: String) : Day {
             }
     }
     
-    private fun rxButton(round: Int): Boolean {
-        Button.onReceive(Signal(Button.name, setOf("broadcaster"), Pulse.LOW), 1)
-        return generateSequence { Module.dispatchQueue.removeFirstOrNull() }
-            .any { signal -> 
-                if ("rx" in signal.recipients && signal.pulse == Pulse.LOW) {
-                    true
-                } else {
-                    signal.send(round)
-                    false
-                }
-            }
+    // Resets stateful objects, then returns a sequence that repeatedly presses the button and returns a sequence
+    // of the high and low pulses sent that round.
+    private fun rounds(): Sequence<Pair<Int, Int>> {
+        Module.lookup.values.forEach { it.reset() }
+        return generateSequence(1, Int::inc).map { pressButton(it) }
     }
 
-    override fun part1() = generateSequence { pressButton() }
+    // Runs sequence 1000 times, sums up the high and low pulses sent, and multiplies the two together.
+    override fun part1(): Int = rounds()
         .take(1000)
-        .fold(0L to 0L) { (sumHigh, sumLow), (high, low) ->
+        .fold(0 to 0) { (sumHigh, sumLow), (high, low) ->
             sumHigh + high to sumLow + low
-        }.let { (high, low) -> 
-            high * low 
+        }.let { (high, low) ->
+            high * low
         }
 
+    // Runs sequence until all conjunction modules have found their cycle, then returns the lcm of those conjunction
+    // modules. As it turns out, the cycles have no offsets, every conjunction box that doesn't directly factor into
+    // whether the box that sends a signal to 'rx' sends a high signal every round. So this simplified cycle detection
+    // is sufficient.
     override fun part2(): Long {
-        Module.lookup.values.forEach { it.reset() }
         val conjunctions: List<Conjunction> = Module.lookup.values.filterIsInstance<Conjunction>()
-        generateSequence(1, Int::inc)
-            .map { rxButton(it) }
-            .first { conjunctions.all { it.firstHigh != null } }
+        rounds().first { conjunctions.all { it.firstHigh != null } }
         return lcm(conjunctions.mapNotNull { it.firstHigh?.toLong() })
     }
 }
