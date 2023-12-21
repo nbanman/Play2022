@@ -209,10 +209,12 @@ object Graph {
             val current = q.removeFirst()
             val neighbors: List<StdVertex<E>> = (edges[current.id] ?: defaultEdges(current.id))
                 .filter { it !in visited }
-                .map { StdVertex(it, current.weight + 1.0, current) }
+                .map { neighbor ->
+                    StdVertex(neighbor, current.weight + 1.0, current)
+                        .also { visited[neighbor] = it }
+                }
             neighbors
                 .forEach { neighbor ->
-                    visited[neighbor.id] = neighbor
                     if (endCondition(neighbor.id) == true) return visited.values.toList()
                     q.add(neighbor)
                 }
