@@ -160,9 +160,10 @@ class Y2023D20(input: String) : Day {
         val binaryCounterResults = Module.lookup.getValue("broadcaster").downstream
             .map { name ->
                 val start = Module.lookup.getValue(name)
+                val conjunction = start.downstream.first { Module.lookup.getValue(it) is Conjunction }
                 generateSequence(start) { module -> Module.lookup[module.downstream.firstOrNull { it in flipFlops }] }
-                    .map { if (Module.upstreamCount.getValue(it.name) == 1) 1 else 0 }
-                    .foldIndexed(1L) { index, acc, i -> acc + (i shl index) }
+                    .map { if (conjunction in it.downstream) 1 else 0 }
+                    .foldIndexed(0L) { index, acc, i -> acc + (i shl index) }
             }
         return lcm(binaryCounterResults)
     }
