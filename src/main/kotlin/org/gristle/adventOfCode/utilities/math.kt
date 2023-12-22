@@ -26,6 +26,8 @@ fun Int.isPrime(): Boolean = when {
     }
 }
 
+fun Int.summation(): Int = (1..this).sum()
+
 fun Int.factorial(): Long = (1..this).fold(1L, Long::times)
 
 fun quadraticFormula(a: Long, b: Long, c: Long): Pair<Double, Double> {
