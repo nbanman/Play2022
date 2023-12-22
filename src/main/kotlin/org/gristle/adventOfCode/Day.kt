@@ -46,7 +46,8 @@ interface Day {
                 val inputString = if (displayInput) " $trimmedSample\t" else "\t"
                 print(inputString)
                 val c = constructor.call(trimmedSample) as Day
-                println("Part 1: ${c.part1()}\tPart 2: ${c.part2()}")
+                print("Part 1: ${c.part1()}")
+                println("\tPart 2: ${c.part2()}")
             }
         }
 
