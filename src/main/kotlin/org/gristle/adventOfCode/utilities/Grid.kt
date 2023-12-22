@@ -32,6 +32,10 @@ interface Grid<out E> : List<E> {
 
     fun indexOf(coord: Coord): Int
 
+    fun indexOfOrNull(x: Int, y: Int): Int?
+    
+    fun indexOfOrNull(coord: Coord): Int?
+
     fun subGrid(coord: Coord, newWidth: Int, newHeight: Int): Grid<E>
 
     fun subGrid(topLeft: Coord, bottomRight: Coord): Grid<E>
@@ -150,6 +154,18 @@ class ArrayGrid<E> private constructor(
     override fun indexOf(x: Int, y: Int): Int = y * width + x
 
     override fun indexOf(coord: Coord) = indexOf(coord.x, coord.y)
+
+    override fun indexOfOrNull(x: Int, y: Int): Int? = when {
+        x !in xIndices -> null
+        y !in yIndices -> null
+        else -> y * width + x
+    }
+
+    override fun indexOfOrNull(coord: Coord): Int? = when {
+        coord.x !in xIndices -> null
+        coord.y !in yIndices -> null
+        else -> coord.y * width + coord.x
+    }
 
     override fun subGrid(coord: Coord, newWidth: Int, newHeight: Int): Grid<E> {
         require(newWidth > 0 && newHeight > 0)
