@@ -91,6 +91,11 @@ class Y2023D23(private val trails: String) : Day {
 
 fun main() = Day.runDay(Y2023D23::class)
 
+//    Class creation: 2ms
+//    Part 1: 2210 (332ms)
+//    Part 2: 6522 (6287ms)
+//    Total time: 6622ms
+
 @Suppress("unused")
 private val sampleInput = listOf(
     """#.#####################
