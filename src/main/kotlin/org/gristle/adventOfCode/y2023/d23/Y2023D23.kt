@@ -10,10 +10,8 @@ class Y2023D23(private val trails: String) : Day {
     
     private fun findLongestTrail(edgeMap: Map<Int, List<Pair<Int, Int>>> = emptyMap()): Int {
         val visited = mutableSetOf<Int>()
-        val possibilities = mutableListOf<Int>()
         val longestTrail = DeepRecursiveFunction<Pair<Int, Int>, Int> { (pos, weight) ->
             if (pos == end) {
-                possibilities.add(weight)
                 weight
             } else {
                 visited.add(pos)
@@ -39,8 +37,7 @@ class Y2023D23(private val trails: String) : Day {
                 maxDistance
             }
         }
-        val result = longestTrail(start to 0)
-        return result
+        return longestTrail(start to 0)
     }
     
     override fun part1() = findLongestTrail()
@@ -84,17 +81,16 @@ class Y2023D23(private val trails: String) : Day {
             }
         }
         
-        val result = findLongestTrail(edgeMap)
-        return result
+        return findLongestTrail(edgeMap)
     } 
 }
 
 fun main() = Day.runDay(Y2023D23::class)
 
 //    Class creation: 2ms
-//    Part 1: 2210 (332ms)
-//    Part 2: 6522 (6287ms)
-//    Total time: 6622ms
+//    Part 1: 2210 (247ms)
+//    Part 2: 6522 (5531ms)
+//    Total time: 5781ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
