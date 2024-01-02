@@ -29,21 +29,31 @@ class Y2023D25(input: String) : Day {
             .take(3)
             .map { it.key }
         
-        val getEdges = { component: String ->
-            components
-                .getValue(component)
-                .filter { connection -> setOf(component, connection) !in bridges }
-        }
+        // used to speed up the filtering in the getEdges lambda below
+        val bridgeEnds = bridges.flatten()
         
-        val groupA = Graph.bfs(bridges[0].first(), defaultEdges = getEdges).size
-        val groupB = Graph.bfs(bridges[0].last(), defaultEdges = getEdges).size
-        return groupA * groupB
+        // We get the size of each island by running a flood fill on either side of a bridge, modifying the edge
+        // finder to filter out the bridge connections.
+        val getEdges = { component: String ->
+            if (component in bridgeEnds) {
+                components
+                    .getValue(component)
+                    .filter { connection -> setOf(component, connection) !in bridges }
+            } else {
+                components.getValue(component)
+            }
+        }
+        return bridges[0].fold(1) { acc, side -> acc * Graph.bfs(side, defaultEdges = getEdges).size }
     } 
 
     override fun part2() = "Merry Xmas!"
 }
 
 fun main() = Day.runDay(Y2023D25::class)
+
+//    Class creation: 23ms
+//    Part 1: 569904 (2017ms)
+//    Total time: 2041ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
