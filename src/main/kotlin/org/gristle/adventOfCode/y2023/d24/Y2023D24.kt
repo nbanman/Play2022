@@ -53,7 +53,8 @@ class Y2023D24(private val input: String) : Day {
             .chunked(2)
             .toList()
         
-        // Get the t
+        // Get the intersection times for all the hailstones once you find the hailstone that matches the pos/velocity
+        // of the rock.
         val times: List<Long> = (0..2).firstNotNullOf { axis ->
             stones.firstNotNullOfOrNull { stone ->
                 stones.map { other ->
