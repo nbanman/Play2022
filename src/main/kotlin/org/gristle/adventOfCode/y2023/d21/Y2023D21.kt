@@ -23,7 +23,7 @@ class Y2023D21(private val garden: String) : Day {
         // BFS finds neighbors and runs until the queue is empty, meaning that no more neighbors are found
         // due to everything already being visited.
         generateSequence { q.removeFirstOrNull() }
-            .onEach { (pos, steps) -> // BFS logic is a one big side effect filling the queue back up.
+            .onEach { (pos, steps) -> // BFS logic is one big side effect filling the queue back up.
                 val neighbors = listOf(pos - (width + 1), pos + 1, pos - 1, pos + (width + 1))
                     .filter { neighbor -> 
                         garden.getOrNull(neighbor)?.let { it !in "#\n"} == true && !visited[neighbor] 
@@ -44,9 +44,8 @@ class Y2023D21(private val garden: String) : Day {
     // https://github.com/villuna/aoc23/wiki/A-Geometric-solution-to-advent-of-code-2023,-day-21
     // Thanks, Villuna!
     override fun part2(): Long {
-        
-        // these are sublists of the original garden path, broken into sublists of even and odd steps.
-        // they serve dual purposes. Their *size* is used for the final calculation. Their *contents* are an 
+        // These are sublists of the original garden path, partitioned into groups of even and odd steps.
+        // They serve dual purposes. Their *size* is used for the final calculation. Their *contents* are an 
         // intermediate step for getting the size of the corner pieces.
         val (evenPath, oddPath) = gardenPath.partition(Int::isEven)
 
