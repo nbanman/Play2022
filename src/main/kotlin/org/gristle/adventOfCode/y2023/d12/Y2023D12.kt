@@ -10,42 +10,39 @@ class Y2023D12(input: String) : Day {
         private val cache = mutableMapOf<State, Long>()
 
         fun arrangements(s: State = State(0, 0)): Long = cache.getOrPut(s) {
-            
-            // do not consider conditions already handled in previous states
-            // if state place exceeds the conditions length string, we are done and the block is blank 
-            val block = if (s.conditionsIndex < conditions.length) conditions.substring(s.conditionsIndex) else "" 
-            
             // the # of consecutive broken springs in the damage report that we try to place along the row
             val fulfillment = damageReport.getOrNull(s.damageReportIndex) ?: 0
 
             // Base case. Takes states that have fulfilled the entire damage report and returns 1 if valid, 
             // 0 if invalid. Valid states are those with no remaining '#' in the current or any future blocks, 
             // and that have filled all the damaged spring requirements
-            if (fulfillment == 0) return@getOrPut if ('#' in block) 0 else 1
+            if (fulfillment == 0) {
+                val damagedSpringRemaining = (s.conditionsIndex..conditions.lastIndex).any { conditions[it] == '#' }
+                return@getOrPut if (damagedSpringRemaining) 0 else 1
+            }
             
             // Otherwise, we go recursive by trying to fit the fulfillment in every place along the block
             // This starts as a sequence of indexes, from 0 until the length of the block minus the fulfillment size
             // (to account for the size of the fulfillment itself in the string).
-            (0..block.length - fulfillment)
+            (s.conditionsIndex..conditions.length - fulfillment)
                 .asSequence()
                 // stop the sequence if a '#' precedes the index b/c '#' cannot be skipped
-                .takeWhile { index -> block.getOrNull(index - 1) != '#' }
+                .takeWhile { index -> conditions.getOrNull(index - 1) != '#' }
                 .filter { index ->
-                    
                     // filter out invalid placements, in cascading fashion
                     // if the placement includes a '.', invalid b/c '.' means not broken
                     // if the placement has no part of the string after it, valid b/c nothing else to consider
                     // if the character following the placement is '#', invalid b/c that extra '#' would overfulfill
                     // otherwise valid
                     when {
-                        '.' in block.substring(index, index + fulfillment) -> false
-                        index + fulfillment == block.length -> true
-                        block[index + fulfillment] == '#' -> false
+                        '.' in conditions.substring(index, index + fulfillment) -> false
+                        index + fulfillment == conditions.length -> true
+                        conditions[index + fulfillment] == '#' -> false
                         else -> true
                     }
                 }.sumOf { index ->
                     val newState = State(
-                        s.conditionsIndex + index + fulfillment + 1,
+                        index + fulfillment + 1,
                         s.damageReportIndex + 1
                     )
                     arrangements(newState)
