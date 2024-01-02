@@ -5,12 +5,12 @@ import org.gristle.adventOfCode.utilities.Graph
 
 class Y2023D25(input: String) : Day {
 
-    private val components: Map<String, List<String>> = buildMap<String, MutableList<String>> {
+    private val componentMap: Map<String, List<String>> = buildMap<String, MutableList<String>> {
         input.lines().map { line ->
-            val componentNames = line.split(": ", " ")
-            for (component in componentNames.drop(1)) {
-                getOrPut(componentNames[0]) { mutableListOf() }.add(component)
-                getOrPut(component) { mutableListOf() }.add(componentNames[0])
+            val components = line.split(": ", " ")
+            for (component in components.drop(1)) {
+                getOrPut(components[0]) { mutableListOf() }.add(component)
+                getOrPut(component) { mutableListOf() }.add(components[0])
             }
         }
     }
@@ -18,16 +18,17 @@ class Y2023D25(input: String) : Day {
     override fun part1(): Int {
         // find the "bridge" components by doing a flood fill from each component. The component pairs with the most
         // connections are the least avoidable ones because you have to use them to cross over.
-        val bridges = components.keys
+        val bridges = componentMap.keys
             .flatMap { component ->
-                Graph.bfsSequence(component) { components.getValue(it) }
+                Graph.bfsSequence(component) { componentMap.getValue(it) }
+                    // mapping to set permits grouping to eachCount without worrying about order
                     .mapNotNull { it.parent?.let { parent -> setOf(it.id, parent.id) } }
             }.groupingBy { it }
             .eachCount()
             .entries
-            .sortedByDescending { it.value }
+            .sortedByDescending { (_, count) -> count }
             .take(3)
-            .map { it.key }
+            .map { (bridge, _) -> bridge }
         
         // used to speed up the filtering in the getEdges lambda below
         val bridgeEnds = bridges.flatten()
@@ -36,11 +37,11 @@ class Y2023D25(input: String) : Day {
         // finder to filter out the bridge connections.
         val getEdges = { component: String ->
             if (component in bridgeEnds) {
-                components
+                componentMap
                     .getValue(component)
                     .filter { connection -> setOf(component, connection) !in bridges }
             } else {
-                components.getValue(component)
+                componentMap.getValue(component)
             }
         }
         return bridges[0].fold(1) { acc, side -> acc * Graph.bfs(side, defaultEdges = getEdges).size }
