@@ -5,12 +5,12 @@ import org.gristle.adventOfCode.utilities.Graph
 
 class Y2023D25(input: String) : Day {
 
-    private val components = buildMap<String, MutableList<String>> {
+    private val components: Map<String, List<String>> = buildMap<String, MutableList<String>> {
         input.lines().map { line ->
-            val split = line.split(": ", " ")
-            for (component in split.drop(1)) {
-                getOrPut(split[0]) { mutableListOf() }.add(component)
-                getOrPut(component) { mutableListOf() }.add(split[0])
+            val componentNames = line.split(": ", " ")
+            for (component in componentNames.drop(1)) {
+                getOrPut(componentNames[0]) { mutableListOf() }.add(component)
+                getOrPut(component) { mutableListOf() }.add(componentNames[0])
             }
         }
     }
