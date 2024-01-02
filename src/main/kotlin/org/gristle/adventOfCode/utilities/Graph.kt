@@ -255,7 +255,7 @@ object Graph {
             if (current.id !in visited) {
                 visited[current.id] = current
                 if (endCondition(current.id) == true) return visited.values.toList()
-                edges[current.id] ?: defaultEdges(current.id)
+                (edges[current.id] ?: defaultEdges(current.id))
                     .map { StdVertex(it, current.weight + 1.0, current) }
                     .forEach { q.add(it) }
             }
@@ -318,7 +318,7 @@ object Graph {
         while (q.isNotEmpty()) {
             val current = q.poll()
             yield(current)
-            edges[current.id] ?: defaultEdges(current.id)
+            (edges[current.id] ?: defaultEdges(current.id))
                 .filter { it !in visited }
                 .map { StdVertex(id = it, weight = current.weight + 1.0, parent = current) }
                 .forEach { neighbor ->
@@ -345,7 +345,7 @@ object Graph {
             if (current.id !in visited) {
                 visited[current.id] = current
                 yield(current)
-                edges[current.id] ?: defaultEdges(current.id)
+                (edges[current.id] ?: defaultEdges(current.id))
                     .map { StdVertex(it, current.weight + 1.0, current) }
                     .forEach { q.add(it) }
             }
