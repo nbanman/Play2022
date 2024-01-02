@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2023.d21
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.isEven
-import org.gristle.adventOfCode.utilities.isOdd
 import org.gristle.adventOfCode.utilities.pow
 
 class Y2023D21(private val garden: String) : Day {
@@ -49,12 +48,11 @@ class Y2023D21(private val garden: String) : Day {
         // these are sublists of the original garden path, broken into sublists of even and odd steps.
         // they serve dual purposes. Their *size* is used for the final calculation. Their *contents* are an 
         // intermediate step for getting the size of the corner pieces.
-        val evenPath = gardenPath.filter(Int::isEven)
-        val oddPath = gardenPath.filter(Int::isOdd)
+        val (evenPath, oddPath) = gardenPath.partition(Int::isEven)
 
         // these are used to smooth out the grid, turning the square into a diamond.
         val evenCorners = evenPath.count { it > 65 }
-        val oddCorners = oddPath.count { it > 65 && it.isOdd() }
+        val oddCorners = oddPath.count { it > 65 }
 
         // number of extra squares in a given direction.
         val n = (26501365 - width / 2) / width 
