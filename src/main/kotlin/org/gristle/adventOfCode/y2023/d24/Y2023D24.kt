@@ -90,7 +90,12 @@ class Y2023D24(private val input: String) : Day {
     }
 }
 
-fun main() = Day.runDay(Y2023D24::class) // 808107741406756
+fun main() = Day.runDay(Y2023D24::class)
+
+//    Class creation: 3ms
+//    Part 1: 14046 (47ms)
+//    Part 2: 808107741406756 (6ms)
+//    Total time: 57ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
