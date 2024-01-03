@@ -3,6 +3,7 @@
 package org.gristle.adventOfCode.utilities
 
 import java.util.*
+import kotlin.math.sign
 
 object Graph {
 
@@ -85,11 +86,7 @@ object Graph {
 
         override fun compareTo(other: Vertex<E>): Int {
             return if (other is AStarVertex<*>) {
-                when {
-                    f - other.f > 0.0 -> 1
-                    f - other.f < 0.0 -> -1
-                    else -> (h - other.h).let { if (it < 0) -1 else 1 }
-                }
+                (f - other.f).sign.toInt()
             } else {
                 super.compareTo(other)
             }
