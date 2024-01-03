@@ -75,9 +75,11 @@ class Y2023D24(private val input: String) : Day {
         } 
         
         // get the indices of the first two hailstones that do not travel parallel  
-        val (i, j) = times.withIndex()
+        val (i, j) = times.asSequence().withIndex()
             .filter { (_, time) -> time > 0 }
             .map { it.index }
+            .take(2)
+            .toList()
         
         // given a stone, an axis, and a time, calculate the position of the stone on that axis at that time
         fun rockPos(i: Int, axis: Int, time: Long): Long = stones[i][0][axis] + stones[i][1][axis] * time
