@@ -2,49 +2,45 @@ package org.gristle.adventOfCode.y2023.d25
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Graph
+import org.gristle.adventOfCode.utilities.Graph.path
 
 class Y2023D25(input: String) : Day {
 
+    // parse to map of edges
     private val componentMap: Map<String, List<String>> = buildMap<String, MutableList<String>> {
         input.lines().map { line ->
             val components = line.split(": ", " ")
+            getOrPut(components[0]) { mutableListOf() }.addAll(components.drop(1))
             for (component in components.drop(1)) {
-                getOrPut(components[0]) { mutableListOf() }.add(component)
                 getOrPut(component) { mutableListOf() }.add(components[0])
             }
         }
     }
 
+    // 35x speedup based on /u/maneatingape's solution
+    // https://www.reddit.com/r/adventofcode/comments/18qbsxs/comment/kfoynua/
     override fun part1(): Int {
-        // find the "bridge" components by doing a flood fill from each component. The component pairs with the most
-        // connections are the least avoidable ones because you have to use them to cross over.
-        val bridges = componentMap.keys
-            .flatMap { component ->
-                Graph.bfsSequence(component) { componentMap.getValue(it) }
-                    // mapping to set permits grouping to eachCount without worrying about order
-                    .mapNotNull { it.parent?.let { parent -> setOf(it.id, parent.id) } }
-            }.groupingBy { it }
-            .eachCount()
-            .entries
-            .sortedByDescending { (_, count) -> count }
-            .take(3)
-            .map { (bridge, _) -> bridge }
-        
-        // used to speed up the filtering in the getEdges lambda below
-        val bridgeEnds = bridges.flatten()
-        
-        // We get the size of each island by running a flood fill on either side of a bridge, modifying the edge
-        // finder to filter out the bridge connections.
-        val getEdges = { component: String ->
-            if (component in bridgeEnds) {
-                componentMap
-                    .getValue(component)
-                    .filter { connection -> setOf(component, connection) !in bridges }
-            } else {
-                componentMap.getValue(component)
+        // Get a node on the edge by taking a random node, running BFS and grabbing the farthest one.
+        val start = Graph.bfs(componentMap.entries.first().key) { componentMap.getValue(it) }.last().id
+        // Run bfs from the start node three times, each time removing edges in the path taken. This will saturate
+        // the 3 edges to be cut.
+        val cutEdges: Map<String, Set<String>> = buildMap<String, MutableSet<String>> {
+            for (i in 1..3) {
+                val path = Graph
+                    .bfs(start) { pos ->
+                        componentMap.getValue(pos).filter { it !in getOrDefault(pos, emptySet()) }
+                    }.path()
+                path.map { it.id }.zipWithNext().forEach { (prev, next) ->
+                    getOrPut(prev) { mutableSetOf() }.add(next)
+                }
             }
         }
-        return bridges[0].fold(1) { acc, side -> acc * Graph.bfs(side, defaultEdges = getEdges).size }
+        // Run bfs one more time. Since all the bridge edges are removed, this will only find the nodes on one side.
+        val groupA = Graph
+            .bfs(start) { pos ->
+                componentMap.getValue(pos).filter { it !in cutEdges.getOrDefault(pos, emptySet()) }
+            }.size
+        return groupA * (componentMap.size - groupA)
     } 
 
     override fun part2() = "Merry Xmas!"
@@ -52,9 +48,9 @@ class Y2023D25(input: String) : Day {
 
 fun main() = Day.runDay(Y2023D25::class)
 
-//    Class creation: 23ms
-//    Part 1: 569904 (2017ms)
-//    Total time: 2041ms
+//    Class creation: 26ms
+//    Part 1: 569904 (30ms)
+//    Total time: 56ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
