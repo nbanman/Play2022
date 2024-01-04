@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2023.d19
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.blankSplit
-import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.gvs
 
 class Y2023D19(input: String) : Day {
@@ -41,7 +40,11 @@ class Y2023D19(input: String) : Day {
                     }.toList()
                 name to rules
             }
-        parts = partStanza.getInts().chunked(4).toList()
+        parts = Regex("""(?<!\d)-?\d+""")
+            .findAll(partStanza)
+            .map { it.value.toInt() }
+            .chunked(4)
+            .toList()
     }
     
     // For each part, run the recursive sort function on it, which sends it through the various workflows until it 
@@ -141,14 +144,14 @@ class Y2023D19(input: String) : Day {
     // for a particular workflow, return sub-PartRanges along with where they should be routed to next
     private fun List<Rule>.route(partRanges: PartRanges): List<Pair<String, PartRanges>> = buildList {
         var remaining: PartRanges? = partRanges
-        for (workflow in this@route) {
+        for (rule in this@route) {
             if (remaining == null) return@buildList
-            remaining = if (workflow.comparison.isNotEmpty()) {
-                val (pass, fail) = remaining.split(workflow)
-                add(workflow.destination to pass)
+            remaining = if (rule.comparison.isNotEmpty()) {
+                val (pass, fail) = remaining.split(rule)
+                add(rule.destination to pass)
                 fail
             } else { // every rule conditional failed and base case reached
-                add(workflow.destination to remaining)
+                add(rule.destination to remaining)
                 null
             }
         }
@@ -163,6 +166,7 @@ fun main() = Day.runDay(Y2023D19::class)
 //    Total time: 63ms
 
 
+// Part 1: 19114	Part 2: 167409079868000
 @Suppress("unused")
 private val sampleInput = listOf(
     """px{a<2006:qkq,m>2090:A,rfg}
