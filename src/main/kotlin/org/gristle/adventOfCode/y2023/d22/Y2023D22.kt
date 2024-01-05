@@ -49,8 +49,7 @@ class Y2023D22(input: String) : Day {
                 .zipWithNext()
                 .takeWhile { (upper, _) -> 
                     isFree(upper) 
-                }
-                .lastOrNull()
+                }.lastOrNull()
                 ?.let { (upper, lower) -> Brick(upper) to lower } 
                 ?: return false
             lower.forEach { below ->
