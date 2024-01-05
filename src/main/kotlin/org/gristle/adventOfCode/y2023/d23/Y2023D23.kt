@@ -103,6 +103,14 @@ class Y2023D23(private val trails: String) : Day {
             }
         }
 
+        // due to grid-like nature of the remaining nodes, the perimeter nodes (those with only three edges) are 
+        // directional. Quick and dirty way of finding which directions to exclude is to run my standard BFS which
+        // does flood fill of the nodes that don't have four edges, recording the parent node for each node. 
+        // Then convert this to a map of node to parent node. Use this map to exclude certain edges in the edge map, 
+        // thus making the perimeter nodes directional.
+        // This works for everything except for the bottom corner node. This one fails because my standard BFS is
+        // shortest-path, but the bottom corner node can be reached in two ways. So I handle the bottom corner 
+        // individually.
         val verboten: Map<Int, Int> = Graph
             .bfsSequence(newStart) {
                 initial.getValue(it).filter { (neighbor, _) ->
@@ -110,18 +118,31 @@ class Y2023D23(private val trails: String) : Day {
                 }.map { (neighbor, _) -> neighbor }
             }.mapNotNull { v -> v.parent?.let { parent -> v.id to parent.id } }
             .toMap()
-        val edges = initial.entries.map { (k, v) -> v.filter { (neighbor) -> verboten[k] != neighbor } }
-
+        
+        val bottomCorner = initial.values.last().first().first
+        
+        val edges = initial.entries.map { (pos, edges) -> 
+            edges.filter { (neighbor) -> 
+                if (pos == bottomCorner) {
+                    neighbor == newEnd
+                } else {
+                    verboten[pos] != neighbor
+                }    
+            } 
+        }
+        
         return findLongestTrail(edges, newStart, newEnd)
     }
 }
 
 fun main() = Day.runDay(Y2023D23::class)
 
+// Parts 1 and 2: 289266 us/op [Average]
+
 //    Class creation: 25ms
-//    Part 1: 2210 (28ms)
-//    Part 2: 6522 (507ms)
-//    Total time: 561ms
+//    Part 1: 2210 (29ms)
+//    Part 2: 6522 (420ms)
+//    Total time: 476ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
