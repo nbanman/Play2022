@@ -1,6 +1,7 @@
 package org.gristle.adventOfCode.y2023.d23
 
 import org.gristle.adventOfCode.Day
+import org.gristle.adventOfCode.utilities.Graph
 
 class Y2023D23(private val trails: String) : Day {
 
@@ -9,7 +10,7 @@ class Y2023D23(private val trails: String) : Day {
     private val end = trails.lastIndexOf('.')
 
     // get weighted vertices
-    private val vertices = buildSet {
+    private val vertices: Set<Int> = buildSet {
         val branchPoints = trails
             .withIndex()
             .filter { (pos, c) ->
@@ -20,15 +21,29 @@ class Y2023D23(private val trails: String) : Day {
         addAll(branchPoints)
         add(end)
     }
+
+    private val edgeMap: Map<Int, List<Pair<Int, Int>>> = buildMap<Int, MutableList<Pair<Int, Int>>> {
+        // get weighted vertices
+        vertices.forEach { pos ->
+            connectVertex(pos, vertices, false).forEach { (neighbor, dist) ->
+                getOrPut(pos) { mutableListOf() }.add(neighbor to dist)
+            }
+        }
+    }
     
-    private fun findLongestTrail(edgeMap: Map<Int, List<Pair<Int, Int>>>): Int {
+    private val vertexMap = vertices.withIndex().associate { (index, pos) -> pos to index }
+    
+    private fun findLongestTrail(
+        edgeMap: Map<Int, List<Pair<Int, Int>>>,
+        start: Int,
+        end: Int,
+    ): Int {
         val visited = mutableSetOf<Int>()
         val longestTrail = DeepRecursiveFunction<Pair<Int, Int>, Int> { (pos, weight) ->
             if (pos == end) {
                 weight
             } else {
                 visited.add(pos)
-                val c = trails[pos]
                 val neighbors = edgeMap.getValue(pos) 
                     .filter { (neighbor, _) -> neighbor !in visited }
                     .map { (neighbor, newWeight) -> neighbor to weight + newWeight }
@@ -62,7 +77,7 @@ class Y2023D23(private val trails: String) : Day {
                                 else -> listOf(current - (width + 1), current + 1, current - 1, current + (width + 1))
                             }
                         }.filter { neighbor ->
-                            trails.getOrNull(neighbor)?.let { it !in "#\n"} == true && neighbor !in visited 
+                            trails.getOrNull(neighbor)?.let { it !in "#\n" } == true && neighbor !in visited 
                         }
                     neighbors.forEach { visited.add(it) }
                     q.addAll(neighbors.map { it to dist + 1 })
@@ -72,27 +87,32 @@ class Y2023D23(private val trails: String) : Day {
     }
 
     override fun part1(): Int {
-        val edgeMap: Map<Int, List<Pair<Int, Int>>> = buildMap<Int, MutableList<Pair<Int, Int>>> {
-            // get weighted vertices
-            vertices.forEach { pos ->
-                connectVertex(pos, vertices, false).forEach { (neighbor, dist) ->
-                    getOrPut(pos) { mutableListOf() }.add(neighbor to dist)
-                }
-            }
-        }
-        return findLongestTrail(edgeMap)
+        return findLongestTrail(edgeMap, start, end)
     }
     
     override fun part2(): Int {
-        val edgeMap: Map<Int, List<Pair<Int, Int>>> = buildMap<Int, MutableList<Pair<Int, Int>>> {
+        val initial: Map<Int, List<Pair<Int, Int>>> = buildMap<Int, MutableList<Pair<Int, Int>>> {
             // get weighted vertices
             vertices.forEach { pos ->
-                connectVertex(pos, vertices, true).forEach { (neighbor, dist) ->
-                    getOrPut(pos) { mutableListOf() }.add(neighbor to dist)
-                }
+                val pp = vertexMap.getValue(pos)
+                connectVertex(pos, vertices, true)
+                    .forEach { (neighbor, dist) ->
+                        getOrPut(pp) { mutableListOf() }.add(vertexMap.getValue(neighbor) to dist)
+                    }
             }
         }
-        return findLongestTrail(edgeMap)
+        val newStart = vertexMap.getValue(start)
+        val newEnd = vertexMap.getValue(end)
+        val verboten: Map<Int, Int> = Graph
+            .bfsSequence(newStart) {
+                initial.getValue(it).filter { (neighbor, _) ->
+                    initial.getValue(neighbor).size != 4
+                }.map { (neighbor, _) -> neighbor }
+            }.mapNotNull { v -> v.parent?.let { parent -> v.id to parent.id } }
+            .toMap()
+        val edgeMap = initial.entries.associate { (k, v) -> k to v.filter { (neighbor) -> verboten[k] != neighbor } }
+        
+        return findLongestTrail(edgeMap, newStart, newEnd)
     } 
 }
 
