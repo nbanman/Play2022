@@ -17,7 +17,7 @@ interface Day {
             val (year, day) = kClass.simpleName?.getIntList()
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
-            val input = sampleInput?.trimEnd() ?: getInput(day, year)
+            val input = sampleInput?.trimEnd { it == '\n' } ?: getInput(day, year)
             var part2: String? = null
             val timer = Stopwatch(true)
             val c = constructor.call(input) as Day
@@ -41,7 +41,7 @@ interface Day {
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
             sampleInput.forEachIndexed { index, sample ->
-                val trimmedSample = sample.trimEnd()
+                val trimmedSample = sample.trimEnd { it == '\n' }
                 print("${index + 1}:")
                 val inputString = if (displayInput) " $trimmedSample\t" else "\t"
                 print(inputString)
@@ -62,7 +62,7 @@ interface Day {
                 ?: throw IllegalArgumentException("Class does not have a name")
             println("[$year Day $day]")
             sampleInput.forEachIndexed { index, (sample, answer) ->
-                val trimmedSample = sample.trimEnd()
+                val trimmedSample = sample.trimEnd { it == '\n' }
                 print("${index + 1}:\t")
                 val c = constructor.call(trimmedSample) as Day
                 val result =
