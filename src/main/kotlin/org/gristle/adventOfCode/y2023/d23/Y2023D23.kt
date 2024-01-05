@@ -57,7 +57,7 @@ class Y2023D23(private val trails: String) : Day {
     private data class State(val pos: Int, val weight: Int)
 
     private fun findLongestTrail(
-        edgeMap: Map<Int, List<Pair<Int, Int>>>,
+        edgeMap: List<List<Pair<Int, Int>>>,
         start: Int,
         end: Int,
     ): Int {
@@ -68,7 +68,7 @@ class Y2023D23(private val trails: String) : Day {
                 state.weight
             } else {
                 visited += 1L shl state.pos
-                val neighborStates = edgeMap.getValue(state.pos)
+                val neighborStates = edgeMap[state.pos]
                     .filter { (neighbor, _) ->
                         visited shr neighbor and 1L == 0L
                     }.map { (neighbor, weight) -> State(neighbor, state.weight + weight) }
@@ -81,16 +81,14 @@ class Y2023D23(private val trails: String) : Day {
     }
 
     override fun part1(): Int {
-        val edgeMap: Map<Int, List<Pair<Int, Int>>> = buildMap<Int, MutableList<Pair<Int, Int>>> {
-            // get weighted vertices
+        val edges = buildList {
             vertices.forEach { pos ->
-                val pp = vertexMap.getValue(pos)
-                connectVertex(pos, vertices, false).forEach { (neighbor, dist) ->
-                    getOrPut(pp) { mutableListOf() }.add(vertexMap.getValue(neighbor) to dist)
-                }
+                val neighbors = connectVertex(pos, vertices, false)
+                    .map { (neighbor, dist) -> vertexMap.getValue(neighbor) to dist }
+                add(neighbors)
             }
         }
-        return findLongestTrail(edgeMap, newStart, newEnd)
+        return findLongestTrail(edges, newStart, newEnd)
     }
 
     override fun part2(): Int {
@@ -112,18 +110,18 @@ class Y2023D23(private val trails: String) : Day {
                 }.map { (neighbor, _) -> neighbor }
             }.mapNotNull { v -> v.parent?.let { parent -> v.id to parent.id } }
             .toMap()
-        val edgeMap = initial.entries.associate { (k, v) -> k to v.filter { (neighbor) -> verboten[k] != neighbor } }
+        val edges = initial.entries.map { (k, v) -> v.filter { (neighbor) -> verboten[k] != neighbor } }
 
-        return findLongestTrail(edgeMap, newStart, newEnd)
+        return findLongestTrail(edges, newStart, newEnd)
     }
 }
 
 fun main() = Day.runDay(Y2023D23::class)
 
 //    Class creation: 25ms
-//    Part 1: 2210 (29ms)
-//    Part 2: 6522 (741ms)
-//    Total time: 796ms
+//    Part 1: 2210 (28ms)
+//    Part 2: 6522 (507ms)
+//    Total time: 561ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
