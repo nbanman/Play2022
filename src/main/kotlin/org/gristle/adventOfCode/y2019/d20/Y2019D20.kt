@@ -20,7 +20,7 @@ class Y2019D20(input: String) : Day {
         var name = if (!rep.isUpperCase()) {
             rep.toString()
         } else {
-            Nsew.values()
+            Nsew.entries
                 .mapNotNull { dir ->
                     val coord = grid.coordOf(locator)
                     val forwardCoord = dir.forward(coord)
@@ -124,7 +124,7 @@ class Y2019D20(input: String) : Day {
 
     }
 
-    private val maze = "$input                                     ".toGrid()
+    private val maze = input.toGrid()
     private val nodes = maze.mapIndexed { index, c -> N1920(c, index, maze) }.toGrid(maze.width).apply {
         forEach { it.getEdges(this) }
         forEach(N1920::safeDelete)
