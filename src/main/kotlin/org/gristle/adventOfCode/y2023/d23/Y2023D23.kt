@@ -61,18 +61,18 @@ class Y2023D23(private val trails: String) : Day {
         start: Int,
         end: Int,
     ): Int {
-        fun longestTrail(state: State): Int {
-            return if (state.pos == end) {
+        fun longestTrail(state: State): Int =
+            if (state.pos == end) {
                 state.weight
             } else {
                 val visited = state.visited + (1L shl state.pos)
                 val neighborStates = edgeMap.getValue(state.pos)
                     .filter { (neighbor, _) ->
                         visited shr neighbor and 1L == 0L
-                    }.map { (neighbor, newWeight) -> State(neighbor, state.weight + newWeight, visited) }
+                    }.map { (neighbor, weight) -> State(neighbor, state.weight + weight, visited) }
                 neighborStates.maxOfOrNull { neighborState -> longestTrail(neighborState) } ?: 0
             }
-        }
+        
         return longestTrail(State(start, 0, 0L))
     }
 
