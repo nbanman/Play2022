@@ -297,3 +297,5 @@ fun <E : Any?> E.convertToString(): String? = when (this) {
     is Boolean -> this.toString()
     else -> null
 }
+
+fun <T: Any?> T.println() = println(this)
