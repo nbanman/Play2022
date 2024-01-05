@@ -1,195 +1,140 @@
 package org.gristle.adventOfCode.y2019.d20
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.Graph
-import org.gristle.adventOfCode.utilities.Graph.steps
-import org.gristle.adventOfCode.utilities.Grid
-import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.pollUntil
 import org.gristle.adventOfCode.utilities.toGrid
+import java.util.*
 
 class Y2019D20(input: String) : Day {
-
-    class E1920(val node: N1920, val weight: Int) {
-        override fun toString(): String {
-            return "E1920(index=${node.locator}, name=${node.name}, weight=$weight)"
-        }
-    }
-
-    data class N1920(private val rep: Char, val locator: Int, val grid: Grid<Char>) {
-
-        var name = if (!rep.isUpperCase()) {
-            rep.toString()
-        } else {
-            Nsew.entries
-                .mapNotNull { dir ->
-                    val coord = grid.coordOf(locator)
-                    val forwardCoord = dir.forward(coord)
-                    if (grid.validCoord(forwardCoord) && grid[forwardCoord] == '.') {
-                        val letters = if (dir == Nsew.SOUTH || dir == Nsew.EAST) {
-                            "${grid[dir.right().right().forward(coord)]}$rep"
-                        } else {
-                            "$rep${grid[dir.right().right().forward(coord)]}"
-                        }
-                        if (letters in "AAZZ") {
-                            letters
-                        } else {
-                            val portalType = if (grid.validCoord(dir.right().right().forward(coord, 2))) "in " else "out"
-                            letters + portalType
-                        }
-                    } else {
-                        null
-                    }
-                }.let { if (it.isEmpty()) null else it.first() } ?: " "
-        }
-
-        var safeToDelete = name in " #AAZZ"
-
-        private fun getOtherSide(nodes: Grid<N1920>): N1920 {
-            return if (name.length != 5) {
-                this
-            } else {
-                nodes
-                    .find { name.dropLast(3) in it.name && locator != it.locator } // ?.let { otherPortal -> nodes.getNeighbors(otherPortal.locator).find { it.name == "." } }
-                    ?: this
-            }
-        }
-
-        val edges = mutableListOf<E1920>()
-
-        fun getEdges(nodes: Grid<N1920>) {
-            if (!safeToDelete) {
-                if (name.length == 5) {
-                    grid.getNeighborIndices(locator)
-                        .filter {
-                            grid[it] == '.'
-                        }
-                        .map { neighborIndex ->
-                            E1920(nodes[neighborIndex], 0)
-                        }
-                        .apply {
-                            edges.addAll(this)
-                            edges.add(E1920(getOtherSide(nodes), 0))
-                        }
-                } else {
-                    grid.getNeighborIndices(locator)
-                        .filter {
-                            if (nodes[it].name == "AA") name = "start"
-                            if (nodes[it].name == "ZZ") name = "end"
-                            grid[it] != '#' && nodes[it].name != "AA" && nodes[it].name != "ZZ"
-                        }
-                        .map { neighborIndex ->
-                            val neighborNode =
-                                nodes[neighborIndex]//.let { if (it.name.length == 5) it.getOtherSide(nodes) else it }
-                            E1920(neighborNode, 1)
-                        }
-                        .apply { edges.addAll(this) }
-                }
-            }
-        }
-
-        private fun replaceEdge(index: Int, edge: E1920) {
-            val edgeIndex = edges.indexOfFirst { it.node.locator == index }
-            val oldWeight = edges[edgeIndex].weight
-            val newEdge = E1920(edge.node, edge.weight + oldWeight)
-            edges[edgeIndex] = newEdge
-        }
-
-        private fun deleteEdge(index: Int) {
-            val edgeIndex = edges.indexOfFirst { it.node.locator == index }
-            edges.removeAt(edgeIndex)
-            safeDelete()
-        }
-
-        fun safeDelete(): Boolean {
-            if (safeToDelete) return true
-            if (name == ".") {
-                when (edges.size) {
-                    1 -> {
-                        edges[0].node.deleteEdge(locator)
-                        safeToDelete = true
-                    }
-                    2 -> {
-                        edges[0].node.replaceEdge(locator, edges[1])
-                        edges[1].node.replaceEdge(locator, edges[0])
-                        safeToDelete = true
-                    }
-                }
-            }
-            return false
-        }
-
-        override fun toString(): String {
-            return "N1920(\"$name\", locator=$locator, coord=${grid.coordOf(locator)}, edges=${edges.size}"
-        }
-
-    }
-
+    private enum class Side { INNER, OUTER }
+    private data class Portal(val name: String, val side: Side)
+    private data class State(val pos: Int, val level: Int)
+    private data class EdgeInfo(val state: State, val dist: Int)
+    
     private val maze = input.toGrid()
-    private val nodes = maze.mapIndexed { index, c -> N1920(c, index, maze) }.toGrid(maze.width).apply {
-        forEach { it.getEdges(this) }
-        forEach(N1920::safeDelete)
-    }
-    private val start = nodes.find { it.name == "start" }!!
-    private val end = nodes.find { it.name == "end" }!!
 
-    override fun part1(): Int {
-        val p1Nodes = nodes
-            .filter { !it.safeToDelete }
-            .map {
-                val edges = it.edges.map { edge ->
-                    Graph.Edge(edge.node.locator, edge.weight.toDouble())
+    private val portals: Map<Int, Portal> = buildMap {
+        // horizontal
+        maze.rows().forEachIndexed { row, chars ->
+            val s = chars.joinToString("")
+            portalRx.findAll(s).forEach { mr ->
+                val name = mr.value.replace(".", "")
+                val pos = row * maze.width + if (mr.value[0] == '.') mr.range.first else mr.range.last
+                val side = if (mr.range.first == 0 || mr.range.last == s.lastIndex) { // outer
+                    Side.OUTER
+                } else {
+                    Side.INNER
                 }
-                it.locator to edges
-            }.let {
-                mutableMapOf(*it.toTypedArray())
-            }
-
-        val distance = Graph.dijkstra(start.locator, { u -> u == end.locator }, p1Nodes)
-        return distance.steps()
-    }
-
-    override fun part2(): Int {
-        data class DId1920(val index: Int, val name: String, val level: Int = 0) {
-            override fun toString(): String {
-                return "DId1920(index=$index, coord=${nodes.coordOf(index)}, name='$name', level=$level)"
+                put(pos, Portal(name, side))
             }
         }
 
-        val distance = Graph.dijkstra(
-            DId1920(start.locator, start.name),
-            { u -> u == DId1920(end.locator, end.name) }
-        ) { u ->
-            nodes[u.index].edges.mapNotNull { neighbor ->
-                when {
-                    neighbor.node.name.takeLast(3) == "out" && u.level == 0 -> null
-                    neighbor.node.name.takeLast(3) == "in " && nodes[u.index].name.dropLast(3) != neighbor.node.name.dropLast(3) -> {
-                        Graph.Edge(
-                            DId1920(neighbor.node.locator, neighbor.node.name, u.level + 1),
-                            neighbor.weight.toDouble()
-                        )
-                    }
-                    nodes[u.index].name.takeLast(3) == "in " && neighbor.node.name.dropLast(3) != nodes[u.index].name.dropLast(3) -> {
-                        Graph.Edge(
-                            DId1920(neighbor.node.locator, neighbor.node.name, u.level - 1),
-                            neighbor.weight.toDouble()
-                        )
-                    }
-                    else -> {
-                        Graph.Edge(
-                            DId1920(neighbor.node.locator, neighbor.node.name, u.level),
-                            neighbor.weight.toDouble()
-                        )
-                    }
+        // vertical
+        maze.columns().forEachIndexed { col, chars ->
+            val s = chars.joinToString("")
+            portalRx.findAll(s).forEach { mr ->
+                val name = mr.value.replace(".", "")
+                val pos = col + (if (mr.value[0] == '.') mr.range.first else mr.range.last) * maze.width
+                val side = if (mr.range.first == 0 || mr.range.last == s.lastIndex) { // outer
+                    Side.OUTER
+                } else {
+                    Side.INNER
                 }
+                put(pos, Portal(name, side))
             }
         }
-        return distance.steps()
+    }
+
+    private val vertexMap: Map<Int, Int> = portals.keys.withIndex().associate { (index, pos) -> pos to index }
+
+    private fun connectVertex(start: Int, vertices: Map<Int, Portal>): List<Pair<Int, Int>> {
+        val visited = mutableSetOf<Int>()
+        val q = mutableListOf(start to 0)
+        return generateSequence { q.removeLastOrNull() }
+            .onEach { (current, dist) ->
+                if (current !in vertices || current == start) {
+                    val neighbors = maze.getNeighborsIndexedValue(current).filter { (neighborPos, neighbor) ->
+                        neighbor == '.' && neighborPos !in visited
+                    }
+
+                    neighbors.forEach { visited.add(it.index) }
+                    q.addAll(neighbors.map { (index, _) -> index to dist + 1 })
+                }
+            }.filter { (current, _) -> current != start && current in vertices.keys }
+            .toList()
+    }
+
+    private val innerPortalPositions: Map<String, Int> = portals.entries
+        .filter { it.value.side == Side.INNER }
+        .associate { (pos, portal) ->
+            portal.name to vertexMap.getValue(pos)
+        }
+
+    private val outerPortalPositions: Map<String, Int> = portals.entries
+        .filter { it.value.side == Side.OUTER }
+        .associate { (pos, portal) ->
+            portal.name to vertexMap.getValue(pos)
+        }
+
+    private val edges: List<List<EdgeInfo>> = buildList {
+        portals.forEach { (pos, portal) ->
+            val neighbors = connectVertex(pos, portals)
+                .map { (neighbor, dist) ->
+                    EdgeInfo(State(vertexMap.getValue(neighbor), 0), dist)
+                }
+            if (portal.name != "AA" && portal.name != "ZZ") {
+                val warp = if (portal.side == Side.INNER) {
+                    EdgeInfo(State(outerPortalPositions.getValue(portal.name), 1), 1)
+                } else {
+                    EdgeInfo(State(innerPortalPositions.getValue(portal.name), -1), 1)
+                }
+                add(neighbors + warp)
+            } else {
+                add(neighbors)
+            }
+        }
+    }
+
+    private fun findExit(dimensionWarp: Boolean): Int {
+        val start = State(outerPortalPositions.getValue("AA"), 0) to 0
+        val end = State(outerPortalPositions.getValue("ZZ"), 0)
+        val q = PriorityQueue<Pair<State, Int>>(compareBy { it.second })
+        q.add(start)
+        val visited: MutableSet<State> = mutableSetOf()
+        val vertices = mutableMapOf(start)
+        return generateSequence { q.pollUntil { !visited.contains(it.first) } }
+            .first { (state, dist) ->
+                if (state == end) {
+                    true
+                } else {
+                    // side effects - fills up queue
+                    visited.add(state)
+                    edges[state.pos].forEach { edge ->
+                        if (!dimensionWarp || state.level != 0 || edge.state.level != -1) {
+                            val edgeLevel = (state.level + if (dimensionWarp) edge.state.level else 0)
+                            val edgeState = edge.state.copy(level = edgeLevel)
+                            val alternateDist = dist + edge.dist
+                            val existingDist = vertices.getOrDefault(edgeState, Int.MAX_VALUE)
+                            if (alternateDist < existingDist) q.add(edgeState to alternateDist)
+                        }
+                    }
+                    false
+                }
+            }.second
+    }
+
+    override fun part1(): Int = findExit(false)
+
+    override fun part2(): Int = findExit(true)
+
+    companion object {
+        val portalRx = Regex("""\.\w{2}|\w{2}\.""")
     }
 }
 
 fun main() = Day.runDay(Y2019D20::class)
 
-//    Class creation: 87ms
-//    Part 1: 528 (4ms)
-//    Part 2: 6214 (52ms)
-//    Total time: 144ms
+//    Class creation: 67ms
+//    Part 1: 528 (2ms)
+//    Part 2: 6214 (14ms)
+//    Total time: 84ms
