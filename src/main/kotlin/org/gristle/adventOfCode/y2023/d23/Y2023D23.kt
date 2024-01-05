@@ -62,20 +62,15 @@ class Y2023D23(private val trails: String) : Day {
         end: Int,
     ): Int {
         fun longestTrail(state: State): Int {
-            val (pos, weight, visit) = state
-            return if (pos == end) {
-                weight
+            return if (state.pos == end) {
+                state.weight
             } else {
-                val newVisit = visit + (1L shl pos)
-                val neighbors = edgeMap.getValue(pos)
+                val visited = state.visited + (1L shl state.pos)
+                val neighborStates = edgeMap.getValue(state.pos)
                     .filter { (neighbor, _) ->
-                        newVisit shr neighbor and 1L == 0L
-                    }.map { (neighbor, newWeight) -> State(neighbor, weight + newWeight, newVisit) }
-                val maxDistance = neighbors
-                    .maxOfOrNull { neighborState ->
-                        longestTrail(neighborState)
-                    } ?: 0
-                maxDistance
+                        visited shr neighbor and 1L == 0L
+                    }.map { (neighbor, newWeight) -> State(neighbor, state.weight + newWeight, visited) }
+                neighborStates.maxOfOrNull { neighborState -> longestTrail(neighborState) } ?: 0
             }
         }
         return longestTrail(State(start, 0, 0L))
@@ -122,10 +117,10 @@ class Y2023D23(private val trails: String) : Day {
 
 fun main() = Day.runDay(Y2023D23::class)
 
-//    Class creation: 35ms
-//    Part 1: 2210 (31ms)
-//    Part 2: 6522 (887ms)
-//    Total time: 954ms
+//    Class creation: 25ms
+//    Part 1: 2210 (29ms)
+//    Part 2: 6522 (741ms)
+//    Total time: 796ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
