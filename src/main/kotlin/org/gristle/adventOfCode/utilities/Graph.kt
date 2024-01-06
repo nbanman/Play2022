@@ -296,7 +296,10 @@ object Graph {
             (edges[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
                 val alternateWeight = current.weight + neighborEdge.weight
                 val weight = vertices.getOrDefault(neighborEdge.vertexId, Double.MAX_VALUE)
-                if (alternateWeight < weight) q.add(StdVertex(neighborEdge.vertexId, alternateWeight, current))
+                if (alternateWeight < weight) {
+                    vertices[neighborEdge.vertexId] = alternateWeight
+                    q.add(StdVertex(neighborEdge.vertexId, alternateWeight, current))
+                }
             }
         }
         return if (endCondition(startId) == null) visited.values.toList() else emptyList()
