@@ -1,7 +1,6 @@
 package org.gristle.adventOfCode.y2019.d20
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.pollUntil
 import org.gristle.adventOfCode.utilities.toGrid
 import java.util.*
 
@@ -100,22 +99,23 @@ class Y2019D20(input: String) : Day {
         val end = State(outerPortalPositions.getValue("ZZ"), 0)
         val q = PriorityQueue<Pair<State, Int>>(compareBy { it.second })
         q.add(start)
-        val visited: MutableSet<State> = mutableSetOf()
-        val vertices = mutableMapOf(start)
-        return generateSequence { q.pollUntil { !visited.contains(it.first) } }
+        val vertices: MutableMap<State, Int> = mutableMapOf()
+        return generateSequence { q.poll() }
             .first { (state, dist) ->
                 if (state == end) {
                     true
                 } else {
                     // side effects - fills up queue
-                    visited.add(state)
                     edges[state.pos].forEach { edge ->
                         if (!dimensionWarp || state.level != 0 || edge.state.level != -1) {
                             val edgeLevel = (state.level + if (dimensionWarp) edge.state.level else 0)
                             val edgeState = edge.state.copy(level = edgeLevel)
                             val alternateDist = dist + edge.dist
                             val existingDist = vertices.getOrDefault(edgeState, Int.MAX_VALUE)
-                            if (alternateDist < existingDist) q.add(edgeState to alternateDist)
+                            if (alternateDist < existingDist) {
+                                vertices[edgeState] = alternateDist
+                                q.add(edgeState to alternateDist)
+                            }
                         }
                     }
                     false
