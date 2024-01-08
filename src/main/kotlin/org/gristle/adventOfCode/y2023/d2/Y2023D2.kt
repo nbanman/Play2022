@@ -11,10 +11,11 @@ class Y2023D2(input: String) : Day {
         .lines()
         .map { line ->
             buildMap {
-                cubePattern
-                    .findAll(line)
-                    .map(MatchResult::destructured)
-                    .forEach { (amtStr, color) ->
+                line
+                    .split(": ", "; ", ", ")
+                    .drop(1)
+                    .forEach { 
+                        val (amtStr, color) = it.split(' ')
                         val amt = amtStr.toInt()
                         if ((this[color] ?: 0) < amt) this[color] = amt
                     }
@@ -33,7 +34,6 @@ class Y2023D2(input: String) : Day {
     override fun part2(): Int = games.sumOf { it.values.reduce(Int::times) }
 
     companion object {
-        private val cubePattern = Regex("""(\d+) (\w+)""")
         private val standardBag = mapOf("red" to 12, "green" to 13, "blue" to 14)
     }
 }
