@@ -2,6 +2,7 @@ package org.gristle.adventOfCode.y2023.d19
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.blankSplit
+import org.gristle.adventOfCode.utilities.getInts
 import org.gristle.adventOfCode.utilities.gvs
 
 class Y2023D19(input: String) : Day {
@@ -40,9 +41,7 @@ class Y2023D19(input: String) : Day {
                     }.toList()
                 name to rules
             }
-        parts = Regex("""(?<!\d)-?\d+""")
-            .findAll(partStanza)
-            .map { it.value.toInt() }
+        parts = partStanza.getInts()
             .chunked(4)
             .toList()
     }
