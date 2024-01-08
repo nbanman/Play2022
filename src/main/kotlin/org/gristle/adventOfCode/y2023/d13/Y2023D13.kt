@@ -113,7 +113,6 @@ class Y2023D13(input: String) : Day {
 
     override fun part2() = patterns
         .sumOf { (pattern, value) ->
-            
             // The indices of previous seams to ignore. 
             val ignoreHorizontal = if (value < 100) value else null
             val ignoreVertical = if (value >= 100) value / 100 else null
