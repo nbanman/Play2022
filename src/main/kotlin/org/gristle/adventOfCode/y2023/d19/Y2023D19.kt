@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2023.d19
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.blankSplit
 import org.gristle.adventOfCode.utilities.getInts
-import org.gristle.adventOfCode.utilities.gvs
 
 class Y2023D19(input: String) : Day {
     
@@ -25,19 +24,26 @@ class Y2023D19(input: String) : Day {
         val (workStanza, partStanza) = input.blankSplit()
         workflows = workStanza
             .lines().associate { line ->
-                val name = line.takeWhile { it.isLetter() }
-                val rules = line.dropWhile { it != '{' }
-                    .gvs("""(?:([xmas])([<>])(\d+):)?(\w+)""")
-                    .map { (categoryStr, comparison, amountStr, destination) ->
-                        val category = when (categoryStr) {
-                            "x" -> 0
-                            "m" -> 1
-                            "a" -> 2
-                            "s" -> 3
-                            else -> 0
+                val split = line.split('{', ',')
+                val name = split.first()
+                val rules = split.drop(1)
+                    .map { ruleStr -> // (categoryStr, comparison, amountStr, destination) ->
+                        if (ruleStr.last() == '}') {
+                            Rule(0, 0, "", ruleStr.dropLast(1))
+                        } else {
+                            val categoryStr = ruleStr[0]
+                            val category = when (categoryStr) {
+                                'x' -> 0
+                                'm' -> 1
+                                'a' -> 2
+                                's' -> 3
+                                else -> 0
+                            }
+                            val comparison = ruleStr[1].toString()
+                            val amount = ruleStr.dropWhile { !it.isDigit() }.takeWhile { it.isDigit() }.toInt()
+                            val destination = ruleStr.takeLastWhile { it.isLetter() }
+                            Rule(category, amount, comparison, destination)
                         }
-                        val amount = amountStr.toIntOrNull() ?: 0
-                        Rule(category, amount, comparison, destination)
                     }.toList()
                 name to rules
             }
