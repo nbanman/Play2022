@@ -282,7 +282,7 @@ object Graph {
         defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
     ): List<Vertex<E>> {
         val start = StdVertex(startId, 0.0)
-        val vertices = mutableMapOf(startId to start.weight)
+        val weights = mutableMapOf(startId to start.weight)
         val q = PriorityQueue<Vertex<E>>()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
@@ -295,9 +295,9 @@ object Graph {
             if (endCondition(current.id) == true) return visited.values.toList()
             (edges[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
                 val alternateWeight = current.weight + neighborEdge.weight
-                val weight = vertices.getOrDefault(neighborEdge.vertexId, Double.MAX_VALUE)
+                val weight = weights.getOrDefault(neighborEdge.vertexId, Double.MAX_VALUE)
                 if (alternateWeight < weight) {
-                    vertices[neighborEdge.vertexId] = alternateWeight
+                    weights[neighborEdge.vertexId] = alternateWeight
                     q.add(StdVertex(neighborEdge.vertexId, alternateWeight, current))
                 }
             }
@@ -358,7 +358,7 @@ object Graph {
         crossinline defaultEdges: (E) -> List<Edge<E>> = { emptyList() }
     ): Sequence<Vertex<E>> = sequence {
         val start = StdVertex(startId, 0.0)
-        val vertices = mutableMapOf(startId to start)
+        val weights = mutableMapOf(startId to start.weight)
         val q = PriorityQueue<Vertex<E>>()
         q.add(start)
         // "visited" serves double duty here. If it were just to ensure that already determined vertices were
@@ -371,8 +371,11 @@ object Graph {
             visited[current.id] = current
             (edges[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
                 val alternateWeight = current.weight + neighborEdge.weight
-                val vertex = vertices.getOrPut(neighborEdge.vertexId) { StdVertex(neighborEdge.vertexId) }
-                if (alternateWeight < vertex.weight) q.add(StdVertex(vertex.id, alternateWeight, current))
+                val weight = weights.getOrDefault(neighborEdge.vertexId, Double.MAX_VALUE)
+                if (alternateWeight < weight) {
+                    weights[neighborEdge.vertexId] = alternateWeight
+                    q.add(StdVertex(neighborEdge.vertexId, alternateWeight, current))
+                }
             }
         }
     }
