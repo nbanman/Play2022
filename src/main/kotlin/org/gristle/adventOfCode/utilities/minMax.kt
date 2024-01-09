@@ -38,21 +38,37 @@ fun <E : Comparable<E>> minMax(vararg items: E): Pair<E, E> {
 }
 
 inline fun <E, R : Comparable<R>> Iterable<E>.minMaxBy(selector: (E) -> R): Pair<E, E> {
-    var min = first() to selector(first())
+    var min = first()
+    var minValue = selector(min)
     var max = min
+    var maxValue = minValue
     drop(1).forEach {
         val selected = selector(it)
-        if (selected < min.second) min = it to selected else if (selected > max.second) max = it to selected
+        if (selected < minValue) {
+            min = it
+            minValue = selected
+        } else if (selected > maxValue) {
+            max = it
+            maxValue = selected
+        }
     }
-    return min.first to max.first
+    return min to max
 }
 
 inline fun <E, R : Comparable<R>> minMaxBy(vararg items: E, selector: (E) -> R): Pair<E, E> {
-    var min = items.first() to selector(items.first())
+    var min = items.first()
+    var minValue = selector(min)
     var max = min
+    var maxValue = minValue
     items.drop(1).forEach {
         val selected = selector(it)
-        if (selected < min.second) min = it to selected else if (selected > max.second) max = it to selected
+        if (selected < minValue) {
+            min = it
+            minValue = selected
+        } else if (selected > maxValue) {
+            max = it
+            maxValue = selected
+        }
     }
-    return min.first to max.first
+    return min to max
 }
