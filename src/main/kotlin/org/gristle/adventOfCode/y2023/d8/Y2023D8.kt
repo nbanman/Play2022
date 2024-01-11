@@ -13,7 +13,7 @@ class Y2023D8(input: String) : Day {
         val (dirStr, netStr) = input.blankSplit()
         
         // infinite sequence of directions (repeats after string ends)
-        directions = sequence { while (true) for (dir in dirStr) yield(dir) }
+        directions = generateSequence(dirStr) { it }.flatMap { it.asSequence() }
         
         // representing a puzzle map with a Kotlin map
         network = netStr
