@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2023.d1
 import org.gristle.adventOfCode.Day
 
 class Y2023D1(private val input: String) : Day {
-
     // grabs the first and last digits in each line, makes a 2-digit number from them, and sums them
     private fun calibrate(input: String): Int = input.lines().sumOf { line ->
         val first = line.first(Char::isDigit).digitToInt()
@@ -15,7 +14,6 @@ class Y2023D1(private val input: String) : Day {
 
     // supports spelled-out numbers by using String.replace to insert digits into the input.
     override fun part2(): Int {
-
         // replaces spelled-out numbers with digits. spellings can overlap so to prevent the replace from obliterating
         // a future replace, select suffixes are included
         val replacements = listOf(
