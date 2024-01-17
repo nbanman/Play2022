@@ -7,15 +7,19 @@ class Y2023D12(input: String) : Day {
     data class State(val conditionsIndex: Int, val damageReportIndex: Int)
 
     data class SpringRow(val conditions: String, val damageReport: List<Int>) {
+        // cache used for DP function 'arrangements,' below. 
         private val cache = mutableMapOf<State, Long>()
-
+        
+        // DP function that uses state objects to delve deeper and deeper into the string using DFS, until a base case 
+        // is found. Cache is updated along the way, so that subsequent dives down the string become instant as soon as
+        // there is any repetition of remaining state.
         fun arrangements(s: State = State(0, 0)): Long = cache.getOrPut(s) {
-            // the # of consecutive broken springs in the damage report that we try to place along the row
+            // the # of consecutive broken springs in the damage report that we will try to place along the row. If 
+            // every broken spring in the damage report has been assigned, return 0.
             val fulfillment = damageReport.getOrNull(s.damageReportIndex) ?: 0
 
-            // Base case. Takes states that have fulfilled the entire damage report and returns 1 if valid, 
-            // 0 if invalid. Valid states are those with no remaining '#' in the current or any future blocks, 
-            // and that have filled all the damaged spring requirements
+            // Base case. Takes states that have assigned broken springs corresponding to the entire damage report and 
+            // returns 1 if valid, 0 if invalid. Valid states are those with no remaining '#' in the string.
             if (fulfillment == 0) {
                 val damagedSpringRemaining = (s.conditionsIndex..conditions.lastIndex).any { conditions[it] == '#' }
                 return@getOrPut if (damagedSpringRemaining) 0 else 1
@@ -50,27 +54,23 @@ class Y2023D12(input: String) : Day {
         }
     }
 
-    // parsing
+    // intermediate parsing step. Each part parses the reports differently.
     private val springReports: List<Pair<String, List<Int>>> = input.lines().map { line ->
         val (conditions, damageReportStr) = line.split(' ')
         val damageReport: List<Int> = damageReportStr.split(',').map(String::toInt)
         conditions to damageReport
     }
+    
+    // parses the reports to rows, then sums the number of arrangements possible in each row
+    fun solve(springRow: (String, List<Int>) -> SpringRow): Long = springReports
+        .sumOf { (conditions, damageReport) -> springRow(conditions, damageReport).arrangements() }
 
-    override fun part1(): Long {
-        val springRows = springReports.map { (conditions, damageReport) ->
-            SpringRow(conditions, damageReport)
-        }
-        return springRows.sumOf { springRow -> springRow.arrangements() }
-    }
-
-    override fun part2(): Long {
-        val springRows = springReports.map { (conditions, damageReport) ->
-            val expandedConditions = List(5) {conditions}.joinToString("?") 
-            val expandedDamageReport = List(5) { damageReport }.flatten()
-            SpringRow(expandedConditions, expandedDamageReport)
-        }
-        return springRows.sumOf { springRow -> springRow.arrangements() }
+    override fun part1(): Long = solve { conditions, damageReport -> SpringRow(conditions, damageReport) } 
+    
+    override fun part2(): Long = solve { conditions, damageReport ->
+        val expandedConditions = List(5) { conditions }.joinToString("?")
+        val expandedDamageReport = List(5) { damageReport }.flatten()
+        SpringRow(expandedConditions, expandedDamageReport)
     }
 }
 
