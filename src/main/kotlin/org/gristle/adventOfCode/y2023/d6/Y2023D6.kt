@@ -10,7 +10,7 @@ class Y2023D6(private val input: String) : Day {
 
     override fun part1() = solve { it.getLongList() }
 
-    override fun part2() = solve { it.filter(Char::isDigit).getLongList() }
+    override fun part2() = solve { listOf(it.filter(Char::isDigit).toLong()) }
 
     private inline fun solve(parseLine: (String) -> List<Long>): Long {
         
