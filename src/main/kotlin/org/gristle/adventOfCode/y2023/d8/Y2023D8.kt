@@ -13,7 +13,7 @@ class Y2023D8(input: String) : Day {
         val (dirStr, netStr) = input.blankSplit()
         
         // infinite sequence of directions (repeats after string ends)
-        directions = generateSequence(dirStr) { it }.flatMap { it.asSequence() }
+        directions = generateSequence(dirStr.asSequence()) { it }.flatten()
         
         // representing a puzzle map with a Kotlin map
         network = netStr
@@ -30,7 +30,6 @@ class Y2023D8(input: String) : Day {
             network.getValue(node).let { (left, right) -> if (dir == 'L') left else right }
         }.indexOfFirst(endCondition)
     
-    // basic
     override fun part1() = traverse("AAA") { it == "ZZZ" }
 
     // find how long it takes for each ghost to make it from a to z, making the *massive* assumption that
