@@ -62,7 +62,7 @@ class Y2023D12(input: String) : Day {
     }
     
     // parses the reports to rows, then sums the number of arrangements possible in each row
-    fun solve(springRow: (String, List<Int>) -> SpringRow): Long = springReports
+    private inline fun solve(springRow: (String, List<Int>) -> SpringRow): Long = springReports
         .sumOf { (conditions, damageReport) -> springRow(conditions, damageReport).arrangements() }
 
     override fun part1(): Long = solve { conditions, damageReport -> SpringRow(conditions, damageReport) } 
