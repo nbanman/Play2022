@@ -8,7 +8,6 @@ class Y2023D4(input: String) : Day {
     private val cards: List<Int> = input
         .lines()
         .map { line ->
-
             // rather than split the numbers into winners and potentials, rely on the fact that neither side has a 
             // duplicate number. So we can get a list of all the numbers and pull out the ones that are duplicated.
             // the first Int in the line is the card number, which we don't need, so drop that.
@@ -26,7 +25,6 @@ class Y2023D4(input: String) : Day {
         // increase the number of each card we have by going through each card number in turn, checking how many 
         // future cards they create, and updating the cardCount appropriately
         cards.forEachIndexed { index, count ->
-
             // this is the range of indices in cardCount to be updated. Note that there is no need to check for 
             // overflow beyond the number of cards because the puzzle states, 'Cards will never make you copy a card 
             // past the end of the table.'
