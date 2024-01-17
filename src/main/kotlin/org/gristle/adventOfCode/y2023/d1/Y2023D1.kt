@@ -17,17 +17,17 @@ class Y2023D1(private val input: String) : Day {
     override fun part2(): Int {
 
         // replaces spelled-out numbers with digits. spellings can overlap so to prevent the replace from obliterating
-        // a future replace, select prefixes and suffixes are included
+        // a future replace, select suffixes are included
         val replacements = listOf(
-            "one" to "o1e",
-            "two" to "t2o",
-            "three" to "t3e",
+            "one" to "1e",
+            "two" to "2o",
+            "three" to "3e",
             "four" to "4",
             "five" to "5e",
             "six" to "6",
             "seven" to "7n",
-            "eight" to "e8t",
-            "nine" to "n9e",
+            "eight" to "8t",
+            "nine" to "9e",
         )
 
         // runs replace on the input string for each replacement in the list
