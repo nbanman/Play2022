@@ -26,9 +26,8 @@ class Y2023D3(private val schematic: String) : Day {
     // for a given index in the schematic, if there is a digit, expand left and right until the digit ends. Grab
     // the sequence of digits and convert to Int. If the index is out of bounds or does not contain a digit, return null.
     private fun getNumberOrNull(index: Int): IntRange? {
-
         // If the index is out of bounds or does not contain a digit, return null.
-        if (schematic.getOrNull(index)?.isDigit() == false) return null
+        if (index !in schematic.indices || !schematic[index].isDigit()) return null
 
         // keep subtracting from leftIndex while there are digits to the left. The getOrNull version of get ensures
         // that the leftIndex does not go below 0.
