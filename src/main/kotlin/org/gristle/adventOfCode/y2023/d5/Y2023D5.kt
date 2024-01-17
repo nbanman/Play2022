@@ -29,13 +29,11 @@ class Y2023D5(input: String) : Day {
 
     fun solve(seedRanges: List<LongRange>): Long = seedRanges
         .minOf { seedRange -> // for each seedRange, find the smallest end number
-
             // feed a list of ranges through a gauntlet of conversion stages. the list of ranges will grow each step
             // as each conversion handles different parts of the range differently.
             val subRanges = conversions.fold(listOf(seedRange)) { ranges, listings ->
                 ranges.flatMap { range ->
                     buildList {
-
                         // go through each listing in ascending order, adding subRanges where appropriate, mapping to
                         // destination where appropriate. In order to avoid using a mutable "last" variable, we
                         // put everything in a fold that updates an internal "next" and ultimately outputs a "last"
@@ -57,7 +55,6 @@ class Y2023D5(input: String) : Day {
                     }
                 }
             }
-
             // we only care about the lowest number of all these subRanges
             subRanges.minOf { it.first }
         }
