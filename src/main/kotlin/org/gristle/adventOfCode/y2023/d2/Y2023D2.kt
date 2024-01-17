@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2023.d2
 import org.gristle.adventOfCode.Day
 
 class Y2023D2(input: String) : Day {
-
     // Both parts only care about the maximum of each color cube each bag is shown to hold. Each line is a game,
     // so make a list of games, one per line, represented by a map holding the maximum number of cubes reported for
     // each color.
