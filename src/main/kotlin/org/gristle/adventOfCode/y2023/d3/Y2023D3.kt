@@ -3,17 +3,16 @@ package org.gristle.adventOfCode.y2023.d3
 import org.gristle.adventOfCode.Day
 
 class Y2023D3(private val schematic: String) : Day {
-
     // we use the input schematic directly, using indexes. To move up and down the y axis, we need the width.
     private val width = schematic.indexOf('\n') + 1
 
     // intermediate step used for both parts. Given a predicate to know which symbols to look for, looks at every
     // symbol and for each returns a set of IntRanges representing numbers that are adjacent to it. Intranges are
     // used rather than the underlying Ints because IntRanges are unique and Ints are not.
-    private fun numbersAdjacentToSymbol(symbol: (Char) -> Boolean): List<Set<IntRange>> = schematic
+    private fun numbersAdjacentToSymbol(isValidSymbol: (Char) -> Boolean): List<Set<IntRange>> = schematic
         .withIndex()
-        .filter { (_, c) -> symbol(c) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
-        .map { (index, _) -> // turn each valid symbol into a list of the adjacent Ints
+        .filter { (_, c) -> isValidSymbol(c) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
+        .map { (index, _) -> // turn each valid symbol into a list of the adjacent IntRanges
             buildSet {
                 for (y in -1..1) {
                     for (x in -1..1) {
@@ -23,8 +22,8 @@ class Y2023D3(private val schematic: String) : Day {
             }
         }
 
-    // for a given index in the schematic, if there is a digit, expand left and right until the digit ends. Grab
-    // the sequence of digits and convert to Int. If the index is out of bounds or does not contain a digit, return null.
+    // for a given index in the schematic, if there is a digit, expand left and right until the digit ends. Returns
+    // null if the index is out of bounds or does not contain a digit.
     private fun getNumberOrNull(index: Int): IntRange? {
         // If the index is out of bounds or does not contain a digit, return null.
         if (index !in schematic.indices || !schematic[index].isDigit()) return null
@@ -34,12 +33,11 @@ class Y2023D3(private val schematic: String) : Day {
         var leftIndex = index
         while (schematic.getOrNull(leftIndex - 1)?.isDigit() == true) leftIndex--
 
-        // keep adding to rightIndex while there are digits to the right. The getOrNull version of get ensures
-        // that the RightIndex does not exceed the string length.
+        // keep adding to rightIndex while there are digits to the right. 
         var rightIndex = index
         while (schematic.getOrNull(rightIndex + 1)?.isDigit() == true) rightIndex++
 
-        // return the range
+        // return as range
         return leftIndex..rightIndex
     }
 
