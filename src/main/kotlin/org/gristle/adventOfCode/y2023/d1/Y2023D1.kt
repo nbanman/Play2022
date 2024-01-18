@@ -6,8 +6,8 @@ class Y2023D1(private val input: String) : Day {
     // grabs the first and last digits in each line, makes a 2-digit number from them, and sums them
     private fun calibrate(input: String): Int = input.lines().sumOf { line ->
         val first = line.first(Char::isDigit).digitToInt()
-        val second = line.last(Char::isDigit).digitToInt()
-        first * 10 + second
+        val last = line.last(Char::isDigit).digitToInt()
+        first * 10 + last
     }
 
     override fun part1() = calibrate(input)
@@ -29,10 +29,8 @@ class Y2023D1(private val input: String) : Day {
         )
 
         // runs replace on the input string for each replacement in the list
-        val digitsAdded = replacements.fold(input) { acc, (original, replacement) ->
-            acc.replace(original, replacement)
-        }
-        return calibrate(digitsAdded)
+        val replacedWithDigits = replacements.fold(input) { acc, (word, digit) -> acc.replace(word, digit) }
+        return calibrate(replacedWithDigits)
     }
 }
 
