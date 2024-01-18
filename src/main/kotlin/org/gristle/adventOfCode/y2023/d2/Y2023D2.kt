@@ -26,7 +26,7 @@ class Y2023D2(input: String) : Day {
     // the IDs of the remaining games. 
     override fun part1(): Int = games
         .withIndex()
-        .filter { (_, game) -> game.all { (color, amt) -> (standardBag[color] ?: 0) >= amt } }
+        .filter { (_, game) -> game.all { (color, amt) -> standardBag.getValue(color) >= amt } }
         .sumOf { (index, _) -> index + 1 }
 
     // Take each game's various maximums and return the sum of their respective products.
