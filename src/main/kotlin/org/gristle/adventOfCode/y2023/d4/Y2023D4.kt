@@ -5,14 +5,14 @@ import org.gristle.adventOfCode.utilities.getInts
 
 class Y2023D4(input: String) : Day {
 
+    // represents each card as the number of winning numbers, that is, the number of numbers on the right that match a
+    // number on the left.
     private val cards: List<Int> = input
         .lines()
         .map { line ->
-            // rather than split the numbers into winners and potentials, rely on the fact that neither side has a 
-            // duplicate number. So we can get a list of all the numbers and pull out the ones that are duplicated.
-            // the first Int in the line is the card number, which we don't need, so drop that.
-            val numbers = line.getInts().drop(1).toList()
-            numbers.size - numbers.distinct().size
+            val (_, winnersStr, potentialsStr) = line.split(": ", " | ")
+            val winners = winnersStr.getInts().toSet()
+            potentialsStr.getInts().count { it in winners }
         }
 
     // bitwise Int equivalent of 2^(n - 1) returns the point value
