@@ -1,36 +1,32 @@
 package org.gristle.adventOfCode.y2023.d10
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
+import org.gristle.adventOfCode.utilities.StringGrid
 import org.gristle.adventOfCode.utilities.takeUntil
-import org.gristle.adventOfCode.utilities.toGrid
 import kotlin.math.absoluteValue
 
 class Y2023D10(input: String) : Day {
-
-    // convert String to Grid for easy traversal/lookup
-    private val field = input.toGrid()
+    private val field = StringGrid(input)
 
     // list of directions taken by the loop
     private val loop: List<Nsew> by lazy {
-        
         // start at 'S'
-        val startPos = field.coordOfElement('S')
+        val startPos = field.string.indexOf('S')
         
         // find the initial direction by looking in each direction, and pick the first one that has a pipe
         // fitting that connects back to the start
         val startDir = Nsew.entries // get directions
-            .first { direction -> // pick the first direction pointing to a fitting pointing back to startPos
-                val neighborPos = startPos.move(direction)
-                field.validCoord(neighborPos)
-                        && movements.containsKey(field[neighborPos] to direction.flip())
+            .first { dir -> // pick the first direction pointing to a fitting pointing back to startPos
+                field.moveOrNull(startPos, dir)
+                    ?.let { movements.containsKey(field[it] to dir.flip()) }
+                    ?: false
             }
         
         // lambda for moving along the pipe, taking in the position and direction and returning the next
         // position and direction
-        val move: (Pair<Coord, Nsew>) -> Pair<Coord, Nsew> = { (pos, dir) ->
-            val newPos = pos.move(dir)
+        val move: (Pair<Int, Nsew>) -> Pair<Int, Nsew> = { (pos, dir) ->
+            val newPos = field.move(pos, dir)
             val newDir = movements.getValue(field[newPos] to dir)
             newPos to newDir
         }
@@ -65,7 +61,7 @@ class Y2023D10(input: String) : Day {
     }
 
     companion object {
-        
+       
         private val movements: Map<Pair<Char, Nsew>, Nsew> = mapOf(
             ('S' to Nsew.NORTH) to Nsew.NORTH,
             ('S' to Nsew.SOUTH) to Nsew.SOUTH,
