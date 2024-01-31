@@ -43,14 +43,14 @@ class Y2023D7(private val input: String) : Day {
                 (groups.getOrElse(0) { 0 } + numberOfJokers) * 2 + groups.getOrElse(1) { 0 }
 
             // calculate overall strength by building an int with bitshifts
-            fun Char.value() = if (this == jokers) 0 else CARD_ORDER.indexOf(this) + 1
+            fun Char.value() = if (this == jokers) 0 else cardOrder.getValue(this)
             cards.fold(handTypeStrength) { acc, card -> (acc shl 4) + card.value() }
         }
 
         override fun compareTo(other: Hand): Int = this.strength - other.strength
 
         companion object {
-            private const val CARD_ORDER = "23456789TJQKA"
+            private val cardOrder = "23456789TJQKA".mapIndexed { index, c -> c to index + 1 }.toMap()
         }
     }
 }
@@ -58,9 +58,9 @@ class Y2023D7(private val input: String) : Day {
 fun main() = Day.runDay(Y2023D7::class)
 
 //    Class creation: 2ms
-//    Part 1: 253866470 (30ms)
-//    Part 2: 254494947 (7ms)
-//    Total time: 40ms
+//    Part 1: 253866470 (28ms)
+//    Part 2: 254494947 (5ms)
+//    Total time: 35ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
