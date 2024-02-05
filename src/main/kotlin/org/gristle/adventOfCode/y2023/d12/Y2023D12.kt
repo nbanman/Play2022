@@ -3,10 +3,9 @@ package org.gristle.adventOfCode.y2023.d12
 import org.gristle.adventOfCode.Day
 
 class Y2023D12(input: String) : Day {
-
     data class SpringRow(val conditions: String, val damageReport: List<Int>) {
         // expands the SpringRow in accordance with Part 2 rules
-        fun expand() = SpringRow(
+        fun expand(): SpringRow = SpringRow(
             List(5) { conditions }.joinToString("?"),
             List(5) { damageReport }.flatten()
         )
@@ -17,20 +16,19 @@ class Y2023D12(input: String) : Day {
         // DP function that uses state objects to delve deeper and deeper into the string using DFS, until a base case 
         // is found. Cache is updated along the way, so that subsequent dives down the string become instant as soon as
         // there is any repetition of remaining state.
-        fun arrangements(state: Pair<Int, Int> = 0 to 0): Long = cache.getOrPut(state) {
-
-            val (conditionsIndex, damageReportIndex) = state
-            
-            // Base case. Takes states that have assigned broken springs corresponding to the entire damage report and 
-            // returns 1 if valid, 0 if invalid. Valid states are those with no remaining '#' in the string.
+        fun arrangements(
+            conditionsIndex: Int = 0,
+            damageReportIndex: Int = 0
+        ): Long = cache.getOrPut(conditionsIndex to damageReportIndex) {
+            // Base case. Takes states that have assigned broken springs corresponding to the entire damage report 
+            // and returns 1 if valid, 0 if invalid. Valid states are those with no remaining '#' in the string.
             if (damageReportIndex == damageReport.size) {
                 val damagedSpringRemaining = (conditionsIndex..conditions.lastIndex).any { conditions[it] == '#' }
                 return@getOrPut if (damagedSpringRemaining) 0 else 1
             }
-            
             // Otherwise, we go recursive by trying to fit the next group of broken springs in every place along the 
-            // block. This starts as a sequence of indexes, from 0 until the length of the block minus the fulfillment 
-            // size (to account for the size of the fulfillment itself in the string).
+            // block. This starts as a sequence of indexes, from 0 until the length of the block minus the 
+            // fulfillment size (to account for the size of the fulfillment itself in the string).
             val brokenGroup = damageReport[damageReportIndex]
             (conditionsIndex..conditions.length - brokenGroup)
                 .asSequence()
@@ -43,12 +41,12 @@ class Y2023D12(input: String) : Day {
                     // if the character following the placement is '#', invalid b/c that extra '#' would overfulfill
                     // otherwise valid
                     when {
-                        '.' in conditions.substring(index, index + brokenGroup) -> false
+                        (index until index + brokenGroup).any { conditions[it] == '.' } -> false
                         index + brokenGroup == conditions.length -> true
                         conditions[index + brokenGroup] == '#' -> false
                         else -> true
                     }
-                }.sumOf { index -> arrangements(index + brokenGroup + 1 to damageReportIndex + 1) }
+                }.sumOf { index -> arrangements(index + brokenGroup + 1, damageReportIndex + 1) }
         }
     }
 
@@ -59,17 +57,17 @@ class Y2023D12(input: String) : Day {
         SpringRow(conditions, damageReport)
     }
 
-    override fun part1(): Long = springRows.sumOf { it.arrangements() }
+    override fun part1(): Long = springRows.sumOf(SpringRow::arrangements)
     
-    override fun part2(): Long = springRows.sumOf { it.expand().arrangements() }
+    override fun part2(): Long = springRows.map(SpringRow::expand).sumOf(SpringRow::arrangements)
 }
 
 fun main() = Day.runDay(Y2023D12::class)
 
-//    Class creation: 16ms
-//    Part 1: 7344 (19ms)
-//    Part 2: 1088006519007 (157ms)
-//    Total time: 193ms
+//    Class creation: 17ms
+//    Part 1: 7344 (18ms)
+//    Part 2: 1088006519007 (135ms)
+//    Total time: 171ms
 
 @Suppress("unused")
 private val sampleInput = listOf(
