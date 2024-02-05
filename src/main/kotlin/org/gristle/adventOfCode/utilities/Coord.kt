@@ -213,10 +213,16 @@ fun Iterable<Coord>.getBounds(padding: Int = 0): Pair<IntRange, IntRange> {
     var yMin = Int.MAX_VALUE
     var yMax = Int.MIN_VALUE
     forEach { coord ->
-        if (coord.x < xMin) xMin = coord.x
-        if (coord.x > xMax) xMax = coord.x
-        if (coord.y < yMin) yMin = coord.y
-        if (coord.y > yMax) yMax = coord.y
+        if (coord.x < xMin) {
+            xMin = coord.x
+        } else if (coord.x > xMax) {
+            xMax = coord.x
+        }
+        if (coord.y < yMin) {
+            yMin = coord.y
+        } else if (coord.y > yMax) {
+            yMax = coord.y
+        }
     }
     return xMin - padding..xMax + padding to yMin - padding..yMax + padding
 }
