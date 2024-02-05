@@ -1,11 +1,10 @@
 package org.gristle.adventOfCode.y2018.d1
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.getIntList
 
 class Y2018D1(input: String) : Day {
 
-    private val changes = input.getIntList()
+    private val changes = input.lines().map(String::toInt)
 
     override fun part1() = changes.sum()
 
