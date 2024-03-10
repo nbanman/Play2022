@@ -12,7 +12,7 @@ class Y2022D23(input: String) : Day {
     enum class Direction {
         N, S, W, E;
 
-        fun advance(n: Int): Direction = values()[(ordinal + n) % 4]
+        fun advance(n: Int): Direction = entries[(ordinal + n) % 4]
     }
 
     private val grove: Grove = input.toMutableGrid { it == '#' }
@@ -112,3 +112,8 @@ class Y2022D23(input: String) : Day {
 // pt1: 3812 (65ms) (original 10228ms)
 // pt2: 1003 (697ms) (original 374635ms!!!)
 fun main() = Day.runDay(Y2022D23::class)
+
+//    Class creation: 11ms
+//    Part 1: 3812 (82ms)
+//    Part 2: 1003 (1100ms)
+//    Total time: 1194ms
