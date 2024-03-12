@@ -5,29 +5,31 @@ import org.gristle.adventOfCode.utilities.Coord
 
 class Y2021D2(input: String) : Day {
 
-    val commands: Sequence<Pair<Char, Int>> = input
-        .lineSequence()
+    val commands: List<Pair<Char, Int>> = input
+        .lines()
         .map { line -> line[0] to line.takeLastWhile { it.isDigit() }.toInt() }
 
-    override fun part1(): Int = commands
-        .fold(Coord.ORIGIN) { pos, (dir, amt) ->
-            when (dir) {
-                'f' -> pos.copy(x = pos.x + amt)
-                'u' -> pos.copy(y = pos.y - amt)
-                'd' -> pos.copy(y = pos.y + amt)
-                else -> throw IllegalArgumentException("invalid command")
-            }
-        }.let { it.x * it.y }
+    fun solve(move: (Pair<Coord, Int>, Pair<Char, Int>) -> Pair<Coord, Int>): Int = commands
+        .fold(Coord.ORIGIN to 0, move)
+        .let { (pos, _) -> pos.x * pos.y }
 
-    override fun part2(): Int = commands
-        .fold(Coord.ORIGIN to 0) { (pos, aim), (dir, amt) ->
-            when (dir) {
-                'f' -> Coord(pos.x + amt, pos.y + aim * amt) to aim
-                'u' -> pos to aim - amt
-                'd' -> pos to aim + amt
-                else -> throw IllegalArgumentException("invalid command")
-            }
-        }.let { (pos, _) -> pos.x * pos.y }
+    override fun part1() = solve { (pos, _), (dir, amt) ->
+        when (dir) {
+            'f' -> pos.copy(x = pos.x + amt)
+            'u' -> pos.copy(y = pos.y - amt)
+            'd' -> pos.copy(y = pos.y + amt)
+            else -> throw IllegalArgumentException("invalid command")
+        } to 0
+    }
+
+    override fun part2() = solve { (pos, aim), (dir, amt) ->
+        when (dir) {
+            'f' -> Coord(pos.x + amt, pos.y + aim * amt) to aim
+            'u' -> pos to aim - amt
+            'd' -> pos to aim + amt
+            else -> throw IllegalArgumentException("invalid command")
+        }
+    }
 }
 
 fun main() = Day.runDay(Y2021D2::class)
