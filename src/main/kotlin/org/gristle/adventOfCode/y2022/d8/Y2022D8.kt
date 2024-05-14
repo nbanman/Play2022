@@ -16,7 +16,7 @@ class Y2022D8(input: String) : Day {
 
     // for a given position, provide a list of sequences that generate coordinates radiating away from the position
     // in each of the four directions
-    private fun rays(tree: Coord): List<Sequence<Coord>> = Nsew.values().map { direction ->
+    private fun rays(tree: Coord): List<Sequence<Coord>> = Nsew.entries.map { direction ->
         generateSequence(tree.move(direction)) { it.move(direction) }
     }
 
