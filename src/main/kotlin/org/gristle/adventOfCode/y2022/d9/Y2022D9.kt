@@ -3,7 +3,6 @@ package org.gristle.adventOfCode.y2022.d9
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.getIntList
 import kotlin.math.sign
 
 // Sequence-palooza!!
@@ -14,8 +13,8 @@ class Y2022D9(input: String) : Day {
         .lineSequence()
         .flatMap { line -> // parse into a Sequence of directions, expanded so that "U 4" becomes 4 Nsew.NORTH entries
             val direction = Nsew.of(line[0])
-            val (times) = line.getIntList()
-            generateSequence { direction }.take(times)
+            val times = line.takeLastWhile(Char::isDigit).toInt()
+            List(times) { direction }
         }
         // take directions and turn them into a Sequence of positions that the head visits
         .runningFold(Coord.ORIGIN) { pos, direction -> pos.move(direction) }
