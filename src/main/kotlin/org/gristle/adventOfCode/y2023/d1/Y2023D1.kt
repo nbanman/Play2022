@@ -35,8 +35,8 @@ class Y2023D1(input: String) : Day {
             }
 
         return lines.sumOf { line ->
-            val firstDigit = getDigit(line, forwardTrie, false) // search forward
-            val secondDigit = getDigit(line, reverseTrie, true) // search backward
+            val firstDigit = getDigit(line, forwardTrie) // search forward
+            val secondDigit = getDigit(line.reversed(), reverseTrie) // search backward
             firstDigit * 10 + secondDigit
         }
     }
@@ -47,37 +47,34 @@ class Y2023D1(input: String) : Day {
     }
 
     // See pt2 description for how this works.
-    private fun getDigit(line: String, trie: Node, reversed: Boolean): Int {
-
-        // search forwards or backwards
-        val range = if (reversed) {
-            line.lastIndex downTo 0
-        } else {
-            line.indices
-        }
+    private fun getDigit(line: String, trie: Node): Int {
 
         // tracks snippets of sequences that may end up being spelled out digits
         var potentials: List<Node> = emptyList()
 
         // traverses string, forwards or backwards
-        range.forEach { index ->
-            val token = line[index] // get next character
-                .also { if (it.isDigit()) return it.digitToInt() } // returns early if numerical digit found
+        for (token in line) {
+            // returns early if numerical digit found
+            if (token.isDigit()) return token.digitToInt()  
 
-            // starts a new search starting at the current token. Stored as a list for easy addition later.
-            val current = trie.children[token]
-                ?.also { if (it.value != 0) return it.value } // returns early if numerical digit found
-                ?.let { listOf(it) } // store as list
-                ?: emptyList()
-
-            // for each potential still in play, advance it along the trie, discarding ones that don't match
-            val evaluated = potentials.mapNotNull { node ->
-                node.children[token] // moves it along. if it doesn't match, it returns null, which gets discarded
-                    ?.also { if (it.value != 0) return it.value } // returns if leaf found, meaning a digit was spelled
+            // Update each value in potentials. If a word is spelled out, return the value of that word.
+            // If the token is not in a word, then remove it from the list of potentials. Add the start of
+            // a new word to the end of the potentials list.
+            potentials = buildList { 
+                for (node in potentials) {
+                    val child = node.children[token] // gets the next node, or null if such node doesn't exist
+                    if (child != null) {
+                        // if that is a final node spelling a word, return the value. Otherwise, add that node to
+                        // list of potentials.
+                        if (child.value != 0) return child.value 
+                        add(child)
+                    }
+                }
+                
+                // starts a new search starting at the current token if that's the start of a word. 
+                trie.children[token]?.let { add(it) }
             }
-
-            // update the list of potential words for the next pass
-            potentials = evaluated + current
+           
         }
 
         // if the string does not contain a numerical or spelled-out digit, the string is malformed so throw 
