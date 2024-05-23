@@ -7,7 +7,7 @@ import org.gristle.adventOfCode.utilities.overlaps
 
 class Y2022D4(input: String) : Day {
 
-    private val ranges = input
+    private val ranges: Sequence<Pair<IntRange, IntRange>> = input
         .getInts()
         .chunked(4) { (low1, high1, low2, high2) -> low1..high1 to low2..high2 }
 
