@@ -9,7 +9,7 @@ class Y2023D3(private val schematic: String) : Day {
     // intermediate step used for both parts. Given a predicate to know which symbols to look for, looks at every
     // symbol and for each returns a set of IntRanges representing numbers that are adjacent to it. Intranges are
     // used rather than the underlying Ints because IntRanges are unique and Ints are not.
-    private fun numbersAdjacentToSymbol(isValidSymbol: (Char) -> Boolean): List<Set<IntRange>> = schematic
+    private inline fun numbersAdjacentToSymbol(isValidSymbol: (Char) -> Boolean): List<Set<IntRange>> = schematic
         .withIndex()
         .filter { (_, c) -> isValidSymbol(c) } // tests whether a 'symbol' in pt1, and a 'gear' in pt2
         .map { (index, _) -> // turn each valid symbol into a list of the adjacent IntRanges
