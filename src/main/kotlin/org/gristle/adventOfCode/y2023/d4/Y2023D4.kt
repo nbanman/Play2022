@@ -4,7 +4,6 @@ import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getInts
 
 class Y2023D4(input: String) : Day {
-
     // represents each card as the number of winning numbers, that is, the number of numbers on the right that match a
     // number on the left.
     private val cards: List<Int> = input
@@ -24,7 +23,7 @@ class Y2023D4(input: String) : Day {
 
         // increase the number of each card we have by going through each card number in turn, checking how many 
         // future cards they create, and updating the cardCount appropriately
-        cards.forEachIndexed { index, count ->
+        for((index, count) in cards.withIndex()) {
             // this is the range of indices in cardCount to be updated. Note that there is no need to check for 
             // overflow beyond the number of cards because the puzzle states, 'Cards will never make you copy a card 
             // past the end of the table.'
@@ -32,7 +31,9 @@ class Y2023D4(input: String) : Day {
 
             // there is a multiplier effect for each card of that index you have
             val numberOfCards = cardCount[index]
-            range.forEach { cardCount[it] += numberOfCards }
+            for (slot in range) {
+                cardCount[slot] += numberOfCards
+            }
         }
         return cardCount.sum()
     }
