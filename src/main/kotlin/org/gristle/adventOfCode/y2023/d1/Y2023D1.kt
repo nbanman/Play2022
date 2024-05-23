@@ -10,18 +10,18 @@ class Y2023D1(input: String) : Day {
     // sums them.
     override fun part1() = lines.sumOf { "${it.first(Char::isDigit)}${it.last(Char::isDigit)}".toInt() }
 
-    // For fun, part2 pursues a baroque strategy. Two trees are created, one for searching forwards, one backwards.
+    // For fun, part2 pursues a baroque strategy. Two tries are created, one for searching forwards, one backwards.
     // Each node is assigned a value and a map containing potential children, eventually spelling out the names of 
     // digits. So 'o' -> 'n' -> 'e' and 'f' -> ['o' -> 'u' -> 'r'] | ['i' -> 'v' -> 'e']. The fun 'getDigit' takes
-    // a line and goes through each character, trying to traverse a tree to a leaf. If at any time a numerical digit
+    // a line and goes through each character, trying to traverse a trie to a leaf. If at any time a numerical digit
     // is encountered, the function immediately returns the value of the digit. Otherwise, it goes to the end. Any
     // time a word does not match it is immediately discarded.
     override fun part2(): Int {
 
-        // One tree contains information for searching forwards, the other for searching backwards. 
+        // One trie contains information for searching forwards, the other for searching backwards. 
         // E.g., "one" becomes "eno"
-        val forwardTree = mutableMapOf<Char, Node>()
-        val reverseTree = mutableMapOf<Char, Node>()
+        val forwardTrie = Node(0)
+        val reverseTrie = Node(0)
 
         val numbers = "one|two|three|four|five|six|seven|eight|nine".splitToSequence('|')
         numbers
@@ -29,14 +29,14 @@ class Y2023D1(input: String) : Day {
                 // get value of the number from the ordinal order of the list
                 val value = index + 1
 
-                // populate the trees with nodes relating to the digit
-                forwardTree.populateTree(s, value)
-                reverseTree.populateTree(s.reversed(), value)
+                // populate the tries with nodes relating to the digit
+                forwardTrie.populateTrie(s, value)
+                reverseTrie.populateTrie(s.reversed(), value)
             }
 
         return lines.sumOf { line ->
-            val firstDigit = getDigit(line, forwardTree, false) // search forward
-            val secondDigit = getDigit(line, reverseTree, true) // search backward
+            val firstDigit = getDigit(line, forwardTrie, false) // search forward
+            val secondDigit = getDigit(line, reverseTrie, true) // search backward
             firstDigit * 10 + secondDigit
         }
     }
@@ -47,7 +47,7 @@ class Y2023D1(input: String) : Day {
     }
 
     // See pt2 description for how this works.
-    private fun getDigit(line: String, tree: Map<Char, Node>, reversed: Boolean): Int {
+    private fun getDigit(line: String, trie: Node, reversed: Boolean): Int {
 
         // search forwards or backwards
         val range = if (reversed) {
@@ -65,12 +65,12 @@ class Y2023D1(input: String) : Day {
                 .also { if (it.isDigit()) return it.digitToInt() } // returns early if numerical digit found
 
             // starts a new search starting at the current token. Stored as a list for easy addition later.
-            val current = tree[token]
+            val current = trie.children[token]
                 ?.also { if (it.value != 0) return it.value } // returns early if numerical digit found
                 ?.let { listOf(it) } // store as list
                 ?: emptyList()
 
-            // for each potential still in play, advance it along the tree, discarding ones that don't match
+            // for each potential still in play, advance it along the trie, discarding ones that don't match
             val evaluated = potentials.mapNotNull { node ->
                 node.children[token] // moves it along. if it doesn't match, it returns null, which gets discarded
                     ?.also { if (it.value != 0) return it.value } // returns if leaf found, meaning a digit was spelled
@@ -84,13 +84,9 @@ class Y2023D1(input: String) : Day {
         throw IllegalArgumentException("No digit found in $line")
     }
 
-    // Populates the tree with nodes corresponding to the string.
-    private fun MutableMap<Char, Node>.populateTree(
-        s: String,
-        value: Int
-    ) {
-        var lastNode: Node = getOrPut(s[0]) { Node(value) }
-        s.drop(1).forEach { c -> lastNode = lastNode.children.getOrPut(c) { Node(value) } }
+    // Populates the trie with nodes corresponding to the string.
+    private fun Node.populateTrie(s: String, value: Int) {
+        s.fold(this) { previous, c -> previous.children.getOrPut(c) { Node(value) } }
     }
 }
 
