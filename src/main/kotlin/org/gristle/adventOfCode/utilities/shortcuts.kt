@@ -174,11 +174,10 @@ inline fun <E, R : Comparable<R>> Iterable<E>.toPriorityQueue(transform: (E) -> 
     } else {
         PriorityQueue<R>()
     }
-    return pq.also {
-        forEach { e ->
-            pq.add(transform(e))
-        }
+    forEach { e ->
+        pq.add(transform(e))
     }
+    return pq 
 }
 
 fun <E : Comparable<E>> Sequence<E>.toPriorityQueue(): PriorityQueue<E> {
@@ -201,11 +200,10 @@ inline fun <E, R : Comparable<R>> Iterable<E>.toPriorityQueueDescending(transfor
     } else {
         PriorityQueue(compareByDescending { r: R -> r })
     }
-    return pq.also {
-        forEach { e ->
-            pq.add(transform(e))
-        }
+    forEach { e ->
+        pq.add(transform(e))
     }
+    return pq
 }
 
 fun <E : Comparable<E>> Sequence<E>.toPriorityQueueDescending(): PriorityQueue<E> {
@@ -288,14 +286,6 @@ inline fun <E> PriorityQueue<E>.pollWhile(predicate: (E) -> Boolean): List<E> {
         poll().let { if (predicate(it)) list.add(it) }
     }
     return list
-}
-
-fun <E : Any?> E.convertToString(): String? = when (this) {
-    is String -> this
-    is Int -> this.toString()
-    is Long -> this.toString()
-    is Boolean -> this.toString()
-    else -> null
 }
 
 fun <T: Any?> T.println() = println(this)
