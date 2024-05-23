@@ -1,6 +1,6 @@
 package org.gristle.adventOfCode.cq
 
-private typealias Pos = Pair<Int, Int>
+private typealias PosY23D7 = Pair<Int, Int>
 
 fun main() {
     val (length, txt) = input[0]
@@ -12,7 +12,7 @@ fun main() {
         .iterator()
     val moves = lines[3]
 
-    val snake = java.util.ArrayDeque<Pos>().apply { add(0 to 0) }
+    val snake = java.util.ArrayDeque<PosY23D7>().apply { add(0 to 0) }
     var score = 0
     var nextFruit = fruit.next()
     for (move in moves) {
@@ -27,7 +27,7 @@ fun main() {
         if (newHead.first !in 0 until length || newHead.second !in 0 until length) break
 
         if (newHead == nextFruit) {
-            nextFruit = if (fruit.hasNext()) fruit.next() else Pos(-1, -1)
+            nextFruit = if (fruit.hasNext()) fruit.next() else PosY23D7(-1, -1)
             score += 100
         } else {
             snake.removeFirst()
