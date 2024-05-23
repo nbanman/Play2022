@@ -158,3 +158,11 @@ interface Day {
         }
     }
 }
+
+private fun <E : Any?> E.convertToString(): String? = when (this) {
+    is String -> this
+    is Int -> this.toString()
+    is Long -> this.toString()
+    is Boolean -> this.toString()
+    else -> null
+}
