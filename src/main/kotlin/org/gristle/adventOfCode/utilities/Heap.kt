@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.gristle.adventOfCode.utilities
 
 private class KeyHolder<K: Comparable<K>, E>(val key: K, val element: E)
