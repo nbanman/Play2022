@@ -1,26 +1,29 @@
-package org.gristle.adventOfCode.y2023.d7
+ package org.gristle.adventOfCode.y2023.d7
 
 import org.gristle.adventOfCode.Day
 
-class Y2023D7(private val input: String) : Day {
-    // takes the hands, sorts by the hand strength as defined by each puzzle part, assigns points using rank and
-    // bid amount, then returns sum of all points
-    private fun solve(jokers: Char = '-') = input
+class Y2023D7(input: String) : Day {
+    private val hands = input
         .lines()
         .map { line ->
             val (cards, bid) = line.split(' ')
-            Hand(cards, bid.toInt(), jokers)
-        }.sorted()
+            Hand(cards, bid.toInt())
+        }
+    
+    // takes the hands, sorts by the hand strength as defined by each puzzle part, assigns points using rank and
+    // bid amount, then returns sum of all points
+    private fun solve(hands: List<Hand>) = hands
+        .sorted()
         .mapIndexed { index, hand -> (index + 1) * hand.bid }
         .sum()
     
-    override fun part1() = solve()
+    override fun part1() = solve(hands)
 
     // Part 2 is the same thing, except 'J' cards are identified as jokers and are dealt with appropriately in the 
     // Hand class logic.
-    override fun part2() = solve(jokers = 'J')
+    override fun part2() = solve(hands.map { it.copy(jokers = 'J') })
     
-    data class Hand(val cards: String, val bid: Int, val jokers: Char): Comparable<Hand> {
+    data class Hand(val cards: String, val bid: Int, val jokers: Char = '-'): Comparable<Hand> {
         // strength is an Int that we use to sort with. The most important component of strength  is the strength 
         // of the type of hand. After that, the value of the cards, in order. E.g., 98 > 8A, because 9 is greater 
         // than 8. We can represent this all as an Int concatenating them all, giving 4 bits for each value.
@@ -31,7 +34,8 @@ class Y2023D7(private val input: String) : Day {
             // groups cards together, for use in determining handTypeStrength. Sorted because the relative size 
             // of the groups is used to determine what kind of hand we have. Then take the two most populous groups 
             // in the hand, then deliver ordered ranking of each hand type.
-            val groups: List<Int> = cards.filter { it != jokers }
+            val groups: List<Int> = cards
+                .filter { it != jokers }
                 .groupingBy { it }
                 .eachCount()        // count the number of each card we have
                 .values             // we only care about biggest group size, not contents of group
