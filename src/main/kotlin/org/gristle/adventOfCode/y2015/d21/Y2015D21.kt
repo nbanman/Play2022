@@ -2,7 +2,6 @@ package org.gristle.adventOfCode.y2015.d21
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getIntList
-import org.gristle.adventOfCode.utilities.gvs
 
 class Y2015D21(input: String) : Day {
 
@@ -42,12 +41,14 @@ Defense +3   80     0       3"""
 
     data class Item(val cost: Int, val damage: Int, val armor: Int)
 
-    private val itemPattern = """\w+(?: \+\d)? +(\d+) +(\d) +(\d)""".toRegex()
-
     private fun getItemList(items: String): List<Item> = items
-        .gvs(itemPattern, String::toInt)
-        .map { (cost, damage, armor) -> Item(cost, damage, armor) }
-        .toList()
+        .lines()
+        .map { line ->
+            val (cost, damage, armor) = line
+                .dropWhile { it != ' ' }.drop(3) // get rid of item description
+                .getIntList()
+            Item(cost, damage, armor) 
+        }
 
     private val weaponList = getItemList(WEAPONS)
     private val armorList = getItemList(ARMOR)
@@ -59,15 +60,12 @@ Defense +3   80     0       3"""
         .let { (hp, damage, armor) -> Boss(hp, damage, armor) }
 
     // equip character
-    private val combos = weaponList
-        .fold(listOf<List<Item>>()) { acc, weapon ->
-            acc + armorList.map { listOf(weapon, it) }
-        }.fold(listOf<List<Item>>()) { acc, weaponArmor ->
-            acc + ringList.map { weaponArmor + listOf(it) }
-        }.fold(listOf<List<Item>>()) { acc, weaponArmorRing ->
-            acc + ringList.map { weaponArmorRing + listOf(it) }
-        }.distinct()
-
+    private val combos = ringList
+        .fold(listOf<List<Item>>()) { acc, ring -> acc + ringList.map { listOf(ring, it) } }
+        .distinct()
+        .fold(listOf<List<Item>>()) { acc, ringRing -> acc + weaponList.map { ringRing + listOf(it) } }
+        .fold(listOf<List<Item>>()) { acc, ringRingWeapon -> acc + armorList.map { ringRingWeapon + listOf(it) } }
+    
     private val combined = combos.map { combo ->
         Item(combo.sumOf { it.cost }, combo.sumOf { it.damage }, combo.sumOf { it.armor })
     }
