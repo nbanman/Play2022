@@ -20,27 +20,27 @@ class Y2015D22(input: String) : Day {
         val duration: Int
     }
 
-    object MagicMissile : Spell {
+    data object MagicMissile : Spell {
         override val mana: Int = 53
         override val duration: Int = 1
     }
 
-    object Drain : Spell {
+    data object Drain : Spell {
         override val mana: Int = 73
         override val duration: Int = 1
     }
 
-    object Shield : Spell {
+    data object Shield : Spell {
         override val mana: Int = 113
         override val duration: Int = 6
     }
 
-    object Poison : Spell {
+    data object Poison : Spell {
         override val mana: Int = 173
         override val duration: Int = 6
     }
 
-    object Recharge : Spell {
+    data object Recharge : Spell {
         override val mana: Int = 229
         override val duration: Int = 5
     }
@@ -56,9 +56,8 @@ class Y2015D22(input: String) : Day {
         val poison: Int = 0,
         val recharge: Int = 0
     ): Comparable<State> {
-        private val armor = if (shield != 0) 7 else 0
-
-        val availableMana = currentMana + (if (recharge != 0) 101 else 0)
+        private val armor = if (shield > 0) 7 else 0
+        val availableMana = currentMana + (if (recharge > 0) 101 else 0)
 
         fun cast(spell: Spell, constantDrain: Boolean): State {
             val newDead = constantDrain && playerHP == 1
@@ -70,9 +69,9 @@ class Y2015D22(input: String) : Day {
             val newCurrentMana = currentMana - (spell.mana) +
                     (if (recharge > 0) 101 else 0)
             val newManaSpent = manaSpent + spell.mana
-            val newShield = if (spell is Shield) spell.duration else maxOf(0, shield - 1)
-            val newPoison = if (spell is Poison) spell.duration else maxOf(0, poison - 1)
-            val newRecharge = if (spell is Recharge) spell.duration else maxOf(0, recharge - 1)
+            val newShield = if (spell is Shield) spell.duration else shield - 1
+            val newPoison = if (spell is Poison) spell.duration else poison - 1
+            val newRecharge = if (spell is Recharge) spell.duration else recharge - 1
             return State(
                 newPlayerHP, damage, newDead, newBossHP, newCurrentMana,
                 newManaSpent, newShield, newPoison, newRecharge
@@ -80,12 +79,12 @@ class Y2015D22(input: String) : Day {
         }
 
         fun bossTurn(): State {
-            val newPlayerHP = playerHP - maxOf(1, damage - armor)
+            val newPlayerHP = playerHP - (damage - armor).coerceAtLeast(1)
             val newBossHP = bossHP + if (poison > 0) -3 else 0
             val newCurrentMana = currentMana + (if (recharge > 0) 101 else 0)
-            val newShield = maxOf(0, shield - 1)
-            val newPoison = maxOf(0, poison - 1)
-            val newRecharge = maxOf(0, recharge - 1)
+            val newShield = shield - 1
+            val newPoison = poison - 1
+            val newRecharge = recharge - 1
             return State(
                 newPlayerHP, damage, alreadyDead, newBossHP, newCurrentMana,
                 manaSpent, newShield, newPoison, newRecharge
@@ -101,9 +100,8 @@ class Y2015D22(input: String) : Day {
         states.add(State(50, damage, false, bossHP, 500))
 
         var lowestManaWin = Int.MAX_VALUE
-
+        
         while (states.isNotEmpty()) {
-            // player turn
             val current = states.poll()
             spells.filter { spell ->
                 val alreadyCast = when (spell) {
@@ -131,7 +129,6 @@ class Y2015D22(input: String) : Day {
     }
 
     override fun part1() = solve(false)
-
     override fun part2() = solve(true)
 }
 
