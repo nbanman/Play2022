@@ -15,17 +15,22 @@ class Y2021D4(input: String) : Day {
         fun score(calledNumbers: List<Int>) = grid.sum() - calledNumbers.intersect(grid).sum()
     }
 
-    private val data = input.split("\n\n")
+    private val drawPile: List<Int>
+    private val bingoCards: List<BingoCard>
+    
+    init {
+        val data = input.split("\n\n")
 
-    private val drawPile = data[0].split(',').map(String::toInt)
+        drawPile = data[0].split(',').map(String::toInt)
 
-    private val bingoCards = data
-        .drop(1)
-        .map { cardString ->
-            cardString
-                .split(' ', '\n')
-                .mapNotNull { it.toIntOrNull() }
-        }.map { BingoCard(it.toGrid(5)) }
+        bingoCards = data
+            .drop(1)
+            .map { cardString ->
+                cardString
+                    .split(' ', '\n')
+                    .mapNotNull { it.toIntOrNull() }
+            }.map { BingoCard(it.toGrid(5)) }
+    }
 
     override fun part1(): Int {
         val calledNumbers = drawPile.take(4).toMutableList()
