@@ -77,8 +77,8 @@ class Y2020D11(input: String) : Day {
             val startingCoord = grid.coordOf(index)
             // get 8 coordinates representing the slopes to calculate movement along the 8 directions from the
             // starting coordinate
-            val slopes = (-1..1).flatMap { y -> (-1..1).map { x -> Coord(x, y) } } - Coord.ORIGIN
-            slopes // for each direction...
+            
+            Coord.ALL_ADJACENT // for each direction...
                 .map { slope -> // ...create a sequence of seats extending from line of sight, looking to see if an 
                     // occupied seat is encountered before an unoccupied seat.
                     // If it sees an unoccupied seat, the sequence ends without yielding a value because there is no 
@@ -105,7 +105,7 @@ class Y2020D11(input: String) : Day {
 
 fun main() = Day.runDay(Y2020D11::class)
 
-//    Class creation: 27ms
-//    Part 1: 2243 (303ms)
-//    Part 2: 2027 (603ms)
-//    Total time: 935ms
+//    Class creation: 9ms
+//    Part 1: 2243 (276ms)
+//    Part 2: 2027 (371ms)
+//    Total time: 658ms
