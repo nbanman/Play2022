@@ -9,7 +9,7 @@ class Y2020D13(input: String) : Day {
     data class Bus(val id: Long, val offset: Long)
     data class BusState(val time: Int, val busId: Long)
 
-    private fun modularInverse(ni: Long, mod: Long) =
+    private fun modularInverse(ni: Long, mod: Long): Long =
         generateSequence(1L) { it + 1 }
             .first { (ni % mod * it) % mod == 1L }
 
@@ -23,7 +23,7 @@ class Y2020D13(input: String) : Day {
         return Bus(n, bigPhase % n)
     }
 
-    private val buses = lines.last().split(',').mapIndexedNotNull { index, s ->
+    private val buses: List<Bus> = lines.last().split(',').mapIndexedNotNull { index, s ->
         if (s == "x") null else {
             Bus(s.toLong(), index.toLong())
         }
@@ -44,3 +44,8 @@ class Y2020D13(input: String) : Day {
 }
 
 fun main() = Day.runDay(Y2020D13::class) // 115, 756261495958122
+
+//    Class creation: 6ms
+//    Part 1: 115 (1ms)
+//    Part 2: 756261495958122 (1ms)
+//    Total time: 9ms
