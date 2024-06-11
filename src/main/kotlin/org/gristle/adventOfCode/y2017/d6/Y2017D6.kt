@@ -4,7 +4,7 @@ import org.gristle.adventOfCode.Day
 
 class Y2017D6(input: String) : Day {
 
-    private val initialState = input.split('\t').map { it.toInt() }
+    private val initialState: List<Int> = input.split('\t').map { it.toInt() }
 
     private fun List<Int>.reallocate(): List<Int> {
         val (index, alloc) = withIndex().maxBy { it.value }
@@ -13,10 +13,11 @@ class Y2017D6(input: String) : Day {
         for (i in 1..alloc) {
             newList[(index + i) % size]++
         }
+        println("$index, $alloc, $newList")
         return newList
     }
 
-    private val allocations: IndexedValue<Pair<MutableSet<List<Int>>, List<Int>>> by lazy {
+    private val allocations: IndexedValue<Pair<Set<List<Int>>, List<Int>>> by lazy {
         val allocationSequence =
             generateSequence(mutableSetOf<List<Int>>() to initialState) { (set, last) ->
                 set.apply { add(last) } to last.reallocate()
