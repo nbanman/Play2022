@@ -13,7 +13,6 @@ class Y2017D6(input: String) : Day {
         for (i in 1..alloc) {
             newList[(index + i) % size]++
         }
-        println("$index, $alloc, $newList")
         return newList
     }
 
