@@ -16,18 +16,23 @@ class Y2023D10(input: String) : Day {
         
         // find the initial direction by looking in each direction, and pick the first one that has a pipe
         // fitting that connects back to the start
-        val startDir = Nsew.entries // get directions
-            .first { dir -> // pick the first direction pointing to a fitting pointing back to startPos
-                field.moveOrNull(startPos, dir)
-                    ?.let { movements.containsKey(field[it] to dir.flip()) }
-                    ?: false
-            }
+        val startDir = if ("7|F".contains(field[field.move(startPos, Nsew.NORTH)])) {
+            Nsew.NORTH
+        } else if ("7-J".contains(field[field.move(startPos, Nsew.EAST)])) {
+            Nsew.EAST
+        } else {
+            Nsew.SOUTH
+        }
         
         // lambda for moving along the pipe, taking in the position and direction and returning the next
         // position and direction
         val move: (Pair<Int, Nsew>) -> Pair<Int, Nsew> = { (pos, dir) ->
             val newPos = field.move(pos, dir)
-            val newDir = movements.getValue(field[newPos] to dir)
+            val newDir = when (field[newPos]) {
+                'L', '7' -> if (dir.ordinal > 1) dir.right() else dir.left()
+                'J', 'F' -> if (dir.ordinal < 2) dir.right() else dir.left()
+                else -> dir
+            }
             newPos to newDir
         }
         
@@ -59,36 +64,15 @@ class Y2023D10(input: String) : Day {
         // Solve for i -> i = A - (b / 2) - 1
         return area - (loop.size / 2) + 1
     }
-
-    companion object {
-       
-        private val movements: Map<Pair<Char, Nsew>, Nsew> = mapOf(
-            ('S' to Nsew.NORTH) to Nsew.NORTH,
-            ('S' to Nsew.SOUTH) to Nsew.SOUTH,
-            ('S' to Nsew.EAST) to Nsew.EAST,
-            ('S' to Nsew.WEST) to Nsew.WEST,
-            ('|' to Nsew.NORTH) to Nsew.NORTH,
-            ('|' to Nsew.SOUTH) to Nsew.SOUTH,
-            ('-' to Nsew.EAST) to Nsew.EAST,
-            ('-' to Nsew.WEST) to Nsew.WEST,
-            ('L' to Nsew.SOUTH) to Nsew.EAST,
-            ('L' to Nsew.WEST) to Nsew.NORTH,
-            ('J' to Nsew.SOUTH) to Nsew.WEST,
-            ('J' to Nsew.EAST) to Nsew.NORTH,
-            ('7' to Nsew.EAST) to Nsew.SOUTH,
-            ('7' to Nsew.NORTH) to Nsew.WEST,
-            ('F' to Nsew.WEST) to Nsew.SOUTH,
-            ('F' to Nsew.NORTH) to Nsew.EAST,
-        )
-    }
 }
 
 fun main() = Day.runDay(Y2023D10::class)
 
-//    Class creation: 13ms
-//    Part 1: 7086 (27ms)
+//    Class creation: 3ms
+//    Part 1: 7086 (14ms)
 //    Part 2: 317 (4ms)
-//    Total time: 45ms
+//    Total time: 23ms
+
 
 @Suppress("unused")
 private val sampleInput = listOf(
