@@ -24,5 +24,5 @@ class StringGrid(val string: String) {
         return (index + movement).let { if (isValid(it)) it else null }
     }
         
-    fun getNeighbors(index: Int) = Nsew.entries.mapNotNull { moveOrNull(index, it) }
+    fun getNeighborIndices(index: Int): List<Int> = Nsew.entries.mapNotNull { moveOrNull(index, it) }
 }
