@@ -1,12 +1,11 @@
 package org.gristle.adventOfCode.y2017.d19
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.Grid
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.toGrid
+import org.gristle.adventOfCode.utilities.StringGrid
 
-class Y2017D19(private val input: String) : Day {
-    class Mouse(private val maze: Grid<Char>, private val startIndex: Int) {
+class Y2017D19(private val maze: String) : Day {
+    class Mouse(private val maze: StringGrid, private val startIndex: Int) {
 
         tailrec fun runMaze(
             index: Int = startIndex,
@@ -47,9 +46,8 @@ class Y2017D19(private val input: String) : Day {
     }
 
     val solution: Pair<String, Int> by lazy {
-        val maze = "$input ".toGrid()
         val startIndex = maze.indexOfFirst { it != ' ' }
-        Mouse(maze, startIndex).runMaze()
+        Mouse(StringGrid(maze), startIndex).runMaze()
     }
 
     override fun part1() = solution.first
