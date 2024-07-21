@@ -4,55 +4,56 @@ import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Nsew
 import org.gristle.adventOfCode.utilities.StringGrid
 
-class Y2017D19(private val maze: String) : Day {
+class Y2017D19(input: String) : Day {
+    // wrap the input string into StringGrid with methods for navigating the string like a 2-D grid.
+    private val maze = StringGrid(input)
     
-    // runs inner recursive function and returns result
-    fun runMaze(maze: StringGrid, startIndex: Int): Pair<String, Int> {
-        // moves mouse along the maze, keeping track of letters it runs across and number of steps
-        tailrec fun runMaze(
-            index: Int = startIndex,
-            direction: Nsew = Nsew.SOUTH,
-            report: String = "",
-            steps: Int = 0
-        ): Pair<String, Int> {
-            val spot = maze[index]
-            val newReport = report + if (spot.isLetter()) spot else ""
-            val neighbors = Nsew
-                .entries
-                .mapNotNull { dir -> maze.moveOrNull(index, dir)?.let { it to dir } }
-                .filter { (neighborIndex, _) -> maze[neighborIndex] != ' ' }
-
-            if (neighbors.size == 1 && index != startIndex) return newReport to steps + 1
-            
-            if (spot == '+') {
-                if (direction.ordinal < 2) {
-                    val (newIndex, newDirection) = neighbors.first { (_, dir) -> dir.ordinal > 1 }
-                    return runMaze(newIndex, newDirection, newReport, steps + 1)
+    // a sequence emitting the positions the mouse runs as it navigates the maze
+    private val runMaze: Sequence<Int> 
+    init {
+        // the mouse starts at the first non-blank position at the top 
+        val start = maze.string.indexOfFirst { it != ' ' } to Nsew.SOUTH
+        
+        // function that moves the mouse one step along the maze, returning the new position and direction. If no
+        // valid move exists, return null. Along with the generateSequence function that invokes it, a null will
+        // stop the sequence.
+        val move: (Pair<Int, Nsew>) -> Pair<Int, Nsew>? = { (pos, dir) ->
+            // inspect the ground below the mouse. If '+', the mouse moves either left or right. Otherwise it 
+            // goes straight.
+            val ground = maze[pos]
+            if (ground == '+') {
+                // Calculate turning left. If it's a valid move, return that. Otherwise go right and return that.
+                val leftDir = dir.left() 
+                val leftPos = maze.moveOrNull(pos, leftDir) 
+                if (leftPos != null && maze[leftPos] != ' ') {
+                    leftPos to leftDir
                 } else {
-                    val (newIndex, newDirection) = neighbors.first { (_, dir) -> dir.ordinal < 2 }
-                    return runMaze(newIndex, newDirection, newReport, steps + 1)
+                    val rightDir = dir.right()
+                    maze.move(pos, rightDir) to rightDir
                 }
             } else {
-                val (newIndex, newDirection) = neighbors.first { (_, dir) -> dir == direction }
-                return runMaze(newIndex, newDirection, newReport, steps + 1)
+                // Calculate going straight. If it's a valid move, return that. Otherwise return null.
+                val newPos = maze.moveOrNull(pos, dir)
+                if (newPos == null || maze[newPos] == ' ') null else newPos to dir
             }
         }
-        return runMaze(startIndex, Nsew.SOUTH)
+        runMaze = generateSequence(start, move).map { it.first }
+    }
+    
+    // helper function that returns a letter from a maze position, or returns null if no letter found at that index
+    private val getLetter: (Int) -> Char? = { pos ->
+        val c = maze[pos]
+        if (c.isLetter()) c else null 
     }
 
-    val solution: Pair<String, Int> by lazy {
-        val startIndex = maze.indexOfFirst { it != ' ' }
-        runMaze(StringGrid(maze), startIndex)
-    }
-
-    override fun part1() = solution.first
-
-    override fun part2() = solution.second
+    override fun part1() = runMaze.mapNotNull(getLetter).joinToString("")
+    override fun part2() = runMaze.count()
 }
 
 fun main() = Day.runDay(Y2017D19::class)
 
 //    Class creation: 2ms
-//    Part 1: EOCZQMURF (56ms)
+//    Part 1: EOCZQMURF (10ms)
 //    Part 2: 16312 (0ms)
-//    Total time: 58ms
+//    Total time: 13ms
+
