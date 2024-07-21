@@ -6,6 +6,7 @@ class StringGrid(val string: String) {
     val xIndices = 0 until width
     val yIndices = 0 until height
 
+    @SuppressWarnings("WeakerAccess")
     fun isValid(index: Int): Boolean = index in string.indices && (index + 1) % (width + 1) != 0
     
     operator fun get(index: Int): Char = if (isValid(index)) string[index] else 
@@ -34,5 +35,6 @@ class StringGrid(val string: String) {
         return (index + movement).let { if (isValid(it)) it else null }
     }
         
+    @Suppress("unused")
     fun getNeighborIndices(index: Int): List<Int> = Nsew.entries.mapNotNull { moveOrNull(index, it) }
 }
