@@ -15,33 +15,25 @@ class Y2017D19(private val maze: String) : Day {
         ): Pair<String, Int> {
             val spot = maze[index]
             val newReport = report + if (spot.isLetter()) spot else ""
-            val neighborIndices = maze
-                .getNeighborIndices(index)
-                .filter { maze[it] != ' ' }
+            val neighbors = Nsew
+                .entries
+                .mapNotNull { dir -> maze.moveOrNull(index, dir)?.let { it to dir } }
+                .filter { (neighborIndex, _) -> maze[neighborIndex] != ' ' }
 
-            if (neighborIndices.size == 1 && index != startIndex) return newReport to steps + 1
-
-            val newIndex = if (spot == '+') {
-                if (direction == Nsew.NORTH || direction == Nsew.SOUTH) {
-                    if ((index - 1) in neighborIndices) index - 1 else index + 1
-                } else { // location is left or right
-                    if ((index - maze.width) in neighborIndices) index - maze.width else index + maze.width
+            if (neighbors.size == 1 && index != startIndex) return newReport to steps + 1
+            
+            if (spot == '+') {
+                if (direction.ordinal < 2) {
+                    val (newIndex, newDirection) = neighbors.first { (_, dir) -> dir.ordinal > 1 }
+                    return runMaze(newIndex, newDirection, newReport, steps + 1)
+                } else {
+                    val (newIndex, newDirection) = neighbors.first { (_, dir) -> dir.ordinal < 2 }
+                    return runMaze(newIndex, newDirection, newReport, steps + 1)
                 }
             } else {
-                when (direction) {
-                    Nsew.NORTH -> index - maze.width
-                    Nsew.SOUTH -> index + maze.width
-                    Nsew.EAST -> index + 1
-                    Nsew.WEST -> index - 1
-                }
+                val (newIndex, newDirection) = neighbors.first { (_, dir) -> dir == direction }
+                return runMaze(newIndex, newDirection, newReport, steps + 1)
             }
-            val newDirection = when (newIndex) {
-                index - 1 -> Nsew.WEST
-                index + 1 -> Nsew.EAST
-                index + maze.width -> Nsew.SOUTH
-                else -> Nsew.NORTH
-            }
-            return runMaze(newIndex, newDirection, newReport, steps + 1)
         }
     }
 
