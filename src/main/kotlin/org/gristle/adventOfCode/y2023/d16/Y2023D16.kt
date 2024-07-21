@@ -3,11 +3,11 @@ package org.gristle.adventOfCode.y2023.d16
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
 import org.gristle.adventOfCode.utilities.Nsew
-import org.gristle.adventOfCode.utilities.toGrid
+import org.gristle.adventOfCode.utilities.StringGrid
 
 class Y2023D16(input: String) : Day {
 
-    private val grid = input.toGrid()
+    private val grid = StringGrid(input)
     
     private fun next(c: Char, dir: Nsew): List<Nsew> {
         return when (c) {
@@ -49,7 +49,7 @@ class Y2023D16(input: String) : Day {
     private fun Pair<Coord, Nsew>.toIndex(): Int = ((first.y * grid.width + first.x) shl 2) + second.ordinal
 
     private fun lightBeam(state: Pair<Coord, Nsew>): Int {
-        val visited = BooleanArray(grid.size * 4)
+        val visited = BooleanArray(grid.string.length * 4)
         val q = mutableListOf(state)
         while (q.isNotEmpty()) {
             val current = q.removeLast()
@@ -60,7 +60,7 @@ class Y2023D16(input: String) : Day {
                 }.forEach { q.add(it) }
         }
         var count = 0 
-        for (index in grid.indices) {
+        for (index in grid.string.indices) {
             for (dir in 0..3) {
                 if (visited[(index shl 2) + dir]) {
                     count++
