@@ -5,8 +5,10 @@ import org.gristle.adventOfCode.utilities.Nsew
 import org.gristle.adventOfCode.utilities.StringGrid
 
 class Y2017D19(private val maze: String) : Day {
-    class Mouse(private val maze: StringGrid, private val startIndex: Int) {
-
+    
+    // runs inner recursive function and returns result
+    fun runMaze(maze: StringGrid, startIndex: Int): Pair<String, Int> {
+        // moves mouse along the maze, keeping track of letters it runs across and number of steps
         tailrec fun runMaze(
             index: Int = startIndex,
             direction: Nsew = Nsew.SOUTH,
@@ -35,11 +37,12 @@ class Y2017D19(private val maze: String) : Day {
                 return runMaze(newIndex, newDirection, newReport, steps + 1)
             }
         }
+        return runMaze(startIndex, Nsew.SOUTH)
     }
 
     val solution: Pair<String, Int> by lazy {
         val startIndex = maze.indexOfFirst { it != ' ' }
-        Mouse(StringGrid(maze), startIndex).runMaze()
+        runMaze(StringGrid(maze), startIndex)
     }
 
     override fun part1() = solution.first
