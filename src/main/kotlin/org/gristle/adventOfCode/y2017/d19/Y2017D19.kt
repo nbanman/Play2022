@@ -32,7 +32,8 @@ class Y2017D19(input: String) : Day {
                     maze.move(pos, rightDir) to rightDir
                 }
             } else {
-                // Calculate going straight. If it's a valid move, return that. Otherwise return null.
+                // Calculate going straight. If it's a valid move, return that. Otherwise, the mouse has run its course
+                // and return null.
                 val newPos = maze.moveOrNull(pos, dir)
                 if (newPos == null || maze[newPos] == ' ') null else newPos to dir
             }
@@ -52,8 +53,8 @@ class Y2017D19(input: String) : Day {
 
 fun main() = Day.runDay(Y2017D19::class)
 
-//    Class creation: 2ms
-//    Part 1: EOCZQMURF (10ms)
-//    Part 2: 16312 (0ms)
-//    Total time: 13ms
+//    Class creation: 7ms
+//    Part 1: EOCZQMURF (11ms)
+//    Part 2: 16312 (2ms)
+//    Total time: 21ms
 
