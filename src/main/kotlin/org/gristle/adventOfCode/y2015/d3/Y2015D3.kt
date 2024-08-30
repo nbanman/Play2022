@@ -13,8 +13,7 @@ class Y2015D3(private val input: String) : Day {
     override fun part1() = deliver(input).size
 
     override fun part2(): Int = input
-        .collate(3)
-        .toList()
+        .collate(2)
         .map(::deliver)
         .reduce(Set<Coord>::union)
         .size
