@@ -2,8 +2,7 @@ package org.gristle.adventOfCode.y2015.d3
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.Coord
-import org.gristle.adventOfCode.utilities.isEven
-import org.gristle.adventOfCode.utilities.partitionIndexed
+import org.gristle.adventOfCode.utilities.collate
 
 class Y2015D3(private val input: String) : Day {
 
@@ -14,7 +13,7 @@ class Y2015D3(private val input: String) : Day {
     override fun part1() = deliver(input).size
 
     override fun part2(): Int = input
-        .partitionIndexed { index, _ -> index.isEven() }
+        .collate(3)
         .toList()
         .map(::deliver)
         .reduce(Set<Coord>::union)
