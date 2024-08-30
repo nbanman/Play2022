@@ -106,6 +106,15 @@ fun <T> Iterable<T>.collate(threads: Int): List<List<T>> {
 }
 
 /**
+ * Splits the original String into n Strings, interleaving Chars among the lists.
+ */
+fun String.collate(threads: Int): List<String> {
+    val partitions = List(threads) { StringBuilder() }
+    forEachIndexed { index, c -> partitions[index % threads].append(c) }
+    return partitions.map(StringBuilder::toString)
+}
+
+/**
  * Splits the original sequence into n lists, interleaving elements among the lists.
  */
 fun <T> Sequence<T>.collate(threads: Int): Sequence<List<T>> {
