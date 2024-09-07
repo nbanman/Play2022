@@ -361,14 +361,11 @@ object Graph {
         val weights = mutableMapOf(startId to start.weight)
         val q = PriorityQueue<Vertex<E>>()
         q.add(start)
-        // "visited" serves double duty here. If it were just to ensure that already determined vertices were
-        // not visited again, a Set would do instead of a Map. But I take this opportunity to store the Vertex
-        // which gets returned as part of the function return.
-        val visited = mutableMapOf<E, Vertex<E>>()
+        val visited = mutableSetOf<E>()
         while (true) {
-            val current = q.pollUntil { visited[it.id] == null } ?: break
+            val current = q.pollUntil { !visited.contains(it.id) } ?: break
             yield(current)
-            visited[current.id] = current
+            visited.add(current.id)
             (edges[current.id] ?: defaultEdges(current.id)).forEach { neighborEdge ->
                 val alternateWeight = current.weight + neighborEdge.weight
                 val weight = weights.getOrDefault(neighborEdge.vertexId, Double.MAX_VALUE)
