@@ -8,6 +8,7 @@ import org.gristle.adventOfCode.y2022.d12.Y2022D12
 import org.gristle.adventOfCode.y2022.d13.Y2022D13
 import org.gristle.adventOfCode.y2022.d14.Y2022D14
 import org.gristle.adventOfCode.y2022.d15.Y2022D15
+import org.gristle.adventOfCode.y2022.d16.Y2022D16
 import org.gristle.adventOfCode.y2022.d17.Y2022D17
 import org.gristle.adventOfCode.y2022.d18.Y2022D18
 import org.gristle.adventOfCode.y2022.d19.Y2022D19
@@ -102,6 +103,11 @@ class Test2022 {
     @Test
     internal fun y2022d15() {
         assertEquals("5073496" to "13081194638237", Day.testDay(Y2022D15::class))
+    }
+
+    @Test
+    internal fun y2022d16() {
+        assertEquals("2059" to "2790", Day.testDay(Y2022D16::class))
     }
 
     @Test
