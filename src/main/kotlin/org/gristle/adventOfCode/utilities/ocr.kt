@@ -1,60 +1,112 @@
 package org.gristle.adventOfCode.utilities
 
-// letterForms is each character rotated 90 degrees with newlines stripped out. The 90-degree rotation makes it
-// easier to parse letters because they can be easily separated. 
-private val letterForms: Map<String, Char> = buildMap {
-    // 6 height letters
-    put("#####...#..#..#..######.", 'A')
-    put("#######..#.##..#.#.##.#.", 'B')
-    put(".####.#....##....#.#..#.", 'C')
-    put("#######..#.##..#.##....#", 'E')
-    put("######...#.#...#.#.....#", 'F')
-    put(".####.#....##.#..####.#.", 'G')
-    put("######...#.....#..######", 'H')
-    put("#....########....#", 'I')
-    put(".#....#.....#....#.#####", 'J')
-    put("######...#...##.#.#....#", 'K')
-    put("#######.....#.....#.....", 'L')
-    put(".####.#....##....#.####.", 'O')
-    put("######..#..#..#..#...##.", 'P')
-    put("######..#..#.##..##..##.", 'R')
-    put("#..##.#.#..##.#..#.#...#", 'S')
-    put(".######.....#......#####", 'U')
-    put("....##...#..###......#......##", 'Y')
-    put("##...##.#..##..#.##...##", 'Z')
-    // 10 height letters
-    put("########......#...#.....#....#....#....#....#...#.########..", 'A')
-    put("###########....#...##....#...##....#...##....#...#.####.###.", 'B')
-    put(".########.#........##........##........##........#.#......#.", 'C')
-    put("###########....#...##....#...##....#...##....#...##........#", 'E')
-    put("##########.....#...#.....#...#.....#...#.....#...#.........#", 'F')
-    put(".########.#........##........##...#....#.#..#....######...#.", 'G')
-    put("##########.....#.........#.........#.........#....##########", 'H')
-    put(".##.......#.........#.........#........#.#########.........#", 'J')
-    put("##########....##.......#..#.....#....#...#......#.#........#", 'K')
-    put("###########.........#.........#.........#.........#.........", 'L')
-    put("##########.......##......##......##......##.......##########", 'N')
-    put("##########.....#...#.....#...#.....#...#.....#...#......###.", 'P')
-    put("##########.....#...#.....#...#....##...#..##.#...###....###.", 'R')
-    put("##......##..##..##......##........##......##..##..##......##", 'X')
-    put("###......##..#.....##...#....##....#...##.....#..##......###", 'Z')
+/**
+* Converts an Advent of Code ANSI graphical representation of a string of letters and converts it into a string.
+* @emptySpace (AoC default: '.') The character used to designate empty space in the image.
+*/
+fun String.ocr(emptySpace: Char = '.'): String = trimEnd()
+    .mapToId(emptySpace) // converts the string into a list of bitsets representing each letter
+    .map { id -> letterMap[id] ?: '?' } // converts each bitset to a letter using a precomputed map
+    .joinToString("")
+
+/**
+ * Creates a map of Long representations of the letters in two font sizes, mapped to the Char represented.
+ */
+private val letterMap: Map<Long, Char> = buildMap {
+    val letters6 = "ABCEFGHIJKLOPRSUYZ"
+
+    val letterForms6 = """
+    .##..###...##..####.####..##..#..#.###...##.#..#.#.....##..###..###...###.#..#.#...#.####
+    #..#.#..#.#..#.#....#....#..#.#..#..#.....#.#.#..#....#..#.#..#.#..#.#....#..#.#...#....#
+    #..#.###..#....###..###..#....####..#.....#.##...#....#..#.#..#.#..#.#....#..#..#.#....#.
+    ####.#..#.#....#....#....#.##.#..#..#.....#.#.#..#....#..#.###..###...##..#..#...#....#..
+    #..#.#..#.#..#.#....#....#..#.#..#..#..#..#.#.#..#....#..#.#....#.#.....#.#..#...#...#...
+    #..#.###...##..####.#.....###.#..#.###..##..#..#.####..##..#....#..#.###...##....#...####
+""".trimIndent()
+
+    val letters10 = "ABCEFGHJKLNPRXZ"
+
+    val letterForms10 = """
+    ..##...#####...####..######.######..####..#....#....###.#....#.#......#....#.#####..#####..#....#.######
+    .#..#..#....#.#....#.#......#......#....#.#....#.....#..#...#..#......##...#.#....#.#....#.#....#......#
+    #....#.#....#.#......#......#......#......#....#.....#..#..#...#......##...#.#....#.#....#..#..#.......#
+    #....#.#....#.#......#......#......#......#....#.....#..#.#....#......#.#..#.#....#.#....#..#..#......#.
+    #....#.#####..#......#####..#####..#......######.....#..##.....#......#.#..#.#####..#####....##......#..
+    ######.#....#.#......#......#......#..###.#....#.....#..##.....#......#..#.#.#......#..#.....##.....#...
+    #....#.#....#.#......#......#......#....#.#....#.....#..#.#....#......#..#.#.#......#...#...#..#...#....
+    #....#.#....#.#......#......#......#....#.#....#.#...#..#..#...#......#...##.#......#...#...#..#..#.....
+    #....#.#....#.#....#.#......#......#...##.#....#.#...#..#...#..#......#...##.#......#....#.#....#.#.....
+    #....#.#####...####..######.#.......###.#.#....#..###...#....#.######.#....#.#......#....#.#....#.######
+""".trimIndent()
+
+    populateLetterMap(letterForms6, letters6)
+    populateLetterMap(letterForms10, letters10)
 }
 
-fun Grid<Char>.ocr() = rotate90() // rotation makes for easy separation of each letter
-    // newline helps maintain shape of data through string transforms. The width is 1, the size is the width of the
-    // original grid before rotation, i.e., the height
-    .addRight(Grid(width = 1, height = width) { '\n' })
-    .joinToString("") // change into string to make replacements and splits easier
-    .replace(' ', '.') // conform spaces into dots
-    // Fixes bug where some 'Y' characters do not have a space between it and the next letter
-    .replace("....##\n...#..\n###...\n...#..\n....##", "....##\n...#..\n###...\n...#..\n....##\n......\n")
-    .split("""^(\.{6,}\n)+""".toRegex(RegexOption.MULTILINE)) // split each letter up into its own string
-    .filter(String::isNotBlank) // remove blank strings (found at end)
-    .map { it.replace("\n", "") } // newlines not needed at this point
-    .map { letterForms[it] ?: '?' } // map to alphabetic character, or '?' if unrecognized
-    .joinToString("") // put all Chars together into a String
+/**
+ * Helper function to populate the above letterMap.
+ */
+private fun MutableMap<Long, Char>.populateLetterMap(letterForms: String, letters: String) {
+    letterForms
+        .mapToId('.') // turns the letter forms into bitset ids
+        .zip(letters.toList())   // zips them with the string showing the discovered letters
+        .forEach { (id, c) -> put(id, c) } // populates the map
+}
+
+/**
+ * Helper function for both ocr() and populateLetterMap(). Takes a string, chops it up by columns, separates
+ * the letters, then converts them to a Long bitset for easy map access.
+ */
+private fun String.mapToId(emptySpace: Char): List<Long> = buildList {
+    // height is needed to handle the "Y bug" where there is no space after a 'Y' in one input, as well as for
+    // splitting the string up into columns.
+    val height = 1 + this@mapToId.count { it == '\n' }
+
+    // id is the bitset we use to represent each letter. We convert each character into a list of BooleanArrays,
+    // then represent all these values as a bitset. id starts at zero and gets built out column by column.
+    var id = 0L
+
+    // we need to track letter width to handle the "Y bug". Luckily, 'Y' is the only character in the size 6 font set
+    // that has a width of 5, which makes it easy to identify.
+    var letterWidth = 0
+
+    // chop the string up into columns...
+    for (col in columns(height, emptySpace)) {
+        if (col.none { it }) { // Handle the ordinary space case
+            if (id != 0L) add(id) // Sometimes there are extra spaces so don't add if the bitset has not been built out
+            id = 0 // Reset the bitset for the next column
+            letterWidth = 0 // Reset the letter width counter
+        } else { // Add the column values to the bitset case
+            // Handle the "Y bug" case by immediately adding any 'Y' and resetting the id and letterwidth to 0
+            if (height == 6 && letterWidth == 5) {
+                add(id)
+                id = 0
+                letterWidth = 0
+            }
+            // Build out the bitset
+            id = col.fold(id) { acc, b -> (acc shl 1) + if (b) 1 else 0 }
+            letterWidth++
+        }
+    }
+    // Add anything left in the hopper after all the columns have been processed
+    if (id != 0L) add(id)
+}
+
+/**
+ * Helper function for mapToId() to chop the "graphical" string into columns and return a BooleanArray with true for
+ * occupied space and false for empty space.
+ */
+private fun String.columns(height: Int, emptySpace: Char): List<BooleanArray> {
+    val width = indexOf('\n')
+    return List(width) { x ->
+        BooleanArray(height) { y ->
+            this[x + y * (width + 1)] != emptySpace
+        }
+    }
+}
 
 @JvmName("ocrBoolean")
-fun Grid<Boolean>.ocr() = mapToGrid { if (it) '#' else '.' }.ocr() 
+fun Grid<Boolean>.ocr() = rep().ocr('⚫')
 
-fun String.ocr() = toGrid().ocr()
+@JvmName("ocrChar")
+fun Grid<Char>.ocr() = representation { it }.ocr()
