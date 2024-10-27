@@ -1,4 +1,4 @@
-package org.gristle.adventOfCode.utilities
+package org.gristle.adventOfCode.utilities.days
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.y2017.d1.Y2017D1
