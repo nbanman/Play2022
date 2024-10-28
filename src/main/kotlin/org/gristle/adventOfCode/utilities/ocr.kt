@@ -1,5 +1,7 @@
 package org.gristle.adventOfCode.utilities
 
+import kotlin.text.indexOf
+
 /**
 * Converts an Advent of Code ANSI graphical representation of a string of letters and converts it into a string.
 * @emptySpace (AoC default: '.') The character used to designate empty space in the image.
@@ -60,7 +62,8 @@ private fun MutableMap<Long, Char>.populateLetterMap(letterForms: String, letter
 private fun String.mapToId(emptySpace: Char): List<Long> = buildList {
     // height is needed to handle the "Y bug" where there is no space after a 'Y' in one input, as well as for
     // splitting the string up into columns.
-    val height = 1 + this@mapToId.count { it == '\n' }
+    val width = this@mapToId.indexOf('\n')
+    val height = length / width
 
     // id is the bitset we use to represent each letter. We convert each character into a list of BooleanArrays,
     // then represent all these values as a bitset. id starts at zero and gets built out column by column.
@@ -71,7 +74,8 @@ private fun String.mapToId(emptySpace: Char): List<Long> = buildList {
     var letterWidth = 0
 
     // chop the string up into columns...
-    for (col in columns(height, emptySpace)) {
+    for (x in 0 until width) {
+        val col = BooleanArray(height) { y -> this@mapToId[x + y * (width + 1)] != emptySpace }
         if (col.none { it }) { // Handle the ordinary space case
             if (id != 0L) add(id) // Sometimes there are extra spaces so don't add if the bitset has not been built out
             id = 0 // Reset the bitset for the next column
@@ -90,19 +94,6 @@ private fun String.mapToId(emptySpace: Char): List<Long> = buildList {
     }
     // Add anything left in the hopper after all the columns have been processed
     if (id != 0L) add(id)
-}
-
-/**
- * Helper function for mapToId() to chop the "graphical" string into columns and return a BooleanArray with true for
- * occupied space and false for empty space.
- */
-private fun String.columns(height: Int, emptySpace: Char): List<BooleanArray> {
-    val width = indexOf('\n')
-    return List(width) { x ->
-        BooleanArray(height) { y ->
-            this[x + y * (width + 1)] != emptySpace
-        }
-    }
 }
 
 @JvmName("ocrBoolean")
