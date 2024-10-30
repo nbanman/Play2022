@@ -6,9 +6,7 @@ import org.gristle.adventOfCode.utilities.groupValues
 class Y2018D24(input: String) : Day {
     private val data = input.split("Infection:\n")
 
-    private var boost = 0
-
-    private val selectionOrder =
+    private fun selectionOrder(boost: Int) =
         compareByDescending<ArmyUnit> { it.effectivePower(boost) }.thenByDescending { it.initiative }
 
     data class ArmyUnit(
@@ -33,8 +31,6 @@ class Y2018D24(input: String) : Day {
         fun takeDamage(damage: Int) {
             units -= damage / hp
         }
-
-        fun isImmune(other: ArmyUnit): Boolean = other.damageType in immunities
     }
 
     override fun part1(): Int {
@@ -43,8 +39,8 @@ class Y2018D24(input: String) : Day {
         // play rounds
         while (immuneSystem.isNotEmpty() && infection.isNotEmpty()) {
             // target selection phase
-            val immuneSelections = selectTargets(immuneSystem.sortedWith(selectionOrder), infection)
-            val infectionSelections = selectTargets(infection.sortedWith(selectionOrder), immuneSystem)
+            val immuneSelections = selectTargets(immuneSystem.sortedWith(selectionOrder(0)), infection)
+            val infectionSelections = selectTargets(infection.sortedWith(selectionOrder(0)), immuneSystem)
 
             // attack phase
             val attackers = (immuneSelections + infectionSelections)
@@ -65,6 +61,7 @@ class Y2018D24(input: String) : Day {
     override fun part2(): Int {
         // play rounds
         var skipped: Boolean
+        var boost = 0
         loop@ do {
             skipped = false
             var immuneSystem = makeUnits("Immune System", data.first())
@@ -76,8 +73,8 @@ class Y2018D24(input: String) : Day {
                 round++
                 val unitSum = immuneSystem.sumOf { it.units } + infection.sumOf { it.units }
                 // target selection phase
-                val immuneSelections = selectTargets(immuneSystem.sortedWith(selectionOrder), infection, boost)
-                val infectionSelections = selectTargets(infection.sortedWith(selectionOrder), immuneSystem, boost)
+                val immuneSelections = selectTargets(immuneSystem.sortedWith(selectionOrder(boost)), infection, boost)
+                val infectionSelections = selectTargets(infection.sortedWith(selectionOrder(boost)), immuneSystem, boost)
 
                 // attack phase
 
@@ -109,18 +106,34 @@ class Y2018D24(input: String) : Day {
         boost: Int = 0
     ): List<Pair<ArmyUnit, ArmyUnit>> {
         val attackerSelections = mutableListOf<Pair<ArmyUnit, ArmyUnit>>()
-        attackers.fold(defenders) { acc, attacker ->
-            val defender = acc.sortedWith(
-                compareByDescending<ArmyUnit>{ it.modifiedDamage(attacker, boost) }
-                    .thenByDescending { it.effectivePower(boost) }
-                    .thenByDescending { it.initiative }
-            )
-            if (defender.isEmpty() || defender.first().isImmune(attacker)) {
-                acc
-            } else {
-                attackerSelections.add(attacker to defender.first())
-                acc - defender.first()
+
+        // take all defenders and rank them by their effective power, with initiative as a tiebreaker
+        val defenders = defenders
+            .toMutableList()
+            .apply {
+                sortWith(
+                    compareByDescending<ArmyUnit> { it.effectivePower(boost) }
+                        .thenByDescending { it.initiative }
+                )
             }
+
+        // assign a defender to each attacker as follows:
+        // all the tiebreakers are already sorted, so start at the top and grab the first defender who is
+        // weak to attacker's damage type. If none such defender exists, grab the first defender who is
+        // not immune to attacker's damage type.
+        // Assuming such a defender is found, add the attacker/defender pair and remove the defender for
+        // future consideration by other attackers.
+        for (attacker in attackers) {
+            defenders
+                .withIndex()
+                .let {
+                    it.find { (_, defender) -> attacker.damageType in defender.weaknesses }
+                        ?: it.find { (_, defender) -> attacker.damageType !in defender.immunities }
+                }
+                ?.let { (idx, defender) ->
+                    attackerSelections.add(attacker to defender)
+                    defenders.removeAt(idx)
+                }
         }
         return attackerSelections
     }
@@ -147,7 +160,7 @@ class Y2018D24(input: String) : Day {
 
 fun main() = Day.runDay(Y2018D24::class)
 
-//    Class creation: 14ms
-//    Part 1: 15165 (29ms)
-//    Part 2: 4037 (397ms)
-//    Total time: 440ms
+//    Class creation: 2ms
+//    Part 1: 15165 (26ms)
+//    Part 2: 4037 (205ms)
+//    Total time: 234ms
