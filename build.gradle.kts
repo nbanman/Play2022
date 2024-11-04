@@ -1,17 +1,13 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.kotlin.dsl.sourceSets
 
 plugins {
-    kotlin("jvm") version "1.9.21"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.9.21"
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.6"
+    kotlin("jvm") version "2.0.20"
+    id("org.jetbrains.kotlin.plugin.allopen") version "2.0.20"
+    id("org.jetbrains.kotlinx.benchmark") version "0.4.12"
 }
 
 kotlin {
-    sourceSets.all {
-        languageSettings {
-            languageVersion = "2.0"
-        }
-    }
+    jvmToolchain(17)
 }
 
 repositories {
@@ -20,19 +16,14 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
     implementation(kotlin("script-runtime"))
-    implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.6")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.12")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0")
 }
 
 tasks.test {
     useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 sourceSets.all {
