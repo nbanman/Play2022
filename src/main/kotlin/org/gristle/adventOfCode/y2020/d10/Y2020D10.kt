@@ -9,8 +9,13 @@ class Y2020D10(input: String) : Day {
         .lines() // to List of String broken up by line
         .map(String::toInt) // convert List<String> to List<Int> 
         .sorted() // sort List lowest to highest
-        .let { adapters -> listOf(0) + adapters + (adapters.last() + 3) } // add charging outlet and end device to List
-        .zipWithNext { a, b -> b - a } // map to List of delta from previous device
+        .let { adapters -> // Then add charging outlet and end devices.
+            ArrayList<Int>(adapters.size + 2).apply {
+                add(0)
+                addAll(adapters)
+                adapters.last() + 3
+            }
+        }.zipWithNext { a, b -> b - a } // map to List of delta from previous device
 
     override fun part1() = joltageDifferences
         .count { it == 3 } // count number of 3-jolt differences
@@ -40,7 +45,7 @@ class Y2020D10(input: String) : Day {
 
 fun main() = Day.runDay(Y2020D10::class)
 
-//    Class creation: 19ms
-//    Part 1: 1890 (0ms)
-//    Part 2: 49607173328384 (0ms)
-//    Total time: 19ms
+//    Class creation: 4ms
+//    Part 1: 1820 (2ms)
+//    Part 2: 49607173328384 (2ms)
+//    Total time: 9ms
