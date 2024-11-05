@@ -26,7 +26,7 @@ fun main() {
     val t1 = listOf("Neil", "1, 2, 3")
     val pattern = """(\w+): (\d+) (\d+) (\d+) (\d+) (\w+)"""
     val t4 = "Neil: 3 4 5 6 Bobs, Bobs: 4 5 6 7 Neil"
-    val t5 = t4.parseToObject(::CoordObj, pattern)
+    val t5 = t4.parseToObjects(::CoordObj, pattern)
     println(t5)
     val dummy3 = t3.parseToObject(::Dummy3)
     val dummy2 = t2.parseToObject(::Dummy2)
