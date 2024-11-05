@@ -24,6 +24,10 @@ fun main() {
     val t3 = listOf("3", "hi", "c")
     val t2 = listOf("3", "c")
     val t1 = listOf("Neil", "1, 2, 3")
+    val pattern = """(\w+): (\d+) (\d+) (\d+) (\d+) (\w+)"""
+    val t4 = "Neil: 3 4 5 6 Bobs, Bobs: 4 5 6 7 Neil"
+    val t5 = t4.parseToObject(::CoordObj, pattern)
+    println(t5)
     val dummy3 = t3.parseToObject(::Dummy3)
     val dummy2 = t2.parseToObject(::Dummy2)
     val dummy2b = listOf("c", "3").parseToObject(Dummy2::of)
@@ -43,6 +47,9 @@ fun <E : Any> List<String>.parseToObject(kFun: KFunction<E>, split: Regex? = nul
 fun <E : Any> List<List<String>>.parseToObject(kFun: KFunction<E>, split: Regex? = null): List<E> {
     return map { line -> line.parseToObject(kFun, split) }
 }
+
+fun <E : Any> String.parseToObjects(kFun: KFunction<E>, pattern: String) = groupValues(pattern)
+    .map { it.parseToObject(kFun) }
 
 fun Iterator<String>.convertTo(parameter: KParameter, split: Regex?): Any {
 
