@@ -1,19 +1,12 @@
 package org.gristle.adventOfCode.y2015.d22
 
 import org.gristle.adventOfCode.Day
-import org.gristle.adventOfCode.utilities.getIntList
-import java.util.*
+import java.util.PriorityQueue
 
 class Y2015D22(input: String) : Day {
     // Process input
-    private val bossHP: Int
-    private val damage: Int
-
-    init {
-        val (bhp, dam) = input.getIntList()
-        bossHP = bhp
-        damage = dam
-    }
+    private val bossHP = input.dropWhile { !it.isDigit() }.takeWhile { it.isDigit() }.toInt()
+    private val damage = input.takeLastWhile { it.isDigit() }.toInt()
 
     enum class Spell(val mana: Int, val duration: Int, val effect: Int) {
         MagicMissile(53, 1, 4),
@@ -34,41 +27,36 @@ class Y2015D22(input: String) : Day {
     ): Comparable<State> {
         val availableMana = currentMana + (if (recharge > 0) Spell.Recharge.effect else 0)
 
-        fun playerTurn(spell: Spell, constantDrain: Int): State {
+        fun turn(spell: Spell, damage: Int, constantDrain: Int): State {
             // If player dies from constant drain, boss does not sustain any damage, so return early
             if (playerHP - constantDrain == 0) return copy(playerHP = 0)
-            val newPlayerHP = playerHP +
+            var newPlayerHP = playerHP +
                     (if (spell == Spell.Drain) Spell.Drain.effect else 0) -  
                     constantDrain 
-            val newBossHP = bossHP -
+            var newBossHP = bossHP -
                     (if (poison > 0) Spell.Poison.effect else 0) - 
                     (if (spell == Spell.MagicMissile) Spell.MagicMissile.effect else 0) -
                     if (spell == Spell.Drain) Spell.Drain.effect else 0
-            val newCurrentMana = currentMana - 
+            var newCurrentMana = currentMana -
                     spell.mana +
                     if (recharge > 0) Spell.Recharge.effect else 0
             val newManaSpent = manaSpent + spell.mana
             val newShield = if (spell == Spell.Shield) spell.duration else shield - 1
             val newPoison = if (spell == Spell.Poison) spell.duration else poison - 1
             val newRecharge = if (spell == Spell.Recharge) spell.duration else recharge - 1
+
+            if (newPlayerHP > 0) {
+                val armor = if (newShield > 0) Spell.Shield.effect else 0
+                newPlayerHP = newPlayerHP - (damage - armor).coerceAtLeast(1)
+                newBossHP = newBossHP - if (newPoison > 0) Spell.Poison.effect else 0
+                newCurrentMana = newCurrentMana + if (newRecharge > 0) Spell.Recharge.effect else 0
+            }
+
             return State(
-                newPlayerHP, newBossHP, newCurrentMana,
-                newManaSpent, newShield, newPoison, newRecharge,
+                newPlayerHP, newBossHP, newCurrentMana, newManaSpent,
+                newShield - 1, newPoison - 1, newRecharge - 1,
             )
         }
-
-        fun bossTurn(damage: Int): State {
-            if (playerHP <= 0) return this
-            val armor = if (shield > 0) Spell.Shield.effect else 0
-            val newPlayerHP = playerHP - (damage - armor).coerceAtLeast(1)
-            val newBossHP = bossHP - if (poison > 0) Spell.Poison.effect else 0
-            val newCurrentMana = currentMana + if (recharge > 0) Spell.Recharge.effect else 0
-            return State(
-                newPlayerHP, newBossHP, newCurrentMana, manaSpent, 
-                shield - 1, poison - 1, recharge - 1,
-            )
-        }
-
         override fun compareTo(other: State) = other.manaSpent - manaSpent
     }
 
@@ -101,10 +89,10 @@ class Y2015D22(input: String) : Day {
                     }
                 }.map {
                     // simulate turn
-                    current.playerTurn(it, constantDrain).bossTurn(damage)
+                    current.turn(it, damage, constantDrain)
                 }.filter {
                     when {
-                        // boss is dead, so check to see if the mana is less than current lowest. don't propagate state
+                        // boss is dead, so check to see if the mana is less than current lowest. Don't propagate state.
                         it.bossHP <= 0 -> {
                             lowestManaWin = minOf(lowestManaWin, it.manaSpent)
                             false
@@ -112,7 +100,7 @@ class Y2015D22(input: String) : Day {
 
                         // either player is dead, player can't cast a spell the next round, or the total mana spent
                         // is higher than the current lowest mana win. In all cases, player meets with failure so
-                        // do not propagate
+                        // do not propagate state.
                         it.playerHP <= 0 || it.availableMana < 53 || it.manaSpent > lowestManaWin -> false
                         
                         // otherwise, not finished so propagate state
