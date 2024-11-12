@@ -15,7 +15,12 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
+*.class
+*.jar
+*.bin
+*.lock
+*.len
+*.tab
 ### Kotlin ###
 .kotlin
 
