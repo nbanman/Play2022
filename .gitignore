@@ -21,6 +21,8 @@ out/
 *.lock
 *.len
 *.tab
+*.probe
+*.kotlin_module
 ### Kotlin ###
 .kotlin
 
