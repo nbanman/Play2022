@@ -37,7 +37,7 @@ class Y2018D22(input: String) : Day {
         private fun Long.erosionLevel() = ((this + depth) % 20183).toInt()
 
         // helper function used to convert geologic index to terrain 
-        private fun Int.terrain() = Terrain.values()[this % 3]
+        private fun Int.terrain() = Terrain.entries[this % 3]
 
         // map to hold the erosion level of the cavern. From this, the terrain for any location can be
         // calculated. It remains mutable because the values are calculated lazily as needed using the getErosion
@@ -85,7 +85,7 @@ class Y2018D22(input: String) : Day {
         } else {
             // if terrain is different, provide the tool that works for those two terrains by adding the ordinal values of the terrain
             // together to obtain a unique value specific to that terrain combination.
-            Tool.values()[stateTerrain.ordinal + neighborTerrain.ordinal - 1]
+            Tool.entries[stateTerrain.ordinal + neighborTerrain.ordinal - 1]
         }
     }
 
