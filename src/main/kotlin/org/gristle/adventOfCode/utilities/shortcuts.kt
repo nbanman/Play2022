@@ -297,4 +297,9 @@ inline fun <E> PriorityQueue<E>.pollWhile(predicate: (E) -> Boolean): List<E> {
     return list
 }
 
+fun String.splitAt(index: Int): Pair<String, String> {
+    require(index in 0..length) { "Index must be within the bounds of the string length." }
+    return substring(0, index) to substring(index)
+}
+
 fun <T: Any?> T.println() = println(this)
