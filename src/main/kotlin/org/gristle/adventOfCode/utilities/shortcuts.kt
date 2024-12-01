@@ -303,3 +303,9 @@ fun String.splitAt(index: Int): Pair<String, String> {
 }
 
 fun <T: Any?> T.println() = println(this)
+
+inline fun <T, R> Pair<T, T>.map(transform: (T) -> R): Pair<R, R> {
+    return Pair(transform(first), transform(second))
+}
+
+fun <T> Pair<Iterable<T>, Iterable<T>>.zipped(): List<Pair<T, T>> = first zip second
