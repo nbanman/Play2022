@@ -177,7 +177,7 @@ inline fun <T> Iterable<T>.splitOn(predicate: (T) -> Boolean): List<List<T>> {
 /**
  * Split on blank String
  */
-fun <String> Iterable<String>.splitOnBlank(): List<List<String>> {
+fun Iterable<String>.splitOnBlank(): List<List<String>> {
     val d = mutableListOf<List<String>>()
     var u = mutableListOf<String>()
     forEach { s ->
