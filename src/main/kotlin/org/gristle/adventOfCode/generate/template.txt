@@ -1,0 +1,11 @@
+package org.gristle.adventOfCode.y[[YEAR]].d[[DAY]]
+
+import org.gristle.adventOfCode.Day
+
+class Y[[YEAR]]D[[DAY]](input: String) : Day {
+    override fun part1() = "part 1"
+    override fun part2() = "part 2"
+}
+
+fun main() = Day.runDay(Y[[YEAR]]D[[DAY]]::class)
+
