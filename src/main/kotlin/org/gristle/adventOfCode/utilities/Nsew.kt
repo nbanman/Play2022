@@ -15,6 +15,7 @@ enum class Nsew {
         override fun left() = EAST
         override fun right() = WEST
         override fun flip() = NORTH
+
         override fun forward(c: Coord, distance: Int) = Coord(c.x, c.y + distance)
     },
 
@@ -35,6 +36,7 @@ enum class Nsew {
     abstract fun left(): Nsew
     abstract fun right(): Nsew
     abstract fun flip(): Nsew
+    fun straight(): Nsew = this
     fun opposite() = left().left()
     abstract fun forward(c: Coord, distance: Int = 1): Coord
     fun forwardInclusive(c: Coord, distance: Int = 1): List<Coord> {
