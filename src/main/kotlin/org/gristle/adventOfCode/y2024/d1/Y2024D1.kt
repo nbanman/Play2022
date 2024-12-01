@@ -4,18 +4,16 @@ import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.collate
 import org.gristle.adventOfCode.utilities.eachCount
 import org.gristle.adventOfCode.utilities.getIntList
-import org.gristle.adventOfCode.utilities.getInts
-import kotlin.math.absoluteValue
+import kotlin.math.abs
 
 class Y2024D1(val input: String) : Day {
 
     override fun part1() = input
-        .getInts()
+        .getIntList()
         .collate(2)
         .map { it.sorted() }
-        .toList()
-        .let { (a, b) -> a.zip(b) }
-        .sumOf { (a, b) -> (b - a).absoluteValue }
+        .let { (a, b) -> a zip b }
+        .sumOf { (a, b) -> abs(a - b) }
 
     override fun part2(): Int {
         val (a, b) = input.getIntList().collate(2)
