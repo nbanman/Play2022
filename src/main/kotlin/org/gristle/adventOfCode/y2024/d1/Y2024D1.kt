@@ -18,7 +18,7 @@ class Y2024D1(val input: String) : Day {
         .sumOf { (a, b) -> (b - a).absoluteValue }
 
     override fun part2(): Int {
-        val (a, b) = test.getIntList().collate(2)
+        val (a, b) = input.getIntList().collate(2)
         val freq = b.eachCount()
         return a.sumOf { it * (freq[it] ?: 0) }
     }
@@ -26,10 +26,7 @@ class Y2024D1(val input: String) : Day {
 
 fun main() = Day.runDay(Y2024D1::class)
 
-private val test = """3   4
-4   3
-2   5
-1   3
-3   9
-3   3
-"""
+//    Class creation: 1ms
+//    Part 1: 1222801 (11ms)
+//    Part 2: 22545250 (6ms)
+//    Total time: 20ms
