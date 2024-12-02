@@ -2,15 +2,13 @@ package org.gristle.adventOfCode.y2024.d2
 
 import org.gristle.adventOfCode.Day
 import org.gristle.adventOfCode.utilities.getIntList
-import kotlin.math.abs
 
 class Y2024D2(input: String) : Day {
-    private val levels = input.lines().map { it.getIntList() }
+    private val levels: List<List<Int>> = input.lines().map { it.getIntList() }
 
     private fun List<Int>.isSafe(): Boolean {
-        val level = zipWithNext()
-        return (level.all { (a, b) -> a > b } || level.all { (a, b) -> a < b })
-                && level.all { (a, b) -> abs(a - b) in 1..3 }
+        val rng = if (first() < last()) -3..-1 else 1..3
+        return asSequence().zipWithNext().all { (a, b) -> a - b in rng }
     }
 
     override fun part1() = levels.count { it.isSafe() }
