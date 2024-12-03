@@ -9,10 +9,9 @@ class Y2024D3(val input: String) : Day {
         .gvs(Regex("""mul\((\d+),(\d+)\)""")) { it.toLong() }
         .sumOf { (a, b) -> a * b }
 
-    override fun part2(): Long =
-        Regex("""don't\(\).*?do\(\)|mul\((\d{1,3}),(\d{1,3})\)""", RegexOption.DOT_MATCHES_ALL)
-            .findAll(input)
-            .sumOf { mr -> (mr.groupValues[1].toLongOrNull() ?: 0L) * (mr.groupValues[2].toLongOrNull() ?: 0L) }
+    override fun part2() = Regex("""don't\(\).*?do\(\)|mul\((\d+),(\d+)\)""", RegexOption.DOT_MATCHES_ALL)
+        .findAll(input)
+        .sumOf { mr -> (mr.groupValues[1].toLongOrNull() ?: 0L) * (mr.groupValues[2].toLongOrNull() ?: 0L) }
 }
 
 fun main() = Day.runDay(Y2024D3::class)
