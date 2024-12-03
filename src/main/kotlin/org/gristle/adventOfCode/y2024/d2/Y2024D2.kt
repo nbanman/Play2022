@@ -11,14 +11,39 @@ class Y2024D2(input: String) : Day {
         return asSequence().zipWithNext().all { (a, b) -> a - b in rng }
     }
 
-    override fun part1() = levels.count { it.isSafe() }
-    override fun part2() = levels.count { level ->
-        level.isSafe() || level.indices
-            .map { i -> level.subList(0, i) + level.subList(i + 1, level.size) }
-            .any { it.isSafe() }
-    }
-}
+    private fun List<Int>.isSomewhatSafe(): Boolean {
+        val diffs = zipWithNext { a, b -> b - a }.count { it > 0 }
+        val rng = when (diffs){
+            0, 1 -> 1..3
+            lastIndex, lastIndex - 1 -> -3..-1
+            else -> return false
+        }
+        var removed = false
+        var i = 0
 
+        while(i < lastIndex) {
+            if (get(i) - get(i + 1) !in rng) {
+                if (removed) return false
+                removed = true
+                // i + 1 could be the culprit
+                if (i != 0) {
+                    if (get(i - 1) - get(i + 1) !in rng) {
+                        // i is valid
+                        if (i != lastIndex - 1 && get(i) - get(i + 2) !in rng) return false
+                        i++
+                    }
+                } else if (get(0) - get(2) in rng) {
+                    i++
+                }
+            }
+            i++
+        }
+        return true
+    }
+
+    override fun part1() = levels.count { level -> level.isSafe() }
+    override fun part2() = levels.count { level -> level.isSomewhatSafe() }
+}
 fun main() = Day.runDay(Y2024D2::class)
 
 @Suppress("unused")
